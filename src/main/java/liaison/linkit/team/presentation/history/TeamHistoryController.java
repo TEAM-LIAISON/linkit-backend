@@ -4,6 +4,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.team.business.service.history.TeamHistoryService;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryRequestDTO;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO;
@@ -27,8 +28,9 @@ public class TeamHistoryController {
 
     // 팀 연혁 뷰어 조회
     @GetMapping("/view")
+    @Logging(item = "Team_History", action = "GET_TEAM_HISTORY_CALENDAR", includeResult = true)
     public CommonResponse<TeamHistoryResponseDTO.TeamHistoryCalendarResponse>
-            getTeamHistoryCalendarResponses(@PathVariable final String teamCode) {
+            getTeamHistoryCalendar(@PathVariable final String teamCode) {
         log.info("팀 코드 = {}에 대한 팀 연혁 뷰어 전체 조회 요청이 발생했습니다.", teamCode);
         return CommonResponse.onSuccess(
                 teamHistoryService.getTeamHistoryCalendarResponses(teamCode));
@@ -37,6 +39,7 @@ public class TeamHistoryController {
     // 팀 연혁 수정창 조회
     @GetMapping
     @MemberOnly
+    @Logging(item = "Team_History", action = "GET_TEAM_HISTORY_ITEMS", includeResult = true)
     public CommonResponse<TeamHistoryResponseDTO.TeamHistoryItems> getTeamHistoryItems(
             @Auth final Accessor accessor, @PathVariable final String teamCode) {
         log.info(
@@ -49,6 +52,7 @@ public class TeamHistoryController {
 
     @GetMapping("/{teamHistoryId}")
     @MemberOnly
+    @Logging(item = "Team_History", action = "GET_TEAM_HISTORY_DETAIL", includeResult = true)
     public CommonResponse<TeamHistoryResponseDTO.TeamHistoryDetail> getTeamHistoryDetail(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
@@ -65,6 +69,7 @@ public class TeamHistoryController {
     // 팀 연혁 생성
     @PostMapping
     @MemberOnly
+    @Logging(item = "Team_History", action = "POST_ADD_TEAM_HISTORY", includeResult = true)
     public CommonResponse<TeamHistoryResponseDTO.AddTeamHistoryResponse> addTeamHistory(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
@@ -80,6 +85,7 @@ public class TeamHistoryController {
 
     @PostMapping("/{teamHistoryId}")
     @MemberOnly
+    @Logging(item = "Team_History", action = "POST_UPDATE_TEAM_HISTORY", includeResult = true)
     public CommonResponse<TeamHistoryResponseDTO.UpdateTeamHistoryResponse> updateTeamHistory(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
@@ -97,6 +103,7 @@ public class TeamHistoryController {
 
     @DeleteMapping("/{teamHistoryId}")
     @MemberOnly
+    @Logging(item = "Team_History", action = "DELETE_REMOVE_TEAM_HISTORY", includeResult = true)
     public CommonResponse<TeamHistoryResponseDTO.RemoveTeamHistoryResponse> removeTeamHistory(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,

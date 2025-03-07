@@ -8,6 +8,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.team.business.service.product.TeamProductService;
 import liaison.linkit.team.presentation.product.dto.TeamProductRequestDTO;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO;
@@ -32,6 +33,7 @@ public class TeamProductController {
 
     // 팀 프로덕트 뷰어 전체 조회
     @GetMapping("/view")
+    @Logging(item = "Team_Product", action = "GET_TEAM_PRODUCT_VIEW_ITEMS", includeResult = true)
     public CommonResponse<TeamProductResponseDTO.TeamProductViewItems> getTeamProductViewItems(
             @PathVariable final String teamCode) {
         return CommonResponse.onSuccess(teamProductService.getTeamProductViewItems(teamCode));
@@ -40,6 +42,7 @@ public class TeamProductController {
     // 팀 프로덕트 전체 조회
     @GetMapping
     @MemberOnly
+    @Logging(item = "Team_Product", action = "GET_TEAM_PRODUCT_ITEMS", includeResult = true)
     public CommonResponse<TeamProductResponseDTO.TeamProductItems> getTeamProductItems(
             @Auth final Accessor accessor, @PathVariable final String teamCode) {
         log.info(
@@ -53,6 +56,7 @@ public class TeamProductController {
     // 팀 프로덕트 단일 조회
     @GetMapping("/{teamProductId}")
     @MemberOnly
+    @Logging(item = "Team_Product", action = "GET_TEAM_PRODUCT_DETAIL", includeResult = true)
     public CommonResponse<TeamProductResponseDTO.TeamProductDetail> getTeamProductDetail(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
@@ -69,6 +73,7 @@ public class TeamProductController {
     // 팀 프로덕트 생성
     @PostMapping
     @MemberOnly
+    @Logging(item = "Team_Product", action = "POST_ADD_TEAM_PRODUCT", includeResult = true)
     public CommonResponse<TeamProductResponseDTO.AddTeamProductResponse> addTeamProduct(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
@@ -92,6 +97,7 @@ public class TeamProductController {
     // 팀 프로덕트 수정
     @PostMapping("/{teamProductId}")
     @MemberOnly
+    @Logging(item = "Team_Product", action = "POST_UPDATE_TEAM_PRODUCT", includeResult = true)
     public CommonResponse<TeamProductResponseDTO.UpdateTeamProductResponse> updateTeamProduct(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
@@ -117,6 +123,7 @@ public class TeamProductController {
     // 팀 프로덕트 삭제
     @DeleteMapping("/{teamProductId}")
     @MemberOnly
+    @Logging(item = "Team_Product", action = "DELETE_REMOVE_TEAM_PRODUCT", includeResult = true)
     public CommonResponse<TeamProductResponseDTO.RemoveTeamProductResponse> removeTeamProduct(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,

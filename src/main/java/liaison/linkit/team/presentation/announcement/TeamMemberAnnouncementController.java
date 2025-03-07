@@ -6,6 +6,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.team.business.service.announcement.TeamMemberAnnouncementService;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
@@ -31,6 +32,10 @@ public class TeamMemberAnnouncementController {
     private final TeamMemberAnnouncementService teamMemberAnnouncementService;
 
     @GetMapping("/home/announcement")
+    @Logging(
+            item = "Team_Member_Announcement",
+            action = "GET_HOME_ANNOUNCEMENT_INFORM_MENUS",
+            includeResult = true)
     public CommonResponse<AnnouncementInformMenus> getHomeAnnouncementInformMenus(
             @Auth final Accessor accessor) {
         ;
@@ -42,6 +47,10 @@ public class TeamMemberAnnouncementController {
 
     // 팀원 공고 뷰어 전체 조회
     @GetMapping("/team/{teamCode}/announcement")
+    @Logging(
+            item = "Team_Member_Announcement",
+            action = "GET_TEAM_MEMBER_ANNOUNCEMENT_ITEMS",
+            includeResult = true)
     public CommonResponse<TeamMemberAnnouncementItems> getTeamMemberAnnouncementItems(
             @Auth final Accessor accessor, @PathVariable final String teamCode) {
         Optional<Long> optionalMemberId =
@@ -54,6 +63,10 @@ public class TeamMemberAnnouncementController {
 
     // 팀원 공고 단일 조회
     @GetMapping("/team/{teamCode}/announcement/{teamMemberAnnouncementId}")
+    @Logging(
+            item = "Team_Member_Announcement",
+            action = "GET_TEAM_MEMBER_ANNOUNCEMENT_DETAIL",
+            includeResult = true)
     public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail>
             getTeamMemberAnnouncementDetail(
                     @Auth final Accessor accessor,
@@ -70,6 +83,10 @@ public class TeamMemberAnnouncementController {
     // 팀원 공고 생성
     @PostMapping("/team/{teamCode}/announcement")
     @MemberOnly
+    @Logging(
+            item = "Team_Member_Announcement",
+            action = "POST_ADD_TEAM_MEMBER_ANNOUNCEMENT",
+            includeResult = true)
     public CommonResponse<TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse>
             addTeamMemberAnnouncement(
                     @Auth final Accessor accessor,
@@ -89,6 +106,10 @@ public class TeamMemberAnnouncementController {
     // 팀원 공고 수정
     @PostMapping("/team/{teamCode}/announcement/{teamMemberAnnouncementId}")
     @MemberOnly
+    @Logging(
+            item = "Team_Member_Announcement",
+            action = "POST_UPDATE_TEAM_MEMBER_ANNOUNCEMENT",
+            includeResult = true)
     public CommonResponse<TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse>
             updateTeamMemberAnnouncement(
                     @Auth final Accessor accessor,
@@ -113,6 +134,10 @@ public class TeamMemberAnnouncementController {
     // 팀원 공고 삭제
     @DeleteMapping("/team/{teamCode}/announcement/{teamMemberAnnouncementId}")
     @MemberOnly
+    @Logging(
+            item = "Team_Member_Announcement",
+            action = "DELETE_REMOVE_TEAM_MEMBER_ANNOUNCEMENT",
+            includeResult = true)
     public CommonResponse<TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse>
             removeTeamMemberAnnouncement(
                     @Auth final Accessor accessor,
@@ -126,6 +151,10 @@ public class TeamMemberAnnouncementController {
     // 팀원 공고 공개/비공개 여부 수정
     @PostMapping("/team/{teamCode}/announcement/state/{teamMemberAnnouncementId}")
     @MemberOnly
+    @Logging(
+            item = "Team_Member_Announcement",
+            action = "POST_UPDATE_TEAM_MEMBER_ANNOUNCEMENT_PUBLIC_STATE",
+            includeResult = true)
     public CommonResponse<
                     TeamMemberAnnouncementResponseDTO
                             .UpdateTeamMemberAnnouncementPublicStateResponse>
