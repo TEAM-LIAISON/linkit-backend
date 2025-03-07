@@ -8,6 +8,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.team.business.service.log.TeamLogService;
 import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO;
@@ -34,6 +35,7 @@ public class TeamLogController {
     // 로그 첨부 이미지 저장
     @PostMapping("/body/image")
     @MemberOnly
+    @Logging(item = "Team_Log", action = "POST_ADD_TEAM_LOG_BODY_IMAGE", includeResult = true)
     public CommonResponse<TeamLogResponseDTO.AddTeamLogBodyImageResponse> addTeamLogBodyImage(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
@@ -45,6 +47,7 @@ public class TeamLogController {
 
     // 로그 전체 조회
     @GetMapping
+    @Logging(item = "Team_Log", action = "GET_TEAM_LOG_ITEMS", includeResult = true)
     public CommonResponse<TeamLogResponseDTO.TeamLogItems> getTeamLogItems(
             @Auth final Accessor accessor, @PathVariable final String teamCode) {
         Optional<Long> optionalMemberId =
@@ -59,6 +62,7 @@ public class TeamLogController {
 
     // 로그 상세 조회
     @GetMapping("/{teamLogId}")
+    @Logging(item = "Team_Log", action = "GET_TEAM_LOG_ITEM", includeResult = true)
     public CommonResponse<TeamLogResponseDTO.TeamLogItem> getTeamLogItem(
             @PathVariable final String teamCode, @PathVariable final Long teamLogId) {
         log.info("teamCode = {}에 대한 팀 로그 ID = {}의 단일 조회 요청이 발생했습니다.", teamCode, teamLogId);
@@ -67,6 +71,7 @@ public class TeamLogController {
 
     // 대표글 조회
     @GetMapping("/represent")
+    @Logging(item = "Team_Log", action = "GET_REPRESENT_TEAM_LOG_ITEM", includeResult = true)
     public CommonResponse<TeamLogResponseDTO.TeamLogItem> getRepresentTeamLogItem(
             @PathVariable final String teamCode) {
         log.info("teamCode = {}에 대한 대표글 조회 요청이 발생했습니다.", teamCode);
@@ -76,6 +81,7 @@ public class TeamLogController {
     // 로그 추가
     @PostMapping
     @MemberOnly
+    @Logging(item = "Team_Log", action = "POST_ADD_TEAM_LOG", includeResult = true)
     public CommonResponse<TeamLogResponseDTO.AddTeamLogResponse> addTeamLog(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
@@ -91,6 +97,7 @@ public class TeamLogController {
     // 팀 로그 수정
     @PostMapping("/{teamLogId}")
     @MemberOnly
+    @Logging(item = "Team_Log", action = "POST_UPDATE_TEAM_LOG", includeResult = true)
     public CommonResponse<TeamLogResponseDTO.UpdateTeamLogResponse> updateTeamLog(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
@@ -105,6 +112,7 @@ public class TeamLogController {
     // 팀 로그 삭제
     @DeleteMapping("/{teamLogId}")
     @MemberOnly
+    @Logging(item = "Team_Log", action = "DELETE_TEAM_LOG", includeResult = true)
     public CommonResponse<TeamLogResponseDTO.RemoveTeamLogResponse> deleteTeamLog(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
@@ -121,6 +129,7 @@ public class TeamLogController {
     // 팀 로그 대표글로 변경
     @PostMapping("/type/{teamLogId}")
     @MemberOnly
+    @Logging(item = "Team_Log", action = "POST_UPDATE_TEAM_LOG_TYPE", includeResult = true)
     public CommonResponse<TeamLogResponseDTO.UpdateTeamLogTypeResponse> updateTeamLogType(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
@@ -132,6 +141,7 @@ public class TeamLogController {
     // 팀 로그 공개 여부 수정
     @PostMapping("/state/{teamLogId}")
     @MemberOnly
+    @Logging(item = "Team_Log", action = "POST_UPDATE_TEAM_LOG_PUBLIC_STATE", includeResult = true)
     public CommonResponse<TeamLogResponseDTO.UpdateTeamLogPublicStateResponse>
             updateTeamLogPublicState(
                     @Auth final Accessor accessor,

@@ -8,6 +8,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.team.business.service.team.TeamService;
 import liaison.linkit.team.presentation.team.dto.TeamRequestDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
@@ -33,6 +34,7 @@ public class TeamController {
 
     // 홈화면에서 팀 조회하기 (최대 4개)
     @GetMapping("/home/team")
+    @Logging(item = "Team", action = "GET_HOME_TEAM_INFORM_MENUS", includeResult = true)
     public CommonResponse<TeamResponseDTO.TeamInformMenus> getHomeTeamInformMenus(
             @Auth final Accessor accessor) {
         Optional<Long> optionalMemberId =
@@ -44,6 +46,7 @@ public class TeamController {
     // 팀 생성하기
     @PostMapping("/team")
     @MemberOnly
+    @Logging(item = "Team", action = "POST_CREATE_TEAM", includeResult = true)
     public CommonResponse<TeamResponseDTO.AddTeamResponse> createTeam(
             @Auth final Accessor accessor,
             @RequestPart(required = false) MultipartFile teamLogoImage,
@@ -55,6 +58,7 @@ public class TeamController {
     // 팀 기본 정보 수정
     @PostMapping("/team/{teamCode}")
     @MemberOnly
+    @Logging(item = "Team", action = "POST_UPDATE_TEAM", includeResult = true)
     public CommonResponse<UpdateTeamResponse> updateTeam(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
@@ -67,6 +71,7 @@ public class TeamController {
 
     // 팀 상단 메뉴
     @GetMapping("/team/{teamCode}")
+    @Logging(item = "Team", action = "GET_TEAM_DETAIL", includeResult = true)
     public CommonResponse<TeamResponseDTO.TeamDetail> getTeamDetail(
             @Auth final Accessor accessor, @PathVariable final String teamCode) {
         Optional<Long> optionalMemberId =
@@ -78,6 +83,7 @@ public class TeamController {
     // 팀 삭제 요청
     @DeleteMapping("/team/{teamCode}")
     @MemberOnly
+    @Logging(item = "Team", action = "DELETE_TEAM", includeResult = true)
     public CommonResponse<TeamResponseDTO.DeleteTeamResponse> deleteTeam(
             @PathVariable final String teamCode, @Auth final Accessor accessor) {
         return CommonResponse.onSuccess(teamService.deleteTeam(accessor.getMemberId(), teamCode));
@@ -86,6 +92,7 @@ public class TeamController {
     // 나의 팀 조회
     @GetMapping("/my/teams")
     @MemberOnly
+    @Logging(item = "Team", action = "GET_TEAM_ITEMS", includeResult = true)
     public CommonResponse<TeamResponseDTO.TeamItems> getTeamItems(@Auth final Accessor accessor) {
         return CommonResponse.onSuccess(teamService.getTeamItems(accessor.getMemberId()));
     }
