@@ -122,8 +122,6 @@ public class LoggerConfig {
     }
 
     private Object maskSensitiveData(Object data) {
-        // 민감한 데이터(비밀번호, 토큰 등) 마스킹 로직
-        // 예시로 간단한 처리만 구현
         if (data instanceof String) {
             String str = (String) data;
             if (str.length() > 0
