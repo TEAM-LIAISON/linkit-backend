@@ -40,7 +40,6 @@ public class MemberController {
                     @RequestBody
                             final MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest
                                     request) {
-        log.info("memberId = {}의 회원 기본 정보 수정 요청 발생", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 memberService.updateMemberBasicInform(accessor.getMemberId(), request));
     }
@@ -68,7 +67,6 @@ public class MemberController {
                     @RequestBody
                             final MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest
                                     updateConsentServiceUseRequest) {
-        log.info("memberId = {}의 서비스 이용 동의 수정 요청 발생", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 memberService.updateConsentServiceUse(
                         accessor.getMemberId(), updateConsentServiceUseRequest));
@@ -80,7 +78,6 @@ public class MemberController {
     @Logging(item = "Member", action = "GET_MEMBER_BASIC_INFO", includeResult = true)
     public CommonResponse<MemberBasicInformResponseDTO.MemberBasicInformDetail>
             getMemberBasicInform(@Auth final Accessor accessor) {
-        log.info("memberId = {}의 회원 기본 정보 조회 요청 발생", accessor.getMemberId());
         return CommonResponse.onSuccess(memberService.getMemberBasicInform(accessor.getMemberId()));
     }
 
@@ -93,7 +90,6 @@ public class MemberController {
             @RequestBody
                     final MemberBasicInformRequestDTO.UpdateMemberNameRequest
                             updateMemberNameRequest) {
-        log.info("memberId = {}의 회원 이름 정보 수정 요청 발생", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 memberService.updateMemberName(accessor.getMemberId(), updateMemberNameRequest));
     }
@@ -108,7 +104,6 @@ public class MemberController {
                     @RequestBody
                             final MemberBasicInformRequestDTO.UpdateMemberContactRequest
                                     updateMemberContactRequest) {
-        log.info("memberId = {}의 회원 연락처 정보 수정 요청 발생", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 memberService.updateMemberContact(
                         accessor.getMemberId(), updateMemberContactRequest));
@@ -121,7 +116,6 @@ public class MemberController {
     public CommonResponse<UpdateConsentMarketingResponse> updateConsentMarketing(
             @Auth final Accessor accessor,
             @RequestBody final UpdateConsentMarketingRequest updateConsentMarketingRequest) {
-        log.info("memberId = {}의 회원 마케팅 수신 동의 정보 수정 요청 발생", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 memberService.updateConsentMarketing(
                         accessor.getMemberId(), updateConsentMarketingRequest));

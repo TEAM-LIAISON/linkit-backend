@@ -86,7 +86,6 @@ public class ProfileService {
                         .map(profile -> toHomeProfileInformMenuInLoginState(profile, memberId))
                         .toList();
 
-        log.info("memberId = {}의 홈 프로필 정보 메뉴 조회 성공", memberId);
         return profileMapper.toProfileInformMenus(profileInformMenus);
     }
 
@@ -98,7 +97,6 @@ public class ProfileService {
         List<ProfileResponseDTO.ProfileInformMenu> profileInformMenus =
                 profiles.stream().map(this::toHomeProfileInformMenuInLogoutState).toList();
 
-        log.info("비로그인 상태의 홈 프로필 정보 메뉴 조회 성공");
         return profileMapper.toProfileInformMenus(profileInformMenus);
     }
 

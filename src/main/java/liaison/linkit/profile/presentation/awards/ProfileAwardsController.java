@@ -34,7 +34,6 @@ public class ProfileAwardsController {
     @MemberOnly
     public CommonResponse<ProfileAwardsResponseDTO.ProfileAwardsItems> getProfileAwardsItems(
             @Auth final Accessor accessor) {
-        log.info("memberId = {}의 프로필 수상 전체 조회 요청이 컨트롤러 계층에 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 profileAwardsService.getProfileAwardsItems(accessor.getMemberId()));
     }
@@ -44,10 +43,6 @@ public class ProfileAwardsController {
     @MemberOnly
     public CommonResponse<ProfileAwardsResponseDTO.ProfileAwardsDetail> getProfileAwardsDetail(
             @Auth final Accessor accessor, @PathVariable final Long profileAwardsId) {
-        log.info(
-                "memberId = {}의 profileAwardsId = {}에 대한 단일 조회 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                profileAwardsId);
         return CommonResponse.onSuccess(
                 profileAwardsService.getProfileAwardsDetail(
                         accessor.getMemberId(), profileAwardsId));
@@ -60,7 +55,6 @@ public class ProfileAwardsController {
             @Auth final Accessor accessor,
             @RequestBody
                     final ProfileAwardsRequestDTO.AddProfileAwardsRequest addProfileAwardsRequest) {
-        log.info("memberId = {}의 프로필 수상 추가 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 profileAwardsService.addProfileAwards(
                         accessor.getMemberId(), addProfileAwardsRequest));
@@ -75,10 +69,6 @@ public class ProfileAwardsController {
             @RequestBody
                     final ProfileAwardsRequestDTO.UpdateProfileAwardsRequest
                             updateProfileAwardsRequest) {
-        log.info(
-                "memberId = {}의 profileAwardsId = {}에 대한 프로필 수상 수정 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                profileAwardsId);
         return CommonResponse.onSuccess(
                 profileAwardsService.updateProfileAwards(
                         accessor.getMemberId(), profileAwardsId, updateProfileAwardsRequest));
@@ -89,10 +79,6 @@ public class ProfileAwardsController {
     @MemberOnly
     public CommonResponse<ProfileAwardsResponseDTO.RemoveProfileAwardsResponse> removeProfileAwards(
             @Auth final Accessor accessor, @PathVariable final Long profileAwardsId) {
-        log.info(
-                "memberId = {}의 profileAwardsId = {}에 대한 수상 단일 삭제 요청이 컨트롤러 계층에 발생했습니다.",
-                accessor.getMemberId(),
-                profileAwardsId);
         return CommonResponse.onSuccess(
                 profileAwardsService.removeProfileAwards(accessor.getMemberId(), profileAwardsId));
     }
@@ -105,10 +91,7 @@ public class ProfileAwardsController {
                     @Auth final Accessor accessor,
                     @PathVariable final Long profileAwardsId,
                     @RequestPart @Valid final MultipartFile profileAwardsCertificationFile) {
-        log.info(
-                "memberId = {}의 profileAwardsId = {}에 대한 수상 인증서 단일 생성 요청이 컨트롤러 계층에 발생했습니다.",
-                accessor.getMemberId(),
-                profileAwardsId);
+
         return CommonResponse.onSuccess(
                 profileAwardsService.addProfileAwardsCertification(
                         accessor.getMemberId(), profileAwardsId, profileAwardsCertificationFile));
@@ -120,10 +103,6 @@ public class ProfileAwardsController {
     public CommonResponse<ProfileAwardsResponseDTO.RemoveProfileAwardsCertificationResponse>
             removeProfileAwardsCertification(
                     @Auth final Accessor accessor, @PathVariable final Long profileAwardsId) {
-        log.info(
-                "memberId = {}의 profileAwardsId = {}에 대한 수상 인증서 단일 삭제 요청이 컨트롤러 계층에 발생했습니다.",
-                accessor.getMemberId(),
-                profileAwardsId);
         return CommonResponse.onSuccess(
                 profileAwardsService.removeProfileAwardsCertification(
                         accessor.getMemberId(), profileAwardsId));

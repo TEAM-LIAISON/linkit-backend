@@ -103,7 +103,6 @@ public class DeleteUtil {
         // 1. 회원 정보 조회
         final Member member = memberQueryAdapter.findById(memberId);
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
-        log.info("Deleting account {}", memberId);
 
         // 1. 내가 오너로 속한 팀이 1개라도 있는가? 그 팀에 다른 관리자가 있는가? (통과했다면 팀 관련된 모든 정보를 삭제 가능)
         if (teamMemberQueryAdapter.existsTeamOwnerAndOtherManagerByMemberId(memberId)) {
@@ -113,11 +112,9 @@ public class DeleteUtil {
         // 탈퇴하려는 회원이 속한 삭제 가능한 팀들
         Set<Team> deletableTeams =
                 teamMemberQueryAdapter.getAllDeletableTeamsByMemberId(member.getId());
-        log.info("Deleting teams {}", deletableTeams);
 
         // 삭제 가능한 팀의 ID 리스트
         List<Long> deletableTeamIds = deletableTeams.stream().map(Team::getId).toList();
-        log.info("Deleting teams {}", deletableTeamIds);
 
         List<String> deletableTeamCodes = deletableTeams.stream().map(Team::getTeamCode).toList();
 

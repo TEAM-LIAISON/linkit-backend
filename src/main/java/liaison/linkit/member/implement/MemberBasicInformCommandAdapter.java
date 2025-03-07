@@ -28,7 +28,6 @@ public class MemberBasicInformCommandAdapter {
     public MemberBasicInform updateMemberBasicInform(
             final Long memberId,
             final MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest request) {
-        log.info("memberId = {}의 회원 기본 정보 수정을 진행합니다.", memberId);
         return memberBasicInformRepository
                 .updateMemberBasicInform(memberId, request)
                 .orElseThrow(() -> MemberBasicInformBadRequestException.BAD_REQUEST_EXCEPTION);

@@ -27,8 +27,6 @@ public class ProjectRoleContributionCustomRepositoryImpl
         QProjectRoleContribution qProjectRoleContribution =
                 QProjectRoleContribution.projectRoleContribution;
 
-        log.info("쿼리 조회 시작");
-
         List<Tuple> results =
                 jpaQueryFactory
                         .select(qProfilePortfolio.id, qProjectRoleContribution.projectRole)

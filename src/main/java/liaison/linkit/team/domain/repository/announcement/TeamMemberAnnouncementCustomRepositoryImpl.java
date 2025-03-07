@@ -155,7 +155,6 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
             final List<String> cityName,
             final List<String> scaleName,
             final Pageable pageable) {
-        log.info("subPosition: {}, cityName: {}, scaleName: {}", subPosition, cityName, scaleName);
 
         QTeamMemberAnnouncement qTeamMemberAnnouncement =
                 QTeamMemberAnnouncement.teamMemberAnnouncement;
@@ -667,7 +666,6 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                 QTeamMemberAnnouncement.teamMemberAnnouncement;
 
         if (teamIds == null || teamIds.isEmpty()) {
-            log.info("No team IDs provided for fetching deletable announcements.");
             return Collections.emptySet();
         }
 
@@ -685,7 +683,6 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                 QTeamMemberAnnouncement.teamMemberAnnouncement;
 
         if (teamId == null) {
-            log.info("No team ID provided for fetching deletable announcements.");
             return Collections.emptySet();
         }
 
@@ -709,8 +706,6 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                             .set(qAnnouncement.status, StatusType.DELETED)
                             .where(qAnnouncement.id.in(announcementIds))
                             .execute();
-
-            log.info("Deleted {} announcements with IDs: {}", updatedCount, announcementIds);
 
             entityManager.flush();
             entityManager.clear();

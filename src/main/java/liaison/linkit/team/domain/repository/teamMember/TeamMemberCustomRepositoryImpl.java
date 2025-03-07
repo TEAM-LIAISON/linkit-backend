@@ -129,8 +129,6 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                                 .fetchFirst()
                         != null;
 
-        log.info("Is memberId {} a team owner? {}", memberId, isTeamOwner);
-
         if (!isTeamOwner) {
             // OWNER가 아니면 바로 false 반환
             return false;
@@ -152,11 +150,8 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                         .fetchFirst();
 
         if (ownerTeam == null) {
-            log.info("No team found for owner with memberId {}", memberId);
             return false; // 팀이 없으면 false 반환
         }
-
-        log.info("Team found for owner: {}", ownerTeam);
 
         // 같은 팀에 다른 매니저가 존재하는지 확인
         Boolean hasOtherManager =
@@ -175,8 +170,6 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                                                                 memberId))) // OWNER 본인은 제외
                                 .fetchFirst()
                         != null;
-
-        log.info("Does the team have other managers? {}", hasOtherManager);
 
         return hasOtherManager;
     }
@@ -441,8 +434,6 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                                                                         TeamMemberType
                                                                                 .TEAM_VIEWER))))
                         .execute();
-
-        log.info("Deleted {} team members for memberId: {}", deletedCount, memberId);
     }
 
     @Override
@@ -454,8 +445,6 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
 
         entityManager.flush();
         entityManager.clear();
-
-        log.info("Deleted {} team members for teamId: {}", deletedCount, teamId);
     }
 
     @Override

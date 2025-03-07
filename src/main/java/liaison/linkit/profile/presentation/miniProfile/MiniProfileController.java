@@ -34,7 +34,6 @@ public class MiniProfileController {
     @Logging(item = "MiniProfile", action = "GET_MINI_PROFILE_DETAIL", includeResult = true)
     public CommonResponse<MiniProfileDetailResponse> getMiniProfileDetail(
             @Auth final Accessor accessor) {
-        log.info("memberId = {}의 미니프로필 조회 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 miniProfileService.getMiniProfileDetail(accessor.getMemberId()));
     }
@@ -48,7 +47,6 @@ public class MiniProfileController {
             @RequestPart(required = false) MultipartFile profileImage,
             @RequestPart @Valid
                     MiniProfileRequestDTO.UpdateMiniProfileRequest updateMiniProfileRequest) {
-        log.info("memberId = {}의 미니프로필 수정 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 miniProfileService.updateMiniProfile(
                         accessor.getMemberId(), profileImage, updateMiniProfileRequest));

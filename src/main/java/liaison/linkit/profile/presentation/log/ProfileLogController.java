@@ -51,7 +51,6 @@ public class ProfileLogController {
     @Logging(item = "Profile_Log", action = "GET_PROFILE_LOG_ITEMS", includeResult = true)
     public CommonResponse<ProfileLogResponseDTO.ProfileLogItems> getProfileLogItems(
             @Auth final Accessor accessor) {
-        log.info("memberId = {}의 프로필 로그 전체 조회 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 profileLogService.getProfileLogItems(accessor.getMemberId()));
     }
@@ -78,10 +77,7 @@ public class ProfileLogController {
     @Logging(item = "Profile_Log", action = "GET_PROFILE_LOG_ITEM", includeResult = true)
     public CommonResponse<ProfileLogResponseDTO.ProfileLogItem> getProfileLogItem(
             @Auth final Accessor accessor, @PathVariable final Long profileLogId) {
-        log.info(
-                "memberId = {}의 프로필 로그 ID = {}에 대한 단일 조회 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                profileLogId);
+
         return CommonResponse.onSuccess(
                 profileLogService.getProfileLogItem(accessor.getMemberId(), profileLogId));
     }
@@ -93,7 +89,6 @@ public class ProfileLogController {
     public CommonResponse<ProfileLogResponseDTO.AddProfileLogResponse> addProfileLog(
             @Auth final Accessor accessor,
             @RequestBody ProfileLogRequestDTO.AddProfileLogRequest addProfileLogRequest) {
-        log.info("memberId = {}의 프로필 로그에 대한 생성 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 profileLogService.addProfileLog(accessor.getMemberId(), addProfileLogRequest));
     }
@@ -106,7 +101,6 @@ public class ProfileLogController {
             @Auth final Accessor accessor,
             @PathVariable final Long profileLogId,
             @RequestBody ProfileLogRequestDTO.UpdateProfileLogRequest updateProfileLogRequest) {
-        log.info("memberId = {}의 프로필 로그에 대한 수정 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 profileLogService.updateProfileLog(
                         accessor.getMemberId(), profileLogId, updateProfileLogRequest));
@@ -118,10 +112,6 @@ public class ProfileLogController {
     @Logging(item = "Profile_Log", action = "DELETE_PROFILE_LOG", includeResult = true)
     public CommonResponse<RemoveProfileLogResponse> deleteProfileLog(
             @Auth final Accessor accessor, @PathVariable final Long profileLogId) {
-        log.info(
-                "memberId = {}의 프로필 로그 = {}에 대한 삭제 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                profileLogId);
         return CommonResponse.onSuccess(
                 profileLogService.removeProfileLog(accessor.getMemberId(), profileLogId));
     }
@@ -132,10 +122,6 @@ public class ProfileLogController {
     @Logging(item = "Profile_Log", action = "POST_UPDATE_PROFILE_LOG_TYPE", includeResult = true)
     public CommonResponse<UpdateProfileLogTypeResponse> updateProfileLogType(
             @Auth final Accessor accessor, @PathVariable final Long profileLogId) {
-        log.info(
-                "memberId = {}의 프로필 로그 = {}에 대한 대표글 설정 수정 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                profileLogId);
         return CommonResponse.onSuccess(
                 profileLogService.updateProfileLogType(accessor.getMemberId(), profileLogId));
     }
@@ -150,10 +136,6 @@ public class ProfileLogController {
     public CommonResponse<ProfileLogResponseDTO.UpdateProfileLogPublicStateResponse>
             updateProfileLogPublicState(
                     @Auth final Accessor accessor, @PathVariable final Long profileLogId) {
-        log.info(
-                "memberId = {}의 프로필 로그 = {}에 대한 공개 여부 수정 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                profileLogId);
         return CommonResponse.onSuccess(
                 profileLogService.updateProfileLogPublicState(
                         accessor.getMemberId(), profileLogId));

@@ -29,7 +29,6 @@ public class ProfileSkillController {
     @MemberOnly
     @Logging(item = "Profile_Skill", action = "GET_PROFILE_SKILL_ITEMS", includeResult = true)
     public CommonResponse<ProfileSkillItems> getProfileSkillItems(@Auth final Accessor accessor) {
-        log.info("memberId = {}의 프로필 스킬 전체 조회 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 profileSkillService.getProfileSkillItems(accessor.getMemberId()));
     }
@@ -40,7 +39,7 @@ public class ProfileSkillController {
     public CommonResponse<ProfileSkillResponseDTO.ProfileSkillItems> updateProfileSkillItems(
             @Auth final Accessor accessor,
             @RequestBody final ProfileSkillRequestDTO.AddProfileSkillRequest profileSkillRequest) {
-        log.info("memberId = {}의 프로필 스킬 전체 수정 요청이 발생했습니다.", accessor.getMemberId());
+
         return CommonResponse.onSuccess(
                 profileSkillService.updateProfileSkillItems(
                         accessor.getMemberId(), profileSkillRequest));

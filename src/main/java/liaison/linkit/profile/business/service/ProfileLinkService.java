@@ -30,11 +30,9 @@ public class ProfileLinkService {
     @Transactional(readOnly = true)
     public ProfileLinkResponseDTO.ProfileLinkItems getProfileLinkItems(final Long memberId) {
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
-        log.info("memberId = {}의 내 링크 Items 조회 요청 발생했습니다.", memberId);
 
         final List<ProfileLink> profileLinks =
                 profileLinkQueryAdapter.getProfileLinks(profile.getId());
-        log.info("profileLinks = {}가 성공적으로 조회되었습니다.", profileLinks);
 
         return profileLinkMapper.toProfileLinkItems(profileLinks);
     }
@@ -42,7 +40,6 @@ public class ProfileLinkService {
     public ProfileLinkResponseDTO.ProfileLinkItems updateProfileLinkItems(
             final Long memberId,
             final ProfileLinkRequestDTO.AddProfileLinkRequest addProfileLinkRequest) {
-        log.info("memberId = {}의 내 링크 Items 수정 요청이 발생했습니다.", memberId);
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
 
         // 기존에 저장 이력이 존재하는 경우

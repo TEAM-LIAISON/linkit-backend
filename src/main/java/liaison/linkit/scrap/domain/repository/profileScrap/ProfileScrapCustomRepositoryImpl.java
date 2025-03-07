@@ -59,8 +59,6 @@ public class ProfileScrapCustomRepositoryImpl implements ProfileScrapCustomRepos
                         .delete(qProfileScrap)
                         .where(qProfileScrap.member.id.eq(memberId))
                         .execute();
-
-        log.info("Deleted {} profile scraps for memberId: {}", deletedCount, memberId);
     }
 
     @Override
@@ -72,8 +70,6 @@ public class ProfileScrapCustomRepositoryImpl implements ProfileScrapCustomRepos
                         .delete(qProfileScrap)
                         .where(qProfileScrap.profile.id.eq(profileId))
                         .execute();
-
-        log.info("Deleted {} profile scraps for profileId: {}", deletedCount, profileId);
     }
 
     @Override

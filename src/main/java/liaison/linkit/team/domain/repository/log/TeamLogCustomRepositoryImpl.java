@@ -223,14 +223,10 @@ public class TeamLogCustomRepositoryImpl implements TeamLogCustomRepository {
                             .delete(qTeamLogImage)
                             .where(qTeamLogImage.teamLog.id.in(teamLogIds))
                             .execute();
-            log.info("Deleted {} team_log_images for teamId: {}", deletedImageCount, teamId);
 
             // 3) TeamLog 삭제
             long deletedLogCount =
                     queryFactory.delete(qTeamLog).where(qTeamLog.id.in(teamLogIds)).execute();
-            log.info("Deleted {} team_logs for teamId: {}", deletedLogCount, teamId);
-        } else {
-            log.info("No team_logs found for teamId: {}, so no deletion needed.", teamId);
         }
     }
 }

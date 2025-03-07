@@ -103,14 +103,12 @@ public class ProfileScrapService {
                         regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
                 regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
             }
-            log.info("지역 정보 조회 성공");
 
             final List<ProfileCurrentState> profileCurrentStates =
                     profileCurrentStateQueryAdapter.findProfileCurrentStatesByProfileId(
                             profile.getId());
             final List<ProfileCurrentStateItem> profileCurrentStateItems =
                     profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
-            log.info("상태 정보 조회 성공");
 
             final boolean isProfileScrap =
                     profileScrapQueryAdapter.existsByMemberIdAndEmailId(
@@ -124,13 +122,10 @@ public class ProfileScrapService {
                         profilePositionMapper.toProfilePositionDetail(profilePosition);
             }
 
-            log.info("대분류 포지션 정보 조회 성공");
-
             List<ProfileTeamInform> profileTeamInforms = new ArrayList<>();
             if (teamMemberQueryAdapter.existsTeamByMemberId(profile.getMember().getId())) {
                 final List<Team> myTeams = teamMemberQueryAdapter.getAllTeamsByMemberId(memberId);
                 profileTeamInforms = teamMemberMapper.toProfileTeamInforms(myTeams);
-                log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
             }
 
             final int profileScrapCount =

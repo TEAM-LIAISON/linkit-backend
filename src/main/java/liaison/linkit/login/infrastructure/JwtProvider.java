@@ -83,10 +83,8 @@ public class JwtProvider {
         try {
             parseToken(refreshToken);
         } catch (final ExpiredJwtException e) {
-            log.info("RefreshToken 만료 = {}", e.getMessage());
             throw RefreshTokenExpiredException.EXCEPTION;
         } catch (final JwtException | IllegalArgumentException e) {
-            log.info("유효하지 않은 RefreshToken = {}", e.getMessage());
             throw InvalidRefreshTokenException.EXCEPTION;
         }
     }
@@ -95,10 +93,8 @@ public class JwtProvider {
         try {
             parseToken(accessToken); // JWT 토큰을 파싱
         } catch (final ExpiredJwtException e) {
-            log.info("AccessToken 만료 = {}", e.getMessage());
             throw ExpiredAccessTokenException.EXCEPTION;
         } catch (final JwtException | IllegalArgumentException e) {
-            log.info("유효하지 않은 AccessToken = {}", e.getMessage());
             throw InvalidAccessTokenException.EXCEPTION;
         }
     }

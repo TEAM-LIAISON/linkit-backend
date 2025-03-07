@@ -76,17 +76,14 @@ public class ProfilePortfolioService {
     @Transactional(readOnly = true)
     public ProfilePortfolioResponseDTO.ProfilePortfolioItems getProfilePortfolioItems(
             final Long memberId) {
-        log.info("memberId = {}의 포트폴리오 Items 조회 요청이 서비스 계층에 발생했습니다.", memberId);
 
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
 
         final List<ProfilePortfolio> profilePortfolios =
                 profilePortfolioQueryAdapter.getProfilePortfolios(profile.getId());
-        log.info("profilePortfolios = {}가 성공적으로 조회되었습니다.", profilePortfolios);
 
         final Map<Long, List<String>> projectRolesMap =
                 projectRoleContributionQueryAdapter.getProjectRolesByProfileId(profile.getId());
-        log.info("projectRoleMap 조회에 성공했습니다. = {}", projectRolesMap);
 
         return profilePortfolioMapper.toProfilePortfolioItems(profilePortfolios, projectRolesMap);
     }
@@ -108,11 +105,9 @@ public class ProfilePortfolioService {
     @Transactional(readOnly = true)
     public ProfilePortfolioResponseDTO.ProfilePortfolioDetail getProfilePortfolioDetailInLoginState(
             final Long memberId, final Long profilePortfolioId) {
-        log.info("memberId = {}의 포트폴리오 Detail 조회 요청이 서비스 계층에 발생했습니다.", memberId);
 
         final ProfilePortfolio profilePortfolio =
                 profilePortfolioQueryAdapter.getProfilePortfolio(profilePortfolioId);
-        log.info("profilePortfolio = {}가 성공적으로 조회되었습니다.", profilePortfolio);
 
         // 해당 포트폴리오(프로젝트)의 연결된 역할 및 기여도 조회
         final List<ProjectRoleContribution> projectRoleContributions =
@@ -151,7 +146,6 @@ public class ProfilePortfolioService {
             getProfilePortfolioDetailInLogoutState(final Long profilePortfolioId) {
         final ProfilePortfolio profilePortfolio =
                 profilePortfolioQueryAdapter.getProfilePortfolio(profilePortfolioId);
-        log.info("profilePortfolio = {}가 성공적으로 조회되었습니다.", profilePortfolio);
 
         // 해당 포트폴리오(프로젝트)의 연결된 역할 및 기여도 조회
         final List<ProjectRoleContribution> projectRoleContributions =
@@ -191,7 +185,6 @@ public class ProfilePortfolioService {
             final ProfilePortfolioRequestDTO.AddProfilePortfolioRequest addProfilePortfolioRequest,
             final MultipartFile projectRepresentImage,
             final List<MultipartFile> projectSubImages) {
-        log.info("memberId = {}의 프로필 포트폴리오 추가 요청이 서비스 계층에 발생했습니다.", memberId);
         String projectRepresentImagePath = null;
 
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
@@ -296,11 +289,6 @@ public class ProfilePortfolioService {
                     updateProfilePortfolioRequest,
             final MultipartFile projectRepresentImage,
             final List<MultipartFile> projectSubImages) {
-        log.info(
-                "memberId = {}의 포트폴리오 ID = {} 업데이트 요청이 서비스 계층에 발생했습니다.",
-                memberId,
-                profilePortfolioId);
-
         // 1. 기존 포트폴리오 조회
         final ProfilePortfolio existingProfilePortfolio =
                 profilePortfolioQueryAdapter.getProfilePortfolio(profilePortfolioId);
@@ -321,9 +309,6 @@ public class ProfilePortfolioService {
             // 기존 대표 이미지가 있으면 S3 삭제
             if (updatedProfilePortfolio.getProjectRepresentImagePath() != null) {
                 s3Uploader.deleteS3File(updatedProfilePortfolio.getProjectRepresentImagePath());
-                log.info(
-                        "Old represent image deleted: {}",
-                        updatedProfilePortfolio.getProjectRepresentImagePath());
             }
 
             // 새 대표 이미지 업로드
@@ -363,7 +348,6 @@ public class ProfilePortfolioService {
                 if (!keepPaths.contains(oldPath)) {
                     s3Uploader.deleteS3File(oldPath);
                     projectSubImageCommandAdapter.delete(oldSub);
-                    log.info("Deleted old sub-image: {}", oldPath);
                 }
             }
         }

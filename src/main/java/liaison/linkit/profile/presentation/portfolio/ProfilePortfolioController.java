@@ -41,7 +41,6 @@ public class ProfilePortfolioController {
             includeResult = true)
     public CommonResponse<ProfilePortfolioItems> getProfilePortfolioItems(
             @Auth final Accessor accessor) {
-        log.info("memberId = {}의 개인 포트폴리오 전체 조회 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 profilePortfolioService.getProfilePortfolioItems(accessor.getMemberId()));
     }
@@ -68,10 +67,6 @@ public class ProfilePortfolioController {
             getProfilePortfolioDetail(
                     @Auth final Accessor accessor, @PathVariable final Long profilePortfolioId) {
         if (accessor.isMember()) {
-            log.info(
-                    "memberId = {}의 포트폴리오 ID = {}에 대한 단일 조회 요청이 발생했습니다.",
-                    accessor.getMemberId(),
-                    profilePortfolioId);
             return CommonResponse.onSuccess(
                     profilePortfolioService.getProfilePortfolioDetailInLoginState(
                             accessor.getMemberId(), profilePortfolioId));
@@ -97,7 +92,7 @@ public class ProfilePortfolioController {
                                     addProfilePortfolioRequest,
                     @RequestPart(required = false) MultipartFile projectRepresentImage,
                     @RequestPart(required = false) List<MultipartFile> projectSubImages) {
-        log.info("memberId = {}의 프로필 포트폴리오 추가 요청이 발생했습니다.", accessor.getMemberId());
+
         return CommonResponse.onSuccess(
                 profilePortfolioService.addProfilePortfolio(
                         accessor.getMemberId(),
@@ -122,10 +117,6 @@ public class ProfilePortfolioController {
                                     updateProfilePortfolioRequest,
                     @RequestPart(required = false) MultipartFile projectRepresentImage,
                     @RequestPart(required = false) List<MultipartFile> projectSubImages) {
-        log.info(
-                "memberId = {}의 profilePortfolioId = {}에 대한 프로필 포트폴리오 수정 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                profilePortfolioId);
         return CommonResponse.onSuccess(
                 profilePortfolioService.updateProfilePortfolio(
                         accessor.getMemberId(),
@@ -144,10 +135,6 @@ public class ProfilePortfolioController {
     public CommonResponse<ProfilePortfolioResponseDTO.RemoveProfilePortfolioResponse>
             removeProfilePortfolio(
                     @Auth final Accessor accessor, @PathVariable final Long profilePortfolioId) {
-        log.info(
-                "memberId = {}의 profilePortfolioId = {}에 대한 포트폴리오 단일 삭제 요청이 컨트롤러 계층에 발생했습니다.",
-                accessor.getMemberId(),
-                profilePortfolioId);
         return CommonResponse.onSuccess(
                 profilePortfolioService.removeProfilePortfolio(
                         accessor.getMemberId(), profilePortfolioId));

@@ -49,11 +49,9 @@ public class ProfileActivityService {
     @Transactional(readOnly = true)
     public ProfileActivityResponseDTO.ProfileActivityItems getProfileActivityItems(
             final Long memberId) {
-        log.info("memberId = {}의 내 이력 Items 조회 요청 발생했습니다.", memberId);
 
         final List<ProfileActivity> profileActivities =
                 profileActivityQueryAdapter.getProfileActivities(memberId);
-        log.info("profileActivities = {}가 성공적으로 조회되었습니다.", profileActivities);
 
         return profileActivityMapper.toProfileActivityItems(profileActivities);
     }
@@ -61,11 +59,9 @@ public class ProfileActivityService {
     @Transactional(readOnly = true)
     public ProfileActivityResponseDTO.ProfileActivityDetail getProfileActivityDetail(
             final Long memberId, final Long profileActivityId) {
-        log.info("memberId = {}의 내 이력 Detail 조회 요청이 서비스 계층에 발생했습니다.", memberId);
 
         final ProfileActivity profileActivity =
                 profileActivityQueryAdapter.getProfileActivity(profileActivityId);
-        log.info("profileActivity = {}가 성공적으로 조회되었습니다.", profileActivity);
 
         return profileActivityMapper.toProfileActivityDetail(profileActivity);
     }
@@ -73,8 +69,6 @@ public class ProfileActivityService {
     public AddProfileActivityResponse addProfileActivity(
             final Long memberId,
             final ProfileActivityRequestDTO.AddProfileActivityRequest request) {
-        log.info("memberId = {}의 프로필 이력 추가 요청이 서비스 계층에 발생했습니다.", memberId);
-
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
         final ProfileActivity profileActivity =
                 profileActivityMapper.toAddProfileActivity(profile, request);
@@ -93,7 +87,6 @@ public class ProfileActivityService {
             final Long memberId,
             final Long profileActivityId,
             final UpdateProfileActivityRequest updateProfileActivityRequest) {
-        log.info("memberId = {}의 프로필 이력 수정 요청이 서비스 계층에 발생했습니다.", memberId);
         final ProfileActivity updatedProfileActivity =
                 profileActivityCommandAdapter.updateProfileActivity(
                         profileActivityId, updateProfileActivityRequest);

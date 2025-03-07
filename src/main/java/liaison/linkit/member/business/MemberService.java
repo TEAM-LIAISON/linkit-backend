@@ -222,9 +222,7 @@ public class MemberService {
     public MailVerificationResponse verifyAuthCodeAndChangeAccountEmail(
             final Long memberId, final AuthCodeVerificationRequest authCodeVerificationRequest) {
         final String authCode = authCodeVerificationRequest.getAuthCode();
-        log.info("authCode = {}", authCode);
         final String changeRequestEmail = authCodeVerificationRequest.getChangeRequestEmail();
-        log.info("changeRequestEmail = {}", changeRequestEmail);
 
         // 인증 코드가 잘못 입력된 경우
         if (!verifyEmailCode(changeRequestEmail, authCode)) {
@@ -240,9 +238,7 @@ public class MemberService {
     // 코드 검증
     public Boolean verifyEmailCode(String email, String code) {
         String codeFoundByEmail = mailReAuthenticationRedisUtil.getData(email);
-        log.info("codeFoundByEmail = {}", codeFoundByEmail);
         if (codeFoundByEmail == null) {
-            log.info("false 실행");
             return false;
         }
         return codeFoundByEmail.equals(code);

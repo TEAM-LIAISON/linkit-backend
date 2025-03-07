@@ -28,7 +28,6 @@ public class ChatStatusService {
         userSessions.computeIfAbsent(memberId, k -> ConcurrentHashMap.newKeySet()).add(sessionId);
 
         broadcastUserStatus(memberId, true);
-        log.info("User online: memberId={}, sessionId={}", memberId, sessionId);
     }
 
     @EventListener
@@ -42,7 +41,6 @@ public class ChatStatusService {
             if (sessions.isEmpty()) {
                 userSessions.remove(memberId);
                 broadcastUserStatus(memberId, false);
-                log.info("User offline: memberId={}", memberId);
             }
         }
     }

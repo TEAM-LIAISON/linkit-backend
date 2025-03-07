@@ -48,11 +48,9 @@ public class ProfileAwardsService {
 
     @Transactional(readOnly = true)
     public ProfileAwardsResponseDTO.ProfileAwardsItems getProfileAwardsItems(final Long memberId) {
-        log.info("memberId = {}의 내 수상 Items 조회 요청 발생했습니다.", memberId);
 
         final List<ProfileAwards> profileAwards =
                 profileAwardsQueryAdapter.getProfileAwardsGroup(memberId);
-        log.info("profileAwards = {}가 성공적으로 조회되었습니다.", profileAwards);
 
         return profileAwardsMapper.toProfileAwardsItems(profileAwards);
     }
@@ -60,19 +58,15 @@ public class ProfileAwardsService {
     @Transactional(readOnly = true)
     public ProfileAwardsResponseDTO.ProfileAwardsDetail getProfileAwardsDetail(
             final Long memberId, final Long profileAwardsId) {
-        log.info("memberId = {}의 내 수상 Detail 조회 요청이 서비스 계층에 발생했습니다.", memberId);
 
         final ProfileAwards profileAwards =
                 profileAwardsQueryAdapter.getProfileAwards(profileAwardsId);
-        log.info("profileAwards = {}가 성공적으로 조회되었습니다.", profileAwards);
 
         return profileAwardsMapper.toProfileAwardsDetail(profileAwards);
     }
 
     public AddProfileAwardsResponse addProfileAwards(
             final Long memberId, final ProfileAwardsRequestDTO.AddProfileAwardsRequest request) {
-        log.info("memberId = {}의 프로필 수상 추가 요청이 서비스 계층에 발생했습니다.", memberId);
-
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
         final ProfileAwards profileAwards =
                 profileAwardsMapper.toAddProfileAwards(profile, request);
@@ -91,7 +85,6 @@ public class ProfileAwardsService {
             final Long memberId,
             final Long profileAwardsId,
             final UpdateProfileAwardsRequest updateProfileAwardsRequest) {
-        log.info("memberId = {}의 프로필 수상 수정 요청이 서비스 계층에 발생했습니다.", memberId);
         final ProfileAwards updatedProfileAwards =
                 profileAwardsCommandAdapter.updateProfileAwards(
                         profileAwardsId, updateProfileAwardsRequest);

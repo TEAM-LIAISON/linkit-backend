@@ -43,7 +43,6 @@ public class LoginController {
             final HttpServletResponse response) {
         final AccountResponseDTO.LoginServiceResponse loginResponse =
                 loginService.login(provider, loginRequest.getCode());
-        log.info("loginResponse = {}", loginResponse);
 
         // 1) refreshToken 쿠키 설정
         final ResponseCookie cookie =
@@ -57,7 +56,6 @@ public class LoginController {
 
         response.addHeader(SET_COOKIE, cookie.toString());
 
-        log.info("response 설정 = {}", response);
         return CommonResponse.onSuccess(
                 new AccountResponseDTO.LoginResponse(
                         loginResponse.getAccessToken(),

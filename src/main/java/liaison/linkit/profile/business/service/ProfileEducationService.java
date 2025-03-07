@@ -53,12 +53,10 @@ public class ProfileEducationService {
     @Transactional(readOnly = true)
     public ProfileEducationResponseDTO.ProfileEducationItems getProfileEducationItems(
             final Long memberId) {
-        log.info("memberId = {}의 내 학력 Items 조회 요청 발생했습니다.", memberId);
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
 
         final List<ProfileEducation> profileEducations =
                 profileEducationQueryAdapter.getProfileEducations(profile.getId());
-        log.info("profileEducations = {}가 성공적으로 조회되었습니다.", profileEducations);
 
         return profileEducationMapper.toProfileEducationItems(profileEducations);
     }
@@ -66,11 +64,8 @@ public class ProfileEducationService {
     @Transactional(readOnly = true)
     public ProfileEducationResponseDTO.ProfileEducationDetail getProfileEducationDetail(
             final Long memberId, final Long profileEducationId) {
-        log.info("memberId = {}의 내 학력 Detail 조회 요청이 서비스 계층에 발생했습니다.", memberId);
-
         final ProfileEducation profileEducation =
                 profileEducationQueryAdapter.getProfileEducation(profileEducationId);
-        log.info("profileEducation = {}가 성공적으로 조회되었습니다.", profileEducation);
 
         return profileEducationMapper.toProfileEducationDetail(profileEducation);
     }
@@ -78,8 +73,6 @@ public class ProfileEducationService {
     public AddProfileEducationResponse addProfileEducation(
             final Long memberId,
             final ProfileEducationRequestDTO.AddProfileEducationRequest request) {
-        log.info("memberId = {}의 프로필 학력 추가 요청이 서비스 계층에 발생했습니다.", memberId);
-
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
 
         final University university =
@@ -103,7 +96,6 @@ public class ProfileEducationService {
             final Long memberId,
             final Long profileEducationId,
             final UpdateProfileEducationRequest updateProfileEducationRequest) {
-        log.info("memberId = {}의 프로필 학력 수정 요청이 서비스 계층에 발생했습니다.", memberId);
         final University university =
                 universityQueryAdapter.findUniversityByUniversityName(
                         updateProfileEducationRequest.getUniversityName());

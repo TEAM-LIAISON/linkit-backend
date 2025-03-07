@@ -167,8 +167,6 @@ public class TeamLogService {
 
                 image.setTemporary(false);
             }
-        } else {
-            log.info("추출된 이미지 URL이 없습니다. 이미지 연계 작업을 생략합니다.");
         }
 
         return teamLogMapper.toAddTeamLogResponse(savedTeamLog);
@@ -272,8 +270,6 @@ public class TeamLogService {
             existingRepresentativeTeamLog =
                     teamLogQueryAdapter.getRepresentativeTeamLog(team.getId());
         }
-
-        log.info("기존 팀 대표 로그: {}", existingRepresentativeTeamLog);
 
         if (existingRepresentativeTeamLog != null
                 && !existingRepresentativeTeamLog.getId().equals(teamLogId)) {

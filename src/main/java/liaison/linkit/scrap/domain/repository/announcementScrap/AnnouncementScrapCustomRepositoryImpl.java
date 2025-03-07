@@ -92,8 +92,6 @@ public class AnnouncementScrapCustomRepositoryImpl implements AnnouncementScrapC
                         .delete(qAnnouncementScrap)
                         .where(qAnnouncementScrap.member.id.eq(memberId))
                         .execute();
-
-        log.info("Deleted {} announcement scraps for memberId: {}", deletedCount, memberId);
     }
 
     @Override
@@ -107,10 +105,5 @@ public class AnnouncementScrapCustomRepositoryImpl implements AnnouncementScrapC
                                 qAnnouncementScrap.teamMemberAnnouncement.id.in(
                                         teamMemberAnnouncementIds))
                         .execute();
-
-        log.info(
-                "Deleted {} announcement scraps for teamMemberAnnouncementIds: {}",
-                deletedCount,
-                teamMemberAnnouncementIds);
     }
 }

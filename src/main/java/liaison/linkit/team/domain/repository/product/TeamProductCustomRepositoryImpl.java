@@ -98,7 +98,6 @@ public class TeamProductCustomRepositoryImpl implements TeamProductCustomReposit
                         .fetch();
 
         if (teamProductIds.isEmpty()) {
-            log.info("No TeamProduct found for teamId={}, skipping delete", teamId);
             return;
         }
 
@@ -108,7 +107,6 @@ public class TeamProductCustomRepositoryImpl implements TeamProductCustomReposit
                         .delete(qSubImage)
                         .where(qSubImage.teamProduct.id.in(teamProductIds))
                         .execute();
-        log.info("Deleted {} ProductSubImage records for teamId={}", subImageDeleteCount, teamId);
 
         // 3) 자식 테이블2: ProductLink 삭제
         long linkDeleteCount =
@@ -116,7 +114,6 @@ public class TeamProductCustomRepositoryImpl implements TeamProductCustomReposit
                         .delete(qProductLink)
                         .where(qProductLink.teamProduct.id.in(teamProductIds))
                         .execute();
-        log.info("Deleted {} ProductLink records for teamId={}", linkDeleteCount, teamId);
 
         // 4) 이제 TeamProduct 삭제
         long deletedCount =
@@ -124,8 +121,6 @@ public class TeamProductCustomRepositoryImpl implements TeamProductCustomReposit
                         .delete(qTeamProduct)
                         .where(qTeamProduct.team.id.eq(teamId))
                         .execute();
-
-        log.info("Deleted {} TeamProduct records for teamId={}", deletedCount, teamId);
 
         entityManager.flush();
         entityManager.clear();

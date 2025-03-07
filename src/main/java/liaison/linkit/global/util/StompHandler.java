@@ -35,39 +35,20 @@ public class StompHandler implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
 
-        log.info("StompHandler - Command: {}", headerAccessor.getCommand());
-        log.info("StompHandler - Destination: {}", headerAccessor.getDestination());
-
         if (StompCommand.CONNECT.equals(headerAccessor.getCommand())) {
-            log.info("STOMP CONNECT 요청 수신");
 
             String accessToken = validateAndExtractToken(headerAccessor);
             try {
                 // 토큰 검증
                 jwtProvider.validateAccessToken(accessToken);
 
-                // 사용자 ID 추출
                 Long memberId = Long.valueOf(jwtProvider.getSubject(accessToken));
-                log.info("인증된 사용자 ID: {}", memberId);
-
                 String sessionId = headerAccessor.getSessionId();
-                log.info("sessionId: {}", sessionId);
 
-                // 세션 등록
                 sessionRegistry.registerSession(sessionId, memberId);
-                log.info("세션 등록: sessionId={}, memberId={}", sessionId, memberId);
 
-                // Principal 생성 및 세션에 연결
                 UserPrincipal principal = new UserPrincipal(memberId.toString());
                 headerAccessor.setUser(principal); // Principal 설정
-
-                log.info(
-                        "sessionId={}, userPrincipal={}",
-                        headerAccessor.getSessionId(),
-                        (headerAccessor.getUser() != null
-                                ? headerAccessor.getUser().getName()
-                                : "null"));
-
             } catch (Exception e) {
                 throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
             }
@@ -77,50 +58,25 @@ public class StompHandler implements ChannelInterceptor {
             String destination = headerAccessor.getDestination();
             String sessionId = headerAccessor.getSessionId();
             Principal user = headerAccessor.getUser();
-
-            log.info(
-                    "SUBSCRIBE - Destination: {}, SessionId: {}, User: {}",
-                    destination,
-                    sessionId,
-                    user != null ? user.getName() : "null");
             Long memberId = sessionRegistry.getMemberIdBySession(sessionId);
 
             // 구독 경로에 따른 초기 데이터 전송
             if (destination != null) {
                 if (destination.startsWith("/sub/notification/header/")) {
-                    // 알림 구독시 초기 카운트 전송
                     String emailId = extractEmailId(destination);
-                    log.info("emailId: {}", emailId);
-                    // 이벤트 발행
                     eventPublisher.publishEvent(new SubscribeEvent(memberId, emailId));
-                    log.info("알림 이벤트 발행");
                 }
             }
 
             if (destination != null) {
                 if (destination.startsWith("/user/sub/chat/")) {
-                    // 채팅방 구독시 해당 채팅방 초기 정보 전송
                     Long chatRoomId = extractChatRoomId(destination);
-                    log.info("chatRoomId: {}", chatRoomId);
                     eventPublisher.publishEvent(new ChatRoomConnectedEvent(memberId, chatRoomId));
-
-                    log.info(
-                            "sessionId={}, userPrincipal={}",
-                            headerAccessor.getSessionId(),
-                            (headerAccessor.getUser() != null
-                                    ? headerAccessor.getUser().getName()
-                                    : "null"));
                 }
             }
-            log.info(
-                    "SUBSCRIBE: User [{}] subscribed to [{}] with session ID [{}]",
-                    memberId,
-                    destination,
-                    sessionId);
         }
 
         if (StompCommand.SEND.equals(headerAccessor.getCommand())) {
-            log.info("STOMP SEND 요청 수신");
             String accessToken = validateAndExtractToken(headerAccessor);
 
             try {
@@ -139,7 +95,6 @@ public class StompHandler implements ChannelInterceptor {
                 String[] parts = destination.split("/");
                 if (parts.length >= 5) { // /pub/chat/send/{chatRoomId} 구조 확인
                     String chatRoomId = parts[4];
-                    log.info("Extracted chatRoomId: {}", chatRoomId);
 
                     String memberId = jwtProvider.getSubject(accessToken);
                     log.debug("SEND Command - Extracted memberId: {}", memberId); // 로그 추가
@@ -202,17 +157,12 @@ public class StompHandler implements ChannelInterceptor {
         if (memberId != null) {
             eventPublisher.publishEvent(new UserConnectedEvent(memberId, sessionId));
         }
-
-        log.info("세션 시작 처리: sessionId={}, memberId={}", sessionId, memberId);
     }
 
     @EventListener
     public void handleSessionConnected(SessionConnectedEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         Principal userPrincipal = headerAccessor.getUser();
-        log.info(
-                "SessionConnectedEvent - Principal: {}",
-                (userPrincipal != null ? userPrincipal.getName() : "null"));
     }
 
     @EventListener
@@ -224,7 +174,6 @@ public class StompHandler implements ChannelInterceptor {
         Long memberId = sessionRegistry.removeSession(sessionId);
         if (memberId != null) {
             eventPublisher.publishEvent(new UserDisconnectedEvent(memberId, sessionId));
-            log.info("세션 종료 처리: sessionId={}, memberId={}", sessionId, memberId);
         }
     }
 

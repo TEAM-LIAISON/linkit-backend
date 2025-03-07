@@ -40,7 +40,6 @@ public class ProfileEducationController {
             includeResult = true)
     public CommonResponse<ProfileEducationItems> getProfileEducationItems(
             @Auth final Accessor accessor) {
-        log.info("memberId = {}의 프로필 학력 전체 조회 요청이 컨트롤러 계층에 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 profileEducationService.getProfileEducationItems(accessor.getMemberId()));
     }
@@ -55,10 +54,7 @@ public class ProfileEducationController {
     public CommonResponse<ProfileEducationResponseDTO.ProfileEducationDetail>
             getProfileEducationDetail(
                     @Auth final Accessor accessor, @PathVariable final Long profileEducationId) {
-        log.info(
-                "memberId = {}의 profileEducationId = {}에 대한 단일 조회 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                profileEducationId);
+
         return CommonResponse.onSuccess(
                 profileEducationService.getProfileEducationDetail(
                         accessor.getMemberId(), profileEducationId));
@@ -77,7 +73,6 @@ public class ProfileEducationController {
                     @RequestBody
                             final ProfileEducationRequestDTO.AddProfileEducationRequest
                                     addProfileEducationRequest) {
-        log.info("memberId = {}의 프로필 학력 추가 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 profileEducationService.addProfileEducation(
                         accessor.getMemberId(), addProfileEducationRequest));
@@ -97,10 +92,7 @@ public class ProfileEducationController {
                     @RequestBody
                             final ProfileEducationRequestDTO.UpdateProfileEducationRequest
                                     updateProfileEducationRequest) {
-        log.info(
-                "memberId = {}의 profileEducationId = {}에 대한 프로필 학력 수정 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                profileEducationId);
+
         return CommonResponse.onSuccess(
                 profileEducationService.updateProfileEducation(
                         accessor.getMemberId(), profileEducationId, updateProfileEducationRequest));
@@ -116,10 +108,7 @@ public class ProfileEducationController {
     public CommonResponse<ProfileEducationResponseDTO.RemoveProfileEducationResponse>
             removeProfileEducation(
                     @Auth final Accessor accessor, @PathVariable final Long profileEducationId) {
-        log.info(
-                "memberId = {}의 profileEducationId = {}에 대한 학력 단일 삭제 요청이 컨트롤러 계층에 발생했습니다.",
-                accessor.getMemberId(),
-                profileEducationId);
+
         return CommonResponse.onSuccess(
                 profileEducationService.removeProfileEducation(
                         accessor.getMemberId(), profileEducationId));
@@ -137,10 +126,6 @@ public class ProfileEducationController {
                     @Auth final Accessor accessor,
                     @PathVariable final Long profileEducationId,
                     @RequestPart @Valid final MultipartFile profileEducationCertificationFile) {
-        log.info(
-                "memberId = {}의 profileEducationId = {}에 대한 학력 인증서 단일 생성 요청이 컨트롤러 계층에 발생했습니다.",
-                accessor.getMemberId(),
-                profileEducationId);
         return CommonResponse.onSuccess(
                 profileEducationService.addProfileEducationCertification(
                         accessor.getMemberId(),
@@ -158,10 +143,6 @@ public class ProfileEducationController {
     public CommonResponse<ProfileEducationResponseDTO.RemoveProfileEducationCertificationResponse>
             removeProfileEducationCertification(
                     @Auth final Accessor accessor, @PathVariable final Long profileEducationId) {
-        log.info(
-                "memberId = {}의 profileEducationId = {}에 대한 학력 인증서 단일 삭제 요청이 컨트롤러 계층에 발생했습니다.",
-                accessor.getMemberId(),
-                profileEducationId);
         return CommonResponse.onSuccess(
                 profileEducationService.removeProfileEducationCertification(
                         accessor.getMemberId(), profileEducationId));

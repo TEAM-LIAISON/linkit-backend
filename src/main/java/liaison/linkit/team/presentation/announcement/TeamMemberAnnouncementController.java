@@ -94,10 +94,6 @@ public class TeamMemberAnnouncementController {
                     @RequestBody
                             final TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest
                                     addTeamMemberAnnouncementRequest) {
-        log.info(
-                "memberId = {}의 teamCode = {}에 대한 팀원 공고 단일 생성 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                teamCode);
         return CommonResponse.onSuccess(
                 teamMemberAnnouncementService.addTeamMemberAnnouncement(
                         accessor.getMemberId(), teamCode, addTeamMemberAnnouncementRequest));
@@ -119,10 +115,6 @@ public class TeamMemberAnnouncementController {
                             final TeamMemberAnnouncementRequestDTO
                                             .UpdateTeamMemberAnnouncementRequest
                                     updateTeamMemberAnnouncementRequest) {
-        log.info(
-                "memberId = {}의 teamCode = {}에 대한 팀원 공고 단일 수정 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                teamCode);
         return CommonResponse.onSuccess(
                 teamMemberAnnouncementService.updateTeamMemberAnnouncement(
                         accessor.getMemberId(),

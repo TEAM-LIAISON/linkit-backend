@@ -50,7 +50,6 @@ public class NotificationService {
         if (emailId != null) {
             messagingTemplate.convertAndSend(
                     "/sub/notification/header/" + emailId, notificationItem);
-            log.info("Sent notification to " + emailId);
         } else {
             log.warn("수신자의 emailId가 존재하지 않습니다. 알림 전송이 중단되었습니다.");
         }
@@ -64,7 +63,6 @@ public class NotificationService {
         notification.setNotificationReadStatus(NotificationReadStatus.READ);
         final Notification savedNotification = notificationCommandAdapter.save(notification);
 
-        log.info("memberId={}가 알림(notificationId={})을 읽음 처리했습니다.", memberId, notificationId);
         headerNotificationService.publishNotificationCount(memberId);
 
         return notificationMapper.toReadNotification(savedNotification);

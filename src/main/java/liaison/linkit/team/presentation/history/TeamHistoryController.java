@@ -31,7 +31,6 @@ public class TeamHistoryController {
     @Logging(item = "Team_History", action = "GET_TEAM_HISTORY_CALENDAR", includeResult = true)
     public CommonResponse<TeamHistoryResponseDTO.TeamHistoryCalendarResponse>
             getTeamHistoryCalendar(@PathVariable final String teamCode) {
-        log.info("팀 코드 = {}에 대한 팀 연혁 뷰어 전체 조회 요청이 발생했습니다.", teamCode);
         return CommonResponse.onSuccess(
                 teamHistoryService.getTeamHistoryCalendarResponses(teamCode));
     }
@@ -42,10 +41,6 @@ public class TeamHistoryController {
     @Logging(item = "Team_History", action = "GET_TEAM_HISTORY_ITEMS", includeResult = true)
     public CommonResponse<TeamHistoryResponseDTO.TeamHistoryItems> getTeamHistoryItems(
             @Auth final Accessor accessor, @PathVariable final String teamCode) {
-        log.info(
-                "memberId = {}의 teamCode = {}에 대한 팀 연혁 전체 조회 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                teamCode);
         return CommonResponse.onSuccess(
                 teamHistoryService.getTeamHistoryItems(accessor.getMemberId(), teamCode));
     }
@@ -57,10 +52,6 @@ public class TeamHistoryController {
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
             @PathVariable final Long teamHistoryId) {
-        log.info(
-                "memberId = {}의 teamCode = {}에 대한 팀 연혁 상세 조회 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                teamCode);
         return CommonResponse.onSuccess(
                 teamHistoryService.getTeamHistoryDetail(
                         accessor.getMemberId(), teamCode, teamHistoryId));
@@ -74,10 +65,6 @@ public class TeamHistoryController {
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
             @RequestBody final TeamHistoryRequestDTO.AddTeamHistoryRequest addTeamHistoryRequest) {
-        log.info(
-                "memberId = {}의 teamCode = {}에 대한 팀 연혁 단일 생성 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                teamCode);
         return CommonResponse.onSuccess(
                 teamHistoryService.addTeamHistory(
                         accessor.getMemberId(), teamCode, addTeamHistoryRequest));
@@ -92,10 +79,6 @@ public class TeamHistoryController {
             @PathVariable final Long teamHistoryId,
             @RequestBody
                     final TeamHistoryRequestDTO.UpdateTeamHistoryRequest updateTeamHistoryRequest) {
-        log.info(
-                "memberId = {}의 teamCode = {}에 대한 팀 연혁 단일 수정 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                teamCode);
         return CommonResponse.onSuccess(
                 teamHistoryService.updateTeamHistory(
                         accessor.getMemberId(), teamCode, teamHistoryId, updateTeamHistoryRequest));

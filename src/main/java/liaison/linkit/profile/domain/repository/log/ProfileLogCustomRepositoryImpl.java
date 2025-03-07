@@ -243,7 +243,6 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
                         .fetch();
 
         if (profileLogIds.isEmpty()) {
-            log.info("No profile logs found for profileId={}, skip deletion", profileId);
             return;
         }
 
@@ -253,11 +252,9 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
                         .delete(qProfileLogImage)
                         .where(qProfileLogImage.profileLog.id.in(profileLogIds))
                         .execute();
-        log.info("Deleted {} profile log images for profileId={}", deletedImageCount, profileId);
 
         // 3) ProfileLog 삭제 (부모 테이블)
         long deletedLogCount =
                 queryFactory.delete(qProfileLog).where(qProfileLog.id.in(profileLogIds)).execute();
-        log.info("Deleted {} profile logs for profileId={}", deletedLogCount, profileId);
     }
 }

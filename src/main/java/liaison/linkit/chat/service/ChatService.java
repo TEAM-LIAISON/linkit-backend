@@ -97,7 +97,6 @@ public class ChatService {
 
     public ReadChatMessageResponse handleReadChatMessage(
             final Long memberId, final Long chatRoomId) {
-        log.info("handleReadChatMessage 호출: chatRoomId={}", chatRoomId);
 
         // 1. 채팅방 존재 확인
         final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatRoomId);
@@ -127,10 +126,6 @@ public class ChatService {
             final String sessionId,
             final Long memberId,
             final Long chatRoomId) {
-        log.info(
-                "handleChatMessage 호출: chatRoomId={}, content={}",
-                chatRoomId,
-                chatMessageRequest.getContent());
 
         // 1. 채팅방 존재 및 접근 권한 확인
         final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatRoomId);
@@ -234,7 +229,6 @@ public class ChatService {
                         chatRoom, chatMessage, chatMessage.getMessageReceiverMemberId());
 
         // 발신자에게 메시지 전송
-        log.info("Sending to sender [{}] via /user/sub/chat/{}", senderMemberId, chatRoom.getId());
         sendMessageToAllSessions(senderMemberId, "/sub/chat/" + chatRoom.getId(), senderResponse);
 
         // 수신자에게 메시지 전송
@@ -243,10 +237,6 @@ public class ChatService {
                         ? chatRoom.getParticipantBMemberId()
                         : chatRoom.getParticipantAMemberId();
 
-        log.info(
-                "Sending to receiver [{}] via /user/sub/chat/{}",
-                receiverMemberId,
-                chatRoom.getId());
         sendMessageToAllSessions(
                 receiverMemberId, "/sub/chat/" + chatRoom.getId(), receiverResponse);
     }
@@ -872,18 +862,10 @@ public class ChatService {
         // userId가 가진 모든 sessionId 조회
         Set<String> sessionIds = sessionRegistry.getMemberSessions(userId);
         if (sessionIds == null || sessionIds.isEmpty()) {
-            log.info("No active sessions for user [{}], skip sending to {}", userId, destination);
             return;
         }
 
         for (String sessionId : sessionIds) {
-            log.info(
-                    "Sending to user [{}], session [{}], destination={}",
-                    userId,
-                    sessionId,
-                    destination);
-
-            // convertAndSendToUser 1번 호출 = 1개 세션에만 전송
             simpMessagingTemplate.convertAndSendToUser(
                     sessionId, // Principal name(=userId, e.g. "5")
                     destination, // "/sub/chat/{chatRoomId}"
