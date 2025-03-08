@@ -12,6 +12,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.common.domain.QPosition;
 import liaison.linkit.common.domain.QProfileState;
 import liaison.linkit.global.type.StatusType;
+import liaison.linkit.member.domain.QMember;
 import liaison.linkit.profile.domain.position.QProfilePosition;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.profile.QProfile;
@@ -89,6 +90,8 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
 
         return jpaQueryFactory
                 .selectFrom(qProfile)
+                .leftJoin(qProfile.member, QMember.member)
+                .fetchJoin()
                 .where(qProfile.status.eq(StatusType.USABLE).and(qProfile.isProfilePublic.eq(true)))
                 .orderBy(
                         new CaseBuilder()
