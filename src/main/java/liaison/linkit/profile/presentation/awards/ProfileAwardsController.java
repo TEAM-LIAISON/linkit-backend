@@ -6,6 +6,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.profile.business.service.ProfileAwardsService;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsRequestDTO;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO;
@@ -32,6 +33,7 @@ public class ProfileAwardsController {
     // 수상 전체 조회
     @GetMapping
     @MemberOnly
+    @Logging(item = "Profile_Awards", action = "GET_PROFILE_AWARDS_ITEMS", includeResult = true)
     public CommonResponse<ProfileAwardsResponseDTO.ProfileAwardsItems> getProfileAwardsItems(
             @Auth final Accessor accessor) {
         return CommonResponse.onSuccess(
@@ -41,6 +43,7 @@ public class ProfileAwardsController {
     // 수상 단일 조회
     @GetMapping("/{profileAwardsId}")
     @MemberOnly
+    @Logging(item = "Profile_Awards", action = "GET_PROFILE_AWARDS_DETAIL", includeResult = true)
     public CommonResponse<ProfileAwardsResponseDTO.ProfileAwardsDetail> getProfileAwardsDetail(
             @Auth final Accessor accessor, @PathVariable final Long profileAwardsId) {
         return CommonResponse.onSuccess(
@@ -51,6 +54,7 @@ public class ProfileAwardsController {
     // 수상 단일 생성
     @PostMapping
     @MemberOnly
+    @Logging(item = "Profile_Awards", action = "POST_ADD_PROFILE_AWARDS", includeResult = true)
     public CommonResponse<ProfileAwardsResponseDTO.AddProfileAwardsResponse> addProfileAwards(
             @Auth final Accessor accessor,
             @RequestBody
@@ -63,6 +67,7 @@ public class ProfileAwardsController {
     // 수상 단일 수정
     @PostMapping("/{profileAwardsId}")
     @MemberOnly
+    @Logging(item = "Profile_Awards", action = "POST_UPDATE_PROFILE_AWARDS", includeResult = true)
     public CommonResponse<ProfileAwardsResponseDTO.UpdateProfileAwardsResponse> updateProfileAwards(
             @Auth final Accessor accessor,
             @PathVariable final Long profileAwardsId,
@@ -77,6 +82,7 @@ public class ProfileAwardsController {
     // 수상 단일 삭제
     @DeleteMapping("/{profileAwardsId}")
     @MemberOnly
+    @Logging(item = "Profile_Awards", action = "DELETE_REMOVE_PROFILE_AWARDS", includeResult = true)
     public CommonResponse<ProfileAwardsResponseDTO.RemoveProfileAwardsResponse> removeProfileAwards(
             @Auth final Accessor accessor, @PathVariable final Long profileAwardsId) {
         return CommonResponse.onSuccess(
@@ -86,6 +92,10 @@ public class ProfileAwardsController {
     // 수상 인증 단일 생성
     @PostMapping("/certification/{profileAwardsId}")
     @MemberOnly
+    @Logging(
+            item = "Profile_Awards",
+            action = "POST_ADD_PROFILE_AWARDS_CERTIFICATION",
+            includeResult = true)
     public CommonResponse<ProfileAwardsResponseDTO.ProfileAwardsCertificationResponse>
             addProfileAwardsCertification(
                     @Auth final Accessor accessor,
@@ -100,6 +110,10 @@ public class ProfileAwardsController {
     // 수상 인증 단일 삭제
     @DeleteMapping("/certification/{profileAwardsId}")
     @MemberOnly
+    @Logging(
+            item = "Profile_Awards",
+            action = "DELETE_REMOVE_PROFILE_AWARDS_CERTIFICATION",
+            includeResult = true)
     public CommonResponse<ProfileAwardsResponseDTO.RemoveProfileAwardsCertificationResponse>
             removeProfileAwardsCertification(
                     @Auth final Accessor accessor, @PathVariable final Long profileAwardsId) {

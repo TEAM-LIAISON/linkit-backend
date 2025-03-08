@@ -41,7 +41,6 @@ public class JwtProvider {
             this.accessExpirationTime = accessExpirationTime;
             this.refreshExpirationTime = refreshExpirationTime;
         } catch (Exception e) {
-            // 로그를 통해 예외 내용 확인
             throw e; // 여기서 재발생시켜 스택 트레이스를 확인할 수 있습니다.
         }
     }
