@@ -13,6 +13,7 @@ public interface AsyncAnnouncementAdvertiseEmailService {
     void sendAnnouncementAdvertiseEmail(
             final String receiverMailAddress,
             final String announcementMajorPositionName,
+            final String announcementMinorPositionName, // 추가: 포지션 소분류
             final String teamCode,
             final String teamLogoImagePath,
             final String teamName,
