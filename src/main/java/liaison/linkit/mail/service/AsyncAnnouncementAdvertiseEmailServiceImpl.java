@@ -92,11 +92,11 @@ public class AsyncAnnouncementAdvertiseEmailServiceImpl
         final String positionSection =
                 String.format(
                         """
-                        <div style="margin-top: 16px;">
-                          <span style="display: inline-block; padding: 6px 12px; background-color: #D3E1FE; border-radius: 6px; margin-right: 8px; font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #2563EB; font-weight: 500;">%s</span>
-                          <span style="display: inline-block; padding: 6px 12px; background-color: #D3E1FE; border-radius: 6px; font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #2563EB; font-weight: 500;">%s</span>
-                        </div>
-                        """,
+                                <div style="margin-top: 16px;">
+                                  <span style="display: inline-block; padding: 6px 12px; background-color: #D3E1FE; border-radius: 6px; margin-right: 8px; font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #2563EB; font-weight: 500;">%s</span>
+                                  <span style="display: inline-block; padding: 6px 12px; background-color: #D3E1FE; border-radius: 6px; font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #2563EB; font-weight: 500;">%s</span>
+                                </div>
+                                """,
                         announcementMajorPositionName, announcementMinorPositionName);
 
         // 스킬 태그 처리 로직
