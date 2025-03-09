@@ -19,7 +19,7 @@ public class AnnouncementAdvertiseScheduler {
 
     @Autowired private Job announcementAdvertiseJob;
 
-    @Scheduled(cron = "0 0 23 * * ?") // 매일 밤 11시에 실행
+    @Scheduled(cron = "0 0 1 * * ?") // 매일 밤 11시에 실행
     public void scheduleAnnouncementAdvertiseJob() throws Exception {
         JobParameters params =
                 new JobParametersBuilder()
