@@ -1,5 +1,6 @@
 package liaison.linkit.team.domain.repository.announcement;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -56,4 +57,7 @@ public interface TeamMemberAnnouncementCustomRepository {
     List<TeamMemberAnnouncement> findAllAnnouncementsByTeamId(final Long teamId);
 
     List<TeamMemberAnnouncement> findPublicAnnouncementsByTeamId(final Long teamId);
+
+    List<TeamMemberAnnouncement> findRecentPublicAnnouncementsNotAdvertised(
+            final LocalDateTime since);
 }

@@ -59,7 +59,7 @@ public class UnreadMessageNotificationBatchConfig {
     }
 
     /**
-     * Step 실행마다 새로운 Reader 인스턴스 생성을 위해 @StepScope 적용 StepScope 빈은 Step 실행 시점에 생성되고 Step 실행 후 제거됨
+     * Step 실행마다 새로운 Reader 인스턴스 생성을 위해 @StepScope 적용 @StepScope 빈은 Step 실행 시점에 생성되고 Step 실행 후 제거됨
      */
     @Bean
     @StepScope

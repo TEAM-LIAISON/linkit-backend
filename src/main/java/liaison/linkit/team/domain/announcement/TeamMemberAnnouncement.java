@@ -72,8 +72,14 @@ public class TeamMemberAnnouncement extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String benefits;
 
-    private boolean isAnnouncementPublic; // 공고 공개/비공개 설정
-    private boolean isAnnouncementInProgress; // 공고 진행/완료 여부
+    @Column(name = "is_advertising_mail_sent", nullable = false) // 공고 메일 발송 여부
+    private boolean isAdvertisingMailSent;
+
+    // 공고 공개/비공개 설정
+    private boolean isAnnouncementPublic;
+
+    // 공고 진행/완료 여부
+    private boolean isAnnouncementInProgress;
 
     public void setIsAnnouncementPublic(final boolean isAnnouncementPublic) {
         this.isAnnouncementPublic = isAnnouncementPublic;
@@ -85,5 +91,10 @@ public class TeamMemberAnnouncement extends BaseEntity {
         if (this.announcementEndDate != null && this.announcementEndDate.trim().isEmpty()) {
             this.announcementEndDate = null;
         }
+    }
+
+    // 광고 메일 발송 상태를 업데이트하는 메서드
+    public void markAdvertisingMailAsSent() {
+        this.isAdvertisingMailSent = true;
     }
 }

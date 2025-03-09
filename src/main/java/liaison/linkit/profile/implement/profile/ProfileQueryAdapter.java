@@ -80,4 +80,8 @@ public class ProfileQueryAdapter {
     public List<Profile> findHomeTopProfiles(final int limit) {
         return profileRepository.findHomeTopProfiles(limit);
     }
+
+    public List<Profile> findByMarketingConsentAndMajorPosition(final String majorPosition) {
+        return profileRepository.findByMarketingConsentAndMajorPosition(majorPosition);
+    }
 }

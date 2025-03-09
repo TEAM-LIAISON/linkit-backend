@@ -1,5 +1,6 @@
 package liaison.linkit.team.domain.repository.announcement;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -745,5 +746,25 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
 
     private boolean isNotEmpty(List<?> list) {
         return list != null && !list.isEmpty();
+    }
+
+    @Override
+    public List<TeamMemberAnnouncement> findRecentPublicAnnouncementsNotAdvertised(
+            final LocalDateTime since) {
+        QTeamMemberAnnouncement qTeamMemberAnnouncement =
+                QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        // 공개된 모집 공고, 배치 기준 1일 전 업로드 된 공고, 광고로 발송되지 않은 공고
+        return jpaQueryFactory
+                .selectFrom(qTeamMemberAnnouncement)
+                .where(
+                        qTeamMemberAnnouncement
+                                .createdAt
+                                .goe(since)
+                                .and(qTeamMemberAnnouncement.isAnnouncementPublic.isTrue())
+                                .and(qTeamMemberAnnouncement.isAnnouncementInProgress.isTrue())
+                                .and(qTeamMemberAnnouncement.isAdvertisingMailSent.isFalse()))
+                .orderBy(qTeamMemberAnnouncement.createdAt.desc())
+                .fetch();
     }
 }

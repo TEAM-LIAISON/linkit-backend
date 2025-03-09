@@ -333,4 +333,23 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
     private boolean isNotEmpty(List<?> list) {
         return list != null && !list.isEmpty();
     }
+
+    public List<Profile> findByMarketingConsentAndMajorPosition(final String majorPosition) {
+        QProfile qProfile = QProfile.profile;
+        QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
+        QPosition qPosition = QPosition.position;
+
+        return jpaQueryFactory
+                .selectFrom(qProfile)
+                .leftJoin(qProfilePosition)
+                .on(qProfilePosition.profile.eq(qProfile))
+                .leftJoin(qPosition)
+                .on(qProfilePosition.position.eq(qPosition))
+                .where(
+                        qProfile.status.eq(StatusType.USABLE),
+                        qProfile.isProfilePublic.eq(true),
+                        qPosition.majorPosition.eq(majorPosition),
+                        qProfile.member.memberBasicInform.marketingAgree.isTrue())
+                .fetch();
+    }
 }
