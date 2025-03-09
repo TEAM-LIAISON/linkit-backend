@@ -43,7 +43,8 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    @PersistenceContext private EntityManager entityManager; // EntityManager 주입
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public List<TeamMemberAnnouncement> getAllByTeamIds(final List<Long> teamIds) {
@@ -692,7 +693,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                         .selectFrom(qTeamMemberAnnouncement)
                         .where(
                                 qTeamMemberAnnouncement.team.id.eq(teamId) // 특정 팀 ID와 일치
-                                )
+                        )
                         .fetch());
     }
 
@@ -766,5 +767,34 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                 .and(qTeamMemberAnnouncement.isAdvertisingMailSent.isFalse()))
                 .orderBy(qTeamMemberAnnouncement.createdAt.desc())
                 .fetch();
+    }
+
+    @Override
+    public TeamMemberAnnouncement updateTeamMemberAnnouncementClosedState(
+            final TeamMemberAnnouncement teamMemberAnnouncement,
+            final boolean isTeamMemberAnnouncementInProgress) {
+        QTeamMemberAnnouncement qTeamMemberAnnouncement =
+                QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        // QueryDSL을 사용하여 데이터베이스에서 ProfileLog 엔티티를 업데이트
+        long updatedCount =
+                jpaQueryFactory
+                        .update(qTeamMemberAnnouncement)
+                        .set(
+                                qTeamMemberAnnouncement.isAnnouncementInProgress,
+                                isTeamMemberAnnouncementInProgress)
+                        .where(qTeamMemberAnnouncement.id.eq(teamMemberAnnouncement.getId()))
+                        .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        if (updatedCount > 0) { // 업데이트 성공 확인
+            teamMemberAnnouncement.setIsAnnouncementPublic(
+                    isTeamMemberAnnouncementInProgress); // 메모리 내 객체 업데이트
+            return teamMemberAnnouncement;
+        } else {
+            throw new IllegalStateException("팀원 공고 공개/비공개 업데이트 실패");
+        }
     }
 }

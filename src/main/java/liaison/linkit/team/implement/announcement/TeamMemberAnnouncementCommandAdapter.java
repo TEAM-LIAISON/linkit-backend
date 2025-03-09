@@ -39,4 +39,10 @@ public class TeamMemberAnnouncementCommandAdapter {
     public void deleteAllByIds(List<Long> announcementIds) {
         teamMemberAnnouncementRepository.deleteAllByIds(announcementIds);
     }
+
+    public TeamMemberAnnouncement updateTeamMemberAnnouncementClosedState(final TeamMemberAnnouncement teamMemberAnnouncement,
+                                                                          final boolean isTeamMemberAnnouncementInProgress) {
+        return teamMemberAnnouncementRepository.updateTeamMemberAnnouncementClosedState(
+                teamMemberAnnouncement, isTeamMemberAnnouncementInProgress);
+    }
 }

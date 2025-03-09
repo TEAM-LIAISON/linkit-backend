@@ -60,4 +60,8 @@ public interface TeamMemberAnnouncementCustomRepository {
 
     List<TeamMemberAnnouncement> findRecentPublicAnnouncementsNotAdvertised(
             final LocalDateTime since);
+
+    TeamMemberAnnouncement updateTeamMemberAnnouncementClosedState(
+            final TeamMemberAnnouncement teamMemberAnnouncement,
+            final boolean isTeamMEmberAnnouncementInProgress);
 }

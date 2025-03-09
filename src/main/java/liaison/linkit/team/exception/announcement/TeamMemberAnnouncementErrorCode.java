@@ -1,5 +1,6 @@
 package liaison.linkit.team.exception.announcement;
 
+import static liaison.linkit.common.consts.LinkitStatic.BAD_REQUEST;
 import static liaison.linkit.common.consts.LinkitStatic.NOT_FOUND;
 
 import java.lang.reflect.Field;
@@ -15,7 +16,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum TeamMemberAnnouncementErrorCode implements BaseErrorCode {
     TEAM_MEMBER_ANNOUNCEMENT_NOT_FOUND(
-            NOT_FOUND, "TEAM_MEMBER_ANNOUNCEMENT_404_1", "해당하는 팀원 공고를 찾을 수 없습니다.");
+            NOT_FOUND, "TEAM_MEMBER_ANNOUNCEMENT_404_1", "해당하는 팀원 공고를 찾을 수 없습니다."),
+    ANNOUNCEMENT_CLOSED_BAD_REQUEST(
+            BAD_REQUEST, "TEAM_MEMBER_ANNOUNCEMENT_404_1", "해당하는 팀원 공고를 찾을 수 없습니다.");
 
     private final Integer status;
     private final String code;
