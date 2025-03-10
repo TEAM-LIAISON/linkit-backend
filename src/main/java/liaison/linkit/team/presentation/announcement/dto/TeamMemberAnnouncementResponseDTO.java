@@ -1,5 +1,6 @@
 package liaison.linkit.team.presentation.announcement.dto;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +49,10 @@ public class TeamMemberAnnouncementResponseDTO {
         @Builder.Default private Boolean isAnnouncementScrap = false; // 공고 스크랩 여부
         @Builder.Default private int announcementScrapCount = 0; // 공고 스크랩 수
 
+        @Builder.Default private Long viewCount = 0L; // 조회수
+
+        @Builder.Default private LocalDateTime createdAt = LocalDateTime.now(); // 공고 생성일
+
         @Builder.Default
         private AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
 
@@ -71,14 +76,15 @@ public class TeamMemberAnnouncementResponseDTO {
         private Boolean isPermanentRecruitment; // 상시 모집 여부
         private String announcementTitle;
 
+        private Long viewCount; // 조회수 정보
+        private LocalDateTime createdAt; // 공고 생성일
+
         @Builder.Default
         private AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
 
         @Builder.Default
         private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
                 announcementSkillNames = new ArrayList<>();
-
-        private String announcementEndDate;
 
         private Boolean isRegionFlexible; // 지역 무관
         private String mainTasks; // 주요 업무
