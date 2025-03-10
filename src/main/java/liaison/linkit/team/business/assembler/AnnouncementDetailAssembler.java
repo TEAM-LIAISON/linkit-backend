@@ -5,10 +5,12 @@ import java.util.Optional;
 import liaison.linkit.team.business.assembler.common.AnnouncementCommonAssembler;
 import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.event.AnnouncementViewedEvent;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -20,6 +22,7 @@ public class AnnouncementDetailAssembler {
     private final TeamMemberAnnouncementMapper teamMemberAnnouncementMapper;
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
     private final AnnouncementCommonAssembler announcementCommonAssembler;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * 공고 상세 정보를 조립합니다. 로그인한 사용자와 로그아웃 상태 모두 처리할 수 있습니다.
@@ -36,6 +39,11 @@ public class AnnouncementDetailAssembler {
         // 1. 조회할 팀 정보
         final TeamMemberAnnouncement teamMemberAnnouncement =
                 teamMemberAnnouncementQueryAdapter.findById(teamMemberAnnouncementId);
+
+        // 조회수 증가 실행
+        applicationEventPublisher.publishEvent(
+                new AnnouncementViewedEvent(
+                        teamMemberAnnouncementId, optionalMemberId, "team_announcement"));
 
         return teamMemberAnnouncementMapper.toTeamMemberAnnouncementDetail(
                 teamMemberAnnouncement,

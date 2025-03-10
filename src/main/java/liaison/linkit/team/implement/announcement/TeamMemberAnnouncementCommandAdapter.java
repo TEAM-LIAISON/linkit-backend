@@ -46,4 +46,8 @@ public class TeamMemberAnnouncementCommandAdapter {
         return teamMemberAnnouncementRepository.updateTeamMemberAnnouncementClosedState(
                 teamMemberAnnouncement, isTeamMemberAnnouncementInProgress);
     }
+
+    public void incrementViewCount(final Long announcementId) {
+        teamMemberAnnouncementRepository.incrementViewCount(announcementId);
+    }
 }

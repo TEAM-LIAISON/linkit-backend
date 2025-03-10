@@ -64,4 +64,6 @@ public interface TeamMemberAnnouncementCustomRepository {
     TeamMemberAnnouncement updateTeamMemberAnnouncementClosedState(
             final TeamMemberAnnouncement teamMemberAnnouncement,
             final boolean isTeamMEmberAnnouncementInProgress);
+
+    void incrementViewCount(final Long announcementId);
 }

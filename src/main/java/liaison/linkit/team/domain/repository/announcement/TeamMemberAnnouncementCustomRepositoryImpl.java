@@ -796,4 +796,20 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
             throw new IllegalStateException("팀원 공고 공개/비공개 업데이트 실패");
         }
     }
+
+    @Override
+    public void incrementViewCount(final Long announcementId) {
+        QTeamMemberAnnouncement qTeamMemberAnnouncement =
+                QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        jpaQueryFactory
+                .update(qTeamMemberAnnouncement)
+                .set(qTeamMemberAnnouncement.viewCount, qTeamMemberAnnouncement.viewCount.add(1))
+                .where(qTeamMemberAnnouncement.id.eq(announcementId))
+                .execute();
+
+        // 영속성 컨텍스트 초기화
+        entityManager.flush();
+        entityManager.clear();
+    }
 }

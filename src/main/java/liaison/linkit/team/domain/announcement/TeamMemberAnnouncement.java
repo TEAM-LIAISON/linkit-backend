@@ -81,6 +81,9 @@ public class TeamMemberAnnouncement extends BaseEntity {
     // 공고 진행/완료 여부
     private boolean isAnnouncementInProgress;
 
+    @Column(nullable = false)
+    private Long viewCount;
+
     public void setIsAnnouncementPublic(final boolean isAnnouncementPublic) {
         this.isAnnouncementPublic = isAnnouncementPublic;
     }
@@ -96,5 +99,9 @@ public class TeamMemberAnnouncement extends BaseEntity {
     // 광고 메일 발송 상태를 업데이트하는 메서드
     public void markAdvertisingMailAsSent() {
         this.isAdvertisingMailSent = true;
+    }
+
+    public void increaseViewCount() {
+        this.viewCount++;
     }
 }
