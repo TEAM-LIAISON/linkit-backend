@@ -73,6 +73,7 @@ public class TeamMemberAnnouncementResponseDTO {
 
         private int announcementDDay; // 디데이
         private Boolean isClosed;
+        private String announcementEndDate; // 공고 마감일
         private Boolean isPermanentRecruitment; // 상시 모집 여부
         private String announcementTitle;
 
