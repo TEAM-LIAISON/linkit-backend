@@ -299,6 +299,7 @@ public class TeamMemberAnnouncementService {
                     final Long teamMemberAnnouncementId) {
 
         // 모집 마감일 데이터는 그대로두고 isAnnouncementInProgress false 강제 지정
+        // 제일 상단의 변수를 강제 지정하여 모집 공고 마감 여부 응답에 문제가 없도록 설정
 
         final TeamMemberAnnouncement teamMemberAnnouncement =
                 teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(
