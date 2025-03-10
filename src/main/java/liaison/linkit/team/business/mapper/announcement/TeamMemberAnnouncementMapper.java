@@ -104,6 +104,7 @@ public class TeamMemberAnnouncementMapper {
                 .announcementScrapCount(announcementScrapCount)
                 .announcementDDay(announcementDDay) // 수정된 부분
                 .isClosed(isClosed)
+                .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
                 .viewCount(teamMemberAnnouncement.getViewCount())
                 .createdAt(teamMemberAnnouncement.getCreatedAt())

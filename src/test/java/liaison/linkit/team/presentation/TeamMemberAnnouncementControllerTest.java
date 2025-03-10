@@ -558,6 +558,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                         .announcementScrapCount(100)
                         .announcementDDay(20)
                         .isClosed(false)
+                        .announcementEndDate("2021-12-31")
                         .isPermanentRecruitment(false)
                         .announcementTitle("팀원 공고 제목")
                         .viewCount(100L)
@@ -636,6 +637,9 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                 fieldWithPath("result.isClosed")
                                                         .type(JsonFieldType.BOOLEAN)
                                                         .description("팀원 공고 마감 여부 (Boolean)"),
+                                                fieldWithPath("result.announcementEndDate")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("팀원 공고 날짜 (String)"),
                                                 fieldWithPath("result.isPermanentRecruitment")
                                                         .type(JsonFieldType.BOOLEAN)
                                                         .description("팀원 공고 상시 모집 여부"),
