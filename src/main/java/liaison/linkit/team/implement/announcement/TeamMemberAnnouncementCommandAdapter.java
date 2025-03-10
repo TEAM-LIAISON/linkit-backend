@@ -40,8 +40,9 @@ public class TeamMemberAnnouncementCommandAdapter {
         teamMemberAnnouncementRepository.deleteAllByIds(announcementIds);
     }
 
-    public TeamMemberAnnouncement updateTeamMemberAnnouncementClosedState(final TeamMemberAnnouncement teamMemberAnnouncement,
-                                                                          final boolean isTeamMemberAnnouncementInProgress) {
+    public TeamMemberAnnouncement updateTeamMemberAnnouncementClosedState(
+            final TeamMemberAnnouncement teamMemberAnnouncement,
+            final boolean isTeamMemberAnnouncementInProgress) {
         return teamMemberAnnouncementRepository.updateTeamMemberAnnouncementClosedState(
                 teamMemberAnnouncement, isTeamMemberAnnouncementInProgress);
     }

@@ -74,12 +74,12 @@ public class TeamMemberAnnouncementMapper {
     }
 
     public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail
-    toTeamMemberAnnouncementDetail(
-            final TeamMemberAnnouncement teamMemberAnnouncement,
-            final boolean isAnnouncementScrap,
-            final int announcementScrapCount,
-            final AnnouncementPositionItem announcementPositionItem,
-            final List<AnnouncementSkillName> announcementSkillNames) {
+            toTeamMemberAnnouncementDetail(
+                    final TeamMemberAnnouncement teamMemberAnnouncement,
+                    final boolean isAnnouncementScrap,
+                    final int announcementScrapCount,
+                    final AnnouncementPositionItem announcementPositionItem,
+                    final List<AnnouncementSkillName> announcementSkillNames) {
         // D-Day 계산 (isPermanentRecruitment가 true이면 -1, 아니면 정상 계산)
         int announcementDDay = -1;
         boolean isClosed = false;
@@ -186,10 +186,10 @@ public class TeamMemberAnnouncementMapper {
     }
 
     public TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse
-    toAddTeamMemberAnnouncementResponse(
-            final TeamMemberAnnouncement teamMemberAnnouncement,
-            final AnnouncementPositionItem announcementPositionItem,
-            final List<AnnouncementSkillName> announcementSkillNames) {
+            toAddTeamMemberAnnouncementResponse(
+                    final TeamMemberAnnouncement teamMemberAnnouncement,
+                    final AnnouncementPositionItem announcementPositionItem,
+                    final List<AnnouncementSkillName> announcementSkillNames) {
         return AddTeamMemberAnnouncementResponse.builder()
                 .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
@@ -208,10 +208,10 @@ public class TeamMemberAnnouncementMapper {
     }
 
     public TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse
-    toUpdateTeamMemberAnnouncementResponse(
-            final TeamMemberAnnouncement teamMemberAnnouncement,
-            final AnnouncementPositionItem announcementPositionItem,
-            final List<AnnouncementSkillName> announcementSkillNames) {
+            toUpdateTeamMemberAnnouncementResponse(
+                    final TeamMemberAnnouncement teamMemberAnnouncement,
+                    final AnnouncementPositionItem announcementPositionItem,
+                    final List<AnnouncementSkillName> announcementSkillNames) {
         return UpdateTeamMemberAnnouncementResponse.builder()
                 .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
@@ -230,15 +230,15 @@ public class TeamMemberAnnouncementMapper {
     }
 
     public TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse
-    toRemoveTeamMemberAnnouncementId(final Long teamMemberAnnouncementId) {
+            toRemoveTeamMemberAnnouncementId(final Long teamMemberAnnouncementId) {
         return TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse.builder()
                 .teamMemberAnnouncementId(teamMemberAnnouncementId)
                 .build();
     }
 
     public TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse
-    toUpdateTeamMemberAnnouncementPublicState(
-            final TeamMemberAnnouncement teamMemberAnnouncement) {
+            toUpdateTeamMemberAnnouncementPublicState(
+                    final TeamMemberAnnouncement teamMemberAnnouncement) {
         return TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse
                 .builder()
                 .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
@@ -247,8 +247,7 @@ public class TeamMemberAnnouncementMapper {
     }
 
     public TeamMemberAnnouncementResponseDTO.CloseTeamMemberAnnouncementResponse
-    toCloseTeamMemberAnnouncement(
-            final TeamMemberAnnouncement teamMemberAnnouncement) {
+            toCloseTeamMemberAnnouncement(final TeamMemberAnnouncement teamMemberAnnouncement) {
         return TeamMemberAnnouncementResponseDTO.CloseTeamMemberAnnouncementResponse.builder()
                 .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
                 .isAnnouncementInProgress(teamMemberAnnouncement.isAnnouncementInProgress())

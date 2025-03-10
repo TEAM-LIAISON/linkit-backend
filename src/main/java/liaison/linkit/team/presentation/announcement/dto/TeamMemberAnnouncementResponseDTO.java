@@ -2,6 +2,7 @@ package liaison.linkit.team.presentation.announcement.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.AccessLevel;
@@ -29,35 +30,23 @@ public class TeamMemberAnnouncementResponseDTO {
     @AllArgsConstructor
     public static class AnnouncementInformMenu {
 
-        @Builder.Default
-        private Long teamMemberAnnouncementId = 0L;
+        @Builder.Default private Long teamMemberAnnouncementId = 0L;
 
-        @Builder.Default
-        private String teamLogoImagePath = "";
-        @Builder.Default
-        private String teamName = "";
-        @Builder.Default
-        private String teamCode = "";
+        @Builder.Default private String teamLogoImagePath = "";
+        @Builder.Default private String teamName = "";
+        @Builder.Default private String teamCode = "";
 
-        @Builder.Default
-        private TeamScaleItem teamScaleItem = new TeamScaleItem();
+        @Builder.Default private TeamScaleItem teamScaleItem = new TeamScaleItem();
 
-        @Builder.Default
-        private RegionDetail regionDetail = new RegionDetail();
+        @Builder.Default private RegionDetail regionDetail = new RegionDetail();
 
-        @Builder.Default
-        private int announcementDDay = 0; // 디데이
-        @Builder.Default
-        private Boolean isClosed = false;
-        @Builder.Default
-        private Boolean isPermanentRecruitment = false; // 상시 모집 여부
-        @Builder.Default
-        private String announcementTitle = ""; // 공고 제목
+        @Builder.Default private int announcementDDay = 0; // 디데이
+        @Builder.Default private Boolean isClosed = false;
+        @Builder.Default private Boolean isPermanentRecruitment = false; // 상시 모집 여부
+        @Builder.Default private String announcementTitle = ""; // 공고 제목
 
-        @Builder.Default
-        private Boolean isAnnouncementScrap = false; // 공고 스크랩 여부
-        @Builder.Default
-        private int announcementScrapCount = 0; // 공고 스크랩 수
+        @Builder.Default private Boolean isAnnouncementScrap = false; // 공고 스크랩 여부
+        @Builder.Default private int announcementScrapCount = 0; // 공고 스크랩 수
 
         @Builder.Default
         private AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
@@ -210,10 +199,8 @@ public class TeamMemberAnnouncementResponseDTO {
     @AllArgsConstructor
     public static class AnnouncementPositionItem {
 
-        @Builder.Default
-        private String majorPosition = "";
-        @Builder.Default
-        private String subPosition = "";
+        @Builder.Default private String majorPosition = "";
+        @Builder.Default private String subPosition = "";
     }
 
     @Builder
@@ -221,8 +208,7 @@ public class TeamMemberAnnouncementResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AnnouncementSkillName {
-        @Builder.Default
-        private String announcementSkillName = "";
+        @Builder.Default private String announcementSkillName = "";
     }
 
     @Builder

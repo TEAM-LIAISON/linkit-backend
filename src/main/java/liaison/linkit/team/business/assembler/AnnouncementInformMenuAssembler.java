@@ -79,6 +79,7 @@ public class AnnouncementInformMenuAssembler {
         int announcementDDay =
                 announcementCommonAssembler.calculateAnnouncementDDay(teamMemberAnnouncement);
 
+        // 공고 마감 여부 계산
         boolean isClosed =
                 announcementCommonAssembler.calculateAnnouncementIsClosed(teamMemberAnnouncement);
 

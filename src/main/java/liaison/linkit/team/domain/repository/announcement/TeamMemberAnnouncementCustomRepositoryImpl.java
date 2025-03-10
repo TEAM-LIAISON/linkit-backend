@@ -43,8 +43,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    @PersistenceContext
-    private EntityManager entityManager; // EntityManager 주입
+    @PersistenceContext private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public List<TeamMemberAnnouncement> getAllByTeamIds(final List<Long> teamIds) {
@@ -693,7 +692,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                         .selectFrom(qTeamMemberAnnouncement)
                         .where(
                                 qTeamMemberAnnouncement.team.id.eq(teamId) // 특정 팀 ID와 일치
-                        )
+                                )
                         .fetch());
     }
 

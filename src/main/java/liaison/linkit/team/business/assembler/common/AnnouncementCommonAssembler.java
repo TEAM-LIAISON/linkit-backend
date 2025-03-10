@@ -168,13 +168,23 @@ public class AnnouncementCommonAssembler {
         return -1;
     }
 
+    // 공고의 마감 여부를 계산한다.
     public boolean calculateAnnouncementIsClosed(
             final TeamMemberAnnouncement teamMemberAnnouncement) {
+
+        // (제일 강력한 변수 값) isAnnouncementInProgress
+        if (!teamMemberAnnouncement.isAnnouncementInProgress()) {
+            // 공고가 마감된 상태
+            return true;
+        }
+
+        // 상시 모집이 아니면서 공고 종료일이 존재하는 경우
         if (!teamMemberAnnouncement.isPermanentRecruitment()
                 && teamMemberAnnouncement.getAnnouncementEndDate() != null) {
             return DateUtils.calculateAnnouncementClosed(
                     teamMemberAnnouncement.getAnnouncementEndDate());
         }
+
         return false;
     }
 }
