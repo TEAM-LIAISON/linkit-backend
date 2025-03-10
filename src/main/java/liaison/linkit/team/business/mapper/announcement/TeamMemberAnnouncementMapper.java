@@ -130,6 +130,7 @@ public class TeamMemberAnnouncementMapper {
                 .benefits(request.getBenefits())
                 .isAnnouncementPublic(true)
                 .isAnnouncementInProgress(true)
+                .viewCount(0L)
                 .build();
     }
 
