@@ -245,4 +245,12 @@ public class TeamMemberAnnouncementMapper {
                 .isAnnouncementPublic(teamMemberAnnouncement.isAnnouncementPublic())
                 .build();
     }
+
+    public TeamMemberAnnouncementResponseDTO.CloseTeamMemberAnnouncementResponse
+            toCloseTeamMemberAnnouncement(final TeamMemberAnnouncement teamMemberAnnouncement) {
+        return TeamMemberAnnouncementResponseDTO.CloseTeamMemberAnnouncementResponse.builder()
+                .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
+                .isAnnouncementInProgress(teamMemberAnnouncement.isAnnouncementInProgress())
+                .build();
+    }
 }

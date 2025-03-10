@@ -31,6 +31,7 @@ public class AsyncAnnouncementAdvertiseEmailServiceImpl
     public void sendAnnouncementAdvertiseEmail(
             final String receiverMailAddress,
             final String announcementMajorPositionName,
+            final String announcementMinorPositionName, // 추가: 포지션 소분류
             final String teamCode,
             final String teamLogoImagePath,
             final String teamName,
@@ -42,6 +43,7 @@ public class AsyncAnnouncementAdvertiseEmailServiceImpl
                 createAnnouncementAdvertiseEmail(
                         receiverMailAddress,
                         announcementMajorPositionName,
+                        announcementMinorPositionName, // 추가: 포지션 소분류 전달
                         teamCode,
                         teamLogoImagePath,
                         teamName,
@@ -60,6 +62,7 @@ public class AsyncAnnouncementAdvertiseEmailServiceImpl
     private MimeMessage createAnnouncementAdvertiseEmail(
             final String receiverMailAddress,
             final String announcementMajorPositionName,
+            final String announcementMinorPositionName, // 추가: 포지션 소분류
             final String teamCode,
             final String teamLogoImagePath,
             final String teamName,
@@ -85,38 +88,46 @@ public class AsyncAnnouncementAdvertiseEmailServiceImpl
         // 메인 홈페이지 URL
         final String mainUrl = "https://www.linkit.im";
 
+        // 포지션 표시 섹션 - 더 진한 배경색과 더 진한 파란색 글자
+        final String positionSection =
+                String.format(
+                        """
+                                <div style="margin-top: 16px;">
+                                  <span style="display: inline-block; padding: 6px 12px; background-color: #D3E1FE; border-radius: 6px; margin-right: 8px; font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #2563EB; font-weight: 500;">%s</span>
+                                  <span style="display: inline-block; padding: 6px 12px; background-color: #D3E1FE; border-radius: 6px; font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #2563EB; font-weight: 500;">%s</span>
+                                </div>
+                                """,
+                        announcementMajorPositionName, announcementMinorPositionName);
+
         // 스킬 태그 처리 로직
         String skillsSection = "";
 
         if (announcementSkillNames != null && !announcementSkillNames.isEmpty()) {
-            // 첫 번째 스킬
-            String firstSkill = announcementSkillNames.get(0);
+            StringBuilder skillsSectionBuilder = new StringBuilder();
+            skillsSectionBuilder.append("<div style=\"margin-top: 16px;\">");
 
-            // 스킬이 2개 이상인 경우 추가 처리
-            if (announcementSkillNames.size() > 1) {
-                int remainingCount = announcementSkillNames.size() - 1;
-                skillsSection =
+            // 최대 2개 스킬만 표시
+            int displayCount = Math.min(2, announcementSkillNames.size());
+
+            // 표시할 스킬들 추가 - 통일된 UI 적용
+            for (int i = 0; i < displayCount; i++) {
+                skillsSectionBuilder.append(
                         String.format(
-                                """
-                                <div style="margin-top: 16px;">
-                                  <span style="display: inline-block; padding: 6px 12px; background-color: #D3E1FE; border-radius: 6px; margin-right: 8px; font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #2563EB;">%s</span>
-                                  <!-- %%MORE_TAG_START%% -->
-                                  <span style="display: inline-block; padding: 6px 12px; background-color: #EDF3FF; border-radius: 6px; font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #2563EB;">+%d</span>
-                                  <!-- %%MORE_TAG_END%% -->
-                                </div>
-                                """,
-                                firstSkill, remainingCount);
-            } else {
-                // 스킬이 1개만 있는 경우
-                skillsSection =
-                        String.format(
-                                """
-                                <div style="margin-top: 16px;">
-                                  <span style="display: inline-block; padding: 6px 12px; background-color: #D3E1FE; border-radius: 6px; margin-right: 8px; font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #2563EB;">%s</span>
-                                </div>
-                                """,
-                                firstSkill);
+                                "<span style=\"display: inline-block; padding: 6px 12px; background-color: #EBF1FF; border-radius: 6px; margin-right: 8px; font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #2563EB;\">%s</span>",
+                                announcementSkillNames.get(i)));
             }
+
+            // 추가 스킬이 있는 경우 +n 표시 - 동일한 UI 스타일 적용
+            if (announcementSkillNames.size() > 2) {
+                int remainingCount = announcementSkillNames.size() - 2;
+                skillsSectionBuilder.append(
+                        String.format(
+                                "<span style=\"display: inline-block; padding: 6px 12px; background-color: #EBF1FF; border-radius: 6px; font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #2563EB;\">+%d</span>",
+                                remainingCount));
+            }
+
+            skillsSectionBuilder.append("</div>");
+            skillsSection = skillsSectionBuilder.toString();
         }
         // 스킬이 없는 경우 빈 문자열 유지 (스킬 섹션 표시 안 함)
 
@@ -175,6 +186,7 @@ public class AsyncAnnouncementAdvertiseEmailServiceImpl
 
                                                               <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 16px; font-weight: 600; color: #27364B; margin: 16px 0 0 0;">%s</p>
                                                               %s
+                                                              %s
                                                             </td>
                                                           </tr>
                                                         </table>
@@ -226,6 +238,7 @@ public class AsyncAnnouncementAdvertiseEmailServiceImpl
                         logoImageUrl,
                         teamName,
                         announcementTitle,
+                        positionSection,
                         skillsSection,
                         recruitUrl,
                         mainUrl);

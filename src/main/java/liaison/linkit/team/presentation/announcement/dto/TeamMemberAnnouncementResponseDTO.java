@@ -219,4 +219,13 @@ public class TeamMemberAnnouncementResponseDTO {
         private Long teamMemberAnnouncementId;
         private Boolean isAnnouncementPublic;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CloseTeamMemberAnnouncementResponse {
+        private Long teamMemberAnnouncementId;
+        private Boolean isAnnouncementInProgress;
+    }
 }

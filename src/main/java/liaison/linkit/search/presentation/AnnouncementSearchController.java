@@ -43,8 +43,6 @@ public class AnnouncementSearchController {
         Optional<Long> optionalMemberId =
                 accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
 
-        log.info("주요 공고 목록 조회 요청");
-
         AnnouncementListResponseDTO featuredAnnouncements =
                 announcementSearchService.getFeaturedAnnouncements(optionalMemberId);
 

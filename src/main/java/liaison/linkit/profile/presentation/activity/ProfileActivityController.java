@@ -37,7 +37,6 @@ public class ProfileActivityController {
     @Logging(item = "Profile_Activity", action = "GET_PROFILE_ACTIVITY_ITEMS", includeResult = true)
     public CommonResponse<ProfileActivityResponseDTO.ProfileActivityItems> getProfileActivityItems(
             @Auth final Accessor accessor) {
-        log.info("memberId = {}의 프로필 활동 전체 조회 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 profileActivityService.getProfileActivityItems(accessor.getMemberId()));
     }
@@ -52,10 +51,6 @@ public class ProfileActivityController {
     public CommonResponse<ProfileActivityResponseDTO.ProfileActivityDetail>
             getProfileActivityDetail(
                     @Auth final Accessor accessor, @PathVariable final Long profileActivityId) {
-        log.info(
-                "memberId = {}의 프로필 이력 ID = {}에 대한 단일 조회 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                profileActivityId);
         return CommonResponse.onSuccess(
                 profileActivityService.getProfileActivityDetail(
                         accessor.getMemberId(), profileActivityId));
@@ -70,7 +65,6 @@ public class ProfileActivityController {
             @RequestBody
                     final ProfileActivityRequestDTO.AddProfileActivityRequest
                             addProfileActivityRequest) {
-        log.info("memberId = {}의 프로필 이력 추가 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 profileActivityService.addProfileActivity(
                         accessor.getMemberId(), addProfileActivityRequest));
@@ -90,7 +84,6 @@ public class ProfileActivityController {
                     @RequestBody
                             final ProfileActivityRequestDTO.UpdateProfileActivityRequest
                                     updateProfileActivityRequest) {
-        log.info("memberId = {}의 프로필 이력 수정 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 profileActivityService.updateProfileActivity(
                         accessor.getMemberId(), profileActivityId, updateProfileActivityRequest));

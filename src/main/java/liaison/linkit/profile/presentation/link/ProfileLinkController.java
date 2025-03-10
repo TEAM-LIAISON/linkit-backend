@@ -29,7 +29,6 @@ public class ProfileLinkController {
     @Logging(item = "Profile_Link", action = "GET_PROFILE_LINK_ITEMS", includeResult = true)
     public CommonResponse<ProfileLinkResponseDTO.ProfileLinkItems> getProfileLinkItems(
             @Auth final Accessor accessor) {
-        log.info("memberId = {}의 프로필 링크 전체 조회 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 profileLinkService.getProfileLinkItems(accessor.getMemberId()));
     }
@@ -40,7 +39,6 @@ public class ProfileLinkController {
     public CommonResponse<ProfileLinkResponseDTO.ProfileLinkItems> updateProfileLinkItems(
             @Auth final Accessor accessor,
             @RequestBody final ProfileLinkRequestDTO.AddProfileLinkRequest profileLinkRequest) {
-        log.info("memberId = {}의 프로필 링크 전체 수정 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 profileLinkService.updateProfileLinkItems(
                         accessor.getMemberId(), profileLinkRequest));

@@ -38,7 +38,6 @@ public class ProfileLicenseController {
     @Logging(item = "Profile_License", action = "GET_PROFILE_LICENSE_ITEMS", includeResult = true)
     public CommonResponse<ProfileLicenseItems> getProfileLicenseItems(
             @Auth final Accessor accessor) {
-        log.info("memberId = {}의 프로필 자격증 전체 조회 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 profileLicenseService.getProfileLicenseItems(accessor.getMemberId()));
     }
@@ -49,10 +48,6 @@ public class ProfileLicenseController {
     @Logging(item = "Profile_License", action = "GET_PROFILE_LICENSE_DETAIL", includeResult = true)
     public CommonResponse<ProfileLicenseResponseDTO.ProfileLicenseDetail> getProfileLicenseDetail(
             @Auth final Accessor accessor, @PathVariable final Long profileLicenseId) {
-        log.info(
-                "memberId = {}의 프로필 자격증 ID = {}에 대한 단일 조회 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                profileLicenseId);
         return CommonResponse.onSuccess(
                 profileLicenseService.getProfileLicenseDetail(
                         accessor.getMemberId(), profileLicenseId));
@@ -67,7 +62,6 @@ public class ProfileLicenseController {
             @RequestBody
                     final ProfileLicenseRequestDTO.AddProfileLicenseRequest
                             addProfileLicenseRequest) {
-        log.info("memberId = {}의 프로필 자격증 추가 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 profileLicenseService.addProfileLicense(
                         accessor.getMemberId(), addProfileLicenseRequest));
@@ -84,7 +78,6 @@ public class ProfileLicenseController {
                     @RequestBody
                             final ProfileLicenseRequestDTO.UpdateProfileLicenseRequest
                                     updateProfileLicenseRequest) {
-        log.info("memberId = {}의 프로필 자격증 수정 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(
                 profileLicenseService.updateProfileLicense(
                         accessor.getMemberId(), profileLicenseId, updateProfileLicenseRequest));

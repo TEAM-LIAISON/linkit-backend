@@ -31,4 +31,6 @@ public interface ProfileCustomRepository {
     List<Profile> findHomeTopProfiles(final int limit);
 
     Page<Profile> findTopCompletionProfiles(final Pageable pageable);
+
+    List<Profile> findByMarketingConsentAndMajorPosition(final String majorPosition);
 }

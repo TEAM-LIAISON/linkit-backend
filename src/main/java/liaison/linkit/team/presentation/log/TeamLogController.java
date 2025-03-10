@@ -52,10 +52,6 @@ public class TeamLogController {
             @Auth final Accessor accessor, @PathVariable final String teamCode) {
         Optional<Long> optionalMemberId =
                 accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
-        log.info(
-                "memberId = {}의 teamCode = {}에 대한 팀 로그 전체 조회 요청이 발생했습니다.",
-                optionalMemberId,
-                teamCode);
 
         return CommonResponse.onSuccess(teamLogService.getTeamLogItems(optionalMemberId, teamCode));
     }
@@ -65,7 +61,6 @@ public class TeamLogController {
     @Logging(item = "Team_Log", action = "GET_TEAM_LOG_ITEM", includeResult = true)
     public CommonResponse<TeamLogResponseDTO.TeamLogItem> getTeamLogItem(
             @PathVariable final String teamCode, @PathVariable final Long teamLogId) {
-        log.info("teamCode = {}에 대한 팀 로그 ID = {}의 단일 조회 요청이 발생했습니다.", teamCode, teamLogId);
         return CommonResponse.onSuccess(teamLogService.getTeamLogItem(teamCode, teamLogId));
     }
 
@@ -74,7 +69,6 @@ public class TeamLogController {
     @Logging(item = "Team_Log", action = "GET_REPRESENT_TEAM_LOG_ITEM", includeResult = true)
     public CommonResponse<TeamLogResponseDTO.TeamLogItem> getRepresentTeamLogItem(
             @PathVariable final String teamCode) {
-        log.info("teamCode = {}에 대한 대표글 조회 요청이 발생했습니다.", teamCode);
         return CommonResponse.onSuccess(teamLogService.getRepresentTeamLogItem(teamCode));
     }
 
@@ -86,10 +80,6 @@ public class TeamLogController {
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
             @RequestBody TeamLogRequestDTO.AddTeamLogRequest addTeamLogRequest) {
-        log.info(
-                "memberId = {}의 teamCode = {}에 대한 팀 로그에 생성 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                teamCode);
         return CommonResponse.onSuccess(
                 teamLogService.addTeamLog(accessor.getMemberId(), teamCode, addTeamLogRequest));
     }
@@ -117,11 +107,6 @@ public class TeamLogController {
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
             @PathVariable final Long teamLogId) {
-        log.info(
-                "memberId = {}가 teamCode = {}의 팀 로그 = {}에 대한 삭제 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                teamCode,
-                teamLogId);
         return CommonResponse.onSuccess(
                 teamLogService.removeTeamLog(accessor.getMemberId(), teamCode, teamLogId));
     }
@@ -147,11 +132,6 @@ public class TeamLogController {
                     @Auth final Accessor accessor,
                     @PathVariable final String teamCode,
                     @PathVariable final Long teamLogId) {
-        log.info(
-                "memberId = {}가 teamCode = {}의 팀 로그 = {}에 대한 공개 여부 수정 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                teamCode,
-                teamLogId);
         return CommonResponse.onSuccess(
                 teamLogService.updateTeamLogPublicState(
                         accessor.getMemberId(), teamCode, teamLogId));

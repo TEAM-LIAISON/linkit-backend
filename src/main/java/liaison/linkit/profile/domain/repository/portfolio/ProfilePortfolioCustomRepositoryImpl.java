@@ -133,7 +133,6 @@ public class ProfilePortfolioCustomRepositoryImpl implements ProfilePortfolioCus
                         .fetch();
 
         if (portfolioIds.isEmpty()) {
-            log.info("No ProfilePortfolio found for profileId={}, skipping deletion", profileId);
             return;
         }
 
@@ -143,10 +142,6 @@ public class ProfilePortfolioCustomRepositoryImpl implements ProfilePortfolioCus
                         .delete(qRoleContribution)
                         .where(qRoleContribution.profilePortfolio.id.in(portfolioIds))
                         .execute();
-        log.info(
-                "Deleted {} ProjectRoleContribution records for profileId={}",
-                deletedRoleCount,
-                profileId);
 
         // 3) ProjectSkill 삭제 (자식)
         long deletedSkillCount =
@@ -154,7 +149,6 @@ public class ProfilePortfolioCustomRepositoryImpl implements ProfilePortfolioCus
                         .delete(qProjectSkill)
                         .where(qProjectSkill.portfolio.id.in(portfolioIds))
                         .execute();
-        log.info("Deleted {} ProjectSkill records for profileId={}", deletedSkillCount, profileId);
 
         // 4) ProjectSubImage 삭제 (자식)
         long deletedSubImageCount =
@@ -162,10 +156,6 @@ public class ProfilePortfolioCustomRepositoryImpl implements ProfilePortfolioCus
                         .delete(qProjectSubImage)
                         .where(qProjectSubImage.profilePortfolio.id.in(portfolioIds))
                         .execute();
-        log.info(
-                "Deleted {} ProjectSubImage records for profileId={}",
-                deletedSubImageCount,
-                profileId);
 
         // 5) ProfilePortfolio 삭제 (부모)
         long deletedPortfolioCount =
@@ -173,10 +163,6 @@ public class ProfilePortfolioCustomRepositoryImpl implements ProfilePortfolioCus
                         .delete(qProfilePortfolio)
                         .where(qProfilePortfolio.profile.id.eq(profileId))
                         .execute();
-        log.info(
-                "Deleted {} ProfilePortfolio records for profileId={}",
-                deletedPortfolioCount,
-                profileId);
 
         entityManager.flush();
         entityManager.clear();

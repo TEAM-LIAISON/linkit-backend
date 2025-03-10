@@ -69,10 +69,8 @@ public class ProfileLogService {
     // 로그 전체 조회
     @Transactional(readOnly = true)
     public ProfileLogItems getProfileLogItems(final Long memberId) {
-        log.info("memberId = {}의 내 로그 Items 조회 요청 발생했습니다.", memberId);
 
         final List<ProfileLog> profileLogs = profileLogQueryAdapter.getProfileLogs(memberId);
-        log.info("profileLogs = {}가 성공적으로 조회되었습니다.", profileLogs);
 
         return profileLogMapper.toProfileLogItems(profileLogs);
     }
@@ -88,10 +86,8 @@ public class ProfileLogService {
 
     @Transactional
     public ProfileLogItem getProfileLogItem(final Long memberId, final Long profileLogId) {
-        log.info("memberId = {}의 내 로그 DTO 조회 요청 발생했습니다.", memberId);
 
         final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
-        log.info("profileLog = {}가 성공적으로 조회되었습니다.", profileLog);
 
         profileLog.increaseViewCount();
 
@@ -109,7 +105,6 @@ public class ProfileLogService {
     public AddProfileLogBodyImageResponse addProfileLogBodyImage(
             final Long memberId, final MultipartFile profileLogBodyImage) {
         String profileLogBodyImagePath = null;
-        log.info("memberId = {}의 프로필 로그 본문에 대한 이미지 추가 요청이 발생했습니다.", memberId);
 
         // 버켓에 이미지 저장함
         if (imageValidator.validatingImageUpload(profileLogBodyImage)) {
@@ -128,7 +123,6 @@ public class ProfileLogService {
     public AddProfileLogResponse addProfileLog(
             final Long memberId,
             final ProfileLogRequestDTO.AddProfileLogRequest addProfileLogRequest) {
-        log.info("memberId = {}의 프로필 로그 추가 요청 발생했습니다.", memberId);
 
         // 1. 프로필 조회
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
@@ -151,17 +145,14 @@ public class ProfileLogService {
                         0L);
 
         final ProfileLog savedProfileLog = profileLogCommandAdapter.addProfileLog(profileLog);
-        log.info("ProfileLog = {}가 성공적으로 저장되었습니다.", savedProfileLog);
 
         // 3. 글 내용에서 이미지 URL 추출
         final List<String> profileLogImagePaths =
                 imageUtils.extractImageUrls(addProfileLogRequest.getLogContent());
-        log.info("추출된 이미지 URL 목록: {}", profileLogImagePaths);
 
         if (!profileLogImagePaths.isEmpty()) {
             // 4. 이미지 URL로 Image 엔티티 조회
             final List<Image> images = imageQueryAdapter.findByImageUrls(profileLogImagePaths);
-            log.info("조회된 Image 엔티티 목록: {}", images);
 
             // 5. ProfileLogImage 엔티티 생성 및 저장
             for (Image image : images) {
@@ -171,15 +162,11 @@ public class ProfileLogService {
 
                 // 5.2. ProfileLogImage 저장
                 profileLogImageCommandAdapter.addProfileLogImage(profileLogImage);
-                log.info("ProfileLogImage = {}가 성공적으로 저장되었습니다.", profileLogImage);
 
                 // 6. 이미지의 isTemporary 필드 업데이트
                 image.setTemporary(false);
             }
-        } else {
-            log.info("추출된 이미지 URL이 없습니다. 이미지 연계 작업을 생략합니다.");
         }
-
         return profileLogMapper.toAddProfileLogResponse(savedProfileLog);
     }
 
@@ -247,23 +234,19 @@ public class ProfileLogService {
 
     // 프로필 로그 삭제
     public RemoveProfileLogResponse removeProfileLog(final Long memberId, final Long profileLogId) {
-        log.info("memberId = {}의 프로필 로그 삭제 요청 발생했습니다.", memberId);
 
         // 1. ProfileLog 엔티티 조회
         final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
-        log.info("ProfileLog = {}가 성공적으로 조회되었습니다.", profileLog);
 
         // 2. ProfileLog와 연관된 ProfileLogImage 엔티티 조회
         List<ProfileLogImage> profileLogImages =
                 profileLogImageQueryAdapter.findByProfileLog(profileLog);
-        log.info("ProfileLog에 연관된 ProfileLogImage 개수: {}", profileLogImages.size());
 
         // 3. ProfileLogImage 삭제 및 Image 상태 업데이트
         for (ProfileLogImage profileLogImage : profileLogImages) {
             Image image = profileLogImage.getImage();
             // 3.1. ProfileLogImage 삭제
             profileLogImageCommandAdapter.removeProfileLogImage(profileLogImage);
-            log.info("ProfileLogImage = {} 삭제 완료.", profileLogImage.getId());
 
             // 3.3. Image의 isTemporary 필드를 true로 업데이트
             image.setTemporary(true);
@@ -272,7 +255,6 @@ public class ProfileLogService {
 
         // 4. ProfileLog 삭제
         profileLogCommandAdapter.remove(profileLog);
-        log.info("ProfileLog = {} 삭제 완료.", profileLogId);
 
         return profileLogMapper.toRemoveProfileLog(profileLogId);
     }
@@ -281,11 +263,8 @@ public class ProfileLogService {
     public UpdateProfileLogTypeResponse updateProfileLogType(
             final Long memberId, final Long profileLogId) {
 
-        log.info("memberId = {}의 프로필 로그 = {}에 대한 대표글 설정 수정 요청 발생했습니다.", memberId, profileLogId);
-
         // 1. ProfileLog 엔티티 조회
         final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
-        log.info("ProfileLog = {}가 성공적으로 조회되었습니다.", profileLog);
 
         if (!profileLog.isLogPublic()) {
             throw UpdateProfileLogTypeBadRequestException.EXCEPTION;
@@ -301,17 +280,11 @@ public class ProfileLogService {
                     profileLogQueryAdapter.getRepresentativeProfileLog(profile.getId());
         }
 
-        log.info("기존 대표 로그: {}", existingRepresentativeLog);
-
         // 4. 기존 대표 로그가 존재하고, 수정하려는 로그가 아닌 경우 기존 대표 로그를 일반 로그로 변경
         if (existingRepresentativeLog != null
                 && !existingRepresentativeLog.getId().equals(profileLogId)) {
-            log.info(
-                    "기존 대표 로그가 존재하므로, 기존 대표 로그를 일반 로그로 변경합니다. 기존 대표 로그 ID: {}",
-                    existingRepresentativeLog.getId());
 
             profileLogCommandAdapter.updateProfileLogTypeGeneral(existingRepresentativeLog);
-            log.info("기존 대표 로그(ID: {})가 일반 로그로 변경되었습니다.", existingRepresentativeLog.getId());
         }
 
         // 6) 수정 대상 로그 -> 대표 로그로 변경
@@ -324,16 +297,8 @@ public class ProfileLogService {
     // 프로필 로그 공개 여부 수정
     public UpdateProfileLogPublicStateResponse updateProfileLogPublicState(
             final Long memberId, final Long profileLogId) {
-        log.info(
-                "memberId = {}의 프로필 로그 = {}에 대한 프로필 로그 공개 여부 수정 요청 발생했습니다.",
-                memberId,
-                profileLogId);
 
         final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
-
-        //        if (profileLog.getLogType().equals(LogType.REPRESENTATIVE_LOG)) {
-        //            throw UpdateProfileLogPublicBadRequestException.EXCEPTION;
-        //        }
 
         final boolean isProfileLogCurrentPublicState = profileLog.isLogPublic();
         final ProfileLog updatedProfileLog =

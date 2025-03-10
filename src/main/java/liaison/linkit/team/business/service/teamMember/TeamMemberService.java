@@ -122,8 +122,6 @@ public class TeamMemberService {
             throw TeamMemberInvitationDuplicateException.EXCEPTION;
         }
 
-        log.info("teamMemberInvitationEmail = {}", teamMemberInvitationEmail);
-
         // 해당 회원에 대해 이메일 발송
         teamMemberInvitationMailService.sendMailTeamMemberInvitation(
                 teamMemberInvitationEmail,
@@ -399,7 +397,6 @@ public class TeamMemberService {
 
                 // 팀에 대한 모든 데이터 삭제
                 deleteUtil.deleteTeam(teamCode);
-                log.info("Deleted team " + teamCode);
 
                 // 삭제 완료 알림 발송
                 NotificationDetails removeTeamNotificationDetails =

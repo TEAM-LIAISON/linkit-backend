@@ -19,7 +19,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories(
         basePackages = {
             "liaison.linkit.chat.domain.repository",
-            "liaison.linkit.notification.domain.repository"
+            "liaison.linkit.notification.domain.repository",
+            "liaison.linkit.team.domain.repository.announcement"
         })
 public class MongoConfig extends AbstractMongoClientConfiguration {
 

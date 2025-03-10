@@ -61,7 +61,7 @@ public class ProfileInformMenuAssembler {
                     regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
             regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
         }
-        log.info("지역 정보 조회 성공");
+
         return regionDetail;
     }
 
@@ -77,7 +77,7 @@ public class ProfileInformMenuAssembler {
                         profile.getId());
         List<ProfileCurrentStateItem> currentStateItems =
                 profileCurrentStateMapper.toProfileCurrentStateItems(currentStates);
-        log.info("상태 정보 조회 성공");
+
         return currentStateItems;
     }
 
@@ -95,7 +95,7 @@ public class ProfileInformMenuAssembler {
                             profilePositionQueryAdapter.findProfilePositionByProfileId(
                                     profile.getId()));
         }
-        log.info("대분류 포지션 정보 조회 성공");
+
         return profilePositionDetail;
     }
 

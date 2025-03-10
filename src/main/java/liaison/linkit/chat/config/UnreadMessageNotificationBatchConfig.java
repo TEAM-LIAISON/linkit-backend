@@ -59,24 +59,18 @@ public class UnreadMessageNotificationBatchConfig {
     }
 
     /**
-     * Step 실행마다 새로운 Reader 인스턴스 생성을 위해 @StepScope 적용 StepScope 빈은 Step 실행 시점에 생성되고 Step 실행 후 제거됨
+     * Step 실행마다 새로운 Reader 인스턴스 생성을 위해 @StepScope 적용 @StepScope 빈은 Step 실행 시점에 생성되고 Step 실행 후 제거됨
      */
     @Bean
     @StepScope
     public ItemReader<ChatMessage> unreadMessageReader(
             @Value("#{jobParameters['time']}") Long time) {
-        // time 파라미터를 사용하여 각 실행마다 다른 값임을 보장 (로깅용)
-        log.info("Creating new reader instance. Job execution time: {}", time);
 
         // 30분 전에 전송된 읽지 않은 메시지 조회
         LocalDateTime oneHourAgo = LocalDateTime.now(ZoneId.of("Asia/Seoul")).minusHours(1);
 
-        log.info("Looking for unread messages older than: {}", oneHourAgo);
-
         List<ChatMessage> unreadMessages =
                 chatMessageRepository.findUnreadMessagesOlderThan(oneHourAgo);
-
-        log.info("Found {} unread messages", unreadMessages.size());
 
         // 이미 알림을 보낸 메시지는 필터링
         List<ChatMessage> messagesToNotify = new ArrayList<>();
@@ -100,7 +94,6 @@ public class UnreadMessageNotificationBatchConfig {
             }
         }
 
-        log.info("Total messages to notify: {}", messagesToNotify.size());
         return new ListItemReader<>(messagesToNotify);
     }
 
@@ -142,7 +135,6 @@ public class UnreadMessageNotificationBatchConfig {
     @StepScope // Writer도 StepScope로 변경하여 매번 새로 생성되도록 함
     public ItemWriter<UnreadMessageNotificationDTO> unreadMessageNotificationWriter() {
         return items -> {
-            log.info("Writing notifications for {} items", items.size());
             List<ChatNotificationLog> logs = new ArrayList<>();
 
             for (UnreadMessageNotificationDTO item : items) {
@@ -166,10 +158,7 @@ public class UnreadMessageNotificationBatchConfig {
 
             // 알림 기록 저장
             if (!logs.isEmpty()) {
-                log.info("Saving {} notification logs", logs.size());
                 notificationLogRepository.saveAll(logs);
-            } else {
-                log.info("No notification logs to save");
             }
         };
     }

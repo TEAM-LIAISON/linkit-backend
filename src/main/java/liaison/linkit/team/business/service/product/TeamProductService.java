@@ -58,7 +58,7 @@ public class TeamProductService {
     @Transactional(readOnly = true)
     public TeamProductResponseDTO.TeamProductViewItems getTeamProductViewItems(
             final String teamCode) {
-        log.info("teamCode = {}에 대한 프로덕트 View Items 조회 요청이 서비스 계층에 발생했습니다.", teamCode);
+
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
         final List<TeamProduct> teamProducts =
                 teamProductQueryAdapter.getTeamProducts(team.getId());
@@ -71,28 +71,20 @@ public class TeamProductService {
     @Transactional(readOnly = true)
     public TeamProductResponseDTO.TeamProductItems getTeamProductItems(
             final Long memberId, final String teamCode) {
-        log.info(
-                "memberId = {}의 teamCode = {}에 대한 프로덕트 Items 조회 요청이 서비스 계층에 발생했습니다.",
-                memberId,
-                teamCode);
+
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
-        log.info("team={}", team);
         final List<TeamProduct> teamProducts =
                 teamProductQueryAdapter.getTeamProducts(team.getId());
-        log.info("teamProducts={}", teamProducts);
+
         final Map<Long, List<ProductLink>> productLinksMap =
                 productLinkQueryAdapter.getProductLinksMap(team.getId());
-        log.info("productLinksMap={}", productLinksMap);
+
         return teamProductMapper.toTeamProductItems(teamProducts, productLinksMap);
     }
 
     @Transactional(readOnly = true)
     public TeamProductResponseDTO.TeamProductDetail getTeamProductDetail(
             final Long memberId, final String teamCode, final Long teamProductId) {
-        log.info(
-                "memberId = {}의 teamCode = {}에 대한 프로덕트 Detail 조회 요청이 서비스 계층에 발생했습니다.",
-                memberId,
-                teamCode);
         final TeamProduct teamProduct = teamProductQueryAdapter.getTeamProduct(teamProductId);
 
         // 해당 포트폴리오(프로젝트)의 연결된 링크 조회
@@ -209,7 +201,6 @@ public class TeamProductService {
             String oldRepresentPath = updatedTeamProduct.getProductRepresentImagePath();
             if (oldRepresentPath != null) {
                 s3Uploader.deleteS3File(oldRepresentPath);
-                log.info("Old represent image deleted from S3: {}", oldRepresentPath);
             }
 
             // (3-2) 새 대표 이미지 업로드
@@ -247,7 +238,6 @@ public class TeamProductService {
                 if (!keepPaths.contains(oldPath)) {
                     s3Uploader.deleteS3File(oldPath);
                     productSubImageCommandAdapter.delete(oldSub);
-                    log.info("Deleted sub-image from S3 & DB: {}", oldPath);
                 }
             }
         }

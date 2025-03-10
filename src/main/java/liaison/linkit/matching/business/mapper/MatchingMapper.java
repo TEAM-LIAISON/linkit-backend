@@ -43,7 +43,6 @@ import lombok.extern.slf4j.Slf4j;
 public class MatchingMapper {
 
     public Matching toMatching(final MatchingRequestDTO.AddMatchingRequest addMatchingRequest) {
-        log.info("Add matching request: {}", addMatchingRequest);
         return Matching.builder()
                 .id(null)
                 .senderType(addMatchingRequest.getSenderType())

@@ -80,17 +80,10 @@ public class AnnouncementViewItemsAssembler {
         if (loggedInMemberId.isPresent()
                 && teamMemberQueryAdapter.isOwnerOrManagerOfTeam(
                         targetTeam.getId(), loggedInMemberId.get())) {
-            log.info(
-                    "사용자 {}는 팀 {}의 관리자(오너/매니저)로 모든 공고 조회",
-                    loggedInMemberId.get(),
-                    targetTeam.getTeamCode());
+
             return teamMemberAnnouncementQueryAdapter.findAllAnnouncementsByTeamId(
                     targetTeam.getId());
         } else {
-            log.info(
-                    "사용자 {}는 팀 {}의 일반 뷰어이므로 공개 공고만 조회",
-                    loggedInMemberId.orElse(null),
-                    targetTeam.getTeamCode());
             return teamMemberAnnouncementQueryAdapter.findPublicAnnouncementsByTeamId(
                     targetTeam.getId());
         }

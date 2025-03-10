@@ -1,5 +1,6 @@
 package liaison.linkit.team.domain.repository.announcement;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -155,7 +156,6 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
             final List<String> cityName,
             final List<String> scaleName,
             final Pageable pageable) {
-        log.info("subPosition: {}, cityName: {}, scaleName: {}", subPosition, cityName, scaleName);
 
         QTeamMemberAnnouncement qTeamMemberAnnouncement =
                 QTeamMemberAnnouncement.teamMemberAnnouncement;
@@ -667,7 +667,6 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                 QTeamMemberAnnouncement.teamMemberAnnouncement;
 
         if (teamIds == null || teamIds.isEmpty()) {
-            log.info("No team IDs provided for fetching deletable announcements.");
             return Collections.emptySet();
         }
 
@@ -685,7 +684,6 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                 QTeamMemberAnnouncement.teamMemberAnnouncement;
 
         if (teamId == null) {
-            log.info("No team ID provided for fetching deletable announcements.");
             return Collections.emptySet();
         }
 
@@ -709,8 +707,6 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                             .set(qAnnouncement.status, StatusType.DELETED)
                             .where(qAnnouncement.id.in(announcementIds))
                             .execute();
-
-            log.info("Deleted {} announcements with IDs: {}", updatedCount, announcementIds);
 
             entityManager.flush();
             entityManager.clear();
@@ -750,5 +746,54 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
 
     private boolean isNotEmpty(List<?> list) {
         return list != null && !list.isEmpty();
+    }
+
+    @Override
+    public List<TeamMemberAnnouncement> findRecentPublicAnnouncementsNotAdvertised(
+            final LocalDateTime since) {
+        QTeamMemberAnnouncement qTeamMemberAnnouncement =
+                QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        // 공개된 모집 공고, 배치 기준 1일 전 업로드 된 공고, 광고로 발송되지 않은 공고
+        return jpaQueryFactory
+                .selectFrom(qTeamMemberAnnouncement)
+                .where(
+                        qTeamMemberAnnouncement
+                                .createdAt
+                                .goe(since)
+                                .and(qTeamMemberAnnouncement.isAnnouncementPublic.isTrue())
+                                .and(qTeamMemberAnnouncement.isAnnouncementInProgress.isTrue())
+                                .and(qTeamMemberAnnouncement.isAdvertisingMailSent.isFalse()))
+                .orderBy(qTeamMemberAnnouncement.createdAt.desc())
+                .fetch();
+    }
+
+    @Override
+    public TeamMemberAnnouncement updateTeamMemberAnnouncementClosedState(
+            final TeamMemberAnnouncement teamMemberAnnouncement,
+            final boolean isTeamMemberAnnouncementInProgress) {
+        QTeamMemberAnnouncement qTeamMemberAnnouncement =
+                QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        // QueryDSL을 사용하여 데이터베이스에서 ProfileLog 엔티티를 업데이트
+        long updatedCount =
+                jpaQueryFactory
+                        .update(qTeamMemberAnnouncement)
+                        .set(
+                                qTeamMemberAnnouncement.isAnnouncementInProgress,
+                                isTeamMemberAnnouncementInProgress)
+                        .where(qTeamMemberAnnouncement.id.eq(teamMemberAnnouncement.getId()))
+                        .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        if (updatedCount > 0) { // 업데이트 성공 확인
+            teamMemberAnnouncement.setIsAnnouncementPublic(
+                    isTeamMemberAnnouncementInProgress); // 메모리 내 객체 업데이트
+            return teamMemberAnnouncement;
+        } else {
+            throw new IllegalStateException("팀원 공고 공개/비공개 업데이트 실패");
+        }
     }
 }

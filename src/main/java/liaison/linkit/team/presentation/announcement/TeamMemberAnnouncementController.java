@@ -31,6 +31,7 @@ public class TeamMemberAnnouncementController {
 
     private final TeamMemberAnnouncementService teamMemberAnnouncementService;
 
+    // 홈화면 모집 공고 조회
     @GetMapping("/home/announcement")
     @Logging(
             item = "Team_Member_Announcement",
@@ -94,10 +95,6 @@ public class TeamMemberAnnouncementController {
                     @RequestBody
                             final TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest
                                     addTeamMemberAnnouncementRequest) {
-        log.info(
-                "memberId = {}의 teamCode = {}에 대한 팀원 공고 단일 생성 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                teamCode);
         return CommonResponse.onSuccess(
                 teamMemberAnnouncementService.addTeamMemberAnnouncement(
                         accessor.getMemberId(), teamCode, addTeamMemberAnnouncementRequest));
@@ -119,10 +116,6 @@ public class TeamMemberAnnouncementController {
                             final TeamMemberAnnouncementRequestDTO
                                             .UpdateTeamMemberAnnouncementRequest
                                     updateTeamMemberAnnouncementRequest) {
-        log.info(
-                "memberId = {}의 teamCode = {}에 대한 팀원 공고 단일 수정 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                teamCode);
         return CommonResponse.onSuccess(
                 teamMemberAnnouncementService.updateTeamMemberAnnouncement(
                         accessor.getMemberId(),
@@ -164,6 +157,23 @@ public class TeamMemberAnnouncementController {
                     @PathVariable final Long teamMemberAnnouncementId) {
         return CommonResponse.onSuccess(
                 teamMemberAnnouncementService.updateTeamMemberAnnouncementPublicState(
+                        accessor.getMemberId(), teamCode, teamMemberAnnouncementId));
+    }
+
+    // 모집 중 공고를 모집 마감으로 변경
+    @PostMapping("/team/{teamCode}/announcement/close/{teamMemberAnnouncementId}")
+    @MemberOnly
+    @Logging(
+            item = "Team_Member_Announcement",
+            action = "POST_CLOSE_TEAM_MEMBER_ANNOUNCEMENT",
+            includeResult = true)
+    public CommonResponse<TeamMemberAnnouncementResponseDTO.CloseTeamMemberAnnouncementResponse>
+            closeTeamMemberAnnouncement(
+                    @Auth final Accessor accessor,
+                    @PathVariable final String teamCode,
+                    @PathVariable final Long teamMemberAnnouncementId) {
+        return CommonResponse.onSuccess(
+                teamMemberAnnouncementService.closeTeamMemberAnnouncement(
                         accessor.getMemberId(), teamCode, teamMemberAnnouncementId));
     }
 }

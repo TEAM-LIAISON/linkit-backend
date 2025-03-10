@@ -132,8 +132,6 @@ public class TeamMemberInvitationCustomRepositoryImpl
 
         entityManager.flush();
         entityManager.clear();
-
-        log.info("Deleted " + deletedCount + " team members with ids " + teamIds);
     }
 
     @Override
@@ -148,7 +146,5 @@ public class TeamMemberInvitationCustomRepositoryImpl
 
         entityManager.flush();
         entityManager.clear();
-
-        log.info("Deleted " + deletedCount + " team members with id " + teamId);
     }
 }

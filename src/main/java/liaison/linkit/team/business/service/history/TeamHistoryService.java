@@ -57,15 +57,14 @@ public class TeamHistoryService {
             final String teamCode,
             final TeamHistoryRequestDTO.AddTeamHistoryRequest addTeamHistoryRequest) {
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
-        log.info("team ={}", team);
+
         if (!teamMemberQueryAdapter.isOwnerOrManagerOfTeam(team.getId(), memberId)) {
             throw TeamAdminNotRegisteredException.EXCEPTION;
         }
         final TeamHistory teamHistory =
                 teamHistoryMapper.toAddTeamHistory(team, addTeamHistoryRequest);
-        log.info("teamHistory ={}", teamHistory);
+
         final TeamHistory savedTeamHistory = teamHistoryCommandAdapter.addTeamHistory(teamHistory);
-        log.info("savedTeamHistory ={}", savedTeamHistory);
 
         return teamHistoryMapper.toAddTeamHistoryResponse(savedTeamHistory);
     }

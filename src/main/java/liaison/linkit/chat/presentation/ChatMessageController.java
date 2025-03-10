@@ -34,12 +34,9 @@ public class ChatMessageController {
             @Header(name = "memberId", required = true) Long memberId,
             @Header(name = "chatRoomId", required = true) Long chatRoomId,
             Message<?> message) {
-        log.info("Received chat message: {}", chatMessageRequest);
-        log.info("Received message from session: {}, room: {}", sessionId, chatRoomId);
 
         try {
             chatService.handleChatMessage(chatMessageRequest, sessionId, memberId, chatRoomId);
-            log.info("Message successfully processed");
         } catch (Exception e) {
             log.error("Error processing chat message", e);
             throw e;

@@ -150,7 +150,6 @@ public class LoggerConfig {
                     break;
                 case INFO:
                 default:
-                    log.info(logMessage);
                     break;
             }
         } catch (Exception e) {

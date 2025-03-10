@@ -85,6 +85,8 @@ spring:
 logging:
   level:
     root: INFO
+    org.springframework.web.servlet: INFO
+    org.springframework.web.socket: INFO
     org.hibernate.SQL: INFO  # Hibernate SQL 로그 출력 비활성화
     org.hibernate.type.descriptor.sql.BasicBinder: INFO  # SQL 파라미터 바인딩 로그 출력 비활성화
   pattern:

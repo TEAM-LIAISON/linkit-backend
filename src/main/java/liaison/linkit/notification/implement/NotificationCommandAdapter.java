@@ -18,9 +18,5 @@ public class NotificationCommandAdapter {
 
     public void deleteAllByReceiverMemberId(final Long receiverMemberId) {
         long deletedCount = notificationRepository.deleteAllByReceiverMemberId(receiverMemberId);
-        log.info(
-                "Deleted {} notifications for receiverMemberId: {}",
-                deletedCount,
-                receiverMemberId);
     }
 }

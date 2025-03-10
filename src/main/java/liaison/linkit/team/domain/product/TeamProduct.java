@@ -39,6 +39,7 @@ public class TeamProduct extends BaseDateTimeEntity {
     @Column(nullable = false, length = 100)
     private String productLineDescription; // 프로덕트 한줄소개
 
+    @Column(nullable = false)
     private String productField; // 프로덕트 분야
 
     @Column(nullable = false)
@@ -47,7 +48,7 @@ public class TeamProduct extends BaseDateTimeEntity {
     private String productEndDate; // 프로덕트 종료 날짜
     private boolean isProductInProgress; // 프로덕트 진행 중 여부
 
-    @Column(nullable = false, length = 1000)
+    @Column(length = 1000)
     private String productDescription; // 프로덕트 설명
 
     private String productRepresentImagePath; // 프로덕트 대표 이미지

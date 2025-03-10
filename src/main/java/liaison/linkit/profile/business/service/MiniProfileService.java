@@ -120,8 +120,6 @@ public class MiniProfileService {
             profile.updateProfileImagePath(profileImagePath);
         }
 
-        log.info("미니 프로필 사진 업데이트 완료");
-
         // 포지션을 업데이트한다
         final Position position =
                 positionQueryAdapter.findByMajorPositionAndSubPosition(
@@ -134,8 +132,6 @@ public class MiniProfileService {
         ProfilePosition profilePosition = new ProfilePosition(null, profile, position);
         profilePositionCommandAdapter.save(profilePosition);
 
-        log.info("미니 프로필 포지션 업데이트 완료");
-
         // 활동 지역을 업데이트한다
         final Region region =
                 regionQueryAdapter.findByCityNameAndDivisionName(
@@ -147,8 +143,6 @@ public class MiniProfileService {
 
         ProfileRegion profileRegion = new ProfileRegion(null, profile, region);
         profileRegionCommandAdapter.save(profileRegion);
-
-        log.info("미니 프로필 지역 업데이트 완료");
 
         // 현재 상태를 업데이트한다
         if (profileCurrentStateQueryAdapter.existsProfileCurrentStateByProfileId(profile.getId())) {
@@ -171,8 +165,6 @@ public class MiniProfileService {
 
         // ProfileCurrentState 저장
         profileCurrentStateCommandAdapter.saveAll(profileCurrentStates);
-
-        log.info("미니 프로필 현재 상태 업데이트 완료");
 
         // 프로필 공개 여부를 업데이트한다
         profile.setIsProfilePublic(updateMiniProfileRequest.getIsProfilePublic());

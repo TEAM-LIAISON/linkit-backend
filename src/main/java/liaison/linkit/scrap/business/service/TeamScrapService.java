@@ -64,13 +64,10 @@ public class TeamScrapService {
 
         if (scrapExists) {
             handleExistingScrap(memberId, teamCode, shouldAddScrap);
-            log.info("Team scrap updated for member " + memberId);
         } else {
-            log.info("Team scrap does not exist");
             handleNonExistingScrap(memberId, teamCode, shouldAddScrap);
         }
 
-        log.info("Team scrap updated for member " + memberId);
         return teamScrapMapper.toUpdateTeamScrap(teamCode, shouldAddScrap);
     }
 
@@ -92,13 +89,11 @@ public class TeamScrapService {
                         regionQueryAdapter.findTeamRegionByTeamId(team.getId());
                 regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
             }
-            log.info("팀 지역 정보 조회 성공");
 
             final List<TeamCurrentState> teamCurrentStates =
                     teamQueryAdapter.findTeamCurrentStatesByTeamId(team.getId());
             final List<TeamCurrentStateItem> teamCurrentStateItems =
                     teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
-            log.info("팀 상태 정보 조회 성공");
 
             final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
             final TeamScaleItem teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
@@ -133,18 +128,12 @@ public class TeamScrapService {
 
     // 스크랩이 존재하지 않는 경우 처리 메서드
     private void handleNonExistingScrap(Long memberId, String teamCode, boolean shouldAddScrap) {
-        log.info("handleNonExistingScrap 실행");
         if (shouldAddScrap) {
-            log.info("shouldAddScrap true");
             Member member = memberQueryAdapter.findById(memberId);
-            log.info("memberId : " + memberId);
             Team team = teamQueryAdapter.findByTeamCode(teamCode);
-            log.info("teamCode : " + teamCode);
             TeamScrap teamScrap = new TeamScrap(null, member, team);
-            log.info("teamScrap : " + teamScrap);
             teamScrapCommandAdapter.addTeamScrap(teamScrap);
         } else {
-            log.info("shouldAddScrap false");
             throw TeamScrapBadRequestException.EXCEPTION;
         }
     }

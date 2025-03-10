@@ -95,8 +95,6 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
                         .delete(qTeamScrap)
                         .where(qTeamScrap.member.id.eq(memberId))
                         .execute();
-
-        log.info("Deleted {} team scraps for memberId: {}", deletedCount, memberId);
     }
 
     @Override
@@ -105,8 +103,6 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
 
         long deletedCount =
                 jpaQueryFactory.delete(qTeamScrap).where(qTeamScrap.team.id.in(teamIds)).execute();
-
-        log.info("Deleted {} team scraps for teamIds: {}", deletedCount, teamIds);
     }
 
     @Override
@@ -115,7 +111,5 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
 
         long deletedCount =
                 jpaQueryFactory.delete(qTeamScrap).where(qTeamScrap.team.id.eq(teamId)).execute();
-
-        log.info("Deleted {} team scraps for teamId: {}", deletedCount, teamId);
     }
 }

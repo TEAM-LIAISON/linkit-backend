@@ -53,7 +53,7 @@ public class TeamInformMenuAssembler {
                     regionQueryAdapter.findTeamRegionByTeamId(targetTeam.getId());
             regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
         }
-        log.info("팀 지역 정보 조회 성공");
+
         return regionDetail;
     }
 

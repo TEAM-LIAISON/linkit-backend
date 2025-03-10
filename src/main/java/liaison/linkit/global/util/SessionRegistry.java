@@ -48,9 +48,7 @@ public class SessionRegistry {
             if (sessionIds != null) {
                 sessionIds.remove(sessionId);
                 if (sessionIds.isEmpty()) {
-                    // 모든 세션이 종료된 상황 -> 완전히 오프라인
                     memberToSessionsMap.remove(memberId);
-                    log.info("모든 세션 종료: memberId={}", memberId);
                     return memberId; // 이 시점에 '오프라인' 처리 필요할 수 있음
                 }
             }

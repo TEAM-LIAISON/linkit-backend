@@ -49,11 +49,9 @@ public class ProfileLicenseService {
     @Transactional(readOnly = true)
     public ProfileLicenseResponseDTO.ProfileLicenseItems getProfileLicenseItems(
             final Long memberId) {
-        log.info("memberId = {}의 내 자격증 Items 조회 요청 발생했습니다.", memberId);
 
         final List<ProfileLicense> profileLicenses =
                 profileLicenseQueryAdapter.getProfileLicenses(memberId);
-        log.info("profileLicenses = {}가 성공적으로 조회되었습니다.", profileLicenses);
 
         return profileLicenseMapper.toProfileLicenseItems(profileLicenses);
     }
@@ -61,18 +59,15 @@ public class ProfileLicenseService {
     @Transactional(readOnly = true)
     public ProfileLicenseResponseDTO.ProfileLicenseDetail getProfileLicenseDetail(
             final Long memberId, final Long profileLicenseId) {
-        log.info("memberId = {}의 내 자격증 Detail 조회 요청이 서비스 계층에 발생했습니다.", memberId);
 
         final ProfileLicense profileLicense =
                 profileLicenseQueryAdapter.getProfileLicense(profileLicenseId);
-        log.info("profileLicense = {}가 성공적으로 조회되었습니다.", profileLicense);
 
         return profileLicenseMapper.toProfileLicenseDetail(profileLicense);
     }
 
     public AddProfileLicenseResponse addProfileLicense(
             final Long memberId, final ProfileLicenseRequestDTO.AddProfileLicenseRequest request) {
-        log.info("memberId = {}의 프로필 자격증 추가 요청이 서비스 계층에 발생했습니다.", memberId);
 
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
         final ProfileLicense profileLicense =
@@ -93,7 +88,6 @@ public class ProfileLicenseService {
             final Long memberId,
             final Long profileLicenseId,
             final UpdateProfileLicenseRequest updateProfileLicenseRequest) {
-        log.info("memberId = {}의 프로필 자격증 수정 요청이 서비스 계층에 발생했습니다.", memberId);
         final ProfileLicense updatedProfileLicense =
                 profileLicenseCommandAdapter.updateProfileLicense(
                         profileLicenseId, updateProfileLicenseRequest);

@@ -43,7 +43,6 @@ public class TeamDetailAssembler {
             final TeamInformMenu teamInformMenu) {
         // 1. 조회할 팀 정보
         Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
-        log.info("assembleTeamDetail - targetTeam: {}", targetTeam);
 
         // 2. 로그인 상태인 경우, 로그인 관련 플래그 조립; 로그아웃이면 기본값(false)
         LoginTeamFlags loginFlags =
@@ -72,15 +71,13 @@ public class TeamDetailAssembler {
     private LoginTeamFlags assembleLoginTeamFlags(final Long memberId, final Team targetTeam) {
         LoginTeamFlags flags = new LoginTeamFlags();
         Member member = memberQueryAdapter.findById(memberId);
-        log.info(
-                "assembleTeamDetail - 로그인 사용자: memberId={}, email={}", memberId, member.getEmail());
 
         // 팀 구성원 여부 및 관리자인지 판단
         if (teamMemberQueryAdapter.isMemberOfTeam(targetTeam.getTeamCode(), member.getEmailId())) {
             TeamMember teamMember =
                     teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(
                             targetTeam.getTeamCode(), member.getEmailId());
-            log.info("assembleTeamDetail - 팀 구성원 정보: {}", teamMember);
+
             if (teamMemberQueryAdapter.isOwnerOrManagerOfTeam(targetTeam.getId(), memberId)) {
                 flags.isTeamManager = true;
             }

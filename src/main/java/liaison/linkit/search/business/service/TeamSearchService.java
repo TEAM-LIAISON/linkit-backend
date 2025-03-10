@@ -40,7 +40,6 @@ public class TeamSearchService {
                                         teamInformMenuAssembler.assembleTeamInformMenu(
                                                 team, optionalMemberId))
                         .toList();
-        log.info("ventureTeamDTOs: {}", ventureTeamDTOs);
 
         // 지원 프로젝트 팀 조회 (최대 4팀)
         Pageable supportPageable = PageRequest.of(0, 4);
@@ -53,7 +52,6 @@ public class TeamSearchService {
                                         teamInformMenuAssembler.assembleTeamInformMenu(
                                                 team, optionalMemberId))
                         .toList();
-        log.info("supportTeamDTOs: {}", supportTeamDTOs);
 
         return TeamListResponseDTO.of(ventureTeamDTOs, supportTeamDTOs);
     }

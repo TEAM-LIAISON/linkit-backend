@@ -36,7 +36,6 @@ public class AnnouncementDetailAssembler {
         // 1. 조회할 팀 정보
         final TeamMemberAnnouncement teamMemberAnnouncement =
                 teamMemberAnnouncementQueryAdapter.findById(teamMemberAnnouncementId);
-        log.info("assembleTeamDetail - targetTeamMemberAnnouncement: {}", teamMemberAnnouncement);
 
         return teamMemberAnnouncementMapper.toTeamMemberAnnouncementDetail(
                 teamMemberAnnouncement,

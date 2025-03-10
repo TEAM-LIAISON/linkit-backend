@@ -45,10 +45,6 @@ public class TeamProductController {
     @Logging(item = "Team_Product", action = "GET_TEAM_PRODUCT_ITEMS", includeResult = true)
     public CommonResponse<TeamProductResponseDTO.TeamProductItems> getTeamProductItems(
             @Auth final Accessor accessor, @PathVariable final String teamCode) {
-        log.info(
-                "memberId = {}의 teamCode = {}에 대한 팀 프로덕트 전체 조회 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                teamCode);
         return CommonResponse.onSuccess(
                 teamProductService.getTeamProductItems(accessor.getMemberId(), teamCode));
     }
@@ -61,10 +57,6 @@ public class TeamProductController {
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
             @PathVariable final Long teamProductId) {
-        log.info(
-                "memberId = {}의 teamCode = {}에 대한 팀 프로덕트 상세 조회 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                teamCode);
         return CommonResponse.onSuccess(
                 teamProductService.getTeamProductDetail(
                         accessor.getMemberId(), teamCode, teamProductId));
@@ -81,10 +73,6 @@ public class TeamProductController {
                     final TeamProductRequestDTO.AddTeamProductRequest addTeamProductRequest,
             @RequestPart(required = false) MultipartFile productRepresentImage,
             @RequestPart(required = false) List<MultipartFile> productSubImages) {
-        log.info(
-                "memberId = {}의 teamCode = {}에 대한 팀 프로덕트 단일 생성 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                teamCode);
         return CommonResponse.onSuccess(
                 teamProductService.addTeamProduct(
                         accessor.getMemberId(),
@@ -106,10 +94,6 @@ public class TeamProductController {
                     final TeamProductRequestDTO.UpdateTeamProductRequest updateTeamProductRequest,
             @RequestPart(required = false) MultipartFile productRepresentImage,
             @RequestPart(required = false) List<MultipartFile> productSubImages) {
-        log.info(
-                "memberId = {}의 teamCode = {}에 대한 팀 프로덕트 단일 수정 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                teamCode);
         return CommonResponse.onSuccess(
                 teamProductService.updateTeamProduct(
                         accessor.getMemberId(),
@@ -128,10 +112,6 @@ public class TeamProductController {
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
             @PathVariable final Long teamProductId) {
-        log.info(
-                "memberId = {}의 teamCode = {}에 대한 팀 프로덕트 단일 삭제 요청이 발생했습니다.",
-                accessor.getMemberId(),
-                teamCode);
         return CommonResponse.onSuccess(
                 teamProductService.removeTeamProduct(teamCode, teamProductId));
     }

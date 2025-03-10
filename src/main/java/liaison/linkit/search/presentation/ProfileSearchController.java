@@ -38,8 +38,6 @@ public class ProfileSearchController { // 팀원 찾기 컨트롤러
         Optional<Long> optionalMemberId =
                 accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
 
-        log.info("주요 팀원 목록 조회 요청");
-
         ProfileListResponseDTO featuredProfiles =
                 profileSearchService.getFeaturedProfiles(optionalMemberId);
 

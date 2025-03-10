@@ -57,7 +57,6 @@ public class S3Uploader {
             URL url = new URL(imageUrl);
             String path = url.getPath().substring(1); // 맨 앞 "/" 제거
             s3Client.deleteObject(new DeleteObjectRequest(bucket, path));
-            log.info("이미지 삭제 완료 : {}", path);
         } catch (AmazonServiceException e) {
             log.error("잘못된 이미지 경로 : {}", imageUrl, e);
             throw InvalidImagePathException.EXCEPTION;
@@ -73,7 +72,6 @@ public class S3Uploader {
             URL url = new URL(fileUrl);
             String path = url.getPath().substring(1);
             s3Client.deleteObject(new DeleteObjectRequest(bucket, path));
-            log.info("인증서 삭제 완료 : {}", path);
         } catch (AmazonServiceException e) {
             log.error("잘못된 인증서 경로 : {}", fileUrl, e);
             throw InvalidFilePathException.EXCEPTION;
@@ -153,7 +151,6 @@ public class S3Uploader {
 
         try (final InputStream inputStream = imageFile.getInputStream()) {
             s3Client.putObject(bucket, s3Key, inputStream, metadata);
-            log.info("이미지 업로드 완료 : {}", s3Key);
             return "https://" + cloudFrontImageDomain + "/" + s3Key;
         } catch (AmazonServiceException e) {
             log.error("이미지 업로드 실패 : {}", s3Key, e);
@@ -174,7 +171,6 @@ public class S3Uploader {
 
         try (final InputStream inputStream = file.getInputStream()) {
             s3Client.putObject(bucket, s3Key, inputStream, metadata);
-            log.info("파일 업로드 완료 : {}", s3Key);
             return "https://" + cloudFrontImageDomain + "/" + s3Key;
         } catch (AmazonServiceException e) {
             log.error("파일 업로드 실패 : {}", s3Key, e);

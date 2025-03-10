@@ -66,7 +66,5 @@ public class AnnouncementPositionCustomRepositoryImpl
 
         entityManager.flush();
         entityManager.clear();
-
-        log.info("Deleted all announcement positions");
     }
 }

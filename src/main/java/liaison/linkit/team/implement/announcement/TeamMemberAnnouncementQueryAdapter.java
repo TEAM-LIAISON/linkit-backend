@@ -1,5 +1,6 @@
 package liaison.linkit.team.implement.announcement;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -94,5 +95,10 @@ public class TeamMemberAnnouncementQueryAdapter {
 
     public List<TeamMemberAnnouncement> findPublicAnnouncementsByTeamId(final Long teamId) {
         return teamMemberAnnouncementRepository.findPublicAnnouncementsByTeamId(teamId);
+    }
+
+    public List<TeamMemberAnnouncement> findRecentPublicAnnouncementsNotAdvertised(
+            final LocalDateTime since) {
+        return teamMemberAnnouncementRepository.findRecentPublicAnnouncementsNotAdvertised(since);
     }
 }

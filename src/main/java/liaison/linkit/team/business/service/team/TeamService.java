@@ -111,7 +111,7 @@ public class TeamService {
             final AddTeamRequest addTeamRequest) {
         // 회원 조회
         final Member member = memberQueryAdapter.findById(memberId);
-        log.info("Creating team {}", memberId);
+
         if (teamQueryAdapter.existsByTeamCode(addTeamRequest.getTeamCode())) {
             throw DuplicateTeamCodeException.EXCEPTION;
         }
@@ -119,7 +119,6 @@ public class TeamService {
         // 팀 생성
         final Team team = teamMapper.toTeam(addTeamRequest);
         final Team savedTeam = teamCommandAdapter.add(team);
-        log.info("Saved team {}", savedTeam.getId());
         // 사용자가 새로운 이미지를 업로드
         String teamLogoImagePath = null;
         if (imageValidator.validatingImageUpload(teamLogoImage)) {
@@ -154,7 +153,6 @@ public class TeamService {
         List<TeamCurrentState> teamCurrentStates = new ArrayList<>();
 
         for (String teamStateName : teamStateNames) {
-            log.info("teamStateName = {}", teamStateName);
 
             TeamState teamState = teamStateQueryAdapter.findByStateName(teamStateName);
 
@@ -187,9 +185,6 @@ public class TeamService {
                 updateTeamRequest.getTeamCode(),
                 updateTeamRequest.getTeamShortDescription(),
                 updateTeamRequest.getIsTeamPublic());
-
-        log.info("Updating team {}", teamCode);
-
         // 팀 로고 이미지 처리
         try {
             // 팀 로고 이미지 처리
@@ -224,8 +219,6 @@ public class TeamService {
         teamScaleCommandAdapter.save(teamScale);
         final TeamScaleItem teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
 
-        log.info("Updating team {}", teamCode);
-
         // 팀 지역 처리
         if (teamRegionQueryAdapter.existsTeamRegionByTeamId(team.getId())) {
             teamRegionCommandAdapter.deleteAllByTeamId(team.getId());
@@ -237,8 +230,6 @@ public class TeamService {
         final TeamRegion teamRegion = new TeamRegion(null, team, region);
         teamRegionCommandAdapter.save(teamRegion);
         final RegionDetail regionDetail = regionMapper.toRegionDetail(region);
-
-        log.info("Updating team {}", teamCode);
 
         // 팀 현재 상태 처리
         if (teamCurrentStateQueryAdapter.existsTeamCurrentStatesByTeamId(team.getId())) {
@@ -255,8 +246,6 @@ public class TeamService {
             TeamCurrentState teamCurrentState = new TeamCurrentState(null, team, teamState);
             teamCurrentStates.add(teamCurrentState);
         }
-
-        log.info("Updating team {}", teamCode);
 
         teamCurrentStateCommandAdapter.saveAll(teamCurrentStates);
         List<TeamCurrentStateItem> teamCurrentStateItems =
@@ -294,7 +283,6 @@ public class TeamService {
                         regionQueryAdapter.findTeamRegionByTeamId(team.getId());
                 regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
             }
-            log.info("팀 지역 정보 조회 성공");
 
             TeamInformMenu teamInformMenu =
                     teamMapper.toTeamInformMenu(team, false, 0, null, teamScaleItem, regionDetail);

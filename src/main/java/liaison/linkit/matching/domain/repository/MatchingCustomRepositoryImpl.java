@@ -380,8 +380,6 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
 
         entityManager.flush();
         entityManager.clear();
-
-        log.info("Deleted {} matching scraps for emailId: {}", deletedCount, emailId);
     }
 
     @Override
@@ -397,8 +395,6 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
 
         entityManager.flush();
         entityManager.clear();
-
-        log.info("Deleted {} matching scraps for teamCodes: {}", deletedCount, senderTeamCodes);
     }
 
     @Override
@@ -414,8 +410,6 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
 
         entityManager.flush();
         entityManager.clear();
-
-        log.info("Deleted {} matching scraps for teamCode: {}", deletedCount, senderTeamCode);
     }
 
     @Override
@@ -431,8 +425,6 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
 
         entityManager.flush();
         entityManager.clear();
-
-        log.info("Deleted {} matching scraps for emailId: {}", deletedCount, emailId);
     }
 
     @Override
@@ -448,8 +440,6 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
 
         entityManager.flush();
         entityManager.clear();
-
-        log.info("Deleted {} matching scraps for teamCodes: {}", deletedCount, receiverTeamCodes);
     }
 
     @Override
@@ -465,8 +455,6 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
 
         entityManager.flush();
         entityManager.clear();
-
-        log.info("Deleted {} matching scraps for teamCode: {}", deletedCount, teamCode);
     }
 
     @Override
@@ -482,10 +470,5 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
 
         entityManager.flush();
         entityManager.clear();
-
-        log.info(
-                "Deleted {} matching scraps for teamMemberAnnouncementIds: {}",
-                deletedCount,
-                teamMemberAnnouncementIds);
     }
 }
