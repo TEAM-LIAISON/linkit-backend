@@ -20,7 +20,7 @@ public class ImageScheduler {
 
     private final S3Uploader s3Uploader;
 
-    @Scheduled(cron = "0 0 3 * * ?") // 매일 새벽 3시에 실행
+    @Scheduled(cron = "0 0 5 * * ?", zone = "Asia/Seoul")
     public void cleanUpUnusedImages() {
         LocalDateTime threshold = LocalDateTime.now().minusDays(1); // 1일 지난 이미지
         List<Image> unusedImages = imageQueryAdapter.getUnusedImages(threshold);
