@@ -304,7 +304,7 @@ public class TeamMemberAnnouncementService {
                 teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(
                         teamMemberAnnouncementId);
 
-        if (teamMemberAnnouncement.isAnnouncementInProgress()) {
+        if (!teamMemberAnnouncement.isAnnouncementInProgress()) {
             throw TeamMemberAnnouncementClosedBadRequestException.EXCEPTION;
         }
 
