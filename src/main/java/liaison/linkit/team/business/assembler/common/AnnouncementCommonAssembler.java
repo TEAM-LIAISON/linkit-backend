@@ -21,6 +21,7 @@ import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.announcement.AnnouncementPositionQueryAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
 import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
+import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
@@ -45,6 +46,7 @@ public class AnnouncementCommonAssembler {
     private final TeamScaleMapper teamScaleMapper;
     private final TeamMemberAnnouncementMapper teamMemberAnnouncementMapper;
     private final AnnouncementSkillMapper announcementSkillMapper;
+    private final TeamMemberQueryAdapter teamMemberQueryAdapter;
 
     /**
      * 팀 규모 정보를 조회하여 TeamScaleItem으로 반환합니다. 실제 구현에서는 teamScaleQueryAdapter와 teamScaleMapper를 사용합니다.
@@ -115,7 +117,7 @@ public class AnnouncementCommonAssembler {
      * 로그인 상태인 경우, 공고 스크랩 여부를 조회합니다. 로그아웃 상태이면 false를 반환합니다.
      *
      * @param teamMemberAnnouncement 조회 대상 공고 엔티티.
-     * @param optionalMemberId 로그인한 회원의 ID(Optional).
+     * @param optionalMemberId       로그인한 회원의 ID(Optional).
      * @return 공고가 스크랩된 상태이면 true, 아니면 false.
      */
     public boolean checkAnnouncementScrap(
@@ -127,6 +129,23 @@ public class AnnouncementCommonAssembler {
                                 announcementScrapQueryAdapter
                                         .existsByMemberIdAndTeamMemberAnnouncementId(
                                                 memberId, teamMemberAnnouncement.getId()))
+                .orElse(false);
+    }
+
+    /**
+     * 로그인 상태인 경우, 내가 관리자나 오너로 속해 있는 팀의 팀원 공고인지를 조회합니다. 로그아웃 상태이면 false를 반환합니다.
+     *
+     * @param teamMemberAnnouncement 조회 대상 공고 엔티티.
+     * @param optionalMemberId       로그인한 회원의 ID(Optional).
+     * @return 내가 관리자나 오너로 속해 있으면 true, 아니면 false.
+     */
+    public boolean checkMyAnnouncement(
+            final TeamMemberAnnouncement teamMemberAnnouncement,
+            final Optional<Long> optionalMemberId) {
+        return optionalMemberId
+                .map(
+                        memberId ->
+                                teamMemberQueryAdapter.isOwnerOrManagerOfTeam(teamMemberAnnouncement.getTeam().getId(), memberId))
                 .orElse(false);
     }
 
