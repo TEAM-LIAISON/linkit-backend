@@ -10,7 +10,6 @@ import liaison.linkit.team.domain.announcement.AnnouncementPosition;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
@@ -57,6 +56,12 @@ public class TeamMemberAnnouncementMapper {
                                 : "")
                 .isAnnouncementScrap(isAnnouncementScrap)
                 .announcementScrapCount(announcementScrapCount)
+                .viewCount(
+                        teamMemberAnnouncement != null ? teamMemberAnnouncement.getViewCount() : 0L)
+                .createdAt(
+                        teamMemberAnnouncement != null
+                                ? teamMemberAnnouncement.getCreatedAt()
+                                : null)
                 .announcementPositionItem(
                         announcementPositionItem != null
                                 ? announcementPositionItem
@@ -100,6 +105,8 @@ public class TeamMemberAnnouncementMapper {
                 .announcementDDay(announcementDDay) // 수정된 부분
                 .isClosed(isClosed)
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
+                .viewCount(teamMemberAnnouncement.getViewCount())
+                .createdAt(teamMemberAnnouncement.getCreatedAt())
                 .announcementPositionItem(announcementPositionItem)
                 .announcementSkillNames(announcementSkillNames)
                 .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
@@ -131,26 +138,6 @@ public class TeamMemberAnnouncementMapper {
                 .isAnnouncementPublic(true)
                 .isAnnouncementInProgress(true)
                 .viewCount(0L)
-                .build();
-    }
-
-    public TeamMemberAnnouncement toUpdateTeamMemberAnnouncement(
-            final Team team, final UpdateTeamMemberAnnouncementRequest request) {
-        return TeamMemberAnnouncement.builder()
-                .id(null)
-                .team(team)
-                .announcementTitle(request.getAnnouncementTitle())
-                .announcementEndDate(request.getAnnouncementEndDate())
-                .isPermanentRecruitment(request.getIsPermanentRecruitment())
-                .isRegionFlexible(request.getIsRegionFlexible())
-                .mainTasks(request.getMainTasks())
-                .workMethod(request.getWorkMethod())
-                .idealCandidate(request.getIdealCandidate())
-                .preferredQualifications(request.getPreferredQualifications())
-                .joiningProcess(request.getJoiningProcess())
-                .benefits(request.getBenefits())
-                .isAnnouncementPublic(true)
-                .isAnnouncementInProgress(true)
                 .build();
     }
 

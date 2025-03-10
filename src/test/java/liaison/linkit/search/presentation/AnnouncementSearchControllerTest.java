@@ -10,6 +10,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.queryPar
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -121,6 +122,8 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                         .announcementTitle("공고 제목")
                         .isAnnouncementScrap(true)
                         .announcementScrapCount(100)
+                        .viewCount(120L)
+                        .createdAt(LocalDateTime.now())
                         .announcementPositionItem(
                                 AnnouncementPositionItem.builder()
                                         .majorPosition("포지션 대분류")
@@ -155,6 +158,8 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                         .announcementTitle("공고 제목 2")
                         .isAnnouncementScrap(true)
                         .announcementScrapCount(100)
+                        .viewCount(120L)
+                        .createdAt(LocalDateTime.now())
                         .announcementPositionItem(
                                 AnnouncementPositionItem.builder()
                                         .majorPosition("포지션 대분류")
@@ -286,6 +291,12 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                                                 "result.content[].announcementScrapCount")
                                                         .type(JsonFieldType.NUMBER)
                                                         .description("공고 스크랩 횟수"),
+                                                fieldWithPath("result.content[].viewCount")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("공고 조회 수"),
+                                                fieldWithPath("result.content[].createdAt")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("공고가 업로드 된 시간"),
                                                 fieldWithPath(
                                                                 "result.content[].announcementPositionItem.majorPosition")
                                                         .type(JsonFieldType.STRING)
@@ -341,6 +352,8 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                                 .announcementTitle("공고 제목")
                                                 .isAnnouncementScrap(true)
                                                 .announcementScrapCount(100)
+                                                .viewCount(100L)
+                                                .createdAt(LocalDateTime.now())
                                                 .announcementPositionItem(
                                                         AnnouncementPositionItem.builder()
                                                                 .majorPosition("포지션 대분류")
@@ -377,6 +390,8 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                                 .announcementTitle("공고 제목 2")
                                                 .isAnnouncementScrap(true)
                                                 .announcementScrapCount(100)
+                                                .viewCount(120L)
+                                                .createdAt(LocalDateTime.now())
                                                 .announcementPositionItem(
                                                         AnnouncementPositionItem.builder()
                                                                 .majorPosition("포지션 대분류")
@@ -476,6 +491,12 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                                                 "result.hotAnnouncements[].announcementScrapCount")
                                                         .type(JsonFieldType.NUMBER)
                                                         .description("공고가 스크랩된 총 횟수"),
+                                                fieldWithPath("result.hotAnnouncements[].viewCount")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("공고 조회 수"),
+                                                fieldWithPath("result.hotAnnouncements[].createdAt")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("공고가 업로드 된 시간"),
                                                 fieldWithPath(
                                                                 "result.hotAnnouncements[].announcementPositionItem.majorPosition")
                                                         .type(JsonFieldType.STRING)

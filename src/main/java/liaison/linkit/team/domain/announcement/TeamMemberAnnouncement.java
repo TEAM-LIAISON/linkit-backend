@@ -82,7 +82,7 @@ public class TeamMemberAnnouncement extends BaseEntity {
     private boolean isAnnouncementInProgress;
 
     @Column(nullable = false)
-    private Long viewCount = 0L;
+    private Long viewCount;
 
     public void setIsAnnouncementPublic(final boolean isAnnouncementPublic) {
         this.isAnnouncementPublic = isAnnouncementPublic;

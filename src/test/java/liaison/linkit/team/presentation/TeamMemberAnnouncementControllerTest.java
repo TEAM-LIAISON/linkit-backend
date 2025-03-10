@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -559,6 +560,8 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                         .isClosed(false)
                         .isPermanentRecruitment(false)
                         .announcementTitle("팀원 공고 제목")
+                        .viewCount(100L)
+                        .createdAt(LocalDateTime.now())
                         .announcementPositionItem(
                                 AnnouncementPositionItem.builder()
                                         .majorPosition("포지션 대분류")
@@ -572,7 +575,6 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         AnnouncementSkillName.builder()
                                                 .announcementSkillName("스킬 이름 2")
                                                 .build()))
-                        .announcementEndDate("공고 종료 날짜")
                         .isRegionFlexible(true)
                         .mainTasks("주요 업무")
                         .workMethod("업무 방식")
@@ -640,6 +642,12 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                 fieldWithPath("result.announcementTitle")
                                                         .type(JsonFieldType.STRING)
                                                         .description("공고 제목"),
+                                                fieldWithPath("result.viewCount")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("공고 조회 수"),
+                                                fieldWithPath("result.createdAt")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("공고가 업로드 된 시간"),
                                                 fieldWithPath("result.announcementPositionItem")
                                                         .type(JsonFieldType.OBJECT)
                                                         .description("공고 포지션 정보"),
@@ -658,9 +666,6 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                                 "result.announcementSkillNames[].announcementSkillName")
                                                         .type(JsonFieldType.STRING)
                                                         .description("공고 스킬 이름"),
-                                                fieldWithPath("result.announcementEndDate")
-                                                        .type(JsonFieldType.STRING)
-                                                        .description("공고 종료 날짜"),
                                                 fieldWithPath("result.isRegionFlexible")
                                                         .type(JsonFieldType.BOOLEAN)
                                                         .description("지역 무관 여부"),
