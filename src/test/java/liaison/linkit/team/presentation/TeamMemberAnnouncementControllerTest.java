@@ -554,6 +554,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
         final TeamMemberAnnouncementDetail teamMemberAnnouncementDetail =
                 TeamMemberAnnouncementDetail.builder()
                         .teamMemberAnnouncementId(1L)
+                        .isMyTeamAnnouncement(true)
                         .isAnnouncementScrap(true)
                         .announcementScrapCount(100)
                         .announcementDDay(20)
@@ -625,6 +626,10 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                 fieldWithPath("result.teamMemberAnnouncementId")
                                                         .type(JsonFieldType.NUMBER)
                                                         .description("팀원 공고 ID"),
+                                                fieldWithPath("result.isMyTeamAnnouncement")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description(
+                                                                "내가 관리자나 오너로 속해 있는 팀의 팀원 공고인지 여부"),
                                                 fieldWithPath("result.isAnnouncementScrap")
                                                         .type(JsonFieldType.BOOLEAN)
                                                         .description("팀원 공고 스크랩 여부"),
