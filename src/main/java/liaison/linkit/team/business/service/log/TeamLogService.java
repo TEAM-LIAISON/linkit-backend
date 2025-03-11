@@ -101,8 +101,8 @@ public class TeamLogService {
     @Transactional(readOnly = true)
     public TeamLogItem getRepresentTeamLogItem(final String teamCode) {
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
-        if (teamLogQueryAdapter.existsRepresentativeTeamLogByTeam(team.getId())) {
-            final TeamLog teamLog = teamLogQueryAdapter.getRepresentativeTeamLog(team.getId());
+        if (teamLogQueryAdapter.existsRepresentativePublicTeamLogByTeam(team.getId())) {
+            final TeamLog teamLog = teamLogQueryAdapter.getRepresentativePublicTeamLog(team.getId());
             return teamLogMapper.toTeamLogItem(teamLog);
         }
 
