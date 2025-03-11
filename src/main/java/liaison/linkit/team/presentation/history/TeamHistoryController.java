@@ -1,5 +1,7 @@
 package liaison.linkit.team.presentation.history;
 
+import java.util.Optional;
+
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
@@ -30,9 +32,14 @@ public class TeamHistoryController {
     @GetMapping("/view")
     @Logging(item = "Team_History", action = "GET_TEAM_HISTORY_CALENDAR", includeResult = true)
     public CommonResponse<TeamHistoryResponseDTO.TeamHistoryCalendarResponse>
-            getTeamHistoryCalendar(@PathVariable final String teamCode) {
+            getTeamHistoryCalendar(
+                    @Auth final Accessor accessor, @PathVariable final String teamCode) {
+
+        Optional<Long> optionalMemberId =
+                accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+
         return CommonResponse.onSuccess(
-                teamHistoryService.getTeamHistoryCalendarResponses(teamCode));
+                teamHistoryService.getTeamHistoryCalendarResponses(optionalMemberId, teamCode));
     }
 
     // 팀 연혁 수정창 조회
