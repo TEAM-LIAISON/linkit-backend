@@ -44,6 +44,7 @@ public class TeamProductMapper {
     }
 
     public TeamProductResponseDTO.TeamProductViewItems toTeamProductViewItems(
+            final boolean isMyTeam,
             final List<TeamProduct> teamProducts,
             final Map<Long, List<ProductLink>> productLinksMap,
             final ProductSubImageQueryAdapter productSubImageQueryAdapter) {
@@ -76,6 +77,7 @@ public class TeamProductMapper {
 
         // 5) ViewItems 래퍼 객체 생성
         return TeamProductResponseDTO.TeamProductViewItems.builder()
+                .isMyTeam(isMyTeam)
                 .teamProductViewItems(items)
                 .build();
     }
