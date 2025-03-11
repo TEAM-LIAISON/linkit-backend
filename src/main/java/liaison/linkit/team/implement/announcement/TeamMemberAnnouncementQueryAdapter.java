@@ -102,10 +102,7 @@ public class TeamMemberAnnouncementQueryAdapter {
         return teamMemberAnnouncementRepository.findRecentPublicAnnouncementsNotAdvertised(since);
     }
 
-    public List<TeamMemberAnnouncement> findAllByEndDateTimeBetweenAndIsNotPermanentRecruitment(
-            final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
-        return teamMemberAnnouncementRepository
-                .findAllByEndDateTimeBetweenAndIsNotPermanentRecruitment(
-                        startDateTime, endDateTime);
+    public List<TeamMemberAnnouncement> findAllByIsNotPermanentRecruitment() {
+        return teamMemberAnnouncementRepository.findAllByIsNotPermanentRecruitment();
     }
 }
