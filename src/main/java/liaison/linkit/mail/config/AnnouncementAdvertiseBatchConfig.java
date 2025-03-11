@@ -87,6 +87,7 @@ public class AnnouncementAdvertiseBatchConfig {
         List<TeamMemberAnnouncement> announcements =
                 teamMemberAnnouncementQueryAdapter.findRecentPublicAnnouncementsNotAdvertised(
                         twentyFourHoursAgo);
+
         log.info("광고 발송 대상 공고 조회 완료: 총 {}개 공고 발견", announcements.size());
 
         // 리스트 기반 Reader 구현

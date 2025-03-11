@@ -812,4 +812,20 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
         entityManager.flush();
         entityManager.clear();
     }
+
+    @Override
+    public List<TeamMemberAnnouncement> findAllByEndDateTimeBetweenAndIsNotPermanentRecruitment(
+            final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+        QTeamMemberAnnouncement qTeamMemberAnnouncement =
+                QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        return jpaQueryFactory
+                .selectFrom(qTeamMemberAnnouncement)
+                .where(
+                        qTeamMemberAnnouncement.createdAt.between(startDateTime, endDateTime),
+                        qTeamMemberAnnouncement.status.eq(StatusType.USABLE),
+                        qTeamMemberAnnouncement.isPermanentRecruitment.isFalse())
+                .orderBy(qTeamMemberAnnouncement.id.asc())
+                .fetch();
+    }
 }
