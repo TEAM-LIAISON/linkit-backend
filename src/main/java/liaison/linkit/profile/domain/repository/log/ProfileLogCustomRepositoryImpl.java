@@ -151,6 +151,24 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
                                         .profile
                                         .id
                                         .eq(profileId)
+                                        .and(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG)))
+                        .fetchFirst();
+
+        return Optional.ofNullable(profileLog);
+    }
+
+    @Override
+    public Optional<ProfileLog> findRepresentativePublicProfileLog(final Long profileId) {
+        QProfileLog qProfileLog = QProfileLog.profileLog;
+
+        ProfileLog profileLog =
+                queryFactory
+                        .selectFrom(qProfileLog)
+                        .where(
+                                qProfileLog
+                                        .profile
+                                        .id
+                                        .eq(profileId)
                                         .and(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG))
                                         .and(qProfileLog.isLogPublic.eq(true)))
                         .fetchFirst();
@@ -183,6 +201,24 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
                                         .id
                                         .eq(profileId)
                                         .and(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG)))
+                        .fetchFirst()
+                != null;
+    }
+
+    @Override
+    public boolean existsRepresentativePublicProfileLogByProfile(final Long profileId) {
+        QProfileLog qProfileLog = QProfileLog.profileLog;
+
+        return queryFactory
+                        .selectOne()
+                        .from(qProfileLog)
+                        .where(
+                                qProfileLog
+                                        .profile
+                                        .id
+                                        .eq(profileId)
+                                        .and(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG))
+                                        .and(qProfileLog.isLogPublic.eq(true)))
                         .fetchFirst()
                 != null;
     }

@@ -95,11 +95,14 @@ public class ProfileDetailAssembler {
 
     // 프로필 로그 정보를 조회하여 ProfileLogItem으로 매핑
     private ProfileLogItem resolveProfileLogItem(final Profile targetProfile) {
-        if (profileLogQueryAdapter.existsProfileLogByProfileId(targetProfile.getId())) {
+
+        if (profileLogQueryAdapter.existsRepresentativePublicProfileLogByProfile(
+                targetProfile.getId())) {
             ProfileLog profileLog =
-                    profileLogQueryAdapter.getRepresentativeProfileLog(targetProfile.getId());
+                    profileLogQueryAdapter.getRepresentativePublicProfileLog(targetProfile.getId());
             return profileLogMapper.toProfileLogItem(profileLog);
         }
+
         return new ProfileLogItem();
     }
 

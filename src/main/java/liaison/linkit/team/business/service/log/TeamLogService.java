@@ -101,8 +101,13 @@ public class TeamLogService {
     @Transactional(readOnly = true)
     public TeamLogItem getRepresentTeamLogItem(final String teamCode) {
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
-        final TeamLog teamLog = teamLogQueryAdapter.getRepresentativeTeamLog(team.getId());
-        return teamLogMapper.toTeamLogItem(teamLog);
+        if (teamLogQueryAdapter.existsRepresentativePublicTeamLogByTeam(team.getId())) {
+            final TeamLog teamLog =
+                    teamLogQueryAdapter.getRepresentativePublicTeamLog(team.getId());
+            return teamLogMapper.toTeamLogItem(teamLog);
+        }
+
+        return TeamLogItem.builder().build();
     }
 
     // 팀 로그 본문 이미지 추가
