@@ -72,7 +72,7 @@ public class TeamLogService {
     public TeamLogResponseDTO.TeamLogItems getTeamLogItems(
             final Optional<Long> optionalMemberId, final String teamCode) {
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
-        boolean isOwnerOrManager;
+        boolean isOwnerOrManager = false;
         List<TeamLog> teamLogs;
         if (optionalMemberId.isPresent()) {
             isOwnerOrManager =
@@ -88,23 +88,45 @@ public class TeamLogService {
             teamLogs = teamLogQueryAdapter.getTeamLogsPublic(team.getId());
         }
 
-        return teamLogMapper.toTeamLogItems(teamLogs);
+        return teamLogMapper.toTeamLogItems(isOwnerOrManager, teamLogs);
     }
 
     @Transactional
-    public TeamLogItem getTeamLogItem(final String teamCode, final Long teamLogId) {
+    public TeamLogItem getTeamLogItem(
+            final Optional<Long> optionalMemberId, final String teamCode, final Long teamLogId) {
         final TeamLog teamLog = teamLogQueryAdapter.getTeamLog(teamLogId);
         teamLog.increaseViewCount();
-        return teamLogMapper.toTeamLogItem(teamLog);
+
+        Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
+
+        boolean isMyTeam =
+                optionalMemberId
+                        .map(
+                                memberId ->
+                                        teamMemberQueryAdapter.isOwnerOrManagerOfTeam(
+                                                targetTeam.getId(), memberId))
+                        .orElse(false);
+
+        return teamLogMapper.toTeamLogItem(isMyTeam, teamLog);
     }
 
     @Transactional(readOnly = true)
-    public TeamLogItem getRepresentTeamLogItem(final String teamCode) {
-        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
-        if (teamLogQueryAdapter.existsRepresentativePublicTeamLogByTeam(team.getId())) {
+    public TeamLogItem getRepresentTeamLogItem(
+            final Optional<Long> optionalMemberId, final String teamCode) {
+        final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
+
+        boolean isMyTeam =
+                optionalMemberId
+                        .map(
+                                memberId ->
+                                        teamMemberQueryAdapter.isOwnerOrManagerOfTeam(
+                                                targetTeam.getId(), memberId))
+                        .orElse(false);
+
+        if (teamLogQueryAdapter.existsRepresentativePublicTeamLogByTeam(targetTeam.getId())) {
             final TeamLog teamLog =
-                    teamLogQueryAdapter.getRepresentativePublicTeamLog(team.getId());
-            return teamLogMapper.toTeamLogItem(teamLog);
+                    teamLogQueryAdapter.getRepresentativePublicTeamLog(targetTeam.getId());
+            return teamLogMapper.toTeamLogItem(isMyTeam, teamLog);
         }
 
         return TeamLogItem.builder().build();

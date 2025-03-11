@@ -60,16 +60,26 @@ public class TeamLogController {
     @GetMapping("/{teamLogId}")
     @Logging(item = "Team_Log", action = "GET_TEAM_LOG_ITEM", includeResult = true)
     public CommonResponse<TeamLogResponseDTO.TeamLogItem> getTeamLogItem(
-            @PathVariable final String teamCode, @PathVariable final Long teamLogId) {
-        return CommonResponse.onSuccess(teamLogService.getTeamLogItem(teamCode, teamLogId));
+            @Auth final Accessor accessor,
+            @PathVariable final String teamCode,
+            @PathVariable final Long teamLogId) {
+        Optional<Long> optionalMemberId =
+                accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+
+        return CommonResponse.onSuccess(
+                teamLogService.getTeamLogItem(optionalMemberId, teamCode, teamLogId));
     }
 
     // 대표글 조회
     @GetMapping("/represent")
     @Logging(item = "Team_Log", action = "GET_REPRESENT_TEAM_LOG_ITEM", includeResult = true)
     public CommonResponse<TeamLogResponseDTO.TeamLogItem> getRepresentTeamLogItem(
-            @PathVariable final String teamCode) {
-        return CommonResponse.onSuccess(teamLogService.getRepresentTeamLogItem(teamCode));
+            @Auth final Accessor accessor, @PathVariable final String teamCode) {
+        Optional<Long> optionalMemberId =
+                accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+
+        return CommonResponse.onSuccess(
+                teamLogService.getRepresentTeamLogItem(optionalMemberId, teamCode));
     }
 
     // 로그 추가
