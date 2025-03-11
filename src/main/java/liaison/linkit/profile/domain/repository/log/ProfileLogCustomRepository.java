@@ -18,6 +18,8 @@ public interface ProfileLogCustomRepository {
 
     Optional<ProfileLog> findRepresentativeProfileLog(final Long profileId);
 
+    Optional<ProfileLog> findRepresentativePublicProfileLog(final Long profileId);
+
     boolean existsProfileLogByProfileId(final Long profileId);
 
     ProfileLog updateProfileLog(
@@ -27,6 +29,8 @@ public interface ProfileLogCustomRepository {
             final ProfileLog profileLog, final boolean isProfileLogCurrentPublicState);
 
     boolean existsRepresentativeProfileLogByProfile(final Long profileId);
+
+    boolean existsRepresentativePublicProfileLogByProfile(final Long profileId);
 
     List<ProfileLog> findTopView(final int limit);
 
