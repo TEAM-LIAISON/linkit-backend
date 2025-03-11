@@ -55,6 +55,14 @@ public class AnnouncementViewItemsAssembler {
         // 1. 팀 정보 조회
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
+        boolean isMyTeam =
+                optionalMemberId
+                        .map(
+                                memberId ->
+                                        teamMemberQueryAdapter.isOwnerOrManagerOfTeam(
+                                                targetTeam.getId(), memberId))
+                        .orElse(false);
+
         // 2. 로그인 여부 및 권한에 따라 공고 목록 필터링
         List<TeamMemberAnnouncement> targetAnnouncements =
                 assembleTeamMemberAnnouncements(targetTeam, optionalMemberId);
@@ -64,7 +72,10 @@ public class AnnouncementViewItemsAssembler {
                 convertAnnouncementsToItems(targetAnnouncements, optionalMemberId);
 
         // 4. 최종적으로 TeamMemberAnnouncementItems DTO를 생성하여 반환
-        return TeamMemberAnnouncementItems.builder().teamMemberAnnouncementItems(items).build();
+        return TeamMemberAnnouncementItems.builder()
+                .isMyTeam(isMyTeam)
+                .teamMemberAnnouncementItems(items)
+                .build();
     }
 
     /**
