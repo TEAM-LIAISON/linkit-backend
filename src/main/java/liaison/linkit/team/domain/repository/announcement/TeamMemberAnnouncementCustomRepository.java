@@ -66,4 +66,6 @@ public interface TeamMemberAnnouncementCustomRepository {
             final boolean isTeamMEmberAnnouncementInProgress);
 
     void incrementViewCount(final Long announcementId);
+
+    List<TeamMemberAnnouncement> findAllByIsNotPermanentRecruitment();
 }

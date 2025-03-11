@@ -812,4 +812,19 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
         entityManager.flush();
         entityManager.clear();
     }
+
+    @Override
+    public List<TeamMemberAnnouncement> findAllByIsNotPermanentRecruitment() {
+        QTeamMemberAnnouncement qTeamMemberAnnouncement =
+                QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        return jpaQueryFactory
+                .selectFrom(qTeamMemberAnnouncement)
+                .where(
+                        qTeamMemberAnnouncement.status.eq(StatusType.USABLE),
+                        qTeamMemberAnnouncement.isAnnouncementInProgress.isTrue(),
+                        qTeamMemberAnnouncement.isPermanentRecruitment.isFalse())
+                .orderBy(qTeamMemberAnnouncement.id.asc())
+                .fetch();
+    }
 }

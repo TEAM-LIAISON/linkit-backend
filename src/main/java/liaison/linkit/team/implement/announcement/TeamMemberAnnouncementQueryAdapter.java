@@ -101,4 +101,8 @@ public class TeamMemberAnnouncementQueryAdapter {
             final LocalDateTime since) {
         return teamMemberAnnouncementRepository.findRecentPublicAnnouncementsNotAdvertised(since);
     }
+
+    public List<TeamMemberAnnouncement> findAllByIsNotPermanentRecruitment() {
+        return teamMemberAnnouncementRepository.findAllByIsNotPermanentRecruitment();
+    }
 }
