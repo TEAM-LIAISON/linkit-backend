@@ -217,7 +217,8 @@ public class TeamProductControllerTest extends ControllerTest {
                                                 .build()))
                         .build();
         // when
-        when(teamProductService.getTeamProductViewItems(any())).thenReturn(teamProductViewItems);
+        when(teamProductService.getTeamProductViewItems(any(), any()))
+                .thenReturn(teamProductViewItems);
 
         final ResultActions resultActions = performGetTeamProductViewItems("liaison");
         // then

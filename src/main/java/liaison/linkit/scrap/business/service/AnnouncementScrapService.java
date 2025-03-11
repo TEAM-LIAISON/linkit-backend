@@ -16,7 +16,7 @@ import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapCommand
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
 import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapRequestDTO.UpdateAnnouncementScrapRequest;
 import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapResponseDTO;
-import liaison.linkit.team.business.assembler.AnnouncementInformMenuAssembler;
+import liaison.linkit.team.business.assembler.announcement.AnnouncementInformMenuAssembler;
 import liaison.linkit.team.business.mapper.announcement.AnnouncementSkillMapper;
 import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
 import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;

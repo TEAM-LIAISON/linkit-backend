@@ -39,6 +39,7 @@ public class TeamProductResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TeamProductViewItems {
+        private Boolean isMyTeam;
         @Builder.Default private List<TeamProductViewItem> teamProductViewItems = new ArrayList<>();
     }
 

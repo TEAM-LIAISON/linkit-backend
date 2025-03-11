@@ -1,6 +1,7 @@
 package liaison.linkit.team.presentation.product;
 
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.validation.Valid;
 
@@ -35,8 +36,12 @@ public class TeamProductController {
     @GetMapping("/view")
     @Logging(item = "Team_Product", action = "GET_TEAM_PRODUCT_VIEW_ITEMS", includeResult = true)
     public CommonResponse<TeamProductResponseDTO.TeamProductViewItems> getTeamProductViewItems(
-            @PathVariable final String teamCode) {
-        return CommonResponse.onSuccess(teamProductService.getTeamProductViewItems(teamCode));
+            @Auth final Accessor accessor, @PathVariable final String teamCode) {
+        Optional<Long> optionalMemberId =
+                accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+
+        return CommonResponse.onSuccess(
+                teamProductService.getTeamProductViewItems(optionalMemberId, teamCode));
     }
 
     // 팀 프로덕트 전체 조회

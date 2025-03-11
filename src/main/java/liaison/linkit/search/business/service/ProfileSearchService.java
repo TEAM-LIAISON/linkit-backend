@@ -11,7 +11,7 @@ import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.Profil
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import liaison.linkit.search.presentation.dto.profile.ProfileListResponseDTO;
-import liaison.linkit.team.business.assembler.AnnouncementInformMenuAssembler;
+import liaison.linkit.team.business.assembler.announcement.AnnouncementInformMenuAssembler;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

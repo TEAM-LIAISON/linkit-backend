@@ -6,7 +6,7 @@ import java.util.Optional;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import liaison.linkit.search.presentation.dto.team.TeamListResponseDTO;
-import liaison.linkit.team.business.assembler.TeamInformMenuAssembler;
+import liaison.linkit.team.business.assembler.team.TeamInformMenuAssembler;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;

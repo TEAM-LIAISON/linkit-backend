@@ -218,7 +218,7 @@ public class TeamHistoryControllerTest extends ControllerTest {
                         .build();
 
         // when
-        when(teamHistoryService.getTeamHistoryCalendarResponses(any()))
+        when(teamHistoryService.getTeamHistoryCalendarResponses(any(), any()))
                 .thenReturn(teamHistoryCalendarResponse);
 
         final ResultActions resultActions = performGetTeamHistoryCalendarResponses("liaison");
