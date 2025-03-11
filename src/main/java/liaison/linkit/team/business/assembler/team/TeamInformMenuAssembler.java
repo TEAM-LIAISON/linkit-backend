@@ -1,4 +1,4 @@
-package liaison.linkit.team.business.assembler;
+package liaison.linkit.team.business.assembler.team;
 
 import java.util.List;
 import java.util.Optional;
