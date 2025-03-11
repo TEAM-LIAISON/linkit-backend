@@ -33,8 +33,18 @@ public class TeamLogQueryAdapter {
                 .orElseThrow(() -> TeamLogNotFoundException.EXCEPTION);
     }
 
+    public TeamLog getRepresentativePublicTeamLog(final Long teamId) {
+        return teamLogRepository
+                .findRepresentativePublicTeamLog(teamId)
+                .orElseThrow(() -> TeamLogNotFoundException.EXCEPTION);
+    }
+
     public boolean existsRepresentativeTeamLogByTeam(final Long teamId) {
         return teamLogRepository.existsRepresentativeTeamLogByTeam(teamId);
+    }
+
+    public boolean existsRepresentativePublicTeamLogByTeam(final Long teamId) {
+        return teamLogRepository.existsRepresentativePublicTeamLogByTeam(teamId);
     }
 
     public List<TeamLog> findTopView(final int limit) {

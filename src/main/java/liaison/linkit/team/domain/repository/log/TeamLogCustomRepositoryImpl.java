@@ -22,7 +22,8 @@ public class TeamLogCustomRepositoryImpl implements TeamLogCustomRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    @PersistenceContext private EntityManager entityManager; // EntityManager 주입
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public List<TeamLog> getTeamLogs(final Long teamId) {
@@ -124,6 +125,24 @@ public class TeamLogCustomRepositoryImpl implements TeamLogCustomRepository {
     }
 
     @Override
+    public Optional<TeamLog> findRepresentativePublicTeamLog(final Long teamId) {
+        QTeamLog qTeamLog = QTeamLog.teamLog;
+
+        TeamLog teamLog =
+                queryFactory
+                        .selectFrom(qTeamLog)
+                        .where(
+                                qTeamLog.team
+                                        .id
+                                        .eq(teamId)
+                                        .and(qTeamLog.logType.eq(LogType.REPRESENTATIVE_LOG))
+                                        .and(qTeamLog.isLogPublic.eq(true)))
+                        .fetchFirst();
+
+        return Optional.ofNullable(teamLog);
+    }
+
+    @Override
     public TeamLog updateTeamLogPublicState(
             final TeamLog teamLog, final boolean isTeamLogCurrentPublicState) {
         QTeamLog qTeamLog = QTeamLog.teamLog;
@@ -152,16 +171,34 @@ public class TeamLogCustomRepositoryImpl implements TeamLogCustomRepository {
         QTeamLog qTeamLog = QTeamLog.teamLog;
 
         return queryFactory
-                        .selectOne()
-                        .from(qTeamLog)
-                        .where(
-                                qTeamLog.team
-                                        .id
-                                        .eq(teamId)
-                                        .and(qTeamLog.logType.eq(LogType.REPRESENTATIVE_LOG)))
-                        .fetchFirst()
+                .selectOne()
+                .from(qTeamLog)
+                .where(
+                        qTeamLog.team
+                                .id
+                                .eq(teamId)
+                                .and(qTeamLog.logType.eq(LogType.REPRESENTATIVE_LOG)))
+                .fetchFirst()
                 != null;
     }
+
+    @Override
+    public boolean existsRepresentativePublicTeamLogByTeam(final Long teamId) {
+        QTeamLog qTeamLog = QTeamLog.teamLog;
+
+        return queryFactory
+                .selectOne()
+                .from(qTeamLog)
+                .where(
+                        qTeamLog.team
+                                .id
+                                .eq(teamId)
+                                .and(qTeamLog.logType.eq(LogType.REPRESENTATIVE_LOG))
+                                .and(qTeamLog.isLogPublic.eq(true)))
+                .fetchFirst()
+                != null;
+    }
+
 
     @Override
     public TeamLog updateTeamLog(
