@@ -117,7 +117,7 @@ public class AnnouncementCommonAssembler {
      * 로그인 상태인 경우, 공고 스크랩 여부를 조회합니다. 로그아웃 상태이면 false를 반환합니다.
      *
      * @param teamMemberAnnouncement 조회 대상 공고 엔티티.
-     * @param optionalMemberId       로그인한 회원의 ID(Optional).
+     * @param optionalMemberId 로그인한 회원의 ID(Optional).
      * @return 공고가 스크랩된 상태이면 true, 아니면 false.
      */
     public boolean checkAnnouncementScrap(
@@ -136,7 +136,7 @@ public class AnnouncementCommonAssembler {
      * 로그인 상태인 경우, 내가 관리자나 오너로 속해 있는 팀의 팀원 공고인지를 조회합니다. 로그아웃 상태이면 false를 반환합니다.
      *
      * @param teamMemberAnnouncement 조회 대상 공고 엔티티.
-     * @param optionalMemberId       로그인한 회원의 ID(Optional).
+     * @param optionalMemberId 로그인한 회원의 ID(Optional).
      * @return 내가 관리자나 오너로 속해 있으면 true, 아니면 false.
      */
     public boolean checkMyAnnouncement(
@@ -145,7 +145,8 @@ public class AnnouncementCommonAssembler {
         return optionalMemberId
                 .map(
                         memberId ->
-                                teamMemberQueryAdapter.isOwnerOrManagerOfTeam(teamMemberAnnouncement.getTeam().getId(), memberId))
+                                teamMemberQueryAdapter.isOwnerOrManagerOfTeam(
+                                        teamMemberAnnouncement.getTeam().getId(), memberId))
                 .orElse(false);
     }
 
