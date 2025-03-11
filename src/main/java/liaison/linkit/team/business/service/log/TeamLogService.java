@@ -107,7 +107,7 @@ public class TeamLogService {
             return teamLogMapper.toTeamLogItem(teamLog);
         }
 
-        return null;
+        return TeamLogItem.builder().build();
     }
 
     // 팀 로그 본문 이미지 추가
