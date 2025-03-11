@@ -3,9 +3,9 @@ package liaison.linkit.team.config;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementCommandAdapter;
@@ -74,23 +74,34 @@ public class AnnouncementProgressBatchConfig {
         // 전날 날짜 구하기
         LocalDate previousDay = executionDateTime.toLocalDate().minusDays(1);
 
-        // 전날의 시작 시간 (00:00:00)
-        LocalDateTime startDateTime = previousDay.atStartOfDay();
+        // 전날 날짜를 문자열로 변환 (YYYY-MM-DD 형식)
+        String previousDayString = previousDay.toString(); // 예: "2025-03-10"
 
-        // 전날의 종료 시간 (23:59:59.999999999)
-        LocalDateTime endDateTime = previousDay.atTime(LocalTime.MAX);
+        log.info("배치 처리 기준 날짜: {}", previousDayString);
 
-        log.info("배치 조회 시작 시간: {}", startDateTime);
-        log.info("배치 조회 종료 시간: {}", endDateTime);
+        // 상시 모집이 아닌 모든 공고 조회
+        List<TeamMemberAnnouncement> allNonPermanentAnnouncements =
+                teamMemberAnnouncementQueryAdapter.findAllByIsNotPermanentRecruitment();
 
-        List<TeamMemberAnnouncement> announcements =
-                teamMemberAnnouncementQueryAdapter
-                        .findAllByEndDateTimeBetweenAndIsNotPermanentRecruitment(
-                                startDateTime, endDateTime);
+        // 전날이 마감일인 공고만 필터링
+        List<TeamMemberAnnouncement> announcementsToProcess =
+                allNonPermanentAnnouncements.stream()
+                        .filter(
+                                announcement -> {
+                                    // 마감일자가 전날과 일치하는지 확인
+                                    String endDate = announcement.getAnnouncementEndDate();
 
-        log.info("처리할 마감 공고 수: {}", announcements.size());
+                                    // null 체크 및 공고가 아직 진행 중인지 확인
+                                    return endDate != null
+                                            && endDate.equals(previousDayString)
+                                            && announcement.isAnnouncementInProgress();
+                                })
+                        .collect(Collectors.toList());
 
-        return new ListItemReader<>(announcements);
+        log.info("전체 상시 모집이 아닌 공고 수: {}", allNonPermanentAnnouncements.size());
+        log.info("처리할 전날({}) 마감 공고 수: {}", previousDayString, announcementsToProcess.size());
+
+        return new ListItemReader<>(announcementsToProcess);
     }
 
     /** 모집 공고 처리 Processor - 공고 상태를 확인하고 DTO로 변환 */

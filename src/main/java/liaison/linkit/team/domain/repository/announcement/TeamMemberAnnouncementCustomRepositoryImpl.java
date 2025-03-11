@@ -814,16 +814,15 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
     }
 
     @Override
-    public List<TeamMemberAnnouncement> findAllByEndDateTimeBetweenAndIsNotPermanentRecruitment(
-            final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+    public List<TeamMemberAnnouncement> findAllByIsNotPermanentRecruitment() {
         QTeamMemberAnnouncement qTeamMemberAnnouncement =
                 QTeamMemberAnnouncement.teamMemberAnnouncement;
 
         return jpaQueryFactory
                 .selectFrom(qTeamMemberAnnouncement)
                 .where(
-                        qTeamMemberAnnouncement.createdAt.between(startDateTime, endDateTime),
                         qTeamMemberAnnouncement.status.eq(StatusType.USABLE),
+                        qTeamMemberAnnouncement.isAnnouncementInProgress.isTrue(),
                         qTeamMemberAnnouncement.isPermanentRecruitment.isFalse())
                 .orderBy(qTeamMemberAnnouncement.id.asc())
                 .fetch();
