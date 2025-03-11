@@ -17,10 +17,14 @@ public interface TeamLogCustomRepository {
 
     Optional<TeamLog> findRepresentativeTeamLog(final Long teamId);
 
+    Optional<TeamLog> findRepresentativePublicTeamLog(final Long teamId);
+
     TeamLog updateTeamLogPublicState(
             final TeamLog teamLog, final boolean isTeamLogCurrentPublicState);
 
     boolean existsRepresentativeTeamLogByTeam(final Long teamId);
+
+    boolean existsRepresentativePublicTeamLogByTeam(final Long teamId);
 
     TeamLog updateTeamLog(final TeamLog teamLog, final UpdateTeamLogRequest updateTeamLogRequest);
 
