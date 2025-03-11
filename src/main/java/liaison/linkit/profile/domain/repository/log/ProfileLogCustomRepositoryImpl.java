@@ -24,8 +24,7 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
 
     private final JPAQueryFactory queryFactory;
 
-    @PersistenceContext
-    private EntityManager entityManager; // EntityManager 주입
+    @PersistenceContext private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public List<ProfileLog> getProfileLogs(final Long memberId) {
@@ -152,6 +151,24 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
                                         .profile
                                         .id
                                         .eq(profileId)
+                                        .and(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG)))
+                        .fetchFirst();
+
+        return Optional.ofNullable(profileLog);
+    }
+
+    @Override
+    public Optional<ProfileLog> findRepresentativePublicProfileLog(final Long profileId) {
+        QProfileLog qProfileLog = QProfileLog.profileLog;
+
+        ProfileLog profileLog =
+                queryFactory
+                        .selectFrom(qProfileLog)
+                        .where(
+                                qProfileLog
+                                        .profile
+                                        .id
+                                        .eq(profileId)
                                         .and(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG))
                                         .and(qProfileLog.isLogPublic.eq(true)))
                         .fetchFirst();
@@ -164,10 +181,10 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
         QProfileLog qProfileLog = QProfileLog.profileLog;
 
         return queryFactory
-                .selectOne()
-                .from(qProfileLog)
-                .where(qProfileLog.profile.id.eq(profileId))
-                .fetchFirst()
+                        .selectOne()
+                        .from(qProfileLog)
+                        .where(qProfileLog.profile.id.eq(profileId))
+                        .fetchFirst()
                 != null;
     }
 
@@ -176,16 +193,33 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
         QProfileLog qProfileLog = QProfileLog.profileLog;
 
         return queryFactory
-                .selectOne()
-                .from(qProfileLog)
-                .where(
-                        qProfileLog
-                                .profile
-                                .id
-                                .eq(profileId)
-                                .and(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG))
-                                .and(qProfileLog.isLogPublic.eq(true)))
-                .fetchFirst()
+                        .selectOne()
+                        .from(qProfileLog)
+                        .where(
+                                qProfileLog
+                                        .profile
+                                        .id
+                                        .eq(profileId)
+                                        .and(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG)))
+                        .fetchFirst()
+                != null;
+    }
+
+    @Override
+    public boolean existsRepresentativePublicProfileLogByProfile(final Long profileId) {
+        QProfileLog qProfileLog = QProfileLog.profileLog;
+
+        return queryFactory
+                        .selectOne()
+                        .from(qProfileLog)
+                        .where(
+                                qProfileLog
+                                        .profile
+                                        .id
+                                        .eq(profileId)
+                                        .and(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG))
+                                        .and(qProfileLog.isLogPublic.eq(true)))
+                        .fetchFirst()
                 != null;
     }
 

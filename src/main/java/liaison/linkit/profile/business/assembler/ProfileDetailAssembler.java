@@ -96,11 +96,24 @@ public class ProfileDetailAssembler {
     // 프로필 로그 정보를 조회하여 ProfileLogItem으로 매핑
     private ProfileLogItem resolveProfileLogItem(
             final Profile targetProfile, final boolean isMyProfile) {
-        if (profileLogQueryAdapter.existsRepresentativeProfileLogByProfile(targetProfile.getId())) {
-            ProfileLog profileLog =
-                    profileLogQueryAdapter.getRepresentativeProfileLog(targetProfile.getId());
-            return profileLogMapper.toProfileLogItem(profileLog);
+
+        if (isMyProfile) {
+            if (profileLogQueryAdapter.existsRepresentativeProfileLogByProfile(
+                    targetProfile.getId())) {
+                ProfileLog profileLog =
+                        profileLogQueryAdapter.getRepresentativeProfileLog(targetProfile.getId());
+                return profileLogMapper.toProfileLogItem(profileLog);
+            }
+        } else {
+            if (profileLogQueryAdapter.existsRepresentativePublicProfileLogByProfile(
+                    targetProfile.getId())) {
+                ProfileLog profileLog =
+                        profileLogQueryAdapter.getRepresentativePublicProfileLog(
+                                targetProfile.getId());
+                return profileLogMapper.toProfileLogItem(profileLog);
+            }
         }
+
         return new ProfileLogItem();
     }
 

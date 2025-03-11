@@ -34,12 +34,22 @@ public class ProfileLogQueryAdapter {
                 .orElseThrow(() -> ProfileLogNotFoundException.EXCEPTION);
     }
 
+    public ProfileLog getRepresentativePublicProfileLog(final Long profileId) {
+        return profileLogRepository
+                .findRepresentativePublicProfileLog(profileId)
+                .orElseThrow(() -> ProfileLogNotFoundException.EXCEPTION);
+    }
+
     public boolean existsProfileLogByProfileId(final Long profileId) {
         return profileLogRepository.existsProfileLogByProfileId(profileId);
     }
 
     public boolean existsRepresentativeProfileLogByProfile(final Long profileId) {
         return profileLogRepository.existsRepresentativeProfileLogByProfile(profileId);
+    }
+
+    public boolean existsRepresentativePublicProfileLogByProfile(final Long profileId) {
+        return profileLogRepository.existsRepresentativePublicProfileLogByProfile(profileId);
     }
 
     public List<ProfileLog> findTopView(final int limit) {
