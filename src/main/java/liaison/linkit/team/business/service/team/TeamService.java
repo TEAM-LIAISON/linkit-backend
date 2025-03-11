@@ -20,8 +20,8 @@ import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.Noti
 import liaison.linkit.notification.service.HeaderNotificationService;
 import liaison.linkit.notification.service.NotificationService;
 import liaison.linkit.profile.domain.region.Region;
-import liaison.linkit.team.business.assembler.TeamDetailAssembler;
-import liaison.linkit.team.business.assembler.TeamInformMenuAssembler;
+import liaison.linkit.team.business.assembler.team.TeamDetailAssembler;
+import liaison.linkit.team.business.assembler.team.TeamInformMenuAssembler;
 import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
 import liaison.linkit.team.business.mapper.state.TeamCurrentStateMapper;
 import liaison.linkit.team.business.mapper.team.TeamMapper;
