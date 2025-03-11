@@ -19,7 +19,9 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -39,7 +41,7 @@ public class AnnouncementProgressBatchConfig {
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
     private final TeamMemberAnnouncementCommandAdapter teamMemberAnnouncementCommandAdapter;
 
-    /** 모집 공고 광고 이메일 발송 작업 */
+    /** 모집 공고 상태 업데이트 작업 */
     @Bean
     public Job announcementProgressJob() {
         return new JobBuilder("announcementProgressJob", jobRepository)
@@ -47,7 +49,7 @@ public class AnnouncementProgressBatchConfig {
                 .build();
     }
 
-    /** 모집 공고 광고 이메일 발송 스텝 */
+    /** 모집 공고 상태 업데이트 스텝 */
     @Bean
     public Step announcementProgressStep() {
         return new StepBuilder("announcementProgressStep", jobRepository)
@@ -86,6 +88,50 @@ public class AnnouncementProgressBatchConfig {
                         .findAllByEndDateTimeBetweenAndIsNotPermanentRecruitment(
                                 startDateTime, endDateTime);
 
+        log.info("처리할 마감 공고 수: {}", announcements.size());
+
         return new ListItemReader<>(announcements);
+    }
+
+    /** 모집 공고 처리 Processor - 공고 상태를 확인하고 DTO로 변환 */
+    @Bean
+    public ItemProcessor<TeamMemberAnnouncement, AnnouncementProgressDTO>
+            announcementProgressProcessor() {
+        return announcement -> {
+            try {
+                log.debug("공고 ID {} 처리 중", announcement.getId());
+
+                // 공고의 현재 상태 체크 필요 시 여기서 수행
+
+                // DTO로 변환 - 마감 처리 필요한 것으로 표시
+                AnnouncementProgressDTO progressDTO = new AnnouncementProgressDTO();
+                progressDTO.setTeamMemberAnnouncement(announcement);
+                progressDTO.setTeamMemberAnnouncementInProgress(false); // 마감 처리
+
+                return progressDTO;
+            } catch (Exception e) {
+                log.error("공고 ID {}: 처리 중 오류 발생: {}", announcement.getId(), e.getMessage(), e);
+                return null; // 오류 발생 시 해당 항목 건너뛰기
+            }
+        };
+    }
+
+    /** 마감 처리된 공고 정보를 저장하는 Writer */
+    @Bean
+    @StepScope
+    public ItemWriter<AnnouncementProgressDTO> announcementProgressWriter() {
+        return items -> {
+            log.info("총 {} 개의 공고 마감 처리 시작", items.size());
+
+            for (AnnouncementProgressDTO item : items) {
+                log.debug("공고 ID {} 상태 업데이트", item.getTeamMemberAnnouncement().getId());
+
+                teamMemberAnnouncementCommandAdapter.updateTeamMemberAnnouncementClosedState(
+                        item.getTeamMemberAnnouncement(),
+                        item.isTeamMemberAnnouncementInProgress());
+            }
+
+            log.info("공고 마감 처리 완료");
+        };
     }
 }
