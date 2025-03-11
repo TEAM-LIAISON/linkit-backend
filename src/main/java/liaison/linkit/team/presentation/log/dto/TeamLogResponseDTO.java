@@ -30,6 +30,7 @@ public class TeamLogResponseDTO {
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class TeamLogItem {
+        private Boolean isMyTeam;
         private Long teamLogId;
         private Boolean isLogPublic;
         private LogType logType;

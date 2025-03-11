@@ -416,10 +416,10 @@ public class TeamLogControllerTest extends ControllerTest {
         // given
         final TeamLogResponseDTO.TeamLogItem teamLogItem =
                 new TeamLogItem(
-                        1L, true, REPRESENTATIVE_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
+                        true, 1L, true, REPRESENTATIVE_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
 
         // when
-        when(teamLogService.getTeamLogItem(any(), anyLong())).thenReturn(teamLogItem);
+        when(teamLogService.getTeamLogItem(any(), any(), anyLong())).thenReturn(teamLogItem);
 
         final ResultActions resultActions = performGetTeamLogItem("liaison", 1L);
 
@@ -494,7 +494,7 @@ public class TeamLogControllerTest extends ControllerTest {
                         .logContent("로그 내용")
                         .build();
 
-        when(teamLogService.getRepresentTeamLogItem(any())).thenReturn(teamLogItem);
+        when(teamLogService.getRepresentTeamLogItem(any(), any())).thenReturn(teamLogItem);
 
         final ResultActions resultActions = performGetRepresentTeamLogItem("liaison");
 

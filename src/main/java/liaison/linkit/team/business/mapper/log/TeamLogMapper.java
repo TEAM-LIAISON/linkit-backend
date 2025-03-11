@@ -7,13 +7,14 @@ import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.image.domain.Image;
 import liaison.linkit.team.domain.log.TeamLog;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO;
-import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.TeamLogItem;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.UpdateTeamLogResponse;
 
 @Mapper
 public class TeamLogMapper {
-    public TeamLogResponseDTO.TeamLogItem toTeamLogItem(final TeamLog teamLog) {
+    public TeamLogResponseDTO.TeamLogItem toTeamLogItem(
+            final boolean isMyTeam, final TeamLog teamLog) {
         return TeamLogResponseDTO.TeamLogItem.builder()
+                .isMyTeam(isMyTeam)
                 .teamLogId(teamLog.getId())
                 .isLogPublic(teamLog.isLogPublic())
                 .logType(teamLog.getLogType())
@@ -23,9 +24,12 @@ public class TeamLogMapper {
                 .build();
     }
 
-    public TeamLogResponseDTO.TeamLogItems toTeamLogItems(final List<TeamLog> teamLogs) {
-        List<TeamLogItem> items =
-                teamLogs.stream().map(this::toTeamLogItem).collect(Collectors.toList());
+    public TeamLogResponseDTO.TeamLogItems toTeamLogItems(
+            final boolean isMyTeam, final List<TeamLog> teamLogs) {
+        List<TeamLogResponseDTO.TeamLogItem> items =
+                teamLogs.stream()
+                        .map(teamLog -> toTeamLogItem(isMyTeam, teamLog))
+                        .collect(Collectors.toList());
 
         return TeamLogResponseDTO.TeamLogItems.builder().teamLogItems(items).build();
     }
