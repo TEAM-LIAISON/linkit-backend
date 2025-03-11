@@ -22,7 +22,7 @@ import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.Updat
 public class TeamHistoryMapper {
 
     public TeamHistoryResponseDTO.TeamHistoryCalendarResponse toTeamHistoryCalendar(
-            final List<TeamHistory> teamHistories) {
+            final Boolean isMyTeam, final List<TeamHistory> teamHistories) {
         List<TeamHistoryViewItem> teamHistoryViewItems =
                 teamHistories.stream().map(this::toTeamHistoryViewItem).toList();
 
@@ -47,6 +47,7 @@ public class TeamHistoryMapper {
                 convertToNestedList(sortedGroupByYearMonth);
 
         return TeamHistoryCalendarResponse.builder()
+                .isMyTeam(isMyTeam)
                 .teamHistoryCalendar(finalCalendarStructure)
                 .build();
     }

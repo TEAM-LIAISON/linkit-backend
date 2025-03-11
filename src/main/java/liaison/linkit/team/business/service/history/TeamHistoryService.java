@@ -1,6 +1,7 @@
 package liaison.linkit.team.business.service.history;
 
 import java.util.List;
+import java.util.Optional;
 
 import liaison.linkit.team.business.mapper.history.TeamHistoryMapper;
 import liaison.linkit.team.domain.history.TeamHistory;
@@ -33,9 +34,21 @@ public class TeamHistoryService {
 
     @Transactional(readOnly = true)
     public TeamHistoryResponseDTO.TeamHistoryCalendarResponse getTeamHistoryCalendarResponses(
-            final String teamCode) {
+            final Optional<Long> optionalMemberId, final String teamCode) {
+
+        Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
+
+        boolean isMyTeam =
+                optionalMemberId
+                        .map(
+                                memberId ->
+                                        teamMemberQueryAdapter.isOwnerOrManagerOfTeam(
+                                                targetTeam.getId(), memberId))
+                        .orElse(false);
+
         final List<TeamHistory> teamHistories = teamHistoryQueryAdapter.getTeamHistories(teamCode);
-        return teamHistoryMapper.toTeamHistoryCalendar(teamHistories);
+
+        return teamHistoryMapper.toTeamHistoryCalendar(isMyTeam, teamHistories);
     }
 
     @Transactional(readOnly = true)
