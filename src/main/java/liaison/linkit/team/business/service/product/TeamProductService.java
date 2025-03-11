@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import liaison.linkit.common.validator.ImageValidator;
 import liaison.linkit.file.domain.ImageFile;
@@ -57,15 +58,24 @@ public class TeamProductService {
 
     @Transactional(readOnly = true)
     public TeamProductResponseDTO.TeamProductViewItems getTeamProductViewItems(
-            final String teamCode) {
+            final Optional<Long> optionalMemberId, final String teamCode) {
 
-        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
+        final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
+
+        boolean isMyTeam =
+                optionalMemberId
+                        .map(
+                                memberId ->
+                                        teamMemberQueryAdapter.isOwnerOrManagerOfTeam(
+                                                targetTeam.getId(), memberId))
+                        .orElse(false);
+
         final List<TeamProduct> teamProducts =
-                teamProductQueryAdapter.getTeamProducts(team.getId());
+                teamProductQueryAdapter.getTeamProducts(targetTeam.getId());
         final Map<Long, List<ProductLink>> productLinksMap =
-                productLinkQueryAdapter.getProductLinksMap(team.getId());
+                productLinkQueryAdapter.getProductLinksMap(targetTeam.getId());
         return teamProductMapper.toTeamProductViewItems(
-                teamProducts, productLinksMap, productSubImageQueryAdapter);
+                isMyTeam, teamProducts, productLinksMap, productSubImageQueryAdapter);
     }
 
     @Transactional(readOnly = true)
