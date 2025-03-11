@@ -24,7 +24,8 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
 
     private final JPAQueryFactory queryFactory;
 
-    @PersistenceContext private EntityManager entityManager; // EntityManager 주입
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public List<ProfileLog> getProfileLogs(final Long memberId) {
@@ -181,10 +182,10 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
         QProfileLog qProfileLog = QProfileLog.profileLog;
 
         return queryFactory
-                        .selectOne()
-                        .from(qProfileLog)
-                        .where(qProfileLog.profile.id.eq(profileId))
-                        .fetchFirst()
+                .selectOne()
+                .from(qProfileLog)
+                .where(qProfileLog.profile.id.eq(profileId))
+                .fetchFirst()
                 != null;
     }
 
@@ -193,15 +194,16 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
         QProfileLog qProfileLog = QProfileLog.profileLog;
 
         return queryFactory
-                        .selectOne()
-                        .from(qProfileLog)
-                        .where(
-                                qProfileLog
-                                        .profile
-                                        .id
-                                        .eq(profileId)
-                                        .and(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG)))
-                        .fetchFirst()
+                .selectOne()
+                .from(qProfileLog)
+                .where(
+                        qProfileLog
+                                .profile
+                                .id
+                                .eq(profileId)
+                                .and(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG))
+                                .and(qProfileLog.isLogPublic.eq(true)))
+                .fetchFirst()
                 != null;
     }
 
