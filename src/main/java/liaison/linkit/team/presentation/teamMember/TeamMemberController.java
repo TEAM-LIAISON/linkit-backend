@@ -1,5 +1,7 @@
 package liaison.linkit.team.presentation.teamMember;
 
+import java.util.Optional;
+
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
@@ -36,8 +38,13 @@ public class TeamMemberController {
     @GetMapping("/members/view")
     @Logging(item = "Team_Member", action = "GET_TEAM_MEMBER_VIEW_ITEMS", includeResult = true)
     public CommonResponse<TeamMemberViewItems> getTeamMemberViewItems(
-            @PathVariable final String teamCode) {
-        return CommonResponse.onSuccess(teamMemberService.getTeamMemberViewItems(teamCode));
+            @Auth final Accessor accessor, @PathVariable final String teamCode) {
+
+        Optional<Long> optionalMemberId =
+                accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+
+        return CommonResponse.onSuccess(
+                teamMemberService.getTeamMemberViewItems(optionalMemberId, teamCode));
     }
 
     // 팀원 목록 조회 (명세 완료)

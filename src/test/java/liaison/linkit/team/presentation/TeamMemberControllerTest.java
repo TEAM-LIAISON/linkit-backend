@@ -199,7 +199,8 @@ public class TeamMemberControllerTest extends ControllerTest {
                         .build();
 
         // when
-        when(teamMemberService.getTeamMemberViewItems(any())).thenReturn(teamMemberViewItems);
+        when(teamMemberService.getTeamMemberViewItems(any(), any()))
+                .thenReturn(teamMemberViewItems);
 
         final ResultActions resultActions = performGetTeamMemberViewItems("liaison");
 

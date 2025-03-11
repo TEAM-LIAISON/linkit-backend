@@ -2,6 +2,7 @@ package liaison.linkit.team.business.service.teamMember;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.mail.MessagingException;
 
@@ -89,19 +90,30 @@ public class TeamMemberService {
     private final TeamCommandAdapter teamCommandAdapter;
     private final DeleteUtil deleteUtil;
 
-    public TeamMemberViewItems getTeamMemberViewItems(final String teamCode) {
+    public TeamMemberViewItems getTeamMemberViewItems(
+            final Optional<Long> optionalMemberId, final String teamCode) {
         // 1. 팀 조회
-        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
+        final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
+
+        // 1.1. 나의 팀인지 조회
+        boolean isMyTeam =
+                optionalMemberId
+                        .map(
+                                memberId ->
+                                        teamMemberQueryAdapter.isOwnerOrManagerOfTeam(
+                                                targetTeam.getId(), memberId))
+                        .orElse(false);
 
         // 2. 팀 멤버 조회 (TeamMember)에 등록된 팀원만 조회된다. (수락한 팀원)
-        final List<TeamMember> teamMembers = teamMemberQueryAdapter.getTeamMembers(team.getId());
+        final List<TeamMember> teamMembers =
+                teamMemberQueryAdapter.getTeamMembers(targetTeam.getId());
 
         // 초대 수락 완료된 팀 멤버들을 AcceptedTeamMemberItem 리스트로 매핑
         final List<AcceptedTeamMemberItem> acceptedTeamMemberItems =
                 getAcceptedTeamMemberItems(teamMembers);
 
         // 5. 응답 DTO 생성 및 반환
-        return teamMemberMapper.toTeamMemberItems(acceptedTeamMemberItems);
+        return teamMemberMapper.toTeamMemberItems(isMyTeam, acceptedTeamMemberItems);
     }
 
     public TeamMemberResponseDTO.AddTeamMemberResponse addTeamMember(
@@ -197,6 +209,9 @@ public class TeamMemberService {
         // 팀 이름으로 팀 정보 조회
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
 
+        final boolean isMyTeam =
+                teamMemberQueryAdapter.isOwnerOrManagerOfTeam(team.getId(), memberId);
+
         // 해당 팀의 모든 팀 멤버 조회
         final List<TeamMember> teamMembers = teamMemberQueryAdapter.getTeamMembers(team.getId());
 
@@ -245,6 +260,7 @@ public class TeamMemberService {
 
         // 결과 객체 생성 및 반환
         return TeamMemberResponseDTO.TeamMemberItems.builder()
+                .isMyTeam(isMyTeam)
                 .isTeamOwner(isTeamOwner)
                 .isTeamManager(isTeamManager)
                 .acceptedTeamMemberItems(acceptedTeamMemberItems)
