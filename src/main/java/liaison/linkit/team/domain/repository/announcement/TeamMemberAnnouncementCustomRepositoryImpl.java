@@ -95,9 +95,6 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                 qTeamMemberAnnouncement.isPermanentRecruitment,
                                 request.getIsPermanentRecruitment())
                         .set(
-                                qTeamMemberAnnouncement.isAnnouncementInProgress,
-                                request.getIsAnnouncementInProgress())
-                        .set(
                                 qTeamMemberAnnouncement.isRegionFlexible,
                                 request.getIsRegionFlexible())
                         .set(qTeamMemberAnnouncement.mainTasks, request.getMainTasks())
