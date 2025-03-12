@@ -12,9 +12,9 @@ import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.UpdateTeamLog
 @Mapper
 public class TeamLogMapper {
     public TeamLogResponseDTO.TeamLogItem toTeamLogItem(
-            final boolean isMyTeam, final TeamLog teamLog) {
+            final boolean isTeamManager, final TeamLog teamLog) {
         return TeamLogResponseDTO.TeamLogItem.builder()
-                .isMyTeam(isMyTeam)
+                .isTeamManager(isTeamManager)
                 .teamLogId(teamLog.getId())
                 .isLogPublic(teamLog.isLogPublic())
                 .logType(teamLog.getLogType())
