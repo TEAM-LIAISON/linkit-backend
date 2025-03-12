@@ -6,12 +6,14 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
+import liaison.linkit.auth.config.AuthProperties;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.login.presentation.dto.AccountRequestDTO;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO;
 import liaison.linkit.login.service.LoginService;
+import liaison.linkit.login.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
@@ -30,9 +32,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class LoginController {
 
-    public static final int COOKIE_AGE_SECONDS = 604800;
-    public static final int ACCESS_COOKIE_AGE_SECONDS = 302400;
+    // 쿠키 만료 시간 상수
+    public static final int REFRESH_TOKEN_AGE_SECONDS = 604800; // 7일
+    public static final int ACCESS_TOKEN_AGE_SECONDS = 86400; // 1일 (실제 환경에 맞게 조정)
+    
     private final LoginService loginService;
+    private final AuthProperties authProperties;
 
     // 회원이 로그인한다
     @PostMapping("/login/{provider}")
@@ -44,36 +49,37 @@ public class LoginController {
         final AccountResponseDTO.LoginServiceResponse loginResponse =
                 loginService.login(provider, loginRequest.getCode());
 
-        // 새 AccessToken 쿠키 설정
-        ResponseCookie accessCookie =
-                ResponseCookie.from("accessToken", loginResponse.getAccessToken())
-                        .maxAge(ACCESS_COOKIE_AGE_SECONDS)
-                        .secure(true)
-                        .sameSite("None")
-                        .path("/")
-                        .httpOnly(true)
-                        .build();
+        // AccessToken 쿠키 설정 (CookieUtil 사용)
+        ResponseCookie accessCookie = CookieUtil.createAccessTokenCookie(
+                loginResponse.getAccessToken(), ACCESS_TOKEN_AGE_SECONDS);
 
-        // 필요시 새 RefreshToken 쿠키 설정
-        ResponseCookie refreshCookie =
-                ResponseCookie.from("refreshToken", loginResponse.getRefreshToken())
-                        .maxAge(COOKIE_AGE_SECONDS)
-                        .secure(true)
-                        .sameSite("None")
-                        .path("/")
-                        .httpOnly(true)
-                        .build();
+        // RefreshToken 쿠키 설정 (CookieUtil 사용)
+        ResponseCookie refreshCookie = CookieUtil.createRefreshTokenCookie(
+                loginResponse.getRefreshToken(), REFRESH_TOKEN_AGE_SECONDS);
 
         response.addHeader(SET_COOKIE, accessCookie.toString());
         response.addHeader(SET_COOKIE, refreshCookie.toString());
 
-        return CommonResponse.onSuccess(
-                new AccountResponseDTO.LoginResponse(
-                        loginResponse.getAccessToken(),
-                        loginResponse.getEmail(),
-                        loginResponse.getEmailId(),
-                        loginResponse.getMemberName(),
-                        loginResponse.getIsMemberBasicInform()));
+        // 인증 모드에 따라 응답 내용 조정
+        if ("cookie".equals(authProperties.getMode())) {
+            // 쿠키 전용 모드: 응답 본문에 토큰 포함하지 않음
+            return CommonResponse.onSuccess(
+                    new AccountResponseDTO.LoginResponse(
+                            null, // AccessToken 제외
+                            loginResponse.getEmail(),
+                            loginResponse.getEmailId(),
+                            loginResponse.getMemberName(),
+                            loginResponse.getIsMemberBasicInform()));
+        } else {
+            // 하이브리드 또는 헤더 모드: 응답 본문에 토큰 포함 (기존 호환성)
+            return CommonResponse.onSuccess(
+                    new AccountResponseDTO.LoginResponse(
+                            loginResponse.getAccessToken(),
+                            loginResponse.getEmail(),
+                            loginResponse.getEmailId(),
+                            loginResponse.getMemberName(),
+                            loginResponse.getIsMemberBasicInform()));
+        }
     }
 
     // accessToken을 재발행한다
