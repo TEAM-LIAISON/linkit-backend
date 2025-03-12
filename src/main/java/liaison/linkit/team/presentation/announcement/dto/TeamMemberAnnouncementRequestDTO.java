@@ -85,6 +85,8 @@ public class TeamMemberAnnouncementRequestDTO {
 
         private Boolean isPermanentRecruitment;
 
+        private Boolean isAnnouncementInProgress;
+
         @NotNull(message = "지역 무관 여부는 필수입니다")
         private Boolean isRegionFlexible;
 
@@ -103,6 +105,11 @@ public class TeamMemberAnnouncementRequestDTO {
         private String preferredQualifications;
         private String joiningProcess;
         private String benefits;
+
+        // 개별 setter 메서드 추가
+        public void setIsAnnouncementInProgress(final Boolean isAnnouncementInProgress) {
+            this.isAnnouncementInProgress = isAnnouncementInProgress;
+        }
     }
 
     @Builder
