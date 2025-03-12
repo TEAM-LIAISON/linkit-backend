@@ -44,9 +44,9 @@ public class LoginController {
         final AccountResponseDTO.LoginServiceResponse loginResponse =
                 loginService.login(provider, loginRequest.getCode());
 
-        // 1) refreshToken 쿠키 설정
-        final ResponseCookie cookie =
-                ResponseCookie.from("refreshToken", loginResponse.getRefreshToken())
+        // 새 AccessToken 쿠키 설정
+        ResponseCookie accessCookie =
+                ResponseCookie.from("accessToken", loginResponse.getAccessToken())
                         .maxAge(COOKIE_AGE_SECONDS)
                         .secure(true)
                         .sameSite("None")
@@ -54,7 +54,18 @@ public class LoginController {
                         .httpOnly(true)
                         .build();
 
-        response.addHeader(SET_COOKIE, cookie.toString());
+        // 필요시 새 RefreshToken 쿠키 설정
+        ResponseCookie refreshCookie =
+                ResponseCookie.from("refreshToken", loginResponse.getRefreshToken())
+                        .maxAge(ACCESS_COOKIE_AGE_SECONDS)
+                        .secure(true)
+                        .sameSite("None")
+                        .path("/")
+                        .httpOnly(true)
+                        .build();
+
+        response.addHeader(SET_COOKIE, accessCookie.toString());
+        response.addHeader(SET_COOKIE, refreshCookie.toString());
 
         return CommonResponse.onSuccess(
                 new AccountResponseDTO.LoginResponse(
