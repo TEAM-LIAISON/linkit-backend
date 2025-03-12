@@ -26,7 +26,8 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*") // 모든 요청 헤더 허용
                 .allowCredentials(true) // 쿠키 허용 (필수)
-                .exposedHeaders(HttpHeaders.LOCATION, HttpHeaders.SET_COOKIE); // Set-Cookie 헤더 노출 추가
+                .exposedHeaders(
+                        HttpHeaders.LOCATION, HttpHeaders.SET_COOKIE); // Set-Cookie 헤더 노출 추가
     }
 
     @Override

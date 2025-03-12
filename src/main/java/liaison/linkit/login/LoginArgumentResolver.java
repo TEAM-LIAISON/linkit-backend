@@ -8,6 +8,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 import liaison.linkit.auth.Auth;
+import liaison.linkit.auth.config.AuthProperties;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.exception.RefreshTokenExpiredException;
 import liaison.linkit.login.domain.MemberTokens;
