@@ -142,6 +142,7 @@ public class TeamHistoryControllerTest extends ControllerTest {
         // given
         final TeamHistoryResponseDTO.TeamHistoryCalendarResponse teamHistoryCalendarResponse =
                 TeamHistoryCalendarResponse.builder()
+                        .isTeamManager(true)
                         .teamHistoryCalendar(
                                 List.of(
                                         Map.of(
@@ -249,6 +250,9 @@ public class TeamHistoryControllerTest extends ControllerTest {
                                                         .type(JsonFieldType.STRING)
                                                         .description("요청 성공 메시지")
                                                         .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("result.isTeamManager")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("팀 오너/관리자 여부"),
                                                 subsectionWithPath("result.teamHistoryCalendar")
                                                         .type(JsonFieldType.ARRAY)
                                                         .description("팀 연혁 캘린더 배열"))))

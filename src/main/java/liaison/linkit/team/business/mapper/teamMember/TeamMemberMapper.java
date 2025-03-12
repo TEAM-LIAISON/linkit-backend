@@ -40,7 +40,8 @@ public class TeamMemberMapper {
     }
 
     public TeamMemberViewItems toTeamMemberItems(
-            final boolean isTeamManager, final List<AcceptedTeamMemberItem> acceptedTeamMemberItems) {
+            final boolean isTeamManager,
+            final List<AcceptedTeamMemberItem> acceptedTeamMemberItems) {
         return TeamMemberViewItems.builder()
                 .isTeamManager(isTeamManager)
                 .acceptedTeamMemberItems(acceptedTeamMemberItems)

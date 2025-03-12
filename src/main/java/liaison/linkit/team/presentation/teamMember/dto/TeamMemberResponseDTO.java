@@ -54,8 +54,7 @@ public class TeamMemberResponseDTO {
         private String memberName; // 회원 이름
         private String majorPosition; // 주요 포지션
 
-        @Builder.Default
-        private RegionDetail regionDetail = new RegionDetail();
+        @Builder.Default private RegionDetail regionDetail = new RegionDetail();
 
         private TeamMemberType teamMemberType; // 초대 요청 시 회원 타입
         private TeamMemberInviteState
@@ -85,8 +84,7 @@ public class TeamMemberResponseDTO {
         private Boolean isProfilePublic;
         private String majorPosition;
 
-        @Builder.Default
-        private RegionDetail regionDetail = new RegionDetail();
+        @Builder.Default private RegionDetail regionDetail = new RegionDetail();
     }
 
     @Getter

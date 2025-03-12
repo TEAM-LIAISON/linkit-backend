@@ -230,9 +230,9 @@ public class TeamMemberService {
                                 teamMember ->
                                         teamMember.getMember().getId().equals(memberId)
                                                 && (teamMember.getTeamMemberType()
-                                                == TeamMemberType.TEAM_MANAGER
-                                                || teamMember.getTeamMemberType()
-                                                == TeamMemberType.TEAM_OWNER));
+                                                                == TeamMemberType.TEAM_MANAGER
+                                                        || teamMember.getTeamMemberType()
+                                                                == TeamMemberType.TEAM_OWNER));
 
         // 초대 수락 완료된 팀 멤버들을 AcceptedTeamMemberItem 리스트로 매핑
         final List<AcceptedTeamMemberItem> acceptedTeamMemberItems =

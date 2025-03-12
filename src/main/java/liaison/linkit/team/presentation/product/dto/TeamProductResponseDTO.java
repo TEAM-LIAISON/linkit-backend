@@ -31,8 +31,7 @@ public class TeamProductResponseDTO {
 
         private String productDescription;
 
-        @Builder.Default
-        private TeamProductImages teamProductImages = new TeamProductImages();
+        @Builder.Default private TeamProductImages teamProductImages = new TeamProductImages();
     }
 
     @Builder
@@ -41,8 +40,7 @@ public class TeamProductResponseDTO {
     @AllArgsConstructor
     public static class TeamProductViewItems {
         private Boolean isTeamManager;
-        @Builder.Default
-        private List<TeamProductViewItem> teamProductViewItems = new ArrayList<>();
+        @Builder.Default private List<TeamProductViewItem> teamProductViewItems = new ArrayList<>();
     }
 
     @Builder
@@ -65,8 +63,7 @@ public class TeamProductResponseDTO {
 
         private String productDescription;
 
-        @Builder.Default
-        private TeamProductImages teamProductImages = new TeamProductImages();
+        @Builder.Default private TeamProductImages teamProductImages = new TeamProductImages();
     }
 
     @Builder
@@ -95,8 +92,7 @@ public class TeamProductResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TeamProductItems {
-        @Builder.Default
-        private List<TeamProductItem> teamProductItems = new ArrayList<>();
+        @Builder.Default private List<TeamProductItem> teamProductItems = new ArrayList<>();
     }
 
     @Builder
@@ -120,8 +116,7 @@ public class TeamProductResponseDTO {
 
         private String productDescription;
 
-        @Builder.Default
-        private TeamProductImages teamProductImages = new TeamProductImages();
+        @Builder.Default private TeamProductImages teamProductImages = new TeamProductImages();
     }
 
     @Builder
@@ -144,8 +139,7 @@ public class TeamProductResponseDTO {
 
         private String productDescription;
 
-        @Builder.Default
-        private TeamProductImages teamProductImages = new TeamProductImages();
+        @Builder.Default private TeamProductImages teamProductImages = new TeamProductImages();
     }
 
     @Builder
@@ -173,8 +167,7 @@ public class TeamProductResponseDTO {
     public static class TeamProductImages {
         private String productRepresentImagePath; // 대표 이미지
 
-        @Builder.Default
-        private List<ProductSubImage> productSubImages = new ArrayList<>();
+        @Builder.Default private List<ProductSubImage> productSubImages = new ArrayList<>();
     }
 
     @Builder

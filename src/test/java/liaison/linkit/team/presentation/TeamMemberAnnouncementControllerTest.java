@@ -389,6 +389,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
         // given
         final TeamMemberAnnouncementItems teamMemberAnnouncementItems =
                 TeamMemberAnnouncementItems.builder()
+                        .isTeamManager(true)
                         .teamMemberAnnouncementItems(
                                 Arrays.asList(
                                         TeamMemberAnnouncementItem.builder()
@@ -481,6 +482,9 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                 fieldWithPath("result")
                                                         .type(JsonFieldType.OBJECT)
                                                         .description("응답 데이터 객체"),
+                                                fieldWithPath("result.isTeamManager")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("팀 오너/관리자 여부"),
                                                 fieldWithPath("result.teamMemberAnnouncementItems")
                                                         .type(JsonFieldType.ARRAY)
                                                         .description("팀원 공고 ViewItems 리스트"),
@@ -554,6 +558,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
         final TeamMemberAnnouncementDetail teamMemberAnnouncementDetail =
                 TeamMemberAnnouncementDetail.builder()
                         .teamMemberAnnouncementId(1L)
+                        .isMyTeamAnnouncement(true)
                         .isAnnouncementScrap(true)
                         .announcementScrapCount(100)
                         .announcementDDay(20)
@@ -625,6 +630,9 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                 fieldWithPath("result.teamMemberAnnouncementId")
                                                         .type(JsonFieldType.NUMBER)
                                                         .description("팀원 공고 ID"),
+                                                fieldWithPath("result.isMyTeamAnnouncement")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("내가 오너/관리자로 속해 있는 팀의 공고인지 여부"),
                                                 fieldWithPath("result.isAnnouncementScrap")
                                                         .type(JsonFieldType.BOOLEAN)
                                                         .description("팀원 공고 스크랩 여부"),

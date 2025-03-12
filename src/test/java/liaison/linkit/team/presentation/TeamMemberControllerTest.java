@@ -166,6 +166,7 @@ public class TeamMemberControllerTest extends ControllerTest {
         // given
         final TeamMemberViewItems teamMemberViewItems =
                 TeamMemberViewItems.builder()
+                        .isTeamManager(true)
                         .acceptedTeamMemberItems(
                                 Arrays.asList(
                                         AcceptedTeamMemberItem.builder()
@@ -233,6 +234,9 @@ public class TeamMemberControllerTest extends ControllerTest {
                                                 fieldWithPath("result")
                                                         .type(JsonFieldType.OBJECT)
                                                         .description("결과 데이터"),
+                                                fieldWithPath("result.isTeamManager")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("팀 오너/관리자 여부"),
                                                 fieldWithPath("result.acceptedTeamMemberItems")
                                                         .type(JsonFieldType.ARRAY)
                                                         .description("수락된 팀 멤버 목록"),
