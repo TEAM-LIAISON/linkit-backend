@@ -21,7 +21,8 @@ public class TeamHistoryResponseDTO {
         private Boolean isTeamManager;
 
         /**
-         * 최종 응답을 담을 필드. 예: [ { "2023" : [ { "01" : [ { ... }, { ... } ] }, { "02" : [ { ... }, { ... } ] } ] }, { "2024" : [...] } ]
+         * 최종 응답을 담을 필드. 예: [ { "2023" : [ { "01" : [ { ... }, { ... } ] }, { "02" : [ { ... }, {
+         * ... } ] } ] }, { "2024" : [...] } ]
          */
         private List<Map<String, List<Map<String, List<TeamHistoryViewItem>>>>> teamHistoryCalendar;
     }
@@ -69,8 +70,7 @@ public class TeamHistoryResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TeamHistoryItems {
-        @Builder.Default
-        private List<TeamHistoryItem> teamHistoryItems = new ArrayList<>();
+        @Builder.Default private List<TeamHistoryItem> teamHistoryItems = new ArrayList<>();
     }
 
     @Builder

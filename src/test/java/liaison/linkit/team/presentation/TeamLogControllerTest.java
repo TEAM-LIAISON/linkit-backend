@@ -336,10 +336,10 @@ public class TeamLogControllerTest extends ControllerTest {
         // given
         final TeamLogResponseDTO.TeamLogItem firstTeamLogItem =
                 new TeamLogItem(
-                        1L, true, REPRESENTATIVE_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
+                        true, 1L, true, REPRESENTATIVE_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
 
         final TeamLogResponseDTO.TeamLogItem secondTeamLogItem =
-                new TeamLogItem(2L, true, GENERAL_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
+                new TeamLogItem(true, 2L, true, GENERAL_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
 
         final TeamLogResponseDTO.TeamLogItems teamLogItems =
                 new TeamLogItems(Arrays.asList(firstTeamLogItem, secondTeamLogItem));
@@ -410,7 +410,7 @@ public class TeamLogControllerTest extends ControllerTest {
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
-    @DisplayName("회원이 로그를 상세 조회할 수 있다.")
+    @DisplayName("회원이 팀 로그를 상세 조회할 수 있다.")
     @Test
     void getTeamLogItem() throws Exception {
         // given
@@ -451,6 +451,9 @@ public class TeamLogControllerTest extends ControllerTest {
                                                         .type(JsonFieldType.STRING)
                                                         .description("요청 성공 메시지")
                                                         .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("result.isTeamManager")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("팀 오너/관리자 여부"),
                                                 fieldWithPath("result.teamLogId")
                                                         .type(JsonFieldType.NUMBER)
                                                         .description("내 로그 ID"),
@@ -486,6 +489,7 @@ public class TeamLogControllerTest extends ControllerTest {
     void getRepresentTeamLogItem() throws Exception {
         final TeamLogResponseDTO.TeamLogItem teamLogItem =
                 TeamLogItem.builder()
+                        .isTeamManager(true)
                         .teamLogId(1L)
                         .isLogPublic(true)
                         .logType(REPRESENTATIVE_LOG)
@@ -523,6 +527,9 @@ public class TeamLogControllerTest extends ControllerTest {
                                                         .type(JsonFieldType.STRING)
                                                         .description("요청 성공 메시지")
                                                         .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("result.isTeamManager")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("팀 오너/관리자 여부"),
                                                 fieldWithPath("result.teamLogId")
                                                         .type(JsonFieldType.NUMBER)
                                                         .description("내 로그 ID"),

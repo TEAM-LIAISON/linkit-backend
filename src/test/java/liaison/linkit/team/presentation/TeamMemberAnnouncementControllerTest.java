@@ -389,6 +389,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
         // given
         final TeamMemberAnnouncementItems teamMemberAnnouncementItems =
                 TeamMemberAnnouncementItems.builder()
+                        .isTeamManager(true)
                         .teamMemberAnnouncementItems(
                                 Arrays.asList(
                                         TeamMemberAnnouncementItem.builder()
@@ -481,6 +482,9 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                 fieldWithPath("result")
                                                         .type(JsonFieldType.OBJECT)
                                                         .description("응답 데이터 객체"),
+                                                fieldWithPath("result.isTeamManager")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("팀 오너/관리자 여부"),
                                                 fieldWithPath("result.teamMemberAnnouncementItems")
                                                         .type(JsonFieldType.ARRAY)
                                                         .description("팀원 공고 ViewItems 리스트"),
@@ -628,8 +632,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                         .description("팀원 공고 ID"),
                                                 fieldWithPath("result.isMyTeamAnnouncement")
                                                         .type(JsonFieldType.BOOLEAN)
-                                                        .description(
-                                                                "내가 관리자나 오너로 속해 있는 팀의 팀원 공고인지 여부"),
+                                                        .description("내가 오너/관리자로 속해 있는 팀의 공고인지 여부"),
                                                 fieldWithPath("result.isAnnouncementScrap")
                                                         .type(JsonFieldType.BOOLEAN)
                                                         .description("팀원 공고 스크랩 여부"),
