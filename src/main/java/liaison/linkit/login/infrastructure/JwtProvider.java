@@ -131,4 +131,38 @@ public class JwtProvider {
             return false;
         }
     }
+
+    public boolean isValidAccess(final String accessToken) {
+        try {
+            validateAccessToken(accessToken);
+            return true;
+        } catch (final JwtException e) {
+            return false;
+        }
+    }
+
+    /**
+     * 토큰의 만료까지 남은 시간을 초 단위로 반환합니다. 토큰이 이미 만료된 경우 0을 반환합니다.
+     *
+     * @param token 만료 시간을 확인할 JWT 토큰
+     * @return 토큰 만료까지 남은 시간(초)
+     */
+    public long getTokenExpiration(final String token) {
+        try {
+            final Date expiration = parseToken(token).getBody().getExpiration();
+            final Date now = new Date();
+
+            // 이미 만료된 경우 0 반환
+            if (expiration.before(now)) {
+                return 0;
+            }
+
+            // 밀리초 단위 차이를 초 단위로 변환하여 반환
+            return (expiration.getTime() - now.getTime()) / 1000;
+        } catch (final ExpiredJwtException e) {
+            return 0;
+        } catch (final JwtException | IllegalArgumentException e) {
+            throw InvalidAccessTokenException.EXCEPTION;
+        }
+    }
 }
