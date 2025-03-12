@@ -47,7 +47,7 @@ public class LoginController {
         // 새 AccessToken 쿠키 설정
         ResponseCookie accessCookie =
                 ResponseCookie.from("accessToken", loginResponse.getAccessToken())
-                        .maxAge(COOKIE_AGE_SECONDS)
+                        .maxAge(ACCESS_COOKIE_AGE_SECONDS)
                         .secure(true)
                         .sameSite("None")
                         .path("/")
@@ -57,7 +57,7 @@ public class LoginController {
         // 필요시 새 RefreshToken 쿠키 설정
         ResponseCookie refreshCookie =
                 ResponseCookie.from("refreshToken", loginResponse.getRefreshToken())
-                        .maxAge(ACCESS_COOKIE_AGE_SECONDS)
+                        .maxAge(COOKIE_AGE_SECONDS)
                         .secure(true)
                         .sameSite("None")
                         .path("/")
