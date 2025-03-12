@@ -1,30 +1,21 @@
 package liaison.linkit.search.business.service;
 
-import java.util.ArrayList;
 import java.util.List;
-import liaison.linkit.common.business.RegionMapper;
-import liaison.linkit.common.implement.RegionQueryAdapter;
-import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
-import liaison.linkit.profile.business.mapper.ProfileCurrentStateMapper;
-import liaison.linkit.profile.business.mapper.ProfileMapper;
-import liaison.linkit.profile.business.mapper.ProfilePositionMapper;
-import liaison.linkit.profile.domain.position.ProfilePosition;
+import java.util.Optional;
+
+import liaison.linkit.profile.business.assembler.ProfileInformMenuAssembler;
 import liaison.linkit.profile.domain.profile.Profile;
-import liaison.linkit.profile.domain.region.ProfileRegion;
-import liaison.linkit.profile.domain.state.ProfileCurrentState;
-import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
-import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
-import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
-import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
-import liaison.linkit.scrap.implement.profileScrap.ProfileScrapQueryAdapter;
-import liaison.linkit.team.business.mapper.teamMember.TeamMemberMapper;
-import liaison.linkit.team.domain.team.Team;
-import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
+import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.search.presentation.dto.profile.ProfileListResponseDTO;
+import liaison.linkit.team.business.assembler.announcement.AnnouncementInformMenuAssembler;
+import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,115 +27,93 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProfileSearchService {
 
     private final ProfileQueryAdapter profileQueryAdapter;
-    private final RegionQueryAdapter regionQueryAdapter;
-    private final ProfilePositionQueryAdapter profilePositionQueryAdapter;
-    private final TeamMemberQueryAdapter teamMemberQueryAdapter;
+    private final ProfileInformMenuAssembler profileInformMenuAssembler;
+    private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
+    private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
 
-    private final ProfileMapper profileMapper;
-    private final ProfileCurrentStateMapper profileCurrentStateMapper;
-    private final ProfilePositionMapper profilePositionMapper;
-    private final TeamMemberMapper teamMemberMapper;
-    private final RegionMapper regionMapper;
-    private final ProfileScrapQueryAdapter profileScrapQueryAdapter;
+    public ProfileListResponseDTO getFeaturedProfiles(final Optional<Long> optionalMemberId) {
+        // 1. 상단 영역: 프로필 완성도가 높은 팀원 6명 (completionScore 내림차순)
+        Pageable topPageable = PageRequest.of(0, 6);
+        List<Profile> topProfiles =
+                profileQueryAdapter.findTopCompletionProfiles(topPageable).getContent();
 
+        List<ProfileInformMenu> topProfileDTOs =
+                topProfiles.stream()
+                        .map(
+                                profile ->
+                                        profileInformMenuAssembler.assembleProfileInformMenu(
+                                                profile, optionalMemberId))
+                        .toList();
 
-    public Page<ProfileInformMenu> searchProfilesInLoginState(
-            final Long memberId,
-            List<String> majorPosition,
-            List<String> skillName,
+        return ProfileListResponseDTO.of(topProfileDTOs);
+    }
+
+    /**
+     * 팀원 찾기 화면의 검색 로직
+     *
+     * <p>- 쿼리 파라미터가 전혀 없으면 기본 검색으로 간주하여: 1. 상단: 프로필 완성도가 높은 팀원 6명(예: completionScore 기준 내림차순) 2.
+     * 하단: 상단에 포함된 프로필을 제외한 나머지 팀원들을 최신순(createdAt 내림차순)으로 페이지네이션 - 필터 쿼리 파라미터가 있으면 기존의 필터링 로직대로
+     * 검색합니다.
+     *
+     * @param optionalMemberId 로그인한 회원의 ID(Optional)
+     * @param subPosition 포지션 소분류 필터
+     * @param cityName 시/도 필터
+     * @param profileStateName 프로필 상태 필터
+     * @return ProfileInformMenu: 하단(profiles) DTO
+     */
+    public CursorResponse<ProfileInformMenu> searchProfilesWithCursor(
+            final Optional<Long> optionalMemberId,
+            List<String> subPosition,
             List<String> cityName,
             List<String> profileStateName,
-            Pageable pageable
-    ) {
-        Page<Profile> profiles = profileQueryAdapter.findAll(majorPosition, skillName, cityName, profileStateName, pageable);
-        return profiles.map(
-                profile -> toSearchProfileInformMenuInLoginState(memberId, profile)
-        );
+            CursorRequest cursorRequest) {
+        if (isDefaultSearch(subPosition, cityName, profileStateName)) {
+            List<Long> excludeProfileIds = getExcludeProfileIds();
+
+            CursorResponse<Profile> profiles =
+                    profileQueryAdapter.findAllExcludingIdsWithCursor(
+                            excludeProfileIds, cursorRequest);
+
+            return convertProfilesToDTOs(profiles, optionalMemberId);
+        } else {
+            CursorResponse<Profile> profiles =
+                    profileQueryAdapter.findAllByFilteringWithCursor(
+                            subPosition, cityName, profileStateName, cursorRequest);
+
+            return convertProfilesToDTOs(profiles, optionalMemberId);
+        }
     }
 
-    public Page<ProfileInformMenu> searchProfilesInLogoutState(
-            List<String> majorPosition,
-            List<String> skillName,
-            List<String> cityName,
-            List<String> profileStateName,
-            Pageable pageable
-    ) {
-        Page<Profile> profiles = profileQueryAdapter.findAll(majorPosition, skillName, cityName, profileStateName, pageable);
-        return profiles.map(this::toSearchProfileInformMenuInLogoutState);
+    /** 기본 검색 여부를 판단합니다. */
+    private boolean isDefaultSearch(
+            List<String> subPosition, List<String> cityName, List<String> profileStateName) {
+        return (subPosition == null || subPosition.isEmpty())
+                && (cityName == null || cityName.isEmpty())
+                && (profileStateName == null || profileStateName.isEmpty());
     }
 
-    private ProfileInformMenu toSearchProfileInformMenuInLoginState(
-            final Long memberId,
-            final Profile profile
-    ) {
-        RegionDetail regionDetail = new RegionDetail();
-
-        if (regionQueryAdapter.existsProfileRegionByProfileId((profile.getId()))) {
-            final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
-            regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
-        }
-        log.info("지역 정보 조회 성공");
-
-        final List<ProfileCurrentState> profileCurrentStates = profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
-        final List<ProfileCurrentStateItem> profileCurrentStateItems = profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
-        log.info("상태 정보 조회 성공");
-
-        final boolean isProfileScrap = profileScrapQueryAdapter.existsByMemberIdAndEmailId(memberId, profile.getMember().getEmailId());
-
-        ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
-
-        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
-            final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
-            profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
-        }
-
-        log.info("대분류 포지션 정보 조회 성공");
-
-        List<ProfileTeamInform> profileTeamInforms = new ArrayList<>();
-        if (teamMemberQueryAdapter.existsTeamByMemberId(profile.getMember().getId())) {
-            final List<Team> myTeams = teamMemberQueryAdapter.getAllTeamsByMemberId(profile.getMember().getId());
-            profileTeamInforms = teamMemberMapper.toProfileTeamInforms(myTeams);
-            log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
-        }
-
-        final int profileScrapCount = profileScrapQueryAdapter.countTotalProfileScrapByEmailId(profile.getMember().getEmailId());
-
-        return profileMapper.toProfileInformMenu(profileCurrentStateItems, isProfileScrap, profileScrapCount, profile, profilePositionDetail, regionDetail, profileTeamInforms);
+    /** 제외할 팀 ID 목록 가져오기 (강제 지정) */
+    public List<Long> getExcludeProfileIds() {
+        // 박주혜 42L
+        // 최민호 58L
+        // 김태범 57L
+        // 최윤수 55L
+        // 박현진 73L
+        // 김시원 63L
+        return List.of(42L, 58L, 57L, 55L, 73L, 63L);
     }
 
-    private ProfileInformMenu toSearchProfileInformMenuInLogoutState(
-            final Profile profile
-    ) {
-        RegionDetail regionDetail = new RegionDetail();
+    /** 팀 엔티티를 DTO로 변환하고 커서 응답으로 래핑 */
+    private CursorResponse<ProfileResponseDTO.ProfileInformMenu> convertProfilesToDTOs(
+            CursorResponse<Profile> profiles, Optional<Long> optionalMemberId) {
+        List<ProfileResponseDTO.ProfileInformMenu> profileDTOs =
+                profiles.getContent().stream()
+                        .map(
+                                profile ->
+                                        profileInformMenuAssembler.assembleProfileInformMenu(
+                                                profile, optionalMemberId))
+                        .toList();
 
-        if (regionQueryAdapter.existsProfileRegionByProfileId((profile.getId()))) {
-            final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
-            regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
-        }
-        log.info("지역 정보 조회 성공");
-
-        final List<ProfileCurrentState> profileCurrentStates = profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
-        final List<ProfileCurrentStateItem> profileCurrentStateItems = profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
-        log.info("상태 정보 조회 성공");
-
-        ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
-
-        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
-            final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
-            profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
-        }
-
-        log.info("대분류 포지션 정보 조회 성공");
-
-        List<ProfileTeamInform> profileTeamInforms = new ArrayList<>();
-        if (teamMemberQueryAdapter.existsTeamByMemberId(profile.getMember().getId())) {
-            final List<Team> myTeams = teamMemberQueryAdapter.getAllTeamsByMemberId(profile.getMember().getId());
-            profileTeamInforms = teamMemberMapper.toProfileTeamInforms(myTeams);
-            log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
-        }
-
-        final int profileScrapCount = profileScrapQueryAdapter.countTotalProfileScrapByEmailId(profile.getMember().getEmailId());
-        
-        return profileMapper.toProfileInformMenu(profileCurrentStateItems, false, profileScrapCount, profile, profilePositionDetail, regionDetail, profileTeamInforms);
+        return CursorResponse.of(profileDTOs, profiles.getNextCursor());
     }
 }

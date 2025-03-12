@@ -1,6 +1,7 @@
 package liaison.linkit.member.presentation.dto;
 
 import jakarta.validation.constraints.NotNull;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

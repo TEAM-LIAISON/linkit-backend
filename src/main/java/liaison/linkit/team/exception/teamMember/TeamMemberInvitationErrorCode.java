@@ -5,6 +5,7 @@ import static liaison.linkit.common.consts.LinkitStatic.NOT_FOUND;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
+
 import liaison.linkit.common.annotation.ExplainError;
 import liaison.linkit.common.exception.BaseErrorCode;
 import liaison.linkit.common.exception.ErrorReason;
@@ -15,7 +16,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum TeamMemberInvitationErrorCode implements BaseErrorCode {
     TEAM_MEMBER_INVITATION_NOT_FOUND(NOT_FOUND, "TEAM_MEMBER_404_1", "팀원 초대 정보를 찾을 수 없습니다."),
-    DUPLICATE_TEAM_MEMBER_INVITATION_REQUEST(DUPLICATE, "DUPLICATE_INVITATION_409_1", "해당 회원에 대해 이미 진행 중인 팀 초대가 있습니다.");
+    DUPLICATE_TEAM_MEMBER_INVITATION_REQUEST(
+            DUPLICATE, "DUPLICATE_INVITATION_409_1", "해당 회원에 대해 이미 진행 중인 팀 초대가 있습니다.");
 
     private final Integer status;
     private final String code;

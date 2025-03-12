@@ -3,11 +3,13 @@ package liaison.linkit.profile.domain.activity;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.profile.domain.profile.Profile;
 import lombok.AccessLevel;
@@ -28,14 +30,22 @@ public class ProfileActivity extends BaseDateTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "profile_id")
+    @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
 
+    @Column(nullable = false, length = 50)
     private String activityName;
+
+    @Column(nullable = false, length = 50)
     private String activityRole;
+
+    @Column(nullable = false)
     private String activityStartDate;
+
     private String activityEndDate;
     private boolean isActivityInProgress;
+
+    @Column(length = 300)
     private String activityDescription;
 
     private boolean isActivityCertified; // 인증하지 않은 사람 false
@@ -48,8 +58,7 @@ public class ProfileActivity extends BaseDateTimeEntity {
             final boolean isActivityCertified,
             final boolean isActivityVerified,
             final String activityCertificationAttachFileName,
-            final String activityCertificationAttachFilePath
-    ) {
+            final String activityCertificationAttachFilePath) {
         this.isActivityCertified = isActivityCertified;
         this.isActivityVerified = isActivityVerified;
         this.activityCertificationAttachFileName = activityCertificationAttachFileName;

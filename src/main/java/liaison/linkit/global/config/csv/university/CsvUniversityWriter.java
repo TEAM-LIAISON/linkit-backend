@@ -23,10 +23,14 @@ public class CsvUniversityWriter implements ItemWriter<UniversityCsvData> {
 
         Chunk<University> universities = new Chunk<>();
 
-        chunk.forEach(universityCsvData -> {
-            University university = University.builder().universityName(universityCsvData.getUniversityName()).build();
-            universities.add(university);
-        });
+        chunk.forEach(
+                universityCsvData -> {
+                    University university =
+                            University.builder()
+                                    .universityName(universityCsvData.getUniversityName())
+                                    .build();
+                    universities.add(university);
+                });
 
         universityRepository.saveAll(universities);
     }

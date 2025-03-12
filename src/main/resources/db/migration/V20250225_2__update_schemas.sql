@@ -1,0 +1,35 @@
+ALTER TABLE team_current_state
+	DROP COLUMN created_at,
+    DROP COLUMN modified_at,
+    MODIFY COLUMN profile_id BIGINT NOT NULL,
+    MODIFY COLUMN team_state_id BIGINT NOT NULL;
+
+ALTER TABLE team_history
+	MODIFY COLUMN team_id BIGINT NOT NULL,
+	MODIFY COLUMN history_start_date VARCHAR(255) NOT NULL;
+
+ALTER TABLE team_log
+    MODIFY COLUMN team_id BIGINT NOT NULL;
+
+ALTER TABLE team_log_image
+    MODIFY COLUMN image_id BIGINT NOT NULL,
+    MODIFY COLUMN team_log_id BIGINT NOT NULL;
+
+ALTER TABLE team_member
+	MODIFY COLUMN member_id BIGINT NOT NULL,
+    MODIFY COLUMN team_id BIGINT NOT NULL;
+
+ALTER TABLE team_member_invitation
+    MODIFY COLUMN team_id BIGINT NOT NULL;
+
+ALTER TABLE team_product
+    MODIFY COLUMN team_id BIGINT NOT NULL,
+    MODIFY COLUMN product_start_date VARCHAR(255) NOT NULL;
+
+ALTER TABLE team_region
+    MODIFY COLUMN region_id BIGINT NOT NULL,
+    MODIFY COLUMN team_id BIGINT NOT NULL;
+
+ALTER TABLE team_scale
+    MODIFY COLUMN scale_id BIGINT NOT NULL,
+    MODIFY COLUMN team_id BIGINT NOT NULL;

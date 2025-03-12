@@ -2,6 +2,7 @@ package liaison.linkit.profile.presentation.awards.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,8 +50,7 @@ public class ProfileAwardsResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProfileAwardsItems {
-        @Builder.Default
-        private List<ProfileAwardsItem> profileAwardsItems = new ArrayList<>();
+        @Builder.Default private List<ProfileAwardsItem> profileAwardsItems = new ArrayList<>();
     }
 
     @Builder
@@ -106,4 +106,3 @@ public class ProfileAwardsResponseDTO {
         private Long profileAwardsId;
     }
 }
-

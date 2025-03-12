@@ -1,9 +1,10 @@
 package liaison.linkit.team.implement.state;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
-import liaison.linkit.team.domain.state.TeamCurrentState;
 import liaison.linkit.team.domain.repository.currentState.TeamCurrentStateRepository;
+import liaison.linkit.team.domain.state.TeamCurrentState;
 import lombok.RequiredArgsConstructor;
 
 @Adapter

@@ -8,13 +8,10 @@ import liaison.linkit.scrap.presentation.dto.profileScrap.ProfileScrapResponseDT
 public class ProfileScrapMapper {
 
     public ProfileScrapResponseDTO.UpdateProfileScrap toUpdateProfileScrap(
-            final String emailId,
-            final boolean changeScrapValue
-    ) {
+            final String emailId, final boolean changeScrapValue) {
         return UpdateProfileScrap.builder()
                 .emailId(emailId)
                 .isProfileScrap(changeScrapValue)
                 .build();
     }
-
 }

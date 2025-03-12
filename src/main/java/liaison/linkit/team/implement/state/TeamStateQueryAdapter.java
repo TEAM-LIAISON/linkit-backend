@@ -12,6 +12,8 @@ public class TeamStateQueryAdapter {
     private final TeamStateRepository teamStateRepository;
 
     public TeamState findByStateName(final String stateName) {
-        return teamStateRepository.findByStateName(stateName).orElseThrow(() -> TeamStateNotFoundException.EXCEPTION);
+        return teamStateRepository
+                .findByStateName(stateName)
+                .orElseThrow(() -> TeamStateNotFoundException.EXCEPTION);
     }
 }

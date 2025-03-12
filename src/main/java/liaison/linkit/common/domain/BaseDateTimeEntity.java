@@ -1,9 +1,11 @@
 package liaison.linkit.common.domain;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import java.time.LocalDateTime;
+
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -23,5 +25,4 @@ public abstract class BaseDateTimeEntity {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime modifiedAt;
-
 }

@@ -2,6 +2,7 @@ package liaison.linkit.profile.presentation.license.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,8 +16,7 @@ public class ProfileLicenseResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProfileLicenseItems {
-        @Builder.Default
-        private List<ProfileLicenseItem> profileLicenseItems = new ArrayList<>();
+        @Builder.Default private List<ProfileLicenseItem> profileLicenseItems = new ArrayList<>();
     }
 
     @Builder

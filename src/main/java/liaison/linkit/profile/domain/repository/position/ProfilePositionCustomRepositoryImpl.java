@@ -15,11 +15,12 @@ public class ProfilePositionCustomRepositoryImpl implements ProfilePositionCusto
     public boolean existsProfilePositionByProfileId(final Long profileId) {
         QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
 
-        Integer count = jpaQueryFactory
-                .selectOne()
-                .from(qProfilePosition)
-                .where(qProfilePosition.profile.id.eq(profileId))
-                .fetchFirst();
+        Integer count =
+                jpaQueryFactory
+                        .selectOne()
+                        .from(qProfilePosition)
+                        .where(qProfilePosition.profile.id.eq(profileId))
+                        .fetchFirst();
 
         return count != null;
     }
@@ -44,4 +45,3 @@ public class ProfilePositionCustomRepositoryImpl implements ProfilePositionCusto
                 .execute();
     }
 }
-

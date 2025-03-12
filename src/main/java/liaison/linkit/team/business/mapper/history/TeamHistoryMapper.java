@@ -6,9 +6,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import liaison.linkit.common.annotation.Mapper;
-import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.history.TeamHistory;
+import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryRequestDTO.AddTeamHistoryRequest;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.RemoveTeamHistoryResponse;
@@ -20,29 +21,36 @@ import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.Updat
 @Mapper
 public class TeamHistoryMapper {
 
-    public TeamHistoryResponseDTO.TeamHistoryCalendarResponse toTeamHistoryCalendar(final List<TeamHistory> teamHistories) {
-        List<TeamHistoryViewItem> teamHistoryViewItems = teamHistories.stream()
-                .map(this::toTeamHistoryViewItem)
-                .toList();
+    public TeamHistoryResponseDTO.TeamHistoryCalendarResponse toTeamHistoryCalendar(
+            final Boolean isTeamManager, final List<TeamHistory> teamHistories) {
+        List<TeamHistoryViewItem> teamHistoryViewItems =
+                teamHistories.stream().map(this::toTeamHistoryViewItem).toList();
 
         // 2) 년도/월 그룹핑
         Map<String, Map<String, List<TeamHistoryViewItem>>> groupByYearMonth =
                 groupByYearAndMonth(teamHistoryViewItems);
 
-        // 3) 년도 내림차순 정렬
+        // 3) 년도 및 월 모두 내림차순 정렬
         Map<String, Map<String, List<TeamHistoryViewItem>>> sortedGroupByYearMonth =
                 new TreeMap<>(Comparator.reverseOrder());
-        sortedGroupByYearMonth.putAll(groupByYearMonth);
+        for (Map.Entry<String, Map<String, List<TeamHistoryViewItem>>> entry :
+                groupByYearMonth.entrySet()) {
+            // 내부 map(월)을 내림차순 정렬 (월 키가 String인 경우, "01", "02" ... "12" 형식이어야 올바른 순서가 보장됩니다)
+            Map<String, List<TeamHistoryViewItem>> sortedMonthMap =
+                    new TreeMap<>(Comparator.reverseOrder());
+            sortedMonthMap.putAll(entry.getValue());
+            sortedGroupByYearMonth.put(entry.getKey(), sortedMonthMap);
+        }
 
         // 4) 원하는 JSON 형태로 변환
         List<Map<String, List<Map<String, List<TeamHistoryViewItem>>>>> finalCalendarStructure =
                 convertToNestedList(sortedGroupByYearMonth);
 
         return TeamHistoryCalendarResponse.builder()
+                .isTeamManager(isTeamManager)
                 .teamHistoryCalendar(finalCalendarStructure)
                 .build();
     }
-
 
     public TeamHistoryViewItem toTeamHistoryViewItem(final TeamHistory teamHistory) {
         return TeamHistoryResponseDTO.TeamHistoryViewItem.builder()
@@ -55,19 +63,15 @@ public class TeamHistoryMapper {
                 .build();
     }
 
-    public TeamHistoryResponseDTO.TeamHistoryItems toTeamHistoryItems(List<TeamHistory> teamHistories) {
-        List<TeamHistoryItem> items = teamHistories.stream()
-                .map(this::toTeamHistoryItem)
-                .toList();
+    public TeamHistoryResponseDTO.TeamHistoryItems toTeamHistoryItems(
+            List<TeamHistory> teamHistories) {
+        List<TeamHistoryItem> items = teamHistories.stream().map(this::toTeamHistoryItem).toList();
 
-        return TeamHistoryResponseDTO.TeamHistoryItems.builder()
-                .teamHistoryItems(items)
-                .build();
+        return TeamHistoryResponseDTO.TeamHistoryItems.builder().teamHistoryItems(items).build();
     }
 
     public TeamHistoryResponseDTO.TeamHistoryItem toTeamHistoryItem(final TeamHistory teamHistory) {
-        return TeamHistoryResponseDTO.TeamHistoryItem
-                .builder()
+        return TeamHistoryResponseDTO.TeamHistoryItem.builder()
                 .teamHistoryId(teamHistory.getId())
                 .historyName(teamHistory.getHistoryName())
                 .historyStartDate(teamHistory.getHistoryStartDate())
@@ -76,9 +80,9 @@ public class TeamHistoryMapper {
                 .build();
     }
 
-    public TeamHistoryResponseDTO.TeamHistoryDetail toTeamHistoryDetail(final TeamHistory teamHistory) {
-        return TeamHistoryResponseDTO.TeamHistoryDetail
-                .builder()
+    public TeamHistoryResponseDTO.TeamHistoryDetail toTeamHistoryDetail(
+            final TeamHistory teamHistory) {
+        return TeamHistoryResponseDTO.TeamHistoryDetail.builder()
                 .teamHistoryId(teamHistory.getId())
                 .historyName(teamHistory.getHistoryName())
                 .historyStartDate(teamHistory.getHistoryStartDate())
@@ -88,9 +92,9 @@ public class TeamHistoryMapper {
                 .build();
     }
 
-    public TeamHistory toAddTeamHistory(final Team team, final AddTeamHistoryRequest addTeamHistoryRequest) {
-        return TeamHistory
-                .builder()
+    public TeamHistory toAddTeamHistory(
+            final Team team, final AddTeamHistoryRequest addTeamHistoryRequest) {
+        return TeamHistory.builder()
                 .id(null)
                 .team(team)
                 .historyName(addTeamHistoryRequest.getHistoryName())
@@ -101,9 +105,9 @@ public class TeamHistoryMapper {
                 .build();
     }
 
-    public TeamHistoryResponseDTO.AddTeamHistoryResponse toAddTeamHistoryResponse(final TeamHistory teamHistory) {
-        return TeamHistoryResponseDTO.AddTeamHistoryResponse
-                .builder()
+    public TeamHistoryResponseDTO.AddTeamHistoryResponse toAddTeamHistoryResponse(
+            final TeamHistory teamHistory) {
+        return TeamHistoryResponseDTO.AddTeamHistoryResponse.builder()
                 .teamHistoryId(teamHistory.getId())
                 .historyName(teamHistory.getHistoryName())
                 .historyStartDate(teamHistory.getHistoryStartDate())
@@ -113,9 +117,9 @@ public class TeamHistoryMapper {
                 .build();
     }
 
-    public TeamHistoryResponseDTO.UpdateTeamHistoryResponse toUpdateTeamHistoryResponse(final TeamHistory teamHistory) {
-        return UpdateTeamHistoryResponse
-                .builder()
+    public TeamHistoryResponseDTO.UpdateTeamHistoryResponse toUpdateTeamHistoryResponse(
+            final TeamHistory teamHistory) {
+        return UpdateTeamHistoryResponse.builder()
                 .teamHistoryId(teamHistory.getId())
                 .historyName(teamHistory.getHistoryName())
                 .historyStartDate(teamHistory.getHistoryStartDate())
@@ -125,12 +129,13 @@ public class TeamHistoryMapper {
                 .build();
     }
 
-    public TeamHistoryResponseDTO.RemoveTeamHistoryResponse toRemoveTeamHistory(final Long teamHistoryId) {
-        return RemoveTeamHistoryResponse.builder()
-                .teamHistoryId(teamHistoryId).build();
+    public TeamHistoryResponseDTO.RemoveTeamHistoryResponse toRemoveTeamHistory(
+            final Long teamHistoryId) {
+        return RemoveTeamHistoryResponse.builder().teamHistoryId(teamHistoryId).build();
     }
 
-    private Map<String, Map<String, List<TeamHistoryViewItem>>> groupByYearAndMonth(final List<TeamHistoryViewItem> teamHistoryViewItems) {
+    private Map<String, Map<String, List<TeamHistoryViewItem>>> groupByYearAndMonth(
+            final List<TeamHistoryViewItem> teamHistoryViewItems) {
         // year -> (month -> List<item>) 구조
         Map<String, Map<String, List<TeamHistoryViewItem>>> map = new LinkedHashMap<>();
 
@@ -169,7 +174,8 @@ public class TeamHistoryMapper {
                 monthList.add(singleMonthEntry);
             }
 
-            Map<String, List<Map<String, List<TeamHistoryViewItem>>>> singleYearEntry = new LinkedHashMap<>();
+            Map<String, List<Map<String, List<TeamHistoryViewItem>>>> singleYearEntry =
+                    new LinkedHashMap<>();
             singleYearEntry.put(year, monthList);
 
             result.add(singleYearEntry);

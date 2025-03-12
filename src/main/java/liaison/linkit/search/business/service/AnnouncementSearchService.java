@@ -1,31 +1,19 @@
 package liaison.linkit.search.business.service;
 
 import java.util.List;
-import liaison.linkit.common.business.RegionMapper;
-import liaison.linkit.common.implement.RegionQueryAdapter;
-import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
-import liaison.linkit.global.util.DateUtils;
-import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
-import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
-import liaison.linkit.team.business.mapper.announcement.AnnouncementSkillMapper;
-import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
-import liaison.linkit.team.domain.team.Team;
-import liaison.linkit.team.domain.region.TeamRegion;
-import liaison.linkit.team.domain.announcement.AnnouncementPosition;
-import liaison.linkit.team.domain.announcement.AnnouncementSkill;
+import java.util.Optional;
+
+import liaison.linkit.search.presentation.dto.announcement.AnnouncementListResponseDTO;
+import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.team.business.assembler.announcement.AnnouncementInformMenuAssembler;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
-import liaison.linkit.team.domain.scale.TeamScale;
-import liaison.linkit.team.implement.announcement.AnnouncementPositionQueryAdapter;
-import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
-import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
-import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,154 +25,83 @@ import org.springframework.transaction.annotation.Transactional;
 public class AnnouncementSearchService {
 
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
-    private final AnnouncementPositionQueryAdapter announcementPositionQueryAdapter;
-    private final TeamMemberAnnouncementMapper teamMemberAnnouncementMapper;
-    private final AnnouncementSkillQueryAdapter announcementSkillQueryAdapter;
-    private final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter;
-    private final AnnouncementSkillMapper announcementSkillMapper;
-    private final TeamScaleQueryAdapter teamScaleQueryAdapter;
-    private final TeamScaleMapper teamScaleMapper;
-    private final RegionQueryAdapter regionQueryAdapter;
-    private final RegionMapper regionMapper;
+    private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
 
-    // 로그인 상태에서 조회
-    public Page<AnnouncementInformMenu> searchAnnouncementsInLoginState(
-            final Long memberId,
-            List<String> majorPosition,
-            List<String> skillName,
+    public AnnouncementListResponseDTO getFeaturedAnnouncements(
+            final Optional<Long> optionalMemberId) {
+        Pageable pageable = PageRequest.of(0, 6);
+        Page<TeamMemberAnnouncement> hotAnnouncements =
+                teamMemberAnnouncementQueryAdapter.findHotAnnouncements(pageable);
+
+        List<AnnouncementInformMenu> hotAnnouncementDTOs =
+                hotAnnouncements.stream()
+                        .map(
+                                teamMemberAnnouncement ->
+                                        announcementInformMenuAssembler.mapToAnnouncementInformMenu(
+                                                teamMemberAnnouncement, optionalMemberId))
+                        .toList();
+
+        return AnnouncementListResponseDTO.of(hotAnnouncementDTOs);
+    }
+
+    public CursorResponse<AnnouncementInformMenu> searchAnnouncementsWithCursor(
+            final Optional<Long> optionalMemberId,
+            List<String> subPosition,
             List<String> cityName,
             List<String> scaleName,
-            Pageable pageable
-    ) {
-        Page<TeamMemberAnnouncement> announcements = teamMemberAnnouncementQueryAdapter.findAll(majorPosition, skillName, cityName, scaleName, pageable);
+            CursorRequest cursorRequest) {
+        if (isDefaultSearch(subPosition, cityName, scaleName)) {
+            List<Long> excludeAnnouncementIds = getExcludeAnnouncementIds();
 
-        log.info(announcements.toString());
+            CursorResponse<TeamMemberAnnouncement> teamMemberAnnouncements =
+                    teamMemberAnnouncementQueryAdapter.findAllExcludingIdsWithCursor(
+                            excludeAnnouncementIds, cursorRequest);
 
-        return announcements.map(
-                teamMemberAnnouncement -> toSearchAnnouncementInformInLoginState(memberId, teamMemberAnnouncement)
-        );
+            return convertTeamMemberAnnouncementsToDTOs(teamMemberAnnouncements, optionalMemberId);
+        } else {
+            // 필터링 검색
+            CursorResponse<TeamMemberAnnouncement> teamMemberAnnouncements =
+                    teamMemberAnnouncementQueryAdapter.findAllByFilteringWithCursor(
+                            subPosition, cityName, scaleName, cursorRequest);
+
+            return convertTeamMemberAnnouncementsToDTOs(teamMemberAnnouncements, optionalMemberId);
+        }
     }
 
-    // 로그아웃 상태에서 조회
-    public Page<AnnouncementInformMenu> searchAnnouncementsInLogoutState(
-            List<String> majorPosition,
-            List<String> skillName,
-            List<String> cityName,
-            List<String> scaleName,
-            Pageable pageable
-    ) {
-        Page<TeamMemberAnnouncement> announcements = teamMemberAnnouncementQueryAdapter.findAll(majorPosition, skillName, cityName, scaleName, pageable);
-        return announcements.map(this::toSearchAnnouncementInformInLogoutState);
+    /** 기본 검색 여부를 판단합니다. */
+    private boolean isDefaultSearch(
+            List<String> subPosition, List<String> cityName, List<String> scaleName) {
+        return (subPosition == null || subPosition.isEmpty())
+                && (cityName == null || cityName.isEmpty())
+                && (scaleName == null || scaleName.isEmpty());
     }
 
-    private AnnouncementInformMenu toSearchAnnouncementInformInLogoutState(
-            final TeamMemberAnnouncement teamMemberAnnouncement
-    ) {
-        final Team team = teamMemberAnnouncement.getTeam();
-        log.info("error 1");
-        // 팀 규모 조회
-        TeamScaleItem teamScaleItem = null;
-        if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
-            final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
-            teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
-        }
-        log.info("error 2");
-        // 팀 지역 조회
-        RegionDetail regionDetail = new RegionDetail();
-        if (regionQueryAdapter.existsTeamRegionByTeamId((team.getId()))) {
-            final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
-            regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
-        }
-        log.info("error 3");
-        // 포지션 조회
-        log.info("error 3.1.1.");
-        AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
-        log.info("error 3.1.2.");
-        if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
-            log.info("error 3.1");
-            AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
-            log.info("error 3.2");
-            announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
-        }
-        log.info("error 4");
-        // 스킬 조회
-        List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
-        List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+    private CursorResponse<AnnouncementInformMenu> convertTeamMemberAnnouncementsToDTOs(
+            CursorResponse<TeamMemberAnnouncement> teamMemberAnnouncements,
+            Optional<Long> optionalMemberId) {
+        List<AnnouncementInformMenu> announcementDTOs =
+                teamMemberAnnouncements.getContent().stream()
+                        .map(
+                                announcement ->
+                                        announcementInformMenuAssembler.mapToAnnouncementInformMenu(
+                                                announcement, optionalMemberId))
+                        .toList();
 
-        log.info("error 5");
-        final int announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
-        final int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
-
-        log.info("error 6");
-        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
-                team.getTeamLogoImagePath(),
-                team.getTeamName(),
-                team.getTeamCode(),
-                teamScaleItem,
-                regionDetail,
-                teamMemberAnnouncement,
-                announcementDDay,
-                false,
-                announcementScrapCount,
-                announcementPositionItem,
-                announcementSkillNames
-        );
+        return CursorResponse.of(announcementDTOs, teamMemberAnnouncements.getNextCursor());
     }
 
-
-    private AnnouncementInformMenu toSearchAnnouncementInformInLoginState(
-            final Long memberId,
-            final TeamMemberAnnouncement teamMemberAnnouncement
-    ) {
-        final Team team = teamMemberAnnouncement.getTeam();
-
-        log.info("error 1");
-
-        // 팀 규모 조회
-        TeamScaleItem teamScaleItem = null;
-        if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
-            final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
-            teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
-        }
-
-        log.info("error 2");
-
-        // 팀 지역 조회
-        RegionDetail regionDetail = new RegionDetail();
-        if (regionQueryAdapter.existsTeamRegionByTeamId((team.getId()))) {
-            final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
-            regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
-        }
-
-        log.info("error 3");
-
-        // 포지션 조회
-        AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
-        if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
-            AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
-            announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
-        }
-
-        // 스킬 조회
-        List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
-        List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
-        final int announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
-        final boolean isAnnouncementScrap = announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncement.getId());
-        final int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
-
-        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
-                team.getTeamLogoImagePath(),
-                team.getTeamName(),
-                team.getTeamCode(),
-                teamScaleItem,
-                regionDetail,
-                teamMemberAnnouncement,
-                announcementDDay,
-                isAnnouncementScrap,
-                announcementScrapCount,
-                announcementPositionItem,
-                announcementSkillNames
-        );
+    /**
+     * 제외할 팀 ID 목록 (강제 지정)
+     *
+     * @return 제외할 팀 ID 목록
+     */
+    public List<Long> getExcludeAnnouncementIds() {
+        // 큐닷 51L
+        // 애프터액션 35L
+        // 하우스테이너 27L
+        // 코지메이커스 37L
+        // 독스헌트 4L
+        // 앤유 50L
+        return List.of(51L, 35L, 27L, 37L, 4L, 50L);
     }
-
 }

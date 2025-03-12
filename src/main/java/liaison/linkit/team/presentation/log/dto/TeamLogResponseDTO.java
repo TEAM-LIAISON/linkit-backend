@@ -3,6 +3,8 @@ package liaison.linkit.team.presentation.log.dto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import liaison.linkit.profile.domain.type.LogType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,7 +14,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TeamLogResponseDTO {
-
 
     @Builder
     @Getter
@@ -27,7 +28,9 @@ public class TeamLogResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class TeamLogItem {
+        private Boolean isTeamManager;
         private Long teamLogId;
         private Boolean isLogPublic;
         private LogType logType;

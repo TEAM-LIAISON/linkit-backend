@@ -1,6 +1,7 @@
 package liaison.linkit.profile.implement.link;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.profile.domain.link.ProfileLink;
 import liaison.linkit.profile.domain.repository.link.ProfileLinkRepository;

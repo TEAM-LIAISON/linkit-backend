@@ -9,7 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import liaison.linkit.common.domain.BaseDateTimeEntity;
+
 import liaison.linkit.common.domain.Position;
 import liaison.linkit.profile.domain.profile.Profile;
 import lombok.AccessLevel;
@@ -23,17 +23,17 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ProfilePosition extends BaseDateTimeEntity {
+public class ProfilePosition {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "profile_id")
+    @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "position_id")
+    @JoinColumn(name = "position_id", nullable = false)
     private Position position;
 }

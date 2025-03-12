@@ -4,10 +4,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import liaison.linkit.common.annotation.Mapper;
-import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.product.ProductLink;
 import liaison.linkit.team.domain.product.TeamProduct;
+import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.product.ProductSubImageQueryAdapter;
 import liaison.linkit.team.presentation.product.dto.TeamProductRequestDTO;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO;
@@ -27,10 +28,8 @@ public class TeamProductMapper {
     public TeamProductResponseDTO.TeamProductDetail toTeamProductDetail(
             final TeamProduct teamProduct,
             final List<TeamProductLinkResponse> teamProductLinkResponses,
-            final TeamProductImages teamProductImages
-    ) {
-        return TeamProductDetail
-                .builder()
+            final TeamProductImages teamProductImages) {
+        return TeamProductDetail.builder()
                 .teamProductId(teamProduct.getId())
                 .productName(teamProduct.getProductName())
                 .productLineDescription(teamProduct.getProductLineDescription())
@@ -44,44 +43,53 @@ public class TeamProductMapper {
                 .build();
     }
 
-
     public TeamProductResponseDTO.TeamProductViewItems toTeamProductViewItems(
+            final boolean isTeamManager,
             final List<TeamProduct> teamProducts,
             final Map<Long, List<ProductLink>> productLinksMap,
-            final ProductSubImageQueryAdapter productSubImageQueryAdapter
-    ) {
+            final ProductSubImageQueryAdapter productSubImageQueryAdapter) {
         // 각 TeamProduct를 순회하며 ViewItem 생성
-        List<TeamProductResponseDTO.TeamProductViewItem> items = teamProducts.stream()
-                .map(teamProduct -> {
-                    // 1) SubImagePaths 조회
-                    List<String> productSubImagePaths = productSubImageQueryAdapter.getProjectSubImagePaths(teamProduct.getId());
+        List<TeamProductResponseDTO.TeamProductViewItem> items =
+                teamProducts.stream()
+                        .map(
+                                teamProduct -> {
+                                    // 1) SubImagePaths 조회
+                                    List<String> productSubImagePaths =
+                                            productSubImageQueryAdapter.getProductSubImagePaths(
+                                                    teamProduct.getId());
 
-                    // 2) 대표이미지 + 서브이미지를 묶은 TeamProductImages 생성
-                    TeamProductImages teamProductImages = toTeamProductImages(
-                            teamProduct.getProductRepresentImagePath(),
-                            productSubImagePaths
-                    );
+                                    // 2) 대표이미지 + 서브이미지를 묶은 TeamProductImages 생성
+                                    TeamProductImages teamProductImages =
+                                            toTeamProductImages(
+                                                    teamProduct.getProductRepresentImagePath(),
+                                                    productSubImagePaths);
 
-                    // 3) ProductLink 목록 조회
-                    List<ProductLink> productLinks = productLinksMap.getOrDefault(teamProduct.getId(), Collections.emptyList());
+                                    // 3) ProductLink 목록 조회
+                                    List<ProductLink> productLinks =
+                                            productLinksMap.getOrDefault(
+                                                    teamProduct.getId(), Collections.emptyList());
 
-                    // 4) ViewItem 생성
-                    return toTeamProductViewItem(teamProduct, productLinks, teamProductImages);
-                })
-                .toList();
+                                    // 4) ViewItem 생성
+                                    return toTeamProductViewItem(
+                                            teamProduct, productLinks, teamProductImages);
+                                })
+                        .toList();
 
         // 5) ViewItems 래퍼 객체 생성
         return TeamProductResponseDTO.TeamProductViewItems.builder()
+                .isTeamManager(isTeamManager)
                 .teamProductViewItems(items)
                 .build();
     }
 
     public TeamProductResponseDTO.TeamProductViewItem toTeamProductViewItem(
-            final TeamProduct teamProduct, final List<ProductLink> productLinks, final TeamProductImages teamProductImages
-    ) {
-        List<TeamProductLinkResponse> linkResponses = productLinks.stream()
-                .map(this::toTeamProductLinkResponse)
-                .collect(Collectors.toList());
+            final TeamProduct teamProduct,
+            final List<ProductLink> productLinks,
+            final TeamProductImages teamProductImages) {
+        List<TeamProductLinkResponse> linkResponses =
+                productLinks.stream()
+                        .map(this::toTeamProductLinkResponse)
+                        .collect(Collectors.toList());
 
         return TeamProductViewItem.builder()
                 .teamProductId(teamProduct.getId())
@@ -98,23 +106,28 @@ public class TeamProductMapper {
                 .build();
     }
 
-    public TeamProductResponseDTO.TeamProductItems toTeamProductItems(List<TeamProduct> teamProducts, Map<Long, List<ProductLink>> productLinksMap) {
-        List<TeamProductItem> items = teamProducts.stream()
-                .map(teamProduct -> {
-                    List<ProductLink> productLinks = productLinksMap.getOrDefault(teamProduct.getId(), Collections.emptyList());
-                    return toTeamProductItem(teamProduct, productLinks);
-                })
-                .collect(Collectors.toList());
+    public TeamProductResponseDTO.TeamProductItems toTeamProductItems(
+            List<TeamProduct> teamProducts, Map<Long, List<ProductLink>> productLinksMap) {
+        List<TeamProductItem> items =
+                teamProducts.stream()
+                        .map(
+                                teamProduct -> {
+                                    List<ProductLink> productLinks =
+                                            productLinksMap.getOrDefault(
+                                                    teamProduct.getId(), Collections.emptyList());
+                                    return toTeamProductItem(teamProduct, productLinks);
+                                })
+                        .collect(Collectors.toList());
 
-        return TeamProductItems.builder()
-                .teamProductItems(items)
-                .build();
+        return TeamProductItems.builder().teamProductItems(items).build();
     }
 
-    private TeamProductItem toTeamProductItem(final TeamProduct teamProduct, final List<ProductLink> productLinks) {
-        List<TeamProductLinkResponse> linkResponses = productLinks.stream()
-                .map(this::toTeamProductLinkResponse)
-                .collect(Collectors.toList());
+    private TeamProductItem toTeamProductItem(
+            final TeamProduct teamProduct, final List<ProductLink> productLinks) {
+        List<TeamProductLinkResponse> linkResponses =
+                productLinks.stream()
+                        .map(this::toTeamProductLinkResponse)
+                        .collect(Collectors.toList());
 
         return TeamProductItem.builder()
                 .teamProductId(teamProduct.getId())
@@ -132,23 +145,21 @@ public class TeamProductMapper {
 
     public List<ProductLink> toAddProductLinks(
             final TeamProduct teamProduct,
-            final List<TeamProductRequestDTO.TeamProductLinkRequest> teamProductLinkRequests
-    ) {
+            final List<TeamProductRequestDTO.TeamProductLinkRequest> teamProductLinkRequests) {
         return teamProductLinkRequests.stream()
-                .map(productLink -> ProductLink.builder()
-                        .teamProduct(teamProduct)
-                        .productLinkName(productLink.getProductLinkName())
-                        .productLinkPath(productLink.getProductLinkPath())
-                        .build())
+                .map(
+                        productLink ->
+                                ProductLink.builder()
+                                        .teamProduct(teamProduct)
+                                        .productLinkName(productLink.getProductLinkName())
+                                        .productLinkPath(productLink.getProductLinkPath())
+                                        .build())
                 .collect(Collectors.toList());
     }
 
     public TeamProduct toAddTeamProduct(
-            final Team team,
-            final TeamProductRequestDTO.AddTeamProductRequest request
-    ) {
-        return TeamProduct
-                .builder()
+            final Team team, final TeamProductRequestDTO.AddTeamProductRequest request) {
+        return TeamProduct.builder()
                 .id(null)
                 .team(team)
                 .productName(request.getProductName())
@@ -169,23 +180,24 @@ public class TeamProductMapper {
                 .build();
     }
 
-
     public List<TeamProductLinkResponse> toTeamProductLinks(final List<ProductLink> productLinks) {
         return productLinks.stream()
-                .map(pls -> TeamProductLinkResponse.builder()
-                        .productLinkId(pls.getId())
-                        .productLinkName(pls.getProductLinkName())
-                        .productLinkPath(pls.getProductLinkPath())
-                        .build())
+                .map(
+                        pls ->
+                                TeamProductLinkResponse.builder()
+                                        .productLinkId(pls.getId())
+                                        .productLinkName(pls.getProductLinkName())
+                                        .productLinkPath(pls.getProductLinkPath())
+                                        .build())
                 .collect(Collectors.toList());
     }
 
-    public TeamProductImages toTeamProductImages(final String productRepresentImagePath, final List<String> productSubImagePaths) {
-        List<TeamProductResponseDTO.ProductSubImage> productSubImages = productSubImagePaths.stream()
-                .map(path -> ProductSubImage.builder()
-                        .productSubImagePath(path)
-                        .build())
-                .toList();
+    public TeamProductImages toTeamProductImages(
+            final String productRepresentImagePath, final List<String> productSubImagePaths) {
+        List<TeamProductResponseDTO.ProductSubImage> productSubImages =
+                productSubImagePaths.stream()
+                        .map(path -> ProductSubImage.builder().productSubImagePath(path).build())
+                        .toList();
 
         return TeamProductImages.builder()
                 .productRepresentImagePath(productRepresentImagePath)
@@ -196,10 +208,8 @@ public class TeamProductMapper {
     public TeamProductResponseDTO.AddTeamProductResponse toAddTeamProductResponse(
             final TeamProduct teamProduct,
             final List<TeamProductResponseDTO.TeamProductLinkResponse> teamProductLinkResponses,
-            final TeamProductImages teamProductImages
-    ) {
-        return AddTeamProductResponse
-                .builder()
+            final TeamProductImages teamProductImages) {
+        return AddTeamProductResponse.builder()
                 .teamProductId(teamProduct.getId())
                 .productName(teamProduct.getProductName())
                 .productLineDescription(teamProduct.getProductLineDescription())
@@ -216,10 +226,8 @@ public class TeamProductMapper {
     public TeamProductResponseDTO.UpdateTeamProductResponse toUpdateTeamProductResponse(
             final TeamProduct teamProduct,
             final List<TeamProductResponseDTO.TeamProductLinkResponse> teamProductLinkResponses,
-            final TeamProductImages teamProductImages
-    ) {
-        return UpdateTeamProductResponse
-                .builder()
+            final TeamProductImages teamProductImages) {
+        return UpdateTeamProductResponse.builder()
                 .teamProductId(teamProduct.getId())
                 .productName(teamProduct.getProductName())
                 .productLineDescription(teamProduct.getProductLineDescription())
@@ -227,7 +235,6 @@ public class TeamProductMapper {
                 .productStartDate(teamProduct.getProductStartDate())
                 .productEndDate(teamProduct.getProductEndDate())
                 .isProductInProgress(teamProduct.isProductInProgress())
-
                 .teamProductLinks(teamProductLinkResponses)
                 .productDescription(teamProduct.getProductDescription())
                 .teamProductImages(teamProductImages)
@@ -235,12 +242,9 @@ public class TeamProductMapper {
     }
 
     public TeamProductResponseDTO.RemoveTeamProductResponse toRemoveTeamProduct(
-            final Long teamProductId
-    ) {
-        return TeamProductResponseDTO.RemoveTeamProductResponse
-                .builder()
+            final Long teamProductId) {
+        return TeamProductResponseDTO.RemoveTeamProductResponse.builder()
                 .teamProductId(teamProductId)
                 .build();
     }
-
 }

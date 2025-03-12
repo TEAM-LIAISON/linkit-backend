@@ -1,10 +1,14 @@
 package liaison.linkit.member.business;
 
-import jakarta.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Random;
+
+import jakarta.mail.MessagingException;
+
 import liaison.linkit.login.exception.AuthCodeBadRequestException;
 import liaison.linkit.login.infrastructure.MailReAuthenticationRedisUtil;
-import liaison.linkit.mail.service.AuthCodeMailService;
+import liaison.linkit.mail.service.AsyncAuthCodeMailService;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.exception.member.DuplicateEmailIdException;
@@ -19,12 +23,21 @@ import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO.Update
 import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest;
 import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO.UpdateMemberContactRequest;
 import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO.UpdateMemberNameRequest;
-import liaison.linkit.member.presentation.dto.MemberRequestDTO;
 import liaison.linkit.member.presentation.dto.MemberBasicInformResponseDTO;
 import liaison.linkit.member.presentation.dto.MemberBasicInformResponseDTO.MailReAuthenticationResponse;
 import liaison.linkit.member.presentation.dto.MemberBasicInformResponseDTO.MailVerificationResponse;
 import liaison.linkit.member.presentation.dto.MemberBasicInformResponseDTO.UpdateConsentMarketingResponse;
+import liaison.linkit.member.presentation.dto.MemberRequestDTO;
 import liaison.linkit.member.presentation.dto.MemberResponseDTO;
+import liaison.linkit.notification.business.NotificationMapper;
+import liaison.linkit.notification.domain.type.NotificationType;
+import liaison.linkit.notification.domain.type.SubNotificationType;
+import liaison.linkit.notification.implement.NotificationCommandAdapter;
+import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationDetails;
+import liaison.linkit.notification.service.HeaderNotificationService;
+import liaison.linkit.notification.service.NotificationService;
+import liaison.linkit.team.domain.team.Team;
+import liaison.linkit.team.implement.teamMember.TeamMemberInvitationQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -43,72 +56,131 @@ public class MemberService {
     private final MemberBasicInformMapper memberBasicInformMapper;
 
     private final MailReAuthenticationRedisUtil mailReAuthenticationRedisUtil;
-    private final AuthCodeMailService authCodeMailService;
+    private final AsyncAuthCodeMailService asyncAuthCodeMailService;
     private final MemberCommandAdapter memberCommandAdapter;
     private final MemberMapper memberMapper;
+    private final NotificationService notificationService;
+    private final NotificationMapper notificationMapper;
+    private final HeaderNotificationService headerNotificationService;
+    private final TeamMemberInvitationQueryAdapter teamMemberInvitationQueryAdapter;
+    private final NotificationCommandAdapter notificationCommandAdapter;
 
     // 회원 기본 정보 요청 (UPDATE)
-    public MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse updateMemberBasicInform(final Long memberId, final UpdateMemberBasicInformRequest request) {
+    public MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse updateMemberBasicInform(
+            final Long memberId, final UpdateMemberBasicInformRequest request) {
 
         if (memberQueryAdapter.existsByEmailId(request.getEmailId())) {
             throw DuplicateEmailIdException.EXCEPTION;
         }
 
-        final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.updateMemberBasicInform(memberId, request);
+        final MemberBasicInform updatedMemberBasicInform =
+                memberBasicInformCommandAdapter.updateMemberBasicInform(memberId, request);
 
-        final Member updatedMember = memberCommandAdapter.updateEmailId(memberId, request.getEmailId());
+        final Member updatedMember =
+                memberCommandAdapter.updateEmailId(memberId, request.getEmailId());
 
         updatedMember.setCreateMemberBasicInform(updatedMemberBasicInform.isMemberBasicInform());
 
-        return memberBasicInformMapper.toMemberBasicInformResponse(updatedMemberBasicInform, updatedMember.getEmail(), updatedMember.getEmailId());
+        // 회원 가입 시 시스템 알림 발송
+        NotificationDetails welcomeLinkitNotificationDetails =
+                NotificationDetails.welcomeLinkit(updatedMember.getEmailId(), "프로필을 완성하러 가볼까요?");
+
+        notificationService.alertNewNotification(
+                notificationMapper.toNotification(
+                        updatedMember.getId(),
+                        NotificationType.SYSTEM,
+                        SubNotificationType.WELCOME_LINKIT,
+                        welcomeLinkitNotificationDetails));
+
+        headerNotificationService.publishNotificationCount(updatedMember.getId());
+
+        if (teamMemberInvitationQueryAdapter.existsByEmail(updatedMember.getEmail())) {
+            final List<Team> teams =
+                    teamMemberInvitationQueryAdapter.getTeamsByEmail(updatedMember.getEmail());
+
+            for (Team team : teams) {
+                // 매칭 성사된 경우, 수신자에게 알림 발송
+                NotificationDetails teamInvitationNotificationDetails =
+                        NotificationDetails.teamInvitationRequested(
+                                team.getTeamCode(),
+                                team.getTeamLogoImagePath(),
+                                team.getTeamName(),
+                                false);
+
+                notificationCommandAdapter.save(
+                        notificationMapper.toNotification(
+                                updatedMember.getId(),
+                                NotificationType.TEAM_INVITATION,
+                                SubNotificationType.TEAM_INVITATION_REQUESTED,
+                                teamInvitationNotificationDetails));
+            }
+        }
+
+        return memberBasicInformMapper.toMemberBasicInformResponse(
+                updatedMemberBasicInform, updatedMember.getEmail(), updatedMember.getEmailId());
     }
 
     // 서비스 이용 동의 요청 (UPDATE)
-    public MemberBasicInformResponseDTO.UpdateConsentServiceUseResponse updateConsentServiceUse(final Long memberId, final UpdateConsentServiceUseRequest request) {
-        final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.updateConsentServiceUse(memberId, request);
+    public MemberBasicInformResponseDTO.UpdateConsentServiceUseResponse updateConsentServiceUse(
+            final Long memberId, final UpdateConsentServiceUseRequest request) {
+        final MemberBasicInform updatedMemberBasicInform =
+                memberBasicInformCommandAdapter.updateConsentServiceUse(memberId, request);
         return memberBasicInformMapper.toUpdateConsentServiceUseResponse(updatedMemberBasicInform);
     }
 
     // 회원 기본 정보 조회 (READ)
-    public MemberBasicInformResponseDTO.MemberBasicInformDetail getMemberBasicInform(final Long memberId) {
+    public MemberBasicInformResponseDTO.MemberBasicInformDetail getMemberBasicInform(
+            final Long memberId) {
 
-        final MemberBasicInform memberBasicInform = memberBasicInformQueryAdapter.findByMemberId(memberId);
+        final MemberBasicInform memberBasicInform =
+                memberBasicInformQueryAdapter.findByMemberId(memberId);
         final String email = memberQueryAdapter.findEmailById(memberId);
         final String emailId = memberQueryAdapter.findEmailIdById(memberId);
 
-        return memberBasicInformMapper.toMemberBasicInformDetail(memberBasicInform, email, emailId, memberBasicInform.getMember().getPlatform());
+        return memberBasicInformMapper.toMemberBasicInformDetail(
+                memberBasicInform, email, emailId, memberBasicInform.getMember().getPlatform());
     }
 
-
     // 회원 이름 수정 요청 (UPDATE)
-    public MemberBasicInformResponseDTO.UpdateMemberNameResponse updateMemberName(final Long memberId, final UpdateMemberNameRequest updateMemberNameRequest) {
-        final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.updateMemberName(memberId, updateMemberNameRequest);
+    public MemberBasicInformResponseDTO.UpdateMemberNameResponse updateMemberName(
+            final Long memberId, final UpdateMemberNameRequest updateMemberNameRequest) {
+        final MemberBasicInform updatedMemberBasicInform =
+                memberBasicInformCommandAdapter.updateMemberName(memberId, updateMemberNameRequest);
         return memberBasicInformMapper.toUpdateMemberNameResponse(updatedMemberBasicInform);
     }
 
     // 회원 유저 아이디 수정 요쳥 (UPDATE)
-    public MemberResponseDTO.UpdateMemberUserIdResponse updateMemberUserId(final Long memberId, final MemberRequestDTO.UpdateMemberUserIdRequest updateMemberUserIdRequest) {
-        final Member updatedMember = memberCommandAdapter.updateEmailId(memberId, updateMemberUserIdRequest.getEmailId());
+    public MemberResponseDTO.UpdateMemberUserIdResponse updateMemberUserId(
+            final Long memberId,
+            final MemberRequestDTO.UpdateMemberUserIdRequest updateMemberUserIdRequest) {
+        final Member updatedMember =
+                memberCommandAdapter.updateEmailId(
+                        memberId, updateMemberUserIdRequest.getEmailId());
         return memberMapper.toUpdateUserIdResponse(updatedMember);
     }
 
     // 회원 전화번호 수정 요청 (UPDATE)
-    public MemberBasicInformResponseDTO.UpdateMemberContactResponse updateMemberContact(final Long memberId, final UpdateMemberContactRequest updateMemberContactRequest) {
-        final MemberBasicInform updateMemberBasicInform = memberBasicInformCommandAdapter.updateMemberContact(memberId, updateMemberContactRequest);
+    public MemberBasicInformResponseDTO.UpdateMemberContactResponse updateMemberContact(
+            final Long memberId, final UpdateMemberContactRequest updateMemberContactRequest) {
+        final MemberBasicInform updateMemberBasicInform =
+                memberBasicInformCommandAdapter.updateMemberContact(
+                        memberId, updateMemberContactRequest);
         return memberBasicInformMapper.toUpdateMemberContactResponse(updateMemberBasicInform);
     }
 
     // 회원 마케팅 수신 동의 수정 요청 (UPDATE)
-    public UpdateConsentMarketingResponse updateConsentMarketing(final Long memberId, final UpdateConsentMarketingRequest updateConsentMarketingRequest) {
-        final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.updateConsentMarketing(memberId, updateConsentMarketingRequest);
+    public UpdateConsentMarketingResponse updateConsentMarketing(
+            final Long memberId,
+            final UpdateConsentMarketingRequest updateConsentMarketingRequest) {
+        final MemberBasicInform updatedMemberBasicInform =
+                memberBasicInformCommandAdapter.updateConsentMarketing(
+                        memberId, updateConsentMarketingRequest);
         return memberBasicInformMapper.toUpdateConsentMarketingResponse(updatedMemberBasicInform);
     }
 
-
     public MailReAuthenticationResponse reAuthenticationEmail(
-            final Long memberId,
-            final MailReAuthenticationRequest mailReAuthenticationRequest
-    ) throws MessagingException {
+            final Long memberId, final MailReAuthenticationRequest mailReAuthenticationRequest)
+            throws MessagingException, UnsupportedEncodingException {
 
         // 레디스에서 이메일 해시키가 존재한다면 데이터를 삭제한다. (5분 만료 이전에 다시 요청 보내는 경우 대비)
         if (mailReAuthenticationRedisUtil.existData(mailReAuthenticationRequest.getEmail())) {
@@ -118,14 +190,18 @@ public class MemberService {
         // 재인증 코드를 생성한다
         final String authCode = createCode();
 
-        // Redis 에 해당 인증코드 인증 시간 설정
-        mailReAuthenticationRedisUtil.setDataExpire(mailReAuthenticationRequest.getEmail(), authCode, 60 * 10L);
+        // Redis 에 해당 인증코드 인증 시간 설정 (10분)
+        mailReAuthenticationRedisUtil.setDataExpire(
+                mailReAuthenticationRequest.getEmail(), authCode, 18 * 10L);
 
         // DB 조회
         final Member member = memberQueryAdapter.findById(memberId);
 
         // 사용자가 입력한 이메일에 재인증 코드를 발송한다.
-        authCodeMailService.sendMailReAuthenticationCode(member.getMemberBasicInform().getMemberName(), mailReAuthenticationRequest.getEmail(), authCode);
+        asyncAuthCodeMailService.sendMailReAuthenticationCode(
+                member.getMemberBasicInform().getMemberName(),
+                mailReAuthenticationRequest.getEmail(),
+                authCode);
 
         // 재인증 코드를 발송한 시간 발행
         return memberBasicInformMapper.toReAuthenticationResponse();
@@ -143,11 +219,10 @@ public class MemberService {
                 .toString();
     }
 
-    public MailVerificationResponse verifyAuthCodeAndChangeAccountEmail(final Long memberId, final AuthCodeVerificationRequest authCodeVerificationRequest) {
+    public MailVerificationResponse verifyAuthCodeAndChangeAccountEmail(
+            final Long memberId, final AuthCodeVerificationRequest authCodeVerificationRequest) {
         final String authCode = authCodeVerificationRequest.getAuthCode();
-        log.info("authCode = {}", authCode);
         final String changeRequestEmail = authCodeVerificationRequest.getChangeRequestEmail();
-        log.info("changeRequestEmail = {}", changeRequestEmail);
 
         // 인증 코드가 잘못 입력된 경우
         if (!verifyEmailCode(changeRequestEmail, authCode)) {
@@ -163,9 +238,7 @@ public class MemberService {
     // 코드 검증
     public Boolean verifyEmailCode(String email, String code) {
         String codeFoundByEmail = mailReAuthenticationRedisUtil.getData(email);
-        log.info("codeFoundByEmail = {}", codeFoundByEmail);
         if (codeFoundByEmail == null) {
-            log.info("false 실행");
             return false;
         }
         return codeFoundByEmail.equals(code);

@@ -20,10 +20,12 @@ public class CsvProfileStateWriter implements ItemWriter<ProfileStateCsvData> {
 
         Chunk<ProfileState> profileStates = new Chunk<>();
 
-        chunk.forEach(profileStateCsvData -> {
-            ProfileState profileState = ProfileState.of(profileStateCsvData.getProfileStateName());
-            profileStates.add(profileState);
-        });
+        chunk.forEach(
+                profileStateCsvData -> {
+                    ProfileState profileState =
+                            ProfileState.of(profileStateCsvData.getProfileStateName());
+                    profileStates.add(profileState);
+                });
 
         profileStateRepository.saveAll(profileStates);
     }

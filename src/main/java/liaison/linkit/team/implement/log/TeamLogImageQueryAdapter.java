@@ -1,7 +1,7 @@
 package liaison.linkit.team.implement.log;
 
-
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.team.domain.log.TeamLog;
 import liaison.linkit.team.domain.log.TeamLogImage;

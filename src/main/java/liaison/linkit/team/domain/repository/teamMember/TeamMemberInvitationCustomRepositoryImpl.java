@@ -1,7 +1,11 @@
 package liaison.linkit.team.domain.repository.teamMember;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.QTeamMemberInvitation;
 import liaison.linkit.team.domain.teamMember.TeamMemberInvitation;
@@ -11,20 +15,23 @@ import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Slf4j
-public class TeamMemberInvitationCustomRepositoryImpl implements TeamMemberInvitationCustomRepository {
+public class TeamMemberInvitationCustomRepositoryImpl
+        implements TeamMemberInvitationCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
+    @PersistenceContext private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public boolean existsByEmail(final String email) {
         QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
 
         return jpaQueryFactory
-                .selectOne()
-                .from(qTeamMemberInvitation)
-                .where(qTeamMemberInvitation.teamMemberInvitationEmail.eq(email))
-                .fetchFirst() != null;
+                        .selectOne()
+                        .from(qTeamMemberInvitation)
+                        .where(qTeamMemberInvitation.teamMemberInvitationEmail.eq(email))
+                        .fetchFirst()
+                != null;
     }
 
     @Override
@@ -32,20 +39,31 @@ public class TeamMemberInvitationCustomRepositoryImpl implements TeamMemberInvit
         QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
 
         return jpaQueryFactory
-                .selectOne()
-                .from(qTeamMemberInvitation)
-                .where(qTeamMemberInvitation.teamMemberInvitationEmail.eq(email)
-                        .and(qTeamMemberInvitation.team.id.eq(team.getId())))
-                .fetchFirst() != null;
+                        .selectOne()
+                        .from(qTeamMemberInvitation)
+                        .where(
+                                qTeamMemberInvitation
+                                        .teamMemberInvitationEmail
+                                        .eq(email)
+                                        .and(qTeamMemberInvitation.team.id.eq(team.getId())))
+                        .fetchFirst()
+                != null;
     }
 
     @Override
-    public List<TeamMemberInvitation> getTeamMemberInvitations(final Long teamId) {
+    public List<TeamMemberInvitation> getTeamMemberInvitationsInPending(final Long teamId) {
         QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
 
         return jpaQueryFactory
                 .selectFrom(qTeamMemberInvitation)
-                .where(qTeamMemberInvitation.team.id.eq(teamId))
+                .where(
+                        qTeamMemberInvitation
+                                .team
+                                .id
+                                .eq(teamId)
+                                .and(
+                                        qTeamMemberInvitation.teamMemberInviteState.eq(
+                                                TeamMemberInviteState.PENDING)))
                 .fetch();
     }
 
@@ -61,29 +79,34 @@ public class TeamMemberInvitationCustomRepositoryImpl implements TeamMemberInvit
     }
 
     @Override
-    public TeamMemberInvitation getTeamMemberInvitationInPendingState(final String email, final Team team) {
+    public TeamMemberInvitation getTeamMemberInvitationInPendingState(
+            final String email, final Team team) {
         QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
 
         return jpaQueryFactory
                 .selectFrom(qTeamMemberInvitation)
                 .where(
                         qTeamMemberInvitation.teamMemberInvitationEmail.eq(email),
-                        qTeamMemberInvitation.team.id.eq(team.getId())
-                                .and(qTeamMemberInvitation.teamMemberInviteState.eq(TeamMemberInviteState.PENDING))
-                )
+                        qTeamMemberInvitation
+                                .team
+                                .id
+                                .eq(team.getId())
+                                .and(
+                                        qTeamMemberInvitation.teamMemberInviteState.eq(
+                                                TeamMemberInviteState.PENDING)))
                 .fetchOne();
     }
 
     @Override
-    public TeamMemberInvitation getTeamMemberInvitationByTeamCodeAndEmail(final String teamCode, final String email) {
+    public TeamMemberInvitation getTeamMemberInvitationByTeamCodeAndEmail(
+            final String teamCode, final String email) {
         QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
 
         return jpaQueryFactory
                 .selectFrom(qTeamMemberInvitation)
                 .where(
                         qTeamMemberInvitation.teamMemberInvitationEmail.eq(email),
-                        qTeamMemberInvitation.team.teamCode.eq(teamCode)
-                )
+                        qTeamMemberInvitation.team.teamCode.eq(teamCode))
                 .fetchOne();
     }
 
@@ -95,5 +118,33 @@ public class TeamMemberInvitationCustomRepositoryImpl implements TeamMemberInvit
                 .delete(qTeamMemberInvitation)
                 .where(qTeamMemberInvitation.id.eq(teamMemberInvitation.getId()))
                 .execute();
+    }
+
+    @Override
+    public void deleteAllByTeamIds(final List<Long> teamIds) {
+        QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
+
+        long deletedCount =
+                jpaQueryFactory
+                        .delete(qTeamMemberInvitation)
+                        .where(qTeamMemberInvitation.team.id.in(teamIds))
+                        .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+    }
+
+    @Override
+    public void deleteAllByTeamId(final Long teamId) {
+        QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
+
+        long deletedCount =
+                jpaQueryFactory
+                        .delete(qTeamMemberInvitation)
+                        .where(qTeamMemberInvitation.team.id.eq(teamId))
+                        .execute();
+
+        entityManager.flush();
+        entityManager.clear();
     }
 }

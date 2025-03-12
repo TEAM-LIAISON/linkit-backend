@@ -4,6 +4,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.scrap.business.service.AnnouncementScrapService;
 import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapRequestDTO;
 import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapResponseDTO;
@@ -25,19 +26,31 @@ public class AnnouncementScrapController {
 
     @PostMapping("/{teamMemberAnnouncementId}")
     @MemberOnly
-    public CommonResponse<AnnouncementScrapResponseDTO.UpdateAnnouncementScrap> updateAnnouncementScrap(
-            @Auth final Accessor accessor,
-            @PathVariable final Long teamMemberAnnouncementId,
-            @RequestBody final AnnouncementScrapRequestDTO.UpdateAnnouncementScrapRequest updateAnnouncementScrapRequest  // 변경하고자 하는 boolean 상태
-    ) {
-        return CommonResponse.onSuccess(announcementScrapService.updateAnnouncementScrap(accessor.getMemberId(), teamMemberAnnouncementId, updateAnnouncementScrapRequest));
+    @Logging(
+            item = "Announcement_Scrap",
+            action = "POST_UPDATE_ANNOUNCEMENT_SCRAP",
+            includeResult = true)
+    public CommonResponse<AnnouncementScrapResponseDTO.UpdateAnnouncementScrap>
+            updateAnnouncementScrap(
+                    @Auth final Accessor accessor,
+                    @PathVariable final Long teamMemberAnnouncementId,
+                    @RequestBody
+                            final AnnouncementScrapRequestDTO.UpdateAnnouncementScrapRequest
+                                    updateAnnouncementScrapRequest // 변경하고자 하는 boolean 상태
+                    ) {
+        return CommonResponse.onSuccess(
+                announcementScrapService.updateAnnouncementScrap(
+                        accessor.getMemberId(),
+                        teamMemberAnnouncementId,
+                        updateAnnouncementScrapRequest));
     }
 
     @GetMapping
     @MemberOnly
+    @Logging(item = "Announcement_Scrap", action = "GET_ANNOUNCEMENT_SCRAPS", includeResult = true)
     public CommonResponse<AnnouncementInformMenus> getAnnouncementScraps(
-            @Auth final Accessor accessor
-    ) {
-        return CommonResponse.onSuccess(announcementScrapService.getAnnouncementScraps(accessor.getMemberId()));
+            @Auth final Accessor accessor) {
+        return CommonResponse.onSuccess(
+                announcementScrapService.getAnnouncementScraps(accessor.getMemberId()));
     }
 }

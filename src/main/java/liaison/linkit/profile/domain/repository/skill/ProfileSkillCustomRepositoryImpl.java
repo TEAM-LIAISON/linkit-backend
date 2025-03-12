@@ -1,7 +1,8 @@
 package liaison.linkit.profile.domain.repository.skill;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.profile.domain.skill.ProfileSkill;
 import liaison.linkit.profile.domain.skill.QProfileSkill;
 import lombok.RequiredArgsConstructor;
@@ -13,16 +14,16 @@ public class ProfileSkillCustomRepositoryImpl implements ProfileSkillCustomRepos
 
     private final JPAQueryFactory jpaQueryFactory;
 
-
     @Override
     public boolean existsByProfileId(Long profileId) {
         QProfileSkill profileSkill = QProfileSkill.profileSkill;
 
-        Integer count = jpaQueryFactory
-                .selectOne()
-                .from(profileSkill)
-                .where(profileSkill.profile.id.eq(profileId))
-                .fetchFirst();
+        Integer count =
+                jpaQueryFactory
+                        .selectOne()
+                        .from(profileSkill)
+                        .where(profileSkill.profile.id.eq(profileId))
+                        .fetchFirst();
 
         return count != null;
     }
@@ -41,10 +42,6 @@ public class ProfileSkillCustomRepositoryImpl implements ProfileSkillCustomRepos
     public void deleteAllByProfileId(Long profileId) {
         QProfileSkill profileSkill = QProfileSkill.profileSkill;
 
-        jpaQueryFactory
-                .delete(profileSkill)
-                .where(profileSkill.profile.id.eq(profileId))
-                .execute();
+        jpaQueryFactory.delete(profileSkill).where(profileSkill.profile.id.eq(profileId)).execute();
     }
-
 }

@@ -1,7 +1,8 @@
 package liaison.linkit.profile.domain.repository.log;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.domain.log.ProfileLogImage;
 import liaison.linkit.profile.domain.log.QProfileLogImage;

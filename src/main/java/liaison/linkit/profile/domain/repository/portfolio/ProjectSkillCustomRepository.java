@@ -1,10 +1,10 @@
 package liaison.linkit.profile.domain.repository.portfolio;
 
 import java.util.List;
+
 import liaison.linkit.profile.domain.portfolio.ProjectSkill;
 
 public interface ProjectSkillCustomRepository {
-    List<ProjectSkill> getProjectSkills(final Long profilePortfolioId);
 
-//    void deleteAll(final List<ProjectSkill> projectSkills);
+    List<ProjectSkill> getProjectSkills(final Long profilePortfolioId);
 }

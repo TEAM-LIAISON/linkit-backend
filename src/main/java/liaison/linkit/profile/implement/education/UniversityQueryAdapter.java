@@ -12,6 +12,8 @@ public class UniversityQueryAdapter {
     final UniversityRepository universityRepository;
 
     public University findUniversityByUniversityName(final String universityName) {
-        return universityRepository.findUniversityByUniversityName(universityName).orElseThrow(() -> UniversityNotFoundException.EXCEPTION);
+        return universityRepository
+                .findUniversityByUniversityName(universityName)
+                .orElseThrow(() -> UniversityNotFoundException.EXCEPTION);
     }
 }

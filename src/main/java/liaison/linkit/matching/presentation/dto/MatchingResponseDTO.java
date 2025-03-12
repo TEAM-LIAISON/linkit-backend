@@ -2,6 +2,7 @@ package liaison.linkit.matching.presentation.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.ReceiverDeleteStatus;
 import liaison.linkit.matching.domain.type.ReceiverReadStatus;
@@ -52,7 +53,8 @@ public class MatchingResponseDTO {
         private List<SenderTeamInformation> senderTeamInformation = new ArrayList<>();
 
         @Builder.Default
-        private ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
+        private ReceiverProfileInformation receiverProfileInformation =
+                new ReceiverProfileInformation();
     }
 
     @Builder
@@ -77,13 +79,15 @@ public class MatchingResponseDTO {
         private SenderTeamInformation senderTeamInformation = new SenderTeamInformation();
 
         @Builder.Default
-        private ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
+        private ReceiverProfileInformation receiverProfileInformation =
+                new ReceiverProfileInformation();
 
         @Builder.Default
         private ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
 
         @Builder.Default
-        private ReceiverAnnouncementInformation receiverAnnouncementInformation = new ReceiverAnnouncementInformation();
+        private ReceiverAnnouncementInformation receiverAnnouncementInformation =
+                new ReceiverAnnouncementInformation();
 
         private String requestMessage;
 
@@ -125,13 +129,15 @@ public class MatchingResponseDTO {
         private SenderTeamInformation senderTeamInformation = new SenderTeamInformation();
 
         @Builder.Default
-        private ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
+        private ReceiverProfileInformation receiverProfileInformation =
+                new ReceiverProfileInformation();
 
         @Builder.Default
         private ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
 
         @Builder.Default
-        private ReceiverAnnouncementInformation receiverAnnouncementInformation = new ReceiverAnnouncementInformation();
+        private ReceiverAnnouncementInformation receiverAnnouncementInformation =
+                new ReceiverAnnouncementInformation();
 
         private String requestMessage;
 
@@ -163,13 +169,15 @@ public class MatchingResponseDTO {
         private SenderTeamInformation senderTeamInformation = new SenderTeamInformation();
 
         @Builder.Default
-        private ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
+        private ReceiverProfileInformation receiverProfileInformation =
+                new ReceiverProfileInformation();
 
         @Builder.Default
         private ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
 
         @Builder.Default
-        private ReceiverAnnouncementInformation receiverAnnouncementInformation = new ReceiverAnnouncementInformation();
+        private ReceiverAnnouncementInformation receiverAnnouncementInformation =
+                new ReceiverAnnouncementInformation();
 
         private String requestMessage;
 
@@ -198,12 +206,11 @@ public class MatchingResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SenderTeamInformation {
-        private String teamCode;                    // 팀 코드
-        private String teamName;                    // 팀 이름
-        private String teamLogoImagePath;           // 팀 로고 이미지 경로
+        private String teamCode; // 팀 코드
+        private String teamName; // 팀 이름
+        private String teamLogoImagePath; // 팀 로고 이미지 경로
 
-        @Builder.Default
-        private TeamScaleItem teamScaleItem = new TeamScaleItem();
+        @Builder.Default private TeamScaleItem teamScaleItem = new TeamScaleItem();
     }
 
     // 수신자 프로필 정보
@@ -226,12 +233,11 @@ public class MatchingResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ReceiverTeamInformation {
-        private String teamCode;                    // 팀 코드
-        private String teamName;                    // 팀 이름
-        private String teamLogoImagePath;           // 팀 로고 이미지 경로
+        private String teamCode; // 팀 코드
+        private String teamName; // 팀 이름
+        private String teamLogoImagePath; // 팀 로고 이미지 경로
 
-        @Builder.Default
-        private TeamScaleItem teamScaleItem = new TeamScaleItem();  // 팀 규모
+        @Builder.Default private TeamScaleItem teamScaleItem = new TeamScaleItem(); // 팀 규모
     }
 
     @Getter
@@ -239,13 +245,20 @@ public class MatchingResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ReceiverAnnouncementInformation {
+        private Long teamMemberAnnouncementId;
+
+        private String teamName;
+
         private String announcementTitle;
+
+        private String teamLogoImagePath;
 
         @Builder.Default
         private AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
 
         @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
+                announcementSkillNames = new ArrayList<>();
     }
 
     // 매칭 알림 메뉴
@@ -254,8 +267,10 @@ public class MatchingResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class MatchingNotificationMenu {
-        private int receivedMatchingNotificationCount;                  // 수신함에서 매칭 성사가 안된 안읽은 요청의 개수 + 매칭 성사가 되고 나서 내가 아직 읽지 않은 요청의 개수
-        private int requestedMatchingNotificationCount;                 // 발신함에서 매칭 성사가 되었는데, 안읽은 요청의 개수
+        private int
+                receivedMatchingNotificationCount; // 수신함에서 매칭 성사가 안된 안읽은 요청의 개수 + 매칭 성사가 되고 나서 내가
+        // 아직 읽지 않은 요청의 개수
+        private int requestedMatchingNotificationCount; // 발신함에서 매칭 성사가 되었는데, 안읽은 요청의 개수
     }
 
     // 발신함 삭제 응답
@@ -305,7 +320,8 @@ public class MatchingResponseDTO {
     @AllArgsConstructor
     public static class UpdateReceivedMatchingCompletedStateReadItems {
         @Builder.Default
-        private List<UpdateReceivedMatchingCompletedStateReadItem> updateReceivedMatchingCompletedStateReadItems = new ArrayList<>();
+        private List<UpdateReceivedMatchingCompletedStateReadItem>
+                updateReceivedMatchingCompletedStateReadItems = new ArrayList<>();
     }
 
     // 수신함에서 성사된 매칭 읽음 처리 개별 응답
@@ -325,7 +341,8 @@ public class MatchingResponseDTO {
     @AllArgsConstructor
     public static class UpdateReceivedMatchingRequestedStateToReadItems {
         @Builder.Default
-        private List<UpdateReceivedMatchingRequestedStateToReadItem> updateReceivedMatchingRequestedStateToReadItems = new ArrayList<>();
+        private List<UpdateReceivedMatchingRequestedStateToReadItem>
+                updateReceivedMatchingRequestedStateToReadItems = new ArrayList<>();
     }
 
     // 수신함에서 요청 온 매칭 읽음 처리 개별 응답

@@ -11,16 +11,21 @@ import lombok.RequiredArgsConstructor;
 public class TeamProductCommandAdapter {
     private final TeamProductRepository teamProductRepository;
 
-
     public TeamProduct addTeamProduct(final TeamProduct teamProduct) {
         return teamProductRepository.save(teamProduct);
     }
 
-    public TeamProduct updateTeamProduct(final TeamProduct teamProduct, final UpdateTeamProductRequest updateTeamProductRequest) {
+    public TeamProduct updateTeamProduct(
+            final TeamProduct teamProduct,
+            final UpdateTeamProductRequest updateTeamProductRequest) {
         return teamProductRepository.updateTeamProduct(teamProduct, updateTeamProductRequest);
     }
 
     public void removeTeamProduct(final TeamProduct teamProduct) {
         teamProductRepository.delete(teamProduct);
+    }
+
+    public void deleteAllTeamProducts(final Long teamId) {
+        teamProductRepository.deleteAllByTeamId(teamId);
     }
 }

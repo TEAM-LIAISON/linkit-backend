@@ -234,6 +234,17 @@ include::{snippets}/team-member-announcement-controller-test/get-home-announceme
 include::{snippets}/team-member-announcement-controller-test/get-home-announcement-inform-menus/response-fields.adoc[]
 ====
 
+=== 홈화면_인기 로그 조회
+
+====
+*요청*
+include::{snippets}/log-search-controller-test/get-home-log-inform-menus/http-request.adoc[]
+
+*응답*
+include::{snippets}/log-search-controller-test/get-home-log-inform-menus/http-response.adoc[]
+include::{snippets}/log-search-controller-test/get-home-log-inform-menus/response-fields.adoc[]
+====
+
 == #[프로필 - 내 프로필 조회]#
 
 === 내 프로필_프로필 상세 조회
@@ -530,6 +541,17 @@ include::{snippets}/profile-portfolio-controller-test/get-profile-portfolio-item
 
 ====
 
+=== 나의 포트폴리오 뷰어 전체 조회
+
+====
+*요청*
+include::{snippets}/profile-portfolio-controller-test/get-profile-portfolio-view-items/http-request.adoc[]
+include::{snippets}/profile-portfolio-controller-test/get-profile-portfolio-view-items/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/profile-portfolio-controller-test/get-profile-portfolio-view-items/http-response.adoc[]
+====
+
 === 나의 포트폴리오 단일 조회
 
 ====
@@ -664,7 +686,13 @@ include::{snippets}/profile-education-controller-test/add-profile-education-cert
 === 학력 증명서 단일 삭제
 
 ====
-요청 응답
+요청
+include::{snippets}/profile-education-controller-test/remove-profile-education-certification/http-request.adoc[]
+include::{snippets}/profile-education-controller-test/remove-profile-education-certification/path-parameters.adoc[]
+
+응답
+include::{snippets}/profile-education-controller-test/remove-profile-education-certification/http-response.adoc[]
+include::{snippets}/profile-education-controller-test/remove-profile-education-certification/response-fields.adoc[]
 ====
 
 == #[프로필 - 나의 수상]#
@@ -993,6 +1021,18 @@ include::{snippets}/team-log-controller-test/get-team-log-item/http-response.ado
 include::{snippets}/team-log-controller-test/get-team-log-item/response-fields.adoc[]
 ====
 
+=== 팀 대표 로그 조회
+
+====
+*요청*
+include::{snippets}/team-log-controller-test/get-represent-team-log-item/http-request.adoc[]
+include::{snippets}/team-log-controller-test/get-represent-team-log-item/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-log-controller-test/get-represent-team-log-item/http-response.adoc[]
+include::{snippets}/team-log-controller-test/get-represent-team-log-item/response-fields.adoc[]
+====
+
 === 팀 로그 단일 생성
 
 ====
@@ -1060,29 +1100,17 @@ include::{snippets}/team-log-controller-test/update-team-log-public-state/respon
 
 == #[팀 - 팀원 공고]#
 
-=== 팀원 공고 뷰어 전체 조회 (로그인 전 - 토큰 X / 로그인 후 - 토큰 O)
+=== 팀원 공고 전체 조회 (로그인 전 - 토큰 X / 로그인 후 - 토큰 O)
 
 ====
 *요청*
-include::{snippets}/team-member-announcement-controller-test/get-logged-out-team-member-announcement-view-items/http-request.adoc[]
-include::{snippets}/team-member-announcement-controller-test/get-logged-out-team-member-announcement-view-items/path-parameters.adoc[]
+include::{snippets}/team-member-announcement-controller-test/get-logged-out-team-member-announcement-items/http-request.adoc[]
+include::{snippets}/team-member-announcement-controller-test/get-logged-out-team-member-announcement-items/path-parameters.adoc[]
 
 *응답*
-include::{snippets}/team-member-announcement-controller-test/get-logged-out-team-member-announcement-view-items/http-response.adoc[]
-include::{snippets}/team-member-announcement-controller-test/get-logged-out-team-member-announcement-view-items/response-fields.adoc[]
+include::{snippets}/team-member-announcement-controller-test/get-logged-out-team-member-announcement-items/http-response.adoc[]
+include::{snippets}/team-member-announcement-controller-test/get-logged-out-team-member-announcement-items/response-fields.adoc[]
 
-====
-
-=== 팀원 공고 전체 조회
-
-====
-*요청*
-include::{snippets}/team-member-announcement-controller-test/get-team-member-announcement-items/http-request.adoc[]
-include::{snippets}/team-member-announcement-controller-test/get-team-member-announcement-items/path-parameters.adoc[]
-
-*응답*
-include::{snippets}/team-member-announcement-controller-test/get-team-member-announcement-items/http-response.adoc[]
-include::{snippets}/team-member-announcement-controller-test/get-team-member-announcement-items/response-fields.adoc[]
 ====
 
 === 팀원 공고 단일 조회 (로그인 - 토큰 O / 로그아웃 - 토큰 X)
@@ -1150,7 +1178,31 @@ include::{snippets}/team-member-announcement-controller-test/update-team-member-
 
 ====
 
+=== 팀원 공고 모집 마감 여부 수정
+
+====
+*요청*
+include::{snippets}/team-member-announcement-controller-test/close-team-member-announcement/http-request.adoc[]
+include::{snippets}/team-member-announcement-controller-test/close-team-member-announcement/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-member-announcement-controller-test/close-team-member-announcement/http-response.adoc[]
+include::{snippets}/team-member-announcement-controller-test/close-team-member-announcement/response-fields.adoc[]
+====
+
 == #[팀 - 팀 구성원]#
+
+=== 팀 구성원 목록 조회 (뷰어)
+
+====
+*요청*
+include::{snippets}/team-member-controller-test/get-team-member-view-items/http-request.adoc[]
+include::{snippets}/team-member-controller-test/get-team-member-view-items/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-member-controller-test/get-team-member-view-items/http-response.adoc[]
+include::{snippets}/team-member-controller-test/get-team-member-view-items/response-fields.adoc[]
+====
 
 === 팀 구성원 목록 조회 (수정창)
 
@@ -1408,6 +1460,17 @@ include::{snippets}/team-member-controller-test/update-managing-team-state/respo
 
 == #[팀원 찾기]#
 
+=== 팀원 찾기 (정적 데이터)
+
+====
+*요청*
+include::{snippets}/profile-search-controller-test/get-featured-profiles/http-request.adoc[]
+
+*응답*
+include::{snippets}/profile-search-controller-test/get-featured-profiles/http-response.adoc[]
+include::{snippets}/profile-search-controller-test/get-featured-profiles/response-fields.adoc[]
+====
+
 === 팀원 찾기 (필터링 포함)
 
 ====
@@ -1423,6 +1486,17 @@ include::{snippets}/profile-search-controller-test/search-profiles/response-fiel
 
 == #[팀 찾기]#
 
+=== 팀 찾기 (정적 데이터)
+
+====
+*요청*
+include::{snippets}/team-search-controller-test/get-featured-teams/http-request.adoc[]
+
+*응답*
+include::{snippets}/team-search-controller-test/get-featured-teams/http-response.adoc[]
+include::{snippets}/team-search-controller-test/get-featured-teams/response-fields.adoc[]
+====
+
 === 팀 찾기 (필터링 포함)
 
 ====
@@ -1436,6 +1510,17 @@ include::{snippets}/team-search-controller-test/search-teams/response-fields.ado
 ====
 
 == #[팀원 공고 찾기]#
+
+=== 팀원 공고 찾기 (정적 데이터)
+
+====
+*요청*
+include::{snippets}/announcement-search-controller-test/get-featured-announcements/http-request.adoc[]
+
+*응답*
+include::{snippets}/announcement-search-controller-test/get-featured-announcements/http-response.adoc[]
+include::{snippets}/announcement-search-controller-test/get-featured-announcements/response-fields.adoc[]
+====
 
 === 팀원 공고 찾기 (필터링 포함)
 
@@ -1526,18 +1611,6 @@ include::{snippets}/announcement-scrap-controller-test/get-announcement-scraps/r
 
 == #[채팅]#
 
-=== 신규 채팅방 생성
-
-====
-*요청*
-include::{snippets}/chat-controller-test/create-chat-room/http-request.adoc[]
-include::{snippets}/chat-controller-test/create-chat-room/request-fields.adoc[]
-
-*응답*
-include::{snippets}/chat-controller-test/create-chat-room/http-response.adoc[]
-include::{snippets}/chat-controller-test/create-chat-room/response-fields.adoc[]
-====
-
 === 채팅방 왼쪽 메뉴 조회
 
 ====
@@ -1586,6 +1659,18 @@ include::{snippets}/notification-controller-test/get-notification-items/http-req
 *응답*
 include::{snippets}/notification-controller-test/get-notification-items/http-response.adoc[]
 include::{snippets}/notification-controller-test/get-notification-items/response-fields.adoc[]
+====
+
+=== 알림 읽음 처리 (상단바)
+
+====
+*요청*
+include::{snippets}/notification-controller-test/update-notification-read-status/http-request.adoc[]
+include::{snippets}/notification-controller-test/update-notification-read-status/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/notification-controller-test/update-notification-read-status/http-response.adoc[]
+include::{snippets}/notification-controller-test/update-notification-read-status/response-fields.adoc[]
 ====
 
 == #[매칭 관리]#

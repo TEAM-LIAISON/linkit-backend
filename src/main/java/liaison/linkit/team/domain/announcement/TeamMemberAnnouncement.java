@@ -9,7 +9,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+
 import liaison.linkit.global.BaseEntity;
 import liaison.linkit.team.domain.team.Team;
 import lombok.AllArgsConstructor;
@@ -26,27 +31,77 @@ public class TeamMemberAnnouncement extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "team_member_announcement_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "team_id")
+    @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
-    private String announcementTitle;                   // 공고 제목
-    private String announcementStartDate;               // 공고 시작 기간
-    private String announcementEndDate;                 // 공고 마감 기간
-    private boolean isRegionFlexible;                   // 지역 무관
-    private String mainTasks;                           // 주요 업무
-    private String workMethod;                          // 업무 방식
-    private String idealCandidate;                      // 이런 분을 찾고 있어요
-    private String preferredQualifications;             // 이런 분이면 더 좋아요
-    private String joiningProcess;                      // 이런 과정으로 합류해요
-    private String benefits;                            // 합류하면 이런 것들을 얻어 갈 수 있어요
-    private boolean isAnnouncementPublic;               // 공고 공개/비공개 설정
-    private boolean isAnnouncementInProgress;           // 공고 진행/완료 여부
+    @OneToOne(mappedBy = "teamMemberAnnouncement")
+    private AnnouncementPosition announcementPosition;
+
+    @Column(nullable = false, length = 100)
+    private String announcementTitle; // 공고 제목
+
+    private String announcementEndDate; // 공고 마감 기간
+    private boolean isPermanentRecruitment; // 상시 모집 여부
+
+    private boolean isRegionFlexible; // 지역 무관
+
+    @Lob
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String mainTasks;
+
+    @Lob
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String workMethod;
+
+    @Lob
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String idealCandidate;
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String preferredQualifications;
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String joiningProcess;
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String benefits;
+
+    @Column(name = "is_advertising_mail_sent", nullable = false) // 공고 메일 발송 여부
+    private boolean isAdvertisingMailSent;
+
+    // 공고 공개/비공개 설정
+    private boolean isAnnouncementPublic;
+
+    // 공고 진행/완료 여부
+    private boolean isAnnouncementInProgress;
+
+    @Column(nullable = false)
+    private Long viewCount;
 
     public void setIsAnnouncementPublic(final boolean isAnnouncementPublic) {
         this.isAnnouncementPublic = isAnnouncementPublic;
+    }
+
+    @PrePersist
+    @PreUpdate
+    private void prePersistOrUpdate() {
+        if (this.announcementEndDate != null && this.announcementEndDate.trim().isEmpty()) {
+            this.announcementEndDate = null;
+        }
+    }
+
+    // 광고 메일 발송 상태를 업데이트하는 메서드
+    public void markAdvertisingMailAsSent() {
+        this.isAdvertisingMailSent = true;
+    }
+
+    public void increaseViewCount() {
+        this.viewCount++;
     }
 }

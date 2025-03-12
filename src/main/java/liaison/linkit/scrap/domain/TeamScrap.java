@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.team.domain.team.Team;
@@ -30,11 +31,11 @@ public class TeamScrap extends BaseDateTimeEntity {
 
     // 스크랩 주체 회원
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     // 스크랩 대상 팈
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "team_id")
+    @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 }

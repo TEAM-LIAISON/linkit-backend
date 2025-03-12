@@ -23,10 +23,12 @@ public class CsvRegionWriter implements ItemWriter<RegionCsvData> {
 
         Chunk<Region> regions = new Chunk<>();
 
-        chunk.forEach(regionCsvData -> {
-            Region region = Region.of(regionCsvData.getCityName(), regionCsvData.getDivisionName());
-            regions.add(region);
-        });
+        chunk.forEach(
+                regionCsvData -> {
+                    Region region =
+                            Region.of(regionCsvData.getCityName(), regionCsvData.getDivisionName());
+                    regions.add(region);
+                });
 
         regionRepository.saveAll(regions);
     }

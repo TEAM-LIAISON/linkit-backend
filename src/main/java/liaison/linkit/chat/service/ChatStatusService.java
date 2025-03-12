@@ -3,6 +3,7 @@ package liaison.linkit.chat.service;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
 import liaison.linkit.chat.event.ChatEvent;
 import liaison.linkit.global.util.SessionRegistry;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,9 @@ public class ChatStatusService {
         Long memberId = event.getMemberId();
         String sessionId = event.getSessionId();
 
-        userSessions.computeIfAbsent(memberId, k -> ConcurrentHashMap.newKeySet())
-                .add(sessionId);
+        userSessions.computeIfAbsent(memberId, k -> ConcurrentHashMap.newKeySet()).add(sessionId);
 
         broadcastUserStatus(memberId, true);
-        log.info("User online: memberId={}, sessionId={}", memberId, sessionId);
     }
 
     @EventListener
@@ -42,14 +41,13 @@ public class ChatStatusService {
             if (sessions.isEmpty()) {
                 userSessions.remove(memberId);
                 broadcastUserStatus(memberId, false);
-                log.info("User offline: memberId={}", memberId);
             }
         }
     }
 
     private void broadcastUserStatus(Long memberId, boolean isOnline) {
-        messagingTemplate.convertAndSend("/sub/status",
-                Map.of("memberId", memberId, "online", isOnline));
+        messagingTemplate.convertAndSend(
+                "/sub/status", Map.of("memberId", memberId, "online", isOnline));
     }
 
     public boolean isUserOnline(Long memberId) {

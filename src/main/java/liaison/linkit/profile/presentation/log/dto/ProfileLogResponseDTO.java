@@ -3,6 +3,7 @@ package liaison.linkit.profile.presentation.log.dto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import liaison.linkit.profile.domain.type.LogType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -18,8 +19,7 @@ public class ProfileLogResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProfileLogItems {
-        @Builder.Default
-        private List<ProfileLogItem> profileLogItems = new ArrayList<>();
+        @Builder.Default private List<ProfileLogItem> profileLogItems = new ArrayList<>();
     }
 
     @Builder

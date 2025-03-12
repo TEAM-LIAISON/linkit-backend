@@ -1,7 +1,8 @@
 package liaison.linkit.team.domain.repository.currentState;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.team.domain.state.QTeamCurrentState;
 import liaison.linkit.team.domain.state.TeamCurrentState;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +28,12 @@ public class TeamCurrentStateCustomRepositoryImpl implements TeamCurrentStateCus
     public boolean existsTeamCurrentStatesByTeamId(final Long teamId) {
         QTeamCurrentState qTeamCurrentState = QTeamCurrentState.teamCurrentState;
 
-        Integer count = jpaQueryFactory
-                .selectOne()
-                .from(qTeamCurrentState)
-                .where(qTeamCurrentState.team.id.eq(teamId))
-                .fetchFirst();
+        Integer count =
+                jpaQueryFactory
+                        .selectOne()
+                        .from(qTeamCurrentState)
+                        .where(qTeamCurrentState.team.id.eq(teamId))
+                        .fetchFirst();
 
         return count != null;
     }

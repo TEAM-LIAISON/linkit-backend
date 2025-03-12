@@ -1,7 +1,8 @@
 package liaison.linkit.team.domain.repository.product;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.team.domain.product.ProductSubImage;
 import liaison.linkit.team.domain.product.QProductSubImage;
 import liaison.linkit.team.domain.product.QTeamProduct;

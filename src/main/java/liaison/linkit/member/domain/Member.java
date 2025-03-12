@@ -13,6 +13,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.member.domain.type.MemberState;
 import liaison.linkit.member.domain.type.Platform;
@@ -43,7 +44,7 @@ public class Member extends BaseDateTimeEntity {
     @Column(nullable = false, length = 50)
     private String email;
 
-    @Column(unique = true, length = 50)
+    @Column(length = 50)
     private String emailId;
 
     // 계정 상태 관리 컬럼
@@ -73,8 +74,7 @@ public class Member extends BaseDateTimeEntity {
             final String email,
             final String emailId,
             final MemberBasicInform memberBasicInform,
-            final Platform platform
-    ) {
+            final Platform platform) {
         this.id = id;
         this.socialLoginId = socialLoginId;
         this.email = email;
@@ -93,8 +93,7 @@ public class Member extends BaseDateTimeEntity {
             final String email,
             final String emailId,
             final MemberBasicInform memberBasicInform,
-            final Platform platform
-    ) {
+            final Platform platform) {
         this(null, socialLoginId, email, emailId, memberBasicInform, platform);
     }
 

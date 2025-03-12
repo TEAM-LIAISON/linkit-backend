@@ -1,14 +1,15 @@
 package liaison.linkit.login.infrastructure.oauthUserInfo;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import liaison.linkit.login.domain.OauthUserInfo;
 import lombok.NoArgsConstructor;
 
-import static lombok.AccessLevel.PRIVATE;
-
 public class KakaoUserInfo implements OauthUserInfo {
     @JsonProperty("id")
     private String socialLoginId;
+
     @JsonProperty("kakao_account")
     private KakaoAccount kakaoAccount;
 
@@ -18,7 +19,9 @@ public class KakaoUserInfo implements OauthUserInfo {
     }
 
     @Override
-    public String getEmail(){return kakaoAccount.email;}
+    public String getEmail() {
+        return kakaoAccount.email;
+    }
 
     @NoArgsConstructor(access = PRIVATE)
     private static class KakaoAccount {

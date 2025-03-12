@@ -1,6 +1,7 @@
 package liaison.linkit.matching.implement;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.repository.MatchingRepository;
@@ -16,15 +17,44 @@ public class MatchingCommandAdapter {
         matchingRepository.saveAll(matchings);
     }
 
-    public void updateMatchingStatusType(final Matching matching, final MatchingStatusType matchingStatusType) {
+    public void updateMatchingStatusType(
+            final Matching matching, final MatchingStatusType matchingStatusType) {
         matchingRepository.updateMatchingStatusType(matching, matchingStatusType);
     }
 
-    public void addMatching(final Matching matching) {
-        matchingRepository.save(matching);
+    public Matching addMatching(final Matching matching) {
+        return matchingRepository.save(matching);
     }
 
     public void updateMatchingToCreatedRoomState(final Matching matching) {
         matchingRepository.updateMatchingToCreatedRoomState(matching);
+    }
+
+    public void deleteAllBySenderProfile(final String emailId) {
+        matchingRepository.deleteAllBySenderProfile(emailId);
+    }
+
+    public void deleteAllBySenderTeamCodes(final List<String> teamCodes) {
+        matchingRepository.deleteAllBySenderTeamCodes(teamCodes);
+    }
+
+    public void deleteAllBySenderTeamCode(final String teamCode) {
+        matchingRepository.deleteAllBySenderTeamCode(teamCode);
+    }
+
+    public void deleteAllByReceiverProfile(final String emailId) {
+        matchingRepository.deleteAllByReceiverProfile(emailId);
+    }
+
+    public void deleteAllByReceiverTeamCodes(final List<String> teamCodes) {
+        matchingRepository.deleteAllByReceiverTeamCodes(teamCodes);
+    }
+
+    public void deleteAllByReceiverTeamCode(final String teamCode) {
+        matchingRepository.deleteAllByReceiverTeamCode(teamCode);
+    }
+
+    public void deleteAllByReceiverAnnouncements(final List<Long> teamMemberAnnouncementIds) {
+        matchingRepository.deleteAllByReceiverAnnouncements(teamMemberAnnouncementIds);
     }
 }

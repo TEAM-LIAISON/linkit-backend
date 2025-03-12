@@ -11,12 +11,16 @@ import lombok.RequiredArgsConstructor;
 public class AnnouncementPositionQueryAdapter {
     private final AnnouncementPositionRepository announcementPositionRepository;
 
-    public boolean existsAnnouncementPositionByTeamMemberAnnouncementId(final Long teamMemberAnnouncementId) {
-        return announcementPositionRepository.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncementId);
+    public boolean existsAnnouncementPositionByTeamMemberAnnouncementId(
+            final Long teamMemberAnnouncementId) {
+        return announcementPositionRepository.existsAnnouncementPositionByTeamMemberAnnouncementId(
+                teamMemberAnnouncementId);
     }
 
-    public AnnouncementPosition findAnnouncementPositionByTeamMemberAnnouncementId(final Long teamMemberAnnouncementId) {
-        return announcementPositionRepository.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncementId)
+    public AnnouncementPosition findAnnouncementPositionByTeamMemberAnnouncementId(
+            final Long teamMemberAnnouncementId) {
+        return announcementPositionRepository
+                .findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncementId)
                 .orElseThrow(() -> AnnouncementRegionNotFoundException.EXCEPTION);
     }
 }

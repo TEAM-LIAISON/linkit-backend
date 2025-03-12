@@ -1,7 +1,8 @@
 package liaison.linkit.profile.domain.repository.region;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Optional;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.profile.domain.region.ProfileRegion;
 import liaison.linkit.profile.domain.region.QProfileRegion;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +18,11 @@ public class ProfileRegionRepositoryCustomImpl implements ProfileRegionRepositor
     public Optional<ProfileRegion> findProfileRegionByProfileId(final Long profileId) {
         QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
 
-        ProfileRegion profileRegion = jpaQueryFactory
-                .selectFrom(qProfileRegion)
-                .where(
-                        qProfileRegion.profile.id.eq(profileId)
-                ).fetchOne();
+        ProfileRegion profileRegion =
+                jpaQueryFactory
+                        .selectFrom(qProfileRegion)
+                        .where(qProfileRegion.profile.id.eq(profileId))
+                        .fetchOne();
 
         return Optional.ofNullable(profileRegion);
     }
@@ -30,11 +31,12 @@ public class ProfileRegionRepositoryCustomImpl implements ProfileRegionRepositor
     public boolean existsProfileRegionByProfileId(final Long profileId) {
         QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
 
-        Integer count = jpaQueryFactory
-                .selectOne()
-                .from(qProfileRegion)
-                .where(qProfileRegion.profile.id.eq(profileId))
-                .fetchFirst();
+        Integer count =
+                jpaQueryFactory
+                        .selectOne()
+                        .from(qProfileRegion)
+                        .where(qProfileRegion.profile.id.eq(profileId))
+                        .fetchFirst();
 
         return count != null;
     }

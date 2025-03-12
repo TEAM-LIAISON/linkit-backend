@@ -8,5 +8,4 @@ public class TeamLogNotFoundException extends BaseCodeException {
     private TeamLogNotFoundException() {
         super(TeamLogErrorCode.TEAM_LOG_NOT_FOUND);
     }
-
 }

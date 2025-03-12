@@ -1,6 +1,7 @@
 package liaison.linkit.profile.domain.repository.link;
 
 import java.util.List;
+
 import liaison.linkit.profile.domain.link.ProfileLink;
 
 public interface ProfileLinkCustomRepository {

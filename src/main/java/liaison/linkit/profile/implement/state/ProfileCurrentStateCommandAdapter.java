@@ -1,9 +1,10 @@
 package liaison.linkit.profile.implement.state;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
-import liaison.linkit.profile.domain.state.ProfileCurrentState;
 import liaison.linkit.profile.domain.repository.currentState.ProfileCurrentStateRepository;
+import liaison.linkit.profile.domain.state.ProfileCurrentState;
 import lombok.RequiredArgsConstructor;
 
 @Adapter

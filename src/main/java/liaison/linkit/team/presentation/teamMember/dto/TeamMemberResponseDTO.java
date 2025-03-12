@@ -2,6 +2,7 @@ package liaison.linkit.team.presentation.teamMember.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import liaison.linkit.team.domain.teamMember.TeamMemberInviteState;
@@ -20,6 +21,8 @@ public class TeamMemberResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TeamMemberViewItems {
+        private Boolean isTeamManager;
+
         @Builder.Default
         private List<AcceptedTeamMemberItem> acceptedTeamMemberItems = new ArrayList<>();
     }
@@ -29,6 +32,8 @@ public class TeamMemberResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TeamMemberItems {
+        private Boolean isTeamOwner;
+        private Boolean isTeamManager;
 
         @Builder.Default
         private List<AcceptedTeamMemberItem> acceptedTeamMemberItems = new ArrayList<>();
@@ -41,29 +46,29 @@ public class TeamMemberResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AcceptedTeamMemberItem {                // 초대 수락 완료
+    public static class AcceptedTeamMemberItem { // 초대 수락 완료
 
         private String emailId;
 
-        private String profileImagePath;                        // 프로필 이미지 경로
-        private String memberName;                              // 회원 이름
-        private String majorPosition;                           // 주요 포지션
+        private String profileImagePath; // 프로필 이미지 경로
+        private String memberName; // 회원 이름
+        private String majorPosition; // 주요 포지션
 
-        @Builder.Default
-        private RegionDetail regionDetail = new RegionDetail();
+        @Builder.Default private RegionDetail regionDetail = new RegionDetail();
 
-        private TeamMemberType teamMemberType;                  // 초대 요청 시 회원 타입
-        private TeamMemberInviteState teamMemberInviteState;    // 초대 상태 (PENDING, REJECTED, ACCEPTED, ADMIN)
+        private TeamMemberType teamMemberType; // 초대 요청 시 회원 타입
+        private TeamMemberInviteState
+                teamMemberInviteState; // 초대 상태 (PENDING, REJECTED, ACCEPTED, ADMIN)
     }
 
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class PendingTeamMemberItem {                 // 초대 발송 완료 (수락 대기 중)
-        private String teamMemberInvitationEmail;               // 초대 발송한 이메일
-        private TeamMemberType teamMemberType;                  // 초대 요청 시 회원 타입
-        private TeamMemberInviteState teamMemberInviteState;    // 초대 상태
+    public static class PendingTeamMemberItem { // 초대 발송 완료 (수락 대기 중)
+        private String teamMemberInvitationEmail; // 초대 발송한 이메일
+        private TeamMemberType teamMemberType; // 초대 요청 시 회원 타입
+        private TeamMemberInviteState teamMemberInviteState; // 초대 상태
     }
 
     @Builder
@@ -79,10 +84,8 @@ public class TeamMemberResponseDTO {
         private Boolean isProfilePublic;
         private String majorPosition;
 
-        @Builder.Default
-        private RegionDetail regionDetail = new RegionDetail();
+        @Builder.Default private RegionDetail regionDetail = new RegionDetail();
     }
-
 
     @Getter
     @Builder
@@ -120,13 +123,13 @@ public class TeamMemberResponseDTO {
         private String emailId;
     }
 
-
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateManagingTeamStateResponse {
         private String teamCode;
+        private Boolean isTeamLastDeleteRequester;
     }
 
     @Builder

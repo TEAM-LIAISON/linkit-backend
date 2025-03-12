@@ -7,6 +7,5 @@ public class MyAnnouncementBadRequestException extends BaseCodeException {
 
     private MyAnnouncementBadRequestException() {
         super(AnnouncementScrapErrorCode.MY_ANNOUNCEMENT_BAD_REQUEST);
-
     }
 }

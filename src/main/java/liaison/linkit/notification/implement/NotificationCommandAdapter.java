@@ -15,4 +15,8 @@ public class NotificationCommandAdapter {
     public Notification save(Notification notification) {
         return notificationRepository.save(notification);
     }
+
+    public void deleteAllByReceiverMemberId(final Long receiverMemberId) {
+        long deletedCount = notificationRepository.deleteAllByReceiverMemberId(receiverMemberId);
+    }
 }

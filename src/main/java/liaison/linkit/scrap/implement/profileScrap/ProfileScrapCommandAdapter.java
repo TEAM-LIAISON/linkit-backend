@@ -8,18 +8,25 @@ import lombok.RequiredArgsConstructor;
 @Adapter
 @RequiredArgsConstructor
 public class ProfileScrapCommandAdapter {
-    private final ProfileScrapRepository privateScrapRepository;
+    private final ProfileScrapRepository profileScrapRepository;
 
     public ProfileScrap addProfileScrap(final ProfileScrap profileScrap) {
-        return privateScrapRepository.save(profileScrap);
+        return profileScrapRepository.save(profileScrap);
     }
 
     public void deleteByMemberId(final Long memberId) {
-        privateScrapRepository.deleteByMemberId(memberId);
+        profileScrapRepository.deleteByMemberId(memberId);
     }
 
     public void deleteByMemberIdAndEmailId(final Long memberId, final String emailId) {
-        privateScrapRepository.deleteByMemberIdAndEmailId(memberId, emailId);
+        profileScrapRepository.deleteByMemberIdAndEmailId(memberId, emailId);
     }
 
+    public void deleteAllByMemberId(final Long memberId) {
+        profileScrapRepository.deleteAllByMemberId(memberId);
+    }
+
+    public void deleteAllByProfileId(final Long profileId) {
+        profileScrapRepository.deleteAllByProfileId(profileId);
+    }
 }

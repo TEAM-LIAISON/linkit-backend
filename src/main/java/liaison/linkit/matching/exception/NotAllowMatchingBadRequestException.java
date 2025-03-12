@@ -8,5 +8,4 @@ public class NotAllowMatchingBadRequestException extends BaseCodeException {
     private NotAllowMatchingBadRequestException() {
         super(MatchingErrorCode.NOT_ALLOW_MATCHING_BAD_REQUEST);
     }
-
 }

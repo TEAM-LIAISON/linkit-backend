@@ -16,7 +16,9 @@ public class Accessor {
         return new Accessor(0L, Authority.GUEST);
     }
 
-    public static Accessor member(final Long memberId) { return new Accessor(memberId, Authority.MEMBER); }
+    public static Accessor member(final Long memberId) {
+        return new Accessor(memberId, Authority.MEMBER);
+    }
 
     public static Accessor admin(final Long memberId) {
         return new Accessor(memberId, Authority.ADMIN);
@@ -25,7 +27,6 @@ public class Accessor {
     public static Accessor master(final Long memberId) {
         return new Accessor(memberId, Authority.MASTER);
     }
-
 
     public boolean isMember() {
         return Authority.MEMBER.equals(authority);

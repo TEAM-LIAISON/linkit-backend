@@ -20,7 +20,14 @@ public class ProfileActivityCommandAdapter {
         profileActivityRepository.delete(profileActivity);
     }
 
-    public ProfileActivity updateProfileActivity(final Long profileActivityId, final UpdateProfileActivityRequest updateProfileActivityRequest) {
-        return profileActivityRepository.updateProfileActivity(profileActivityId, updateProfileActivityRequest);
+    public ProfileActivity updateProfileActivity(
+            final Long profileActivityId,
+            final UpdateProfileActivityRequest updateProfileActivityRequest) {
+        return profileActivityRepository.updateProfileActivity(
+                profileActivityId, updateProfileActivityRequest);
+    }
+
+    public void removeProfileActivitiesByProfileId(final Long profileId) {
+        profileActivityRepository.removeProfileActivitiesByProfileId(profileId);
     }
 }

@@ -1,6 +1,7 @@
 package liaison.linkit.team.domain.repository.product;
 
 import java.util.List;
+
 import liaison.linkit.team.domain.product.ProductSubImage;
 
 public interface ProductSubImageCustomRepository {

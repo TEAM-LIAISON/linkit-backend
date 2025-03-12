@@ -1,6 +1,9 @@
 package liaison.linkit.matching.presentation.dto;
 
 import java.util.List;
+
+import jakarta.validation.constraints.NotEmpty;
+
 import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
@@ -18,6 +21,8 @@ public class MatchingRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DeleteRequestedMatchingRequest {
+
+        @NotEmpty(message = "matchingIds 리스트는 비어 있을 수 없습니다.")
         private List<Long> matchingIds;
     }
 
@@ -26,6 +31,8 @@ public class MatchingRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DeleteReceivedMatchingRequest {
+
+        @NotEmpty(message = "matchingIds 리스트는 비어 있을 수 없습니다.")
         private List<Long> matchingIds;
     }
 
@@ -34,6 +41,8 @@ public class MatchingRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateReceivedMatchingReadRequest {
+
+        @NotEmpty(message = "matchingIds 리스트는 비어 있을 수 없습니다.")
         private List<Long> matchingIds;
     }
 
@@ -42,17 +51,18 @@ public class MatchingRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AddMatchingRequest {
-        private SenderType senderType;                  //     PROFILE, TEAM
-        private ReceiverType receiverType;              //     PROFILE, TEAM, ANNOUNCEMENT
 
-        private String senderEmailId;                     //     발신자 유저 아이디
-        private String senderTeamCode;                    //     발신자 팀 아이디
+        private SenderType senderType;
+        private ReceiverType receiverType;
 
-        private String receiverEmailId;                   //     수신자 유저 아이디
-        private String receiverTeamCode;                  //     수신자 팀 아이디
-        private Long receiverAnnouncementId;            //     수신자 공고 아이디
+        private String senderEmailId;
+        private String senderTeamCode;
 
-        private String requestMessage;                  //     매칭 요청 메시지
+        private String receiverEmailId;
+        private String receiverTeamCode;
+        private Long receiverAnnouncementId;
+
+        private String requestMessage;
     }
 
     @Builder
@@ -60,6 +70,7 @@ public class MatchingRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateMatchingStatusTypeRequest {
+
         private MatchingStatusType matchingStatusType;
     }
 }

@@ -6,6 +6,7 @@ import static liaison.linkit.common.consts.LinkitStatic.TOO_MANY_REQUESTS;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
+
 import liaison.linkit.common.annotation.ExplainError;
 import liaison.linkit.common.exception.BaseErrorCode;
 import liaison.linkit.common.exception.ErrorReason;
@@ -16,9 +17,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AnnouncementScrapErrorCode implements BaseErrorCode {
     ANNOUNCEMENT_SCRAP_BAD_REQUEST(BAD_REQUEST, "ANNOUNCEMENT_SCRAP_400_1", "잘못된 팀원 공고 스크랩 요청입니다."),
-    MY_ANNOUNCEMENT_BAD_REQUEST(BAD_REQUEST, "ANNOUNCEMENT_SCRAP_400_2", "내가 속한 팀의 팀원 공고를 스크랩할 수 없습니다."),
+    MY_ANNOUNCEMENT_BAD_REQUEST(
+            BAD_REQUEST, "ANNOUNCEMENT_SCRAP_400_2", "내가 속한 팀의 팀원 공고를 스크랩할 수 없습니다."),
     ANNOUNCEMENT_SCRAP_NOT_FOUND(NOT_FOUND, "ANNOUNCEMENT_SCRAP_404_1", "팀원 공고에 대한 스크랩 기록이 없습니다."),
-    TOO_MANY_ANNOUNCEMENT_SCRAP_REQUEST(TOO_MANY_REQUESTS, "ANNOUNCEMENT_SCRAP_429_1", "팀원 공고 최대 스크랩 개수를 초과하였습니다.");
+    TOO_MANY_ANNOUNCEMENT_SCRAP_REQUEST(
+            TOO_MANY_REQUESTS, "ANNOUNCEMENT_SCRAP_429_1", "팀원 공고 최대 스크랩 개수를 초과하였습니다.");
 
     private final Integer status;
     private final String code;

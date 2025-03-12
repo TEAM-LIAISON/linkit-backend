@@ -1,7 +1,8 @@
 package liaison.linkit.scrap.domain.repository.profileScrap;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.member.domain.QMember;
 import liaison.linkit.scrap.domain.ProfileScrap;
 import liaison.linkit.scrap.domain.QProfileScrap;
@@ -30,10 +31,7 @@ public class ProfileScrapCustomRepositoryImpl implements ProfileScrapCustomRepos
     public void deleteByMemberId(final Long memberId) {
         QProfileScrap qProfileScrap = QProfileScrap.profileScrap;
 
-        jpaQueryFactory
-                .delete(qProfileScrap)
-                .where(qProfileScrap.member.id.eq(memberId))
-                .execute();
+        jpaQueryFactory.delete(qProfileScrap).where(qProfileScrap.member.id.eq(memberId)).execute();
     }
 
     @Override
@@ -43,21 +41,47 @@ public class ProfileScrapCustomRepositoryImpl implements ProfileScrapCustomRepos
 
         jpaQueryFactory
                 .delete(qProfileScrap)
-                .where(qProfileScrap.member.id.eq(memberId)
-                        .and(qProfileScrap.profile.member.emailId.eq(emailId)))
+                .where(
+                        qProfileScrap
+                                .member
+                                .id
+                                .eq(memberId)
+                                .and(qProfileScrap.profile.member.emailId.eq(emailId)))
                 .execute();
+    }
 
+    @Override
+    public void deleteAllByMemberId(final Long memberId) {
+        QProfileScrap qProfileScrap = QProfileScrap.profileScrap;
+
+        long deletedCount =
+                jpaQueryFactory
+                        .delete(qProfileScrap)
+                        .where(qProfileScrap.member.id.eq(memberId))
+                        .execute();
+    }
+
+    @Override
+    public void deleteAllByProfileId(final Long profileId) {
+        QProfileScrap qProfileScrap = QProfileScrap.profileScrap;
+
+        long deletedCount =
+                jpaQueryFactory
+                        .delete(qProfileScrap)
+                        .where(qProfileScrap.profile.id.eq(profileId))
+                        .execute();
     }
 
     @Override
     public boolean existsByMemberId(final Long memberId) {
         QProfileScrap qProfileScrap = QProfileScrap.profileScrap;
 
-        Integer count = jpaQueryFactory
-                .selectOne()
-                .from(qProfileScrap)
-                .where(qProfileScrap.member.id.eq(memberId))
-                .fetchFirst();
+        Integer count =
+                jpaQueryFactory
+                        .selectOne()
+                        .from(qProfileScrap)
+                        .where(qProfileScrap.member.id.eq(memberId))
+                        .fetchFirst();
 
         return count != null;
     }
@@ -66,11 +90,12 @@ public class ProfileScrapCustomRepositoryImpl implements ProfileScrapCustomRepos
     public boolean existsByProfileId(final Long profileId) {
         QProfileScrap qProfileScrap = QProfileScrap.profileScrap;
 
-        Integer count = jpaQueryFactory
-                .selectOne()
-                .from(qProfileScrap)
-                .where(qProfileScrap.profile.id.eq(profileId))
-                .fetchFirst();
+        Integer count =
+                jpaQueryFactory
+                        .selectOne()
+                        .from(qProfileScrap)
+                        .where(qProfileScrap.profile.id.eq(profileId))
+                        .fetchFirst();
 
         return count != null;
     }
@@ -80,12 +105,17 @@ public class ProfileScrapCustomRepositoryImpl implements ProfileScrapCustomRepos
 
         QProfileScrap qProfileScrap = QProfileScrap.profileScrap;
 
-        Integer count = jpaQueryFactory
-                .selectOne()
-                .from(qProfileScrap)
-                .where(qProfileScrap.member.id.eq(memberId)
-                        .and(qProfileScrap.profile.member.emailId.eq(emailId)))
-                .fetchFirst();
+        Integer count =
+                jpaQueryFactory
+                        .selectOne()
+                        .from(qProfileScrap)
+                        .where(
+                                qProfileScrap
+                                        .member
+                                        .id
+                                        .eq(memberId)
+                                        .and(qProfileScrap.profile.member.emailId.eq(emailId)))
+                        .fetchFirst();
 
         return count != null;
     }
@@ -94,11 +124,12 @@ public class ProfileScrapCustomRepositoryImpl implements ProfileScrapCustomRepos
     public int countTotalProfileScrapByEmailId(final String emailId) {
         QProfileScrap qProfileScrap = QProfileScrap.profileScrap;
 
-        Long count = jpaQueryFactory
-                .select(qProfileScrap.count())
-                .from(qProfileScrap)
-                .where(qProfileScrap.profile.member.emailId.eq(emailId))
-                .fetchOne();
+        Long count =
+                jpaQueryFactory
+                        .select(qProfileScrap.count())
+                        .from(qProfileScrap)
+                        .where(qProfileScrap.profile.member.emailId.eq(emailId))
+                        .fetchOne();
 
         return count != null ? count.intValue() : 0;
     }

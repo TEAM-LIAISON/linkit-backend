@@ -8,5 +8,4 @@ public class RemoveTeamMemberBadRequestException extends BaseCodeException {
     private RemoveTeamMemberBadRequestException() {
         super(TeamMemberErrorCode.REMOVE_TEAM_MEMBER_BAD_REQUEST);
     }
-
 }

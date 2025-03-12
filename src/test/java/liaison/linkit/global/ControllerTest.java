@@ -24,32 +24,27 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @ExtendWith(RestDocumentationExtension.class)
 public abstract class ControllerTest {
 
-    @Autowired
-    protected RestDocumentationResultHandler restDocs;
+    @Autowired protected RestDocumentationResultHandler restDocs;
 
-    @Autowired
-    protected MockMvc mockMvc;
+    @Autowired protected MockMvc mockMvc;
 
-    @Autowired
-    protected LoginArgumentResolver loginArgumentResolver;
+    @Autowired protected LoginArgumentResolver loginArgumentResolver;
 
-    @MockBean
-    protected JwtProvider jwtProvider;
+    @MockBean protected JwtProvider jwtProvider;
 
-    @MockBean
-    protected RefreshTokenRepository refreshTokenRepository;
+    @MockBean protected RefreshTokenRepository refreshTokenRepository;
 
-    @MockBean
-    BearerAuthorizationExtractor bearerExtractor;
+    @MockBean BearerAuthorizationExtractor bearerExtractor;
 
     @BeforeEach
     void setUp(
             final WebApplicationContext context,
             final RestDocumentationContextProvider restDocumentation) {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .apply(documentationConfiguration(restDocumentation))
-                .alwaysDo(restDocs)
-                .addFilters(new CharacterEncodingFilter("UTF-8", true))
-                .build();
+        this.mockMvc =
+                MockMvcBuilders.webAppContextSetup(context)
+                        .apply(documentationConfiguration(restDocumentation))
+                        .alwaysDo(restDocs)
+                        .addFilters(new CharacterEncodingFilter("UTF-8", true))
+                        .build();
     }
 }

@@ -1,6 +1,7 @@
 package liaison.linkit.team.implement.history;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.team.domain.history.TeamHistory;
 import liaison.linkit.team.domain.repository.history.TeamHistoryRepository;
@@ -18,7 +19,8 @@ public class TeamHistoryQueryAdapter {
     }
 
     public TeamHistory getTeamHistory(final Long teamHistoryId) {
-        return teamHistoryRepository.findById(teamHistoryId)
+        return teamHistoryRepository
+                .findById(teamHistoryId)
                 .orElseThrow(() -> TeamHistoryNotFoundException.EXCEPTION);
     }
 }
