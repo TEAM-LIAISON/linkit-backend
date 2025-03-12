@@ -1,6 +1,9 @@
 package liaison.linkit.team.business.service.announcement;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -154,6 +157,15 @@ public class TeamMemberAnnouncementService {
         final TeamMemberAnnouncement existingTeamMemberAnnouncement =
                 teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(
                         teamMemberAnnouncementId);
+
+        // 기존 공고 업데이트 전 상태 로직 처리
+        boolean isNewPermanentRecruitment =
+                updateTeamMemberAnnouncementRequest.getIsPermanentRecruitment();
+        String newEndDate = updateTeamMemberAnnouncementRequest.getAnnouncementEndDate();
+        boolean isAnnouncementInProgress =
+                calculateIsAnnouncementInProgress(newEndDate, isNewPermanentRecruitment);
+
+        updateTeamMemberAnnouncementRequest.setIsAnnouncementInProgress(isAnnouncementInProgress);
 
         // 2. DTO를 통해 팀원 공고 업데이트
         final TeamMemberAnnouncement updatedTeamMemberAnnouncement =
@@ -314,5 +326,24 @@ public class TeamMemberAnnouncementService {
 
         return teamMemberAnnouncementMapper.toCloseTeamMemberAnnouncement(
                 updatedTeamMemberAnnouncement);
+    }
+
+    private boolean calculateIsAnnouncementInProgress(
+            String endDate, boolean isPermanentRecruitment) {
+        if (isPermanentRecruitment) {
+            return true; // 상시 모집인 경우 항상 진행 중
+        }
+
+        if (endDate != null && !endDate.isEmpty()) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                Date end = dateFormat.parse(endDate); // endDate 문자열을 Date 객체로 파싱
+                return !end.before(new Date()); // endDate가 오늘 날짜보다 이전이면 false, 그렇지 않으면 true
+            } catch (ParseException e) {
+                return false; // 날짜 형식이 잘못된 경우, 공고 진행 중이 아님으로 처리
+            }
+        }
+
+        return false; // endDate가 null이거나 빈 문자열인 경우 기본적으로 false
     }
 }
