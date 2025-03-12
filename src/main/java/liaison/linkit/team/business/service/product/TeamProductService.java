@@ -62,7 +62,7 @@ public class TeamProductService {
 
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
-        boolean isMyTeam =
+        boolean isTeamManager =
                 optionalMemberId
                         .map(
                                 memberId ->
@@ -75,7 +75,7 @@ public class TeamProductService {
         final Map<Long, List<ProductLink>> productLinksMap =
                 productLinkQueryAdapter.getProductLinksMap(targetTeam.getId());
         return teamProductMapper.toTeamProductViewItems(
-                isMyTeam, teamProducts, productLinksMap, productSubImageQueryAdapter);
+                isTeamManager, teamProducts, productLinksMap, productSubImageQueryAdapter);
     }
 
     @Transactional(readOnly = true)

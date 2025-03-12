@@ -125,6 +125,7 @@ public class TeamProductControllerTest extends ControllerTest {
         // given
         final TeamProductResponseDTO.TeamProductViewItems teamProductViewItems =
                 TeamProductViewItems.builder()
+                        .isTeamManager(true)
                         .teamProductViewItems(
                                 Arrays.asList(
                                         TeamProductViewItem.builder()
@@ -250,6 +251,9 @@ public class TeamProductControllerTest extends ControllerTest {
                                                 fieldWithPath("result")
                                                         .type(JsonFieldType.OBJECT)
                                                         .description("응답 결과"),
+                                                fieldWithPath("result.isTeamManager")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("팀 오너/관리자 여부"),
                                                 fieldWithPath("result.teamProductViewItems")
                                                         .type(JsonFieldType.ARRAY)
                                                         .description("팀 프로덕트 뷰어 목록"),

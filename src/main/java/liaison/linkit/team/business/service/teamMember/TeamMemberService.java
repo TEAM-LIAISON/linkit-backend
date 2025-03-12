@@ -96,7 +96,7 @@ public class TeamMemberService {
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
         // 1.1. 나의 팀인지 조회
-        boolean isMyTeam =
+        boolean isTeamManager =
                 optionalMemberId
                         .map(
                                 memberId ->
@@ -113,7 +113,7 @@ public class TeamMemberService {
                 getAcceptedTeamMemberItems(teamMembers);
 
         // 5. 응답 DTO 생성 및 반환
-        return teamMemberMapper.toTeamMemberItems(isMyTeam, acceptedTeamMemberItems);
+        return teamMemberMapper.toTeamMemberItems(isTeamManager, acceptedTeamMemberItems);
     }
 
     public TeamMemberResponseDTO.AddTeamMemberResponse addTeamMember(
@@ -260,7 +260,6 @@ public class TeamMemberService {
 
         // 결과 객체 생성 및 반환
         return TeamMemberResponseDTO.TeamMemberItems.builder()
-                .isMyTeam(isMyTeam)
                 .isTeamOwner(isTeamOwner)
                 .isTeamManager(isTeamManager)
                 .acceptedTeamMemberItems(acceptedTeamMemberItems)

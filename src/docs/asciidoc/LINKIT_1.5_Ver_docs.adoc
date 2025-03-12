@@ -1192,6 +1192,18 @@ include::{snippets}/team-member-announcement-controller-test/close-team-member-a
 
 == #[팀 - 팀 구성원]#
 
+=== 팀 구성원 목록 조회 (뷰어)
+
+====
+*요청*
+include::{snippets}/team-member-controller-test/get-team-member-view-items/http-request.adoc[]
+include::{snippets}/team-member-controller-test/get-team-member-view-items/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-member-controller-test/get-team-member-view-items/http-response.adoc[]
+include::{snippets}/team-member-controller-test/get-team-member-view-items/response-fields.adoc[]
+====
+
 === 팀 구성원 목록 조회 (수정창)
 
 ====

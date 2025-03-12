@@ -38,7 +38,7 @@ public class TeamHistoryService {
 
         Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
-        boolean isMyTeam =
+        boolean isTeamManager =
                 optionalMemberId
                         .map(
                                 memberId ->
@@ -48,7 +48,7 @@ public class TeamHistoryService {
 
         final List<TeamHistory> teamHistories = teamHistoryQueryAdapter.getTeamHistories(teamCode);
 
-        return teamHistoryMapper.toTeamHistoryCalendar(isMyTeam, teamHistories);
+        return teamHistoryMapper.toTeamHistoryCalendar(isTeamManager, teamHistories);
     }
 
     @Transactional(readOnly = true)

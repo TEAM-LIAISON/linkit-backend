@@ -55,7 +55,7 @@ public class AnnouncementViewItemsAssembler {
         // 1. 팀 정보 조회
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
-        boolean isMyTeam =
+        boolean isTeamManager =
                 optionalMemberId
                         .map(
                                 memberId ->
@@ -73,7 +73,7 @@ public class AnnouncementViewItemsAssembler {
 
         // 4. 최종적으로 TeamMemberAnnouncementItems DTO를 생성하여 반환
         return TeamMemberAnnouncementItems.builder()
-                .isMyTeam(isMyTeam)
+                .isTeamManager(isTeamManager)
                 .teamMemberAnnouncementItems(items)
                 .build();
     }

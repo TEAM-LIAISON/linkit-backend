@@ -18,7 +18,7 @@ public class TeamHistoryResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TeamHistoryCalendarResponse {
-        private Boolean isMyTeam;
+        private Boolean isTeamManager;
 
         /**
          * 최종 응답을 담을 필드. 예: [ { "2023" : [ { "01" : [ { ... }, { ... } ] }, { "02" : [ { ... }, {

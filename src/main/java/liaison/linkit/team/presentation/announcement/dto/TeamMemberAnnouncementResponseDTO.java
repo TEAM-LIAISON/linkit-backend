@@ -105,7 +105,7 @@ public class TeamMemberAnnouncementResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TeamMemberAnnouncementItems {
-        private Boolean isMyTeam;
+        private Boolean isTeamManager;
 
         @Builder.Default
         private List<TeamMemberAnnouncementItem> teamMemberAnnouncementItems = new ArrayList<>();
