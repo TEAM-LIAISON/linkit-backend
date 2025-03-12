@@ -1,14 +1,12 @@
 package liaison.linkit.team.business.service.announcement;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import liaison.linkit.common.domain.Position;
+import liaison.linkit.global.util.DateUtils;
 import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.implement.position.PositionQueryAdapter;
 import liaison.linkit.profile.implement.skill.SkillQueryAdapter;
@@ -335,13 +333,7 @@ public class TeamMemberAnnouncementService {
         }
 
         if (endDate != null && !endDate.isEmpty()) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            try {
-                Date end = dateFormat.parse(endDate); // endDate 문자열을 Date 객체로 파싱
-                return !end.before(new Date()); // endDate가 오늘 날짜보다 이전이면 false, 그렇지 않으면 true
-            } catch (ParseException e) {
-                return false; // 날짜 형식이 잘못된 경우, 공고 진행 중이 아님으로 처리
-            }
+            return DateUtils.calculateAnnouncementClosed(endDate);
         }
 
         return false; // endDate가 null이거나 빈 문자열인 경우 기본적으로 false
