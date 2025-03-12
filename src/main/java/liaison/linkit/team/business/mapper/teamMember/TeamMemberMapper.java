@@ -40,9 +40,9 @@ public class TeamMemberMapper {
     }
 
     public TeamMemberViewItems toTeamMemberItems(
-            final boolean isMyTeam, final List<AcceptedTeamMemberItem> acceptedTeamMemberItems) {
+            final boolean isTeamManager, final List<AcceptedTeamMemberItem> acceptedTeamMemberItems) {
         return TeamMemberViewItems.builder()
-                .isMyTeam(isMyTeam)
+                .isTeamManager(isTeamManager)
                 .acceptedTeamMemberItems(acceptedTeamMemberItems)
                 .build();
     }

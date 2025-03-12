@@ -99,7 +99,7 @@ public class TeamLogService {
 
         Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
-        boolean isMyTeam =
+        boolean isTeamManager =
                 optionalMemberId
                         .map(
                                 memberId ->
@@ -107,7 +107,7 @@ public class TeamLogService {
                                                 targetTeam.getId(), memberId))
                         .orElse(false);
 
-        return teamLogMapper.toTeamLogItem(isMyTeam, teamLog);
+        return teamLogMapper.toTeamLogItem(isTeamManager, teamLog);
     }
 
     @Transactional(readOnly = true)
@@ -115,7 +115,7 @@ public class TeamLogService {
             final Optional<Long> optionalMemberId, final String teamCode) {
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
-        boolean isMyTeam =
+        boolean isTeamManager =
                 optionalMemberId
                         .map(
                                 memberId ->
@@ -126,7 +126,7 @@ public class TeamLogService {
         if (teamLogQueryAdapter.existsRepresentativePublicTeamLogByTeam(targetTeam.getId())) {
             final TeamLog teamLog =
                     teamLogQueryAdapter.getRepresentativePublicTeamLog(targetTeam.getId());
-            return teamLogMapper.toTeamLogItem(isMyTeam, teamLog);
+            return teamLogMapper.toTeamLogItem(isTeamManager, teamLog);
         }
 
         return TeamLogItem.builder().build();
