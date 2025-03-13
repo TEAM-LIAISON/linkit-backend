@@ -16,6 +16,7 @@ public class ProfileVisitService {
     // assemblers
     private final ProfileVisitModalAssembler profileVisitModalAssembler;
 
+    // 프로필 방문자 정보를 조회한다.
     public ProfileVisitResponseDTO.ProfileVisitInforms getProfileVisitInforms(final Long memberId) {
 
         return profileVisitModalAssembler.assembleProfileVisitInforms(memberId);
