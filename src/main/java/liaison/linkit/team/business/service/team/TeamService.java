@@ -19,7 +19,9 @@ import liaison.linkit.notification.domain.type.SubNotificationType;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationDetails;
 import liaison.linkit.notification.service.HeaderNotificationService;
 import liaison.linkit.notification.service.NotificationService;
+import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.region.Region;
+import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.team.business.assembler.team.TeamDetailAssembler;
 import liaison.linkit.team.business.assembler.team.TeamInformMenuAssembler;
 import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
@@ -57,6 +59,7 @@ import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStat
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.UpdateTeamResponse;
+import liaison.linkit.visit.event.TeamVisitedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -104,6 +107,8 @@ public class TeamService {
     private final DeleteUtil deleteUtil;
     private final TeamInformMenuAssembler teamInformMenuAssembler;
     private final TeamDetailAssembler teamDetailAssembler;
+
+    private final ProfileQueryAdapter profileQueryAdapter;
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -263,6 +268,18 @@ public class TeamService {
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
         final TeamInformMenu teamInformMenu =
                 teamInformMenuAssembler.assembleTeamInformMenu(targetTeam, optionalMemberId);
+
+        // 로그인한 사용자의 경우 방문자 저장 이벤트 실행
+        if (optionalMemberId.isPresent()) {
+            final Profile visitorProfile =
+                    profileQueryAdapter.findByMemberId(optionalMemberId.get());
+            applicationEventPublisher.publishEvent(
+                    new TeamVisitedEvent(
+                            targetTeam.getId(),
+                            visitorProfile.getId(),
+                            optionalMemberId,
+                            "teamVisit"));
+        }
 
         return teamDetailAssembler.assembleTeamDetail(optionalMemberId, teamCode, teamInformMenu);
     }
