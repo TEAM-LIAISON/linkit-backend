@@ -1,5 +1,7 @@
 package liaison.linkit.profile.presentation.visit.dto;
 
+import java.util.List;
+
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,7 +16,15 @@ public class ProfileVisitResponseDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ProfileVisitInformation {
+    public static class ProfileVisitInforms {
+        @Builder.Default private List<ProfileVisitInform> profileVisitInforms = List.of();
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProfileVisitInform {
         private String profileImagePath;
         private String memberName;
         private String emailId;

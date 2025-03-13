@@ -25,7 +25,7 @@ public class ProfileVisitController {
     @GetMapping
     @MemberOnly
     @Logging(item = "Profile_Visit", action = "GET_PROFILE_VISIT_INFORMS", includeResult = true)
-    public CommonResponse<ProfileVisitResponseDTO.ProfileVisitInformation> getProfileVisitInforms(
+    public CommonResponse<ProfileVisitResponseDTO.ProfileVisitInforms> getProfileVisitInforms(
             @Auth final Accessor accessor) {
         return CommonResponse.onSuccess(
                 profileVisitService.getProfileVisitInforms(accessor.getMemberId()));

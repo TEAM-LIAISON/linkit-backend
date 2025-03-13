@@ -1,7 +1,6 @@
 package liaison.linkit.profile.business.service;
 
-import liaison.linkit.profile.implement.visit.ProfileVisitCommandAdapter;
-import liaison.linkit.profile.implement.visit.ProfileVisitQueryAdapter;
+import liaison.linkit.profile.business.assembler.ProfileVisitModalAssembler;
 import liaison.linkit.profile.presentation.visit.dto.ProfileVisitResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,12 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class ProfileVisitService {
 
-    private final ProfileVisitCommandAdapter profileVisitCommandAdapter;
-    private final ProfileVisitQueryAdapter profileVisitQueryAdapter;
+    // assemblers
+    private final ProfileVisitModalAssembler profileVisitModalAssembler;
 
-    public ProfileVisitResponseDTO.ProfileVisitInformation getProfileVisitInforms(
-            final Long memberId) {
+    public ProfileVisitResponseDTO.ProfileVisitInforms getProfileVisitInforms(final Long memberId) {
 
-        return ProfileVisitResponseDTO.ProfileVisitInformation.builder().build();
+        return profileVisitModalAssembler.assembleProfileVisitInforms(memberId);
     }
 }
