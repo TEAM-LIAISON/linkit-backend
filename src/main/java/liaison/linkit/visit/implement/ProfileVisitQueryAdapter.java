@@ -16,4 +16,10 @@ public class ProfileVisitQueryAdapter {
     public List<ProfileVisit> getProfileVisitsByVisitedProfileId(final Long visitedProfileId) {
         return profileVisitRepository.getProfileVisitsByVisitedProfileId(visitedProfileId);
     }
+
+    public boolean existsByVisitedProfileIdAndVisitorProfileId(
+            final Long visitedProfileId, final Long visitorProfileId) {
+        return profileVisitRepository.existsByVisitedProfileIdAndVisitorProfileId(
+                visitedProfileId, visitorProfileId);
+    }
 }

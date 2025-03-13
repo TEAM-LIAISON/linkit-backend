@@ -271,14 +271,19 @@ public class TeamService {
 
         // 로그인한 사용자의 경우 방문자 저장 이벤트 실행
         if (optionalMemberId.isPresent()) {
-            final Profile visitorProfile =
-                    profileQueryAdapter.findByMemberId(optionalMemberId.get());
-            applicationEventPublisher.publishEvent(
-                    new TeamVisitedEvent(
-                            targetTeam.getId(),
-                            visitorProfile.getId(),
-                            optionalMemberId,
-                            "teamVisit"));
+
+            if (!teamMemberQueryAdapter.isOwnerOrManagerOfTeam(
+                    targetTeam.getId(), optionalMemberId.get())) {
+                final Profile visitorProfile =
+                        profileQueryAdapter.findByMemberId(optionalMemberId.get());
+
+                applicationEventPublisher.publishEvent(
+                        new TeamVisitedEvent(
+                                targetTeam.getId(),
+                                visitorProfile.getId(),
+                                optionalMemberId,
+                                "teamVisit"));
+            }
         }
 
         return teamDetailAssembler.assembleTeamDetail(optionalMemberId, teamCode, teamInformMenu);

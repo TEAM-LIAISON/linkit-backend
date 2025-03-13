@@ -64,6 +64,36 @@ public class VisitService {
         return isFirstView;
     }
 
+    @Transactional
+    public boolean processProfileVisit(
+            String entityType,
+            Long visitedProfileId,
+            Long visitorProfileId,
+            Optional<Long> optionalMemberId) {
+        String identifier = generateIdentifier(optionalMemberId);
+        String cacheKey =
+                entityType + ":" + visitedProfileId + ":" + visitorProfileId + ":" + identifier;
+
+        // 로컬 캐시 확인 (짧은 시간 내 동일 요청 최적화)
+        Boolean cachedResult = localCache.getIfPresent(cacheKey);
+        if (cachedResult != null && !cachedResult) {
+            return false; // 이미 확인한 중복 요청
+        }
+
+        boolean isFirstView =
+                visitorRedisUtil.checkAndSetProfileVisitor(
+                        entityType,
+                        visitedProfileId,
+                        visitorProfileId,
+                        identifier,
+                        VIEW_EXPIRATION_HOURS);
+
+        // 결과 로컬 캐싱
+        localCache.put(cacheKey, isFirstView);
+
+        return isFirstView;
+    }
+
     // 프로필 방문자 정보를 조회한다.
     public VisitResponseDTO.VisitInforms getProfileVisitInforms(final Long memberId) {
 

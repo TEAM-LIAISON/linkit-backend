@@ -23,4 +23,21 @@ public class ProfileVisitCustomRepositoryImpl implements ProfileVisitCustomRepos
                 .where(qProfileVisit.visitedProfileId.eq(visitedProfileId))
                 .fetch();
     }
+
+    @Override
+    public boolean existsByVisitedProfileIdAndVisitorProfileId(
+            final Long visitedProfileId, final Long visitorProfileId) {
+        QProfileVisit qProfileVisit = QProfileVisit.profileVisit;
+
+        return jpaQueryFactory
+                        .selectOne()
+                        .from(qProfileVisit)
+                        .where(
+                                qProfileVisit
+                                        .visitedProfileId
+                                        .eq(visitedProfileId)
+                                        .and(qProfileVisit.profile.id.eq(visitorProfileId)))
+                        .fetchFirst()
+                != null;
+    }
 }
