@@ -10,13 +10,12 @@ import liaison.linkit.profile.presentation.visit.dto.ProfileVisitResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v2/profile/{emailId}/visit")
+@RequestMapping("/api/v2/profile/visit")
 @Slf4j
 public class ProfileVisitController {
 
@@ -27,8 +26,8 @@ public class ProfileVisitController {
     @MemberOnly
     @Logging(item = "Profile_Visit", action = "GET_PROFILE_VISIT_INFORMS", includeResult = true)
     public CommonResponse<ProfileVisitResponseDTO.ProfileVisitInformation> getProfileVisitInforms(
-            @Auth final Accessor accessor, @PathVariable final String emailId) {
+            @Auth final Accessor accessor) {
         return CommonResponse.onSuccess(
-                profileVisitService.getProfileVisitInforms(accessor.getMemberId(), emailId));
+                profileVisitService.getProfileVisitInforms(accessor.getMemberId()));
     }
 }
