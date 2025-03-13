@@ -1,8 +1,8 @@
-package liaison.linkit.profile.domain.repository.visit;
+package liaison.linkit.visit.domain.repository;
 
 import java.util.List;
 
-import liaison.linkit.profile.domain.visit.ProfileVisit;
+import liaison.linkit.visit.domain.ProfileVisit;
 
 public interface ProfileVisitCustomRepository {
     List<ProfileVisit> getProfileVisitsByVisitedProfileId(final Long visitedProfileId);

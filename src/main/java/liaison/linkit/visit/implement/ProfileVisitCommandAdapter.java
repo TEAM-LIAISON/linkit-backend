@@ -1,7 +1,7 @@
-package liaison.linkit.profile.implement.visit;
+package liaison.linkit.visit.implement;
 
 import liaison.linkit.common.annotation.Adapter;
-import liaison.linkit.profile.domain.repository.visit.ProfileVisitRepository;
+import liaison.linkit.visit.domain.repository.ProfileVisitRepository;
 import lombok.RequiredArgsConstructor;
 
 @Adapter

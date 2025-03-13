@@ -1,4 +1,4 @@
-package liaison.linkit.profile.presentation.visit.dto;
+package liaison.linkit.visit.presentation.dto;
 
 import java.util.List;
 
@@ -10,21 +10,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ProfileVisitResponseDTO {
+public class VisitResponseDTO {
 
     @Getter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ProfileVisitInforms {
-        @Builder.Default private List<ProfileVisitInform> profileVisitInforms = List.of();
+    public static class VisitInforms {
+        @Builder.Default private List<VisitInform> visitInforms = List.of();
     }
 
     @Getter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ProfileVisitInform {
+    public static class VisitInform {
         private String profileImagePath;
         private String memberName;
         private String emailId;
