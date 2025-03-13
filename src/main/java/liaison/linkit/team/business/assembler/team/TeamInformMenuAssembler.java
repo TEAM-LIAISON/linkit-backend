@@ -6,6 +6,8 @@ import java.util.Optional;
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.profile.domain.profile.Profile;
+import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.scrap.implement.teamScrap.TeamScrapQueryAdapter;
 import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
 import liaison.linkit.team.business.mapper.state.TeamCurrentStateMapper;
@@ -19,8 +21,10 @@ import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStateItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
+import liaison.linkit.visit.event.TeamVisitedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -33,12 +37,16 @@ public class TeamInformMenuAssembler {
     private final TeamQueryAdapter teamQueryAdapter;
     private final TeamScrapQueryAdapter teamScrapQueryAdapter;
     private final TeamScaleQueryAdapter teamScaleQueryAdapter;
+    private final ProfileQueryAdapter profileQueryAdapter;
 
     // Mapper
     private final RegionMapper regionMapper;
     private final TeamScaleMapper teamScaleMapper;
     private final TeamCurrentStateMapper teamCurrentStateMapper;
     private final TeamMapper teamMapper;
+
+    // Event Publisher
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * 1. 지역 정보 조회 메서드
@@ -128,6 +136,18 @@ public class TeamInformMenuAssembler {
                 assembleTeamCurrentStateItems(targetTeam);
         final TeamScaleItem teamScaleItem = assembleTeamScaleItem(targetTeam);
         final RegionDetail regionDetail = assembleRegionDetail(targetTeam);
+
+        // 로그인한 사용자의 경우 방문자 저장 이벤트 실행
+        if (loggedInMemberId.isPresent()) {
+            final Profile visitorProfile =
+                    profileQueryAdapter.findByMemberId(loggedInMemberId.get());
+            applicationEventPublisher.publishEvent(
+                    new TeamVisitedEvent(
+                            targetTeam.getId(),
+                            visitorProfile.getId(),
+                            loggedInMemberId,
+                            "teamVisit"));
+        }
 
         return teamMapper.toTeamInformMenu(
                 targetTeam,

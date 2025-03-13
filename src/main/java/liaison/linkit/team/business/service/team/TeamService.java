@@ -59,6 +59,7 @@ import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.UpdateTeamResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -103,6 +104,8 @@ public class TeamService {
     private final DeleteUtil deleteUtil;
     private final TeamInformMenuAssembler teamInformMenuAssembler;
     private final TeamDetailAssembler teamDetailAssembler;
+
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     // 초기 팀 생성
     public TeamResponseDTO.AddTeamResponse createTeam(

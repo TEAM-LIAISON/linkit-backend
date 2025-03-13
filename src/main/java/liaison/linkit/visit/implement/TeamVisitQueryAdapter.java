@@ -15,4 +15,10 @@ public class TeamVisitQueryAdapter {
     public List<TeamVisit> getTeamVisitsByVisitedTeamId(final Long visitedTeamId) {
         return teamVisitRepository.getTeamVisitsByVisitedTeamId(visitedTeamId);
     }
+
+    public boolean existsByVisitedTeamIdAndVisitorProfileId(
+            final Long visitedTeamId, final Long visitorProfileId) {
+        return teamVisitRepository.existsByVisitedTeamIdAndVisitorProfileId(
+                visitedTeamId, visitorProfileId);
+    }
 }

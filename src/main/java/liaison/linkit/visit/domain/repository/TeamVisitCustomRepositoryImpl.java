@@ -23,4 +23,21 @@ public class TeamVisitCustomRepositoryImpl implements TeamVisitCustomRepository 
                 .where(qTeamVisit.visitedTeamId.eq(visitedTeamId))
                 .fetch();
     }
+
+    @Override
+    public boolean existsByVisitedTeamIdAndVisitorProfileId(
+            final Long visitedTeamId, final Long visitorProfileId) {
+        QTeamVisit qTeamVisit = QTeamVisit.teamVisit;
+
+        return jpaQueryFactory
+                        .selectOne()
+                        .from(qTeamVisit)
+                        .where(
+                                qTeamVisit
+                                        .visitedTeamId
+                                        .eq(visitedTeamId)
+                                        .and(qTeamVisit.profile.id.eq(visitorProfileId)))
+                        .fetchFirst()
+                != null;
+    }
 }
