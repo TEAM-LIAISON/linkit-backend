@@ -63,14 +63,17 @@ public class ProfileService {
 
         // 로그인한 사용자의 경우 방문자 저장 이벤트 실행
 
-        final Profile visitorProfile = profileQueryAdapter.findByMemberId(optionalMemberId.get());
+        if (!isMyProfile) {
+            final Profile visitorProfile =
+                    profileQueryAdapter.findByMemberId(optionalMemberId.get());
 
-        applicationEventPublisher.publishEvent(
-                new ProfileVisitedEvent(
-                        targetProfile.getId(),
-                        visitorProfile.getId(),
-                        optionalMemberId,
-                        "profileVisit"));
+            applicationEventPublisher.publishEvent(
+                    new ProfileVisitedEvent(
+                            targetProfile.getId(),
+                            visitorProfile.getId(),
+                            optionalMemberId,
+                            "profileVisit"));
+        }
 
         return profileDetailAssembler.assembleProfileDetail(
                 targetProfile, isMyProfile, profileCompletionMenu, profileInformMenu);
