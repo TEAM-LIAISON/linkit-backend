@@ -38,15 +38,11 @@ public class ProfileController {
     @Logging(item = "Profile", action = "GET_PROFILE_DETAIL", includeResult = true)
     public CommonResponse<ProfileResponseDTO.ProfileDetail> getProfileDetail(
             @PathVariable final String emailId, @Auth final Accessor accessor) {
-        if (accessor.isMember()) {
-            Optional<Long> optionalMemberId =
-                    accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
 
-            return CommonResponse.onSuccess(
-                    profileService.getLoggedInProfileDetail(optionalMemberId, emailId));
-        } else {
-            return CommonResponse.onSuccess(profileService.getLoggedOutProfileDetail(emailId));
-        }
+        Optional<Long> optionalMemberId =
+                accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+
+        return CommonResponse.onSuccess(profileService.getProfileDetail(optionalMemberId, emailId));
     }
 
     // 홈화면에서 팀원 조회 (최대 6개)

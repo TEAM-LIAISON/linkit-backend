@@ -345,7 +345,7 @@ class ProfileControllerTest extends ControllerTest {
                         profileLinkItems);
 
         // when
-        when(profileService.getLoggedOutProfileDetail(anyString())).thenReturn(profileDetail);
+        when(profileService.getProfileDetail(any(), anyString())).thenReturn(profileDetail);
 
         final ResultActions resultActions = performGetProfileDetail("kwondm7");
 
