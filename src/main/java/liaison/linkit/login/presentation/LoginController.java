@@ -88,38 +88,10 @@ public class LoginController {
     @PostMapping("/renew/token")
     @Logging(item = "Login", action = "POST_RENEW_TOKEN", includeResult = true)
     public CommonResponse<AccountResponseDTO.RenewTokenResponse> renewToken(
-            @CookieValue(value = "refreshToken", required = false) final String cookieRefreshToken,
-            @RequestHeader(value = "Authorization", required = false)
-                    final String authorizationHeader,
-            final HttpServletResponse response) {
-
-        // refreshToken 결정 (쿠키 우선)
-        final String refreshToken = cookieRefreshToken;
-
-        // accessToken 결정 (authorizationHeader에서 추출)
-        String accessToken = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            accessToken = authorizationHeader.substring(7);
-        }
-
-        // 토큰 갱신 서비스 호출
-        final String newAccessToken =
-                loginService.renewalAccessToken(refreshToken, accessToken).getAccessToken();
-
-        // 새 AccessToken 쿠키 설정
-        ResponseCookie accessCookie =
-                CookieUtil.createAccessTokenCookie(newAccessToken, ACCESS_TOKEN_AGE_SECONDS);
-        response.addHeader(SET_COOKIE, accessCookie.toString());
-
-        // 인증 모드에 따라 응답 내용 조정
-        if ("cookie".equals(authProperties.getMode())) {
-            // 쿠키 전용 모드: 응답 본문에 토큰 포함하지 않음
-            return CommonResponse.onSuccess(new AccountResponseDTO.RenewTokenResponse(null));
-        } else {
-            // 하이브리드 또는 헤더 모드: 응답 본문에 토큰 포함 (기존 호환성)
-            return CommonResponse.onSuccess(
-                    new AccountResponseDTO.RenewTokenResponse(newAccessToken));
-        }
+            @CookieValue("refreshToken") final String refreshToken,
+            @RequestHeader("Authorization") final String authorizationHeader) {
+        return CommonResponse.onSuccess(
+                loginService.renewalAccessToken(refreshToken, authorizationHeader));
     }
 
     // 회원이 로그아웃을 한다
