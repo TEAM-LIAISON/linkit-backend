@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v2")
+@RequestMapping("/api/v1")
 @Slf4j
 public class VisitController {
 

@@ -61,14 +61,14 @@ public class VisitControllerTest extends ControllerTest {
 
     private ResultActions performGetProfileVisits() throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v2/profile/visit")
+                RestDocumentationRequestBuilders.get("/api/v1/profile/visit")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE));
     }
 
     private ResultActions performGetTeamVisits(final String teamCode) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v2/team/{teamCode}/visit", teamCode)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/visit", teamCode)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE));
     }
