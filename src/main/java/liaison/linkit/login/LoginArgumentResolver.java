@@ -8,7 +8,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 import liaison.linkit.auth.Auth;
-import liaison.linkit.auth.config.AuthProperties;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.exception.RefreshTokenExpiredException;
 import liaison.linkit.login.domain.MemberTokens;
@@ -30,11 +29,9 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
     private static final String REFRESH_TOKEN = "refreshToken";
-    private static final String ACCESS_TOKEN = "accessToken";
     private final JwtProvider jwtProvider;
     private final BearerAuthorizationExtractor extractor;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final AuthProperties authProperties;
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
