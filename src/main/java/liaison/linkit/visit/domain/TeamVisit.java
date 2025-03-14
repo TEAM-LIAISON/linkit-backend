@@ -1,4 +1,4 @@
-package liaison.linkit.team.domain.visit;
+package liaison.linkit.visit.domain;
 
 import java.time.LocalDateTime;
 

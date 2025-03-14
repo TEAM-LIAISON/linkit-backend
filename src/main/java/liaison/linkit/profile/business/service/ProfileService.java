@@ -14,8 +14,10 @@ import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileCompletionMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileLeftMenu;
+import liaison.linkit.visit.event.ProfileVisitedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,8 @@ public class ProfileService {
     private final ProfileMapper profileMapper;
     private final ProfileQueryAdapter profileQueryAdapter;
     private final ProfileDetailAssembler profileDetailAssembler;
+
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     /*
        Method
@@ -45,17 +49,31 @@ public class ProfileService {
 
     // 로그인한 사용자가 프로필을 조회한다.
     public ProfileResponseDTO.ProfileDetail getLoggedInProfileDetail(
-            final Long memberId, final String emailId) {
+            final Optional<Long> optionalMemberId, final String emailId) {
         final Profile targetProfile = profileQueryAdapter.findByEmailId(emailId);
         final Member targetMember = targetProfile.getMember();
 
-        boolean isMyProfile = Objects.equals(targetMember.getId(), memberId);
+        boolean isMyProfile = Objects.equals(targetMember.getId(), optionalMemberId.orElse(null));
 
         final ProfileCompletionMenu profileCompletionMenu =
                 profileMapper.toProfileCompletionMenu(targetProfile);
         final ProfileInformMenu profileInformMenu =
                 profileInformMenuAssembler.assembleProfileInformMenu(
-                        targetProfile, Optional.ofNullable(memberId));
+                        targetProfile, optionalMemberId);
+
+        // 로그인한 사용자의 경우 방문자 저장 이벤트 실행
+
+        if (!isMyProfile) {
+            final Profile visitorProfile =
+                    profileQueryAdapter.findByMemberId(optionalMemberId.get());
+
+            applicationEventPublisher.publishEvent(
+                    new ProfileVisitedEvent(
+                            targetProfile.getId(),
+                            visitorProfile.getId(),
+                            optionalMemberId,
+                            "profileVisit"));
+        }
 
         return profileDetailAssembler.assembleProfileDetail(
                 targetProfile, isMyProfile, profileCompletionMenu, profileInformMenu);

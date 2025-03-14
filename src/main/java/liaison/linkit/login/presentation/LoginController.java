@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
 
     // 쿠키 만료 시간 상수
+    public static final int COOKIE_AGE_SECONDS = 604800;
     public static final int REFRESH_TOKEN_AGE_SECONDS = 604800; // 7일
     public static final int ACCESS_TOKEN_AGE_SECONDS = 86400; // 1일 (실제 환경에 맞게 조정)
 
@@ -49,77 +50,35 @@ public class LoginController {
         final AccountResponseDTO.LoginServiceResponse loginResponse =
                 loginService.login(provider, loginRequest.getCode());
 
-        // AccessToken 쿠키 설정 (CookieUtil 사용)
-        ResponseCookie accessCookie =
-                CookieUtil.createAccessTokenCookie(
-                        loginResponse.getAccessToken(), ACCESS_TOKEN_AGE_SECONDS);
+        // 1) refreshToken 쿠키 설정
+        final ResponseCookie cookie =
+                ResponseCookie.from("refreshToken", loginResponse.getRefreshToken())
+                        .maxAge(COOKIE_AGE_SECONDS)
+                        .secure(true)
+                        .sameSite("None")
+                        .path("/")
+                        .httpOnly(true)
+                        .build();
 
-        // RefreshToken 쿠키 설정 (CookieUtil 사용)
-        ResponseCookie refreshCookie =
-                CookieUtil.createRefreshTokenCookie(
-                        loginResponse.getRefreshToken(), REFRESH_TOKEN_AGE_SECONDS);
+        response.addHeader(SET_COOKIE, cookie.toString());
 
-        response.addHeader(SET_COOKIE, accessCookie.toString());
-        response.addHeader(SET_COOKIE, refreshCookie.toString());
-
-        // 인증 모드에 따라 응답 내용 조정
-        if ("cookie".equals(authProperties.getMode())) {
-            // 쿠키 전용 모드: 응답 본문에 토큰 포함하지 않음
-            return CommonResponse.onSuccess(
-                    new AccountResponseDTO.LoginResponse(
-                            null, // AccessToken 제외
-                            loginResponse.getEmail(),
-                            loginResponse.getEmailId(),
-                            loginResponse.getMemberName(),
-                            loginResponse.getIsMemberBasicInform()));
-        } else {
-            // 하이브리드 또는 헤더 모드: 응답 본문에 토큰 포함 (기존 호환성)
-            return CommonResponse.onSuccess(
-                    new AccountResponseDTO.LoginResponse(
-                            loginResponse.getAccessToken(),
-                            loginResponse.getEmail(),
-                            loginResponse.getEmailId(),
-                            loginResponse.getMemberName(),
-                            loginResponse.getIsMemberBasicInform()));
-        }
+        return CommonResponse.onSuccess(
+                new AccountResponseDTO.LoginResponse(
+                        loginResponse.getAccessToken(),
+                        loginResponse.getEmail(),
+                        loginResponse.getEmailId(),
+                        loginResponse.getMemberName(),
+                        loginResponse.getIsMemberBasicInform()));
     }
 
     // accessToken을 재발행한다
     @PostMapping("/renew/token")
     @Logging(item = "Login", action = "POST_RENEW_TOKEN", includeResult = true)
     public CommonResponse<AccountResponseDTO.RenewTokenResponse> renewToken(
-            @CookieValue(value = "refreshToken", required = false) final String cookieRefreshToken,
-            @RequestHeader(value = "Authorization", required = false)
-                    final String authorizationHeader,
-            final HttpServletResponse response) {
-
-        // refreshToken 결정 (쿠키 우선)
-        final String refreshToken = cookieRefreshToken;
-
-        // accessToken 결정 (authorizationHeader에서 추출)
-        String accessToken = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            accessToken = authorizationHeader.substring(7);
-        }
-
-        // 토큰 갱신 서비스 호출
-        final String newAccessToken =
-                loginService.renewalAccessToken(refreshToken, accessToken).getAccessToken();
-
-        // 새 AccessToken 쿠키 설정
-        ResponseCookie accessCookie =
-                CookieUtil.createAccessTokenCookie(newAccessToken, ACCESS_TOKEN_AGE_SECONDS);
-        response.addHeader(SET_COOKIE, accessCookie.toString());
-
-        // 인증 모드에 따라 응답 내용 조정
-        if ("cookie".equals(authProperties.getMode())) {
-            // 쿠키 전용 모드: 응답 본문에 토큰 포함하지 않음
-            return CommonResponse.onSuccess(new AccountResponseDTO.RenewTokenResponse(null));
-        } else {
-            // 하이브리드 또는 헤더 모드: 응답 본문에 토큰 포함 (기존 호환성)
-            return CommonResponse.onSuccess(
-                    new AccountResponseDTO.RenewTokenResponse(newAccessToken));
-        }
+            @CookieValue("refreshToken") final String refreshToken,
+            @RequestHeader("Authorization") final String authorizationHeader) {
+        return CommonResponse.onSuccess(
+                loginService.renewalAccessToken(refreshToken, authorizationHeader));
     }
 
     // 회원이 로그아웃을 한다

@@ -2,6 +2,7 @@ package liaison.linkit.global;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
+import liaison.linkit.auth.config.AuthProperties;
 import liaison.linkit.global.restdocs.RestDocsConfiguration;
 import liaison.linkit.login.LoginArgumentResolver;
 import liaison.linkit.login.domain.repository.RefreshTokenRepository;
@@ -29,6 +30,8 @@ public abstract class ControllerTest {
     @Autowired protected MockMvc mockMvc;
 
     @Autowired protected LoginArgumentResolver loginArgumentResolver;
+
+    @MockBean private AuthProperties authProperties;
 
     @MockBean protected JwtProvider jwtProvider;
 

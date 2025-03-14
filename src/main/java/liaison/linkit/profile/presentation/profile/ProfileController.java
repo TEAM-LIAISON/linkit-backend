@@ -1,5 +1,7 @@
 package liaison.linkit.profile.presentation.profile;
 
+import java.util.Optional;
+
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
@@ -37,8 +39,11 @@ public class ProfileController {
     public CommonResponse<ProfileResponseDTO.ProfileDetail> getProfileDetail(
             @PathVariable final String emailId, @Auth final Accessor accessor) {
         if (accessor.isMember()) {
+            Optional<Long> optionalMemberId =
+                    accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+
             return CommonResponse.onSuccess(
-                    profileService.getLoggedInProfileDetail(accessor.getMemberId(), emailId));
+                    profileService.getLoggedInProfileDetail(optionalMemberId, emailId));
         } else {
             return CommonResponse.onSuccess(profileService.getLoggedOutProfileDetail(emailId));
         }

@@ -14,7 +14,6 @@ import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.region.ProfileRegion;
 import liaison.linkit.profile.domain.state.ProfileCurrentState;
 import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
-import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.implement.state.ProfileCurrentStateQueryAdapter;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
@@ -35,7 +34,6 @@ public class ProfileInformMenuAssembler {
 
     // Adapter
     private final RegionQueryAdapter regionQueryAdapter;
-    private final ProfileQueryAdapter profileQueryAdapter;
     private final ProfileCurrentStateQueryAdapter profileCurrentStateQueryAdapter;
     private final ProfilePositionQueryAdapter profilePositionQueryAdapter;
     private final ProfileScrapQueryAdapter profileScrapQueryAdapter;
