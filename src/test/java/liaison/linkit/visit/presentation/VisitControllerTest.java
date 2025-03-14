@@ -105,6 +105,94 @@ public class VisitControllerTest extends ControllerTest {
         when(visitService.getProfileVisitInforms(anyLong())).thenReturn(visitInforms);
 
         final ResultActions resultActions = performGetProfileVisits();
+
+        // then
+        final MvcResult mvcResult =
+                resultActions
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.isSuccess").value("true"))
+                        .andExpect(jsonPath("$.code").value("1000"))
+                        .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                        .andDo(
+                                restDocs.document(
+                                        responseFields(
+                                                fieldWithPath("isSuccess")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("요청 성공 여부")
+                                                        .attributes(
+                                                                field("constraint", "boolean 값")),
+                                                fieldWithPath("code")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 코드")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("message")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 메시지")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("result")
+                                                        .type(JsonFieldType.OBJECT)
+                                                        .description("응답 결과"),
+                                                fieldWithPath(
+                                                                "result.visitInforms[].profileImagePath")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("방문자 프로필 이미지 경로"),
+                                                fieldWithPath("result.visitInforms[].memberName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("방문자 프로필 이름"),
+                                                fieldWithPath("result.visitInforms[].emailId")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("방문자 유저 아이디"),
+                                                fieldWithPath(
+                                                                "result.visitInforms[].profilePositionDetail")
+                                                        .type(JsonFieldType.OBJECT)
+                                                        .description("프로필 포지션 정보 객체"),
+                                                fieldWithPath(
+                                                                "result.visitInforms[].profilePositionDetail.majorPosition")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("프로필 대분류 포지션"),
+                                                fieldWithPath(
+                                                                "result.visitInforms[].profilePositionDetail.subPosition")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("프로필 소분류 포지션"))))
+                        .andReturn();
+    }
+
+    @DisplayName("회원이 나의 팀에 방문한 회원 정보를 조회할 수 있다.")
+    @Test
+    void getTeamVisitInforms() throws Exception {
+        // given
+        final VisitResponseDTO.VisitInforms visitInforms =
+                VisitResponseDTO.VisitInforms.builder()
+                        .visitInforms(
+                                Arrays.asList(
+                                        VisitResponseDTO.VisitInform.builder()
+                                                .profileImagePath("프로필 이미지 경로")
+                                                .memberName("회원 이름")
+                                                .emailId("방문한 회원의 유저 ID")
+                                                .profilePositionDetail(
+                                                        ProfileResponseDTO.ProfilePositionDetail
+                                                                .builder()
+                                                                .majorPosition("포지션 대분류")
+                                                                .subPosition("포지션 소분류")
+                                                                .build())
+                                                .build(),
+                                        VisitResponseDTO.VisitInform.builder()
+                                                .profileImagePath("프로필 이미지 경로")
+                                                .memberName("회원 이름")
+                                                .emailId("방문한 회원의 유저 ID")
+                                                .profilePositionDetail(
+                                                        ProfileResponseDTO.ProfilePositionDetail
+                                                                .builder()
+                                                                .majorPosition("포지션 대분류")
+                                                                .subPosition("포지션 소분류")
+                                                                .build())
+                                                .build()))
+                        .build();
+        // when
+        when(visitService.getTeamVisitInforms(anyLong(), any())).thenReturn(visitInforms);
+
+        final ResultActions resultActions = performGetTeamVisits("liaison");
+
         // then
         final MvcResult mvcResult =
                 resultActions
