@@ -9,6 +9,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -234,6 +236,9 @@ public class VisitControllerTest extends ControllerTest {
                         .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                         .andDo(
                                 restDocs.document(
+                                        pathParameters(
+                                                parameterWithName("teamCode")
+                                                        .description("팀 아이디 (팀 코드)")),
                                         responseFields(
                                                 fieldWithPath("isSuccess")
                                                         .type(JsonFieldType.BOOLEAN)

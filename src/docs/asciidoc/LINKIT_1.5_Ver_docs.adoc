@@ -1796,3 +1796,28 @@ include::{snippets}/matching-controller-test/delete-requested-matching-items/req
 include::{snippets}/matching-controller-test/delete-requested-matching-items/http-response.adoc[]
 include::{snippets}/matching-controller-test/delete-requested-matching-items/response-fields.adoc[]
 ====
+
+== #[방문자 조회]#
+
+=== 내 프로필_프로필 방문자 조회
+
+====
+*요청*
+include::{snippets}/visit-controller-test/get-profile-visit-informs/http-request.adoc[]
+
+*응답*
+include::{snippets}/visit-controller-test/get-profile-visit-informs/http-response.adoc[]
+include::{snippets}/visit-controller-test/get-profile-visit-informs/response-fields.adoc[]
+====
+
+=== 팀 프로필_프로필 방문자 조회
+
+====
+*요청*
+include::{snippets}/visit-controller-test/get-team-visit-informs/http-request.adoc[]
+include::{snippets}/visit-controller-test/get-team-visit-informs/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/visit-controller-test/get-team-visit-informs/http-response.adoc[]
+include::{snippets}/visit-controller-test/get-team-visit-informs/response-fields.adoc[]
+====
