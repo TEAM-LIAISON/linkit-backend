@@ -17,6 +17,7 @@ import java.util.Arrays;
 import jakarta.servlet.http.Cookie;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import liaison.linkit.common.presentation.RegionResponseDTO;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
@@ -88,6 +89,11 @@ public class VisitControllerTest extends ControllerTest {
                                                                 .majorPosition("포지션 대분류")
                                                                 .subPosition("포지션 소분류")
                                                                 .build())
+                                                .regionDetail(
+                                                        RegionResponseDTO.RegionDetail.builder()
+                                                                .cityName("지역 시/도")
+                                                                .divisionName("지역 시/군/구")
+                                                                .build())
                                                 .build(),
                                         VisitResponseDTO.VisitInform.builder()
                                                 .profileImagePath("프로필 이미지 경로")
@@ -98,6 +104,11 @@ public class VisitControllerTest extends ControllerTest {
                                                                 .builder()
                                                                 .majorPosition("포지션 대분류")
                                                                 .subPosition("포지션 소분류")
+                                                                .build())
+                                                .regionDetail(
+                                                        RegionResponseDTO.RegionDetail.builder()
+                                                                .cityName("지역 시/도")
+                                                                .divisionName("지역 시/군/구")
                                                                 .build())
                                                 .build()))
                         .build();
@@ -153,7 +164,18 @@ public class VisitControllerTest extends ControllerTest {
                                                 fieldWithPath(
                                                                 "result.visitInforms[].profilePositionDetail.subPosition")
                                                         .type(JsonFieldType.STRING)
-                                                        .description("프로필 소분류 포지션"))))
+                                                        .description("프로필 소분류 포지션"),
+                                                fieldWithPath("result.visitInforms[].regionDetail")
+                                                        .type(JsonFieldType.OBJECT)
+                                                        .description("프로필 지역 정보 객체"),
+                                                fieldWithPath(
+                                                                "result.visitInforms[].regionDetail.cityName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("프로필 지역 시/도"),
+                                                fieldWithPath(
+                                                                "result.visitInforms[].regionDetail.divisionName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("프로필 지역 시/군/구"))))
                         .andReturn();
     }
 
@@ -175,6 +197,11 @@ public class VisitControllerTest extends ControllerTest {
                                                                 .majorPosition("포지션 대분류")
                                                                 .subPosition("포지션 소분류")
                                                                 .build())
+                                                .regionDetail(
+                                                        RegionResponseDTO.RegionDetail.builder()
+                                                                .cityName("지역 시/도")
+                                                                .divisionName("지역 시/군/구")
+                                                                .build())
                                                 .build(),
                                         VisitResponseDTO.VisitInform.builder()
                                                 .profileImagePath("프로필 이미지 경로")
@@ -185,6 +212,11 @@ public class VisitControllerTest extends ControllerTest {
                                                                 .builder()
                                                                 .majorPosition("포지션 대분류")
                                                                 .subPosition("포지션 소분류")
+                                                                .build())
+                                                .regionDetail(
+                                                        RegionResponseDTO.RegionDetail.builder()
+                                                                .cityName("지역 시/도")
+                                                                .divisionName("지역 시/군/구")
                                                                 .build())
                                                 .build()))
                         .build();
@@ -240,7 +272,18 @@ public class VisitControllerTest extends ControllerTest {
                                                 fieldWithPath(
                                                                 "result.visitInforms[].profilePositionDetail.subPosition")
                                                         .type(JsonFieldType.STRING)
-                                                        .description("프로필 소분류 포지션"))))
+                                                        .description("프로필 소분류 포지션"),
+                                                fieldWithPath("result.visitInforms[].regionDetail")
+                                                        .type(JsonFieldType.OBJECT)
+                                                        .description("프로필 지역 정보 객체"),
+                                                fieldWithPath(
+                                                                "result.visitInforms[].regionDetail.cityName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("프로필 지역 시/도"),
+                                                fieldWithPath(
+                                                                "result.visitInforms[].regionDetail.divisionName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("프로필 지역 시/군/구"))))
                         .andReturn();
     }
 }

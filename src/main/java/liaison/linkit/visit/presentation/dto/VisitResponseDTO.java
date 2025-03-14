@@ -2,6 +2,7 @@ package liaison.linkit.visit.presentation.dto;
 
 import java.util.List;
 
+import liaison.linkit.common.presentation.RegionResponseDTO;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -32,5 +33,8 @@ public class VisitResponseDTO {
         @Builder.Default
         private ProfileResponseDTO.ProfilePositionDetail profilePositionDetail =
                 new ProfileResponseDTO.ProfilePositionDetail();
+
+        @Builder.Default
+        private RegionResponseDTO.RegionDetail regionDetail = new RegionResponseDTO.RegionDetail();
     }
 }

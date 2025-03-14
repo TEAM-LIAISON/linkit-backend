@@ -2,8 +2,12 @@ package liaison.linkit.visit.business.assembler;
 
 import java.util.List;
 
+import liaison.linkit.common.business.RegionMapper;
+import liaison.linkit.common.implement.RegionQueryAdapter;
+import liaison.linkit.common.presentation.RegionResponseDTO;
 import liaison.linkit.profile.business.mapper.ProfilePositionMapper;
 import liaison.linkit.profile.domain.profile.Profile;
+import liaison.linkit.profile.domain.region.ProfileRegion;
 import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
@@ -30,9 +34,11 @@ public class VisitModalAssembler {
 
     private final TeamVisitQueryAdapter teamVisitQueryAdapter;
     private final TeamQueryAdapter teamQueryAdapter;
+    private final RegionQueryAdapter regionQueryAdapter;
 
     // Mappers
     private final ProfilePositionMapper profilePositionMapper;
+    private final RegionMapper regionMapper;
 
     public VisitResponseDTO.VisitInforms assembleProfileVisitInforms(final Long memberId) {
         final Profile visitedProfile = profileQueryAdapter.findByMemberId(memberId);
@@ -79,6 +85,7 @@ public class VisitModalAssembler {
                                         .emailId(profile.getMember().getEmailId())
                                         .profilePositionDetail(
                                                 assembleProfilePositionDetail(profile))
+                                        .regionDetail(assemblerProfileRegionDetail(profile))
                                         .build())
                 .toList();
     }
@@ -88,5 +95,16 @@ public class VisitModalAssembler {
                 ? profilePositionMapper.toProfilePositionDetail(
                         profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId()))
                 : new ProfilePositionDetail();
+    }
+
+    private RegionResponseDTO.RegionDetail assemblerProfileRegionDetail(final Profile profile) {
+        RegionResponseDTO.RegionDetail regionDetail = new RegionResponseDTO.RegionDetail();
+        if (regionQueryAdapter.existsProfileRegionByProfileId(profile.getId())) {
+            ProfileRegion profileRegion =
+                    regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
+            regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
+        }
+
+        return regionDetail;
     }
 }
