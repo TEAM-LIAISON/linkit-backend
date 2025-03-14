@@ -910,6 +910,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                 .announcementSkillNames(announcementSkillNames)
                                 .announcementEndDate("공고 종료 날짜")
                                 .isPermanentRecruitment(true)
+                                .isAnnouncementInProgress(false)
                                 .isRegionFlexible(false)
                                 .mainTasks("주요 업무")
                                 .workMethod("업무 방식")
@@ -971,6 +972,9 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                 fieldWithPath("isRegionFlexible")
                                                         .type(JsonFieldType.BOOLEAN)
                                                         .description("지역 무관 여부"),
+                                                fieldWithPath("isAnnouncementInProgress")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("공고 진행 여부 (서버에서 관리)"),
                                                 fieldWithPath("mainTasks")
                                                         .type(JsonFieldType.STRING)
                                                         .description("공고 주요 업무"),

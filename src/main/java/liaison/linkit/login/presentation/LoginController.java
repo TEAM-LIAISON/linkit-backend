@@ -6,12 +6,14 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
+import liaison.linkit.auth.config.AuthProperties;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.login.presentation.dto.AccountRequestDTO;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO;
 import liaison.linkit.login.service.LoginService;
+import liaison.linkit.login.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
@@ -30,9 +32,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class LoginController {
 
+    // 쿠키 만료 시간 상수
     public static final int COOKIE_AGE_SECONDS = 604800;
-    public static final int ACCESS_COOKIE_AGE_SECONDS = 302400;
+    public static final int REFRESH_TOKEN_AGE_SECONDS = 604800; // 7일
+    public static final int ACCESS_TOKEN_AGE_SECONDS = 86400; // 1일 (실제 환경에 맞게 조정)
+
     private final LoginService loginService;
+    private final AuthProperties authProperties;
 
     // 회원이 로그인한다
     @PostMapping("/login/{provider}")
@@ -80,8 +86,19 @@ public class LoginController {
     @MemberOnly
     @Logging(item = "Login", action = "DELETE_LOGOUT", includeResult = true)
     public CommonResponse<AccountResponseDTO.LogoutResponse> logout(
-            @Auth final Accessor accessor, @CookieValue("refreshToken") final String refreshToken) {
-        return CommonResponse.onSuccess(loginService.logout(accessor.getMemberId(), refreshToken));
+            @Auth final Accessor accessor,
+            @CookieValue(value = "refreshToken", required = false) final String refreshToken,
+            final HttpServletResponse response) {
+
+        // 로그아웃 처리
+        final AccountResponseDTO.LogoutResponse logoutResponse =
+                loginService.logout(accessor.getMemberId(), refreshToken);
+
+        // 쿠키 삭제
+        response.addHeader(SET_COOKIE, CookieUtil.createLogoutCookie("accessToken").toString());
+        response.addHeader(SET_COOKIE, CookieUtil.createLogoutCookie("refreshToken").toString());
+
+        return CommonResponse.onSuccess(logoutResponse);
     }
 
     // 회원이 회원 탈퇴를 한다
@@ -89,8 +106,18 @@ public class LoginController {
     @MemberOnly
     @Logging(item = "Login", action = "DELETE_QUIT_ACCOUNT", includeResult = true)
     public CommonResponse<AccountResponseDTO.QuitAccountResponse> quitAccount(
-            @Auth final Accessor accessor, @CookieValue("refreshToken") final String refreshToken) {
-        return CommonResponse.onSuccess(
-                loginService.quitAccount(accessor.getMemberId(), refreshToken));
+            @Auth final Accessor accessor,
+            @CookieValue(value = "refreshToken", required = false) final String refreshToken,
+            final HttpServletResponse response) {
+
+        // 회원 탈퇴 처리
+        final AccountResponseDTO.QuitAccountResponse quitResponse =
+                loginService.quitAccount(accessor.getMemberId(), refreshToken);
+
+        // 쿠키 삭제
+        response.addHeader(SET_COOKIE, CookieUtil.createLogoutCookie("accessToken").toString());
+        response.addHeader(SET_COOKIE, CookieUtil.createLogoutCookie("refreshToken").toString());
+
+        return CommonResponse.onSuccess(quitResponse);
     }
 }

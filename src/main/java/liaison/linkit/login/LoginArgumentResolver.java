@@ -46,6 +46,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
             final WebDataBinderFactory binderFactory) {
         final HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         try {
+
             final String authorizationHeader = webRequest.getHeader(AUTHORIZATION);
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
                 log.info("Authorization 헤더가 없거나 형식이 올바르지 않습니다. 게스트로 처리됩니다.");
@@ -53,6 +54,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
             }
 
             final String accessToken = extractor.extractAccessToken(authorizationHeader);
+
             final String refreshToken = extractRefreshToken(request.getCookies());
 
             jwtProvider.validateTokens(new MemberTokens(accessToken, refreshToken));

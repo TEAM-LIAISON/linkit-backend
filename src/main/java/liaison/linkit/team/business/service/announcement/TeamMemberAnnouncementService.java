@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import liaison.linkit.common.domain.Position;
+import liaison.linkit.global.util.DateUtils;
 import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.implement.position.PositionQueryAdapter;
 import liaison.linkit.profile.implement.skill.SkillQueryAdapter;
@@ -154,6 +155,15 @@ public class TeamMemberAnnouncementService {
         final TeamMemberAnnouncement existingTeamMemberAnnouncement =
                 teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(
                         teamMemberAnnouncementId);
+
+        // 기존 공고 업데이트 전 상태 로직 처리
+        boolean isNewPermanentRecruitment =
+                updateTeamMemberAnnouncementRequest.getIsPermanentRecruitment();
+        String newEndDate = updateTeamMemberAnnouncementRequest.getAnnouncementEndDate();
+        boolean isAnnouncementInProgress =
+                calculateIsAnnouncementInProgress(newEndDate, isNewPermanentRecruitment);
+
+        updateTeamMemberAnnouncementRequest.setIsAnnouncementInProgress(isAnnouncementInProgress);
 
         // 2. DTO를 통해 팀원 공고 업데이트
         final TeamMemberAnnouncement updatedTeamMemberAnnouncement =
@@ -314,5 +324,18 @@ public class TeamMemberAnnouncementService {
 
         return teamMemberAnnouncementMapper.toCloseTeamMemberAnnouncement(
                 updatedTeamMemberAnnouncement);
+    }
+
+    private boolean calculateIsAnnouncementInProgress(
+            String endDate, boolean isPermanentRecruitment) {
+        if (isPermanentRecruitment) {
+            return true; // 상시 모집인 경우 항상 진행 중
+        }
+
+        if (endDate != null && !endDate.isEmpty()) {
+            return !DateUtils.calculateAnnouncementClosed(endDate);
+        }
+
+        return false; // endDate가 null이거나 빈 문자열인 경우 기본적으로 false
     }
 }
