@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
-import liaison.linkit.auth.config.AuthProperties;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.config.log.Logging;
@@ -38,7 +37,6 @@ public class LoginController {
     public static final int ACCESS_TOKEN_AGE_SECONDS = 86400; // 1일 (실제 환경에 맞게 조정)
 
     private final LoginService loginService;
-    private final AuthProperties authProperties;
 
     // 회원이 로그인한다
     @PostMapping("/login/{provider}")
