@@ -120,8 +120,4 @@ springdoc:
     configUrl: /linkit/api-docs/swagger-config
     disable-swagger-default-url: true
 
-auth:
-  mode: hybrid  # 'header', 'cookie', 'hybrid' 중 선택
-  migration-enabled: true  # 마이그레이션 모드 활성화
-
 swagger.version: "v0.1"

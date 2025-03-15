@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
-import liaison.linkit.auth.config.AuthProperties;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.config.log.Logging;
@@ -33,7 +32,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class TeamControllerV2 {
     private final TeamService teamService;
-    private final AuthProperties authProperties;
 
     // 홈화면에서 팀 조회 API (쿠키 전용)
     @GetMapping("/home/team")
@@ -57,11 +55,6 @@ public class TeamControllerV2 {
 
         // 성능 측정 종료 및 로깅
         long executionTime = System.currentTimeMillis() - startTime;
-        log.info(
-                "[성능측정] 홈 팀 조회 API 실행시간: {}ms, 인증모드: {}, 클라이언트: {}",
-                executionTime,
-                authProperties.getMode(),
-                userAgent);
 
         return CommonResponse.onSuccess(result);
     }
@@ -113,7 +106,6 @@ public class TeamControllerV2 {
             HttpServletRequest request, Accessor accessor, String apiName) {
         try {
             // 현재 인증 모드
-            String authMode = authProperties.getMode();
 
             // 쿠키 정보 확인
             Cookie[] cookies = request.getCookies();
@@ -145,7 +137,6 @@ public class TeamControllerV2 {
 
             // 인증 상세 정보 로깅
             log.info("===== 인증 정보 [{}] =====", apiName);
-            log.info("인증 모드: {}", authMode);
             log.info(
                     "회원 여부: {}",
                     accessor.isMember() ? "회원 (ID: " + accessor.getMemberId() + ")" : "비회원");
@@ -156,21 +147,6 @@ public class TeamControllerV2 {
             log.info("헤더 토큰 존재: {}", hasAuthHeader);
             log.info("클라이언트 IP: {}", getClientIp(request));
             log.info("요청 경로: {}", request.getRequestURI());
-
-            // 모드별 인증 진입점 확인
-            if ("cookie".equals(authMode) && hasAccessTokenCookie && accessor.isMember()) {
-                log.info("★ 쿠키 기반 인증 성공 ★");
-            } else if ("header".equals(authMode) && hasAuthHeader && accessor.isMember()) {
-                log.info("★ 헤더 기반 인증 성공 ★");
-            } else if ("hybrid".equals(authMode) && accessor.isMember()) {
-                if (hasAccessTokenCookie) {
-                    log.info("★ 하이브리드 모드 - 쿠키 기반 인증 성공 ★");
-                } else if (hasAuthHeader) {
-                    log.info("★ 하이브리드 모드 - 헤더 기반 인증 성공 ★");
-                }
-            } else if (!accessor.isMember()) {
-                log.info("⚠ 인증 실패 또는 게스트 접근 ⚠");
-            }
 
             // 인증 토큰 불일치 검사 (디버깅에 유용)
             if (hasAccessTokenCookie
