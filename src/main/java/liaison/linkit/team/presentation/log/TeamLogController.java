@@ -73,7 +73,7 @@ public class TeamLogController {
     // 대표글 조회
     @GetMapping("/represent")
     @Logging(item = "Team_Log", action = "GET_REPRESENT_TEAM_LOG_ITEM", includeResult = true)
-    public CommonResponse<TeamLogResponseDTO.TeamLogItem> getRepresentTeamLogItem(
+    public CommonResponse<TeamLogResponseDTO.TeamLogRepresentItem> getRepresentTeamLogItem(
             @Auth final Accessor accessor, @PathVariable final String teamCode) {
         Optional<Long> optionalMemberId =
                 accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();

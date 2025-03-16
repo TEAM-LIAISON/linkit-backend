@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 import jakarta.servlet.http.Cookie;
 
@@ -487,18 +488,26 @@ public class TeamLogControllerTest extends ControllerTest {
     @DisplayName("회원이 대표글을 조회할 수 있다.")
     @Test
     void getRepresentTeamLogItem() throws Exception {
-        final TeamLogResponseDTO.TeamLogItem teamLogItem =
-                TeamLogItem.builder()
+        // TeamLogItem 생성
+        TeamLogResponseDTO.TeamLogItem teamLogItem =
+                TeamLogResponseDTO.TeamLogItem.builder()
                         .isTeamManager(true)
                         .teamLogId(1L)
                         .isLogPublic(true)
                         .logType(REPRESENTATIVE_LOG)
-                        .modifiedAt(LocalDateTime.now())
+                        .modifiedAt(LocalDateTime.now()) // String으로
                         .logTitle("로그 제목")
                         .logContent("로그 내용")
                         .build();
 
-        when(teamLogService.getRepresentTeamLogItem(any(), any())).thenReturn(teamLogItem);
+        // TeamLogRepresentItem 생성
+        final TeamLogResponseDTO.TeamLogRepresentItem teamLogRepresentItem =
+                TeamLogResponseDTO.TeamLogRepresentItem.builder()
+                        .isTeamManager(true) // isTeamManger가 아닌 isTeamManager로 수정
+                        .teamLogItems(List.of(teamLogItem)) // Arrays.asList 대신 List.of 사용
+                        .build();
+
+        when(teamLogService.getRepresentTeamLogItem(any(), any())).thenReturn(teamLogRepresentItem);
 
         final ResultActions resultActions = performGetRepresentTeamLogItem("liaison");
 
@@ -508,6 +517,9 @@ public class TeamLogControllerTest extends ControllerTest {
                         .andExpect(jsonPath("$.isSuccess").value("true"))
                         .andExpect(jsonPath("$.code").value("1000"))
                         .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                        .andExpect(jsonPath("$.result.isTeamManager").value(true))
+                        .andExpect(jsonPath("$.result.teamLogItems[0].teamLogId").value(1))
+                        .andExpect(jsonPath("$.result.teamLogItems[0].isLogPublic").value(true))
                         .andDo(
                                 restDocs.document(
                                         pathParameters(
@@ -530,31 +542,41 @@ public class TeamLogControllerTest extends ControllerTest {
                                                 fieldWithPath("result.isTeamManager")
                                                         .type(JsonFieldType.BOOLEAN)
                                                         .description("팀 오너/관리자 여부"),
-                                                fieldWithPath("result.teamLogId")
+                                                fieldWithPath("result.teamLogItems")
+                                                        .type(JsonFieldType.ARRAY)
+                                                        .description("팀 로그 목록"),
+                                                fieldWithPath("result.teamLogItems[].teamLogId")
                                                         .type(JsonFieldType.NUMBER)
-                                                        .description("내 로그 ID"),
-                                                fieldWithPath("result.isLogPublic")
+                                                        .description("로그 ID"),
+                                                fieldWithPath("result.teamLogItems[].isTeamManager")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("팀 관리자 여부"),
+                                                fieldWithPath("result.teamLogItems[].isLogPublic")
                                                         .type(JsonFieldType.BOOLEAN)
                                                         .description("로그 공개 여부"),
-                                                fieldWithPath("result.logType")
+                                                fieldWithPath("result.teamLogItems[].logType")
                                                         .type(JsonFieldType.STRING)
                                                         .description("로그 유형 (대표글 여부)"),
-                                                fieldWithPath("result.modifiedAt")
+                                                fieldWithPath("result.teamLogItems[].modifiedAt")
                                                         .type(JsonFieldType.STRING)
                                                         .description("로그 수정 시간"),
-                                                fieldWithPath("result.logTitle")
+                                                fieldWithPath("result.teamLogItems[].logTitle")
                                                         .type(JsonFieldType.STRING)
                                                         .description("로그 제목"),
-                                                fieldWithPath("result.logContent")
+                                                fieldWithPath("result.teamLogItems[].logContent")
                                                         .type(JsonFieldType.STRING)
                                                         .description("로그 내용"))))
                         .andReturn();
-        final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<TeamLogResponseDTO.TeamLogItem> actual =
-                objectMapper.readValue(
-                        jsonResponse, new TypeReference<CommonResponse<TeamLogItem>>() {});
 
-        final CommonResponse<TeamLogItem> expected = CommonResponse.onSuccess(teamLogItem);
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<TeamLogResponseDTO.TeamLogRepresentItem> actual =
+                objectMapper.readValue(
+                        jsonResponse,
+                        new TypeReference<
+                                CommonResponse<TeamLogResponseDTO.TeamLogRepresentItem>>() {});
+
+        final CommonResponse<TeamLogResponseDTO.TeamLogRepresentItem> expected =
+                CommonResponse.onSuccess(teamLogRepresentItem);
 
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
