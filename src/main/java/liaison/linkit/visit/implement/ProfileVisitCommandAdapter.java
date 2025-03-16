@@ -13,4 +13,12 @@ public class ProfileVisitCommandAdapter {
     public void save(final ProfileVisit profileVisit) {
         profileVisitRepository.save(profileVisit);
     }
+
+    public void removeVisitorByVisitorProfileId(final Long visitorProfileId) {
+        profileVisitRepository.removeVisitorByVisitorProfileId(visitorProfileId);
+    }
+
+    public void removeVisitorByVisitedProfileId(final Long visitedProfileId) {
+        profileVisitRepository.removeVisitorByVisitedProfileId(visitedProfileId);
+    }
 }

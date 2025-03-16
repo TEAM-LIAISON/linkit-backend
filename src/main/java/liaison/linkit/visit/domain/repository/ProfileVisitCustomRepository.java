@@ -9,4 +9,8 @@ public interface ProfileVisitCustomRepository {
 
     boolean existsByVisitedProfileIdAndVisitorProfileId(
             final Long visitedProfileId, final Long visitorProfileId);
+
+    void removeVisitorByVisitorProfileId(final Long visitorProfileId);
+
+    void removeVisitorByVisitedProfileId(final Long visitedProfileId);
 }

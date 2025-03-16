@@ -13,4 +13,12 @@ public class TeamVisitCommandAdapter {
     public void save(final TeamVisit teamVisit) {
         teamVisitRepository.save(teamVisit);
     }
+
+    public void removeVisitorByVisitorProfileId(final Long visitorProfileId) {
+        teamVisitRepository.removeVisitorByVisitorProfileId(visitorProfileId);
+    }
+
+    public void removeVisitorByVisitedTeamId(final Long visitedTeamId) {
+        teamVisitRepository.removeVisitorByVisitedTeamId(visitedTeamId);
+    }
 }
