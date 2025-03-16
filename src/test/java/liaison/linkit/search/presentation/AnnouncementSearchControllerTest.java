@@ -10,7 +10,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.queryPar
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -123,7 +122,7 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                         .isAnnouncementScrap(true)
                         .announcementScrapCount(100)
                         .viewCount(120L)
-                        .createdAt(LocalDateTime.now())
+                        .createdAt("1시간 전")
                         .announcementPositionItem(
                                 AnnouncementPositionItem.builder()
                                         .majorPosition("포지션 대분류")
@@ -159,7 +158,7 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                         .isAnnouncementScrap(true)
                         .announcementScrapCount(100)
                         .viewCount(120L)
-                        .createdAt(LocalDateTime.now())
+                        .createdAt("1시간 전")
                         .announcementPositionItem(
                                 AnnouncementPositionItem.builder()
                                         .majorPosition("포지션 대분류")
@@ -353,7 +352,7 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                                 .isAnnouncementScrap(true)
                                                 .announcementScrapCount(100)
                                                 .viewCount(100L)
-                                                .createdAt(LocalDateTime.now())
+                                                .createdAt("1시간 전")
                                                 .announcementPositionItem(
                                                         AnnouncementPositionItem.builder()
                                                                 .majorPosition("포지션 대분류")
@@ -391,7 +390,7 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                                 .isAnnouncementScrap(true)
                                                 .announcementScrapCount(100)
                                                 .viewCount(120L)
-                                                .createdAt(LocalDateTime.now())
+                                                .createdAt("1시간 전")
                                                 .announcementPositionItem(
                                                         AnnouncementPositionItem.builder()
                                                                 .majorPosition("포지션 대분류")
