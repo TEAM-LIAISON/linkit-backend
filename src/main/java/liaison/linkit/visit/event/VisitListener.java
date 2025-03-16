@@ -32,12 +32,6 @@ public class VisitListener {
     @Transactional
     @EventListener
     public void handleTeamVisitedEvent(TeamVisitedEvent event) {
-        visitService.processTeamVisit(
-                event.getEntityType(),
-                event.getVisitedTeamId(),
-                event.getVisitorProfileId(),
-                event.getOptionalMemberId());
-
         // DB에 존재하는지 확인
         if (teamVisitQueryAdapter.existsByVisitedTeamIdAndVisitorProfileId(
                 event.getVisitedTeamId(), event.getVisitorProfileId())) {
@@ -62,11 +56,6 @@ public class VisitListener {
     @Transactional
     @EventListener
     public void handleProfileVisitedEvent(ProfileVisitedEvent event) {
-        visitService.processProfileVisit(
-                event.getEntityType(),
-                event.getVisitedProfileId(),
-                event.getVisitorProfileId(),
-                event.getOptionalMemberId());
 
         // DB에 존재하는지 확인
         if (profileVisitQueryAdapter.existsByVisitedProfileIdAndVisitorProfileId(
