@@ -28,6 +28,17 @@ public class TeamLogResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class TeamLogRepresentItem {
+        private Boolean isTeamManager;
+
+        @Builder.Default
+        private List<TeamLogResponseDTO.TeamLogItem> teamLogItems = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class TeamLogItem {
         private Boolean isTeamManager;

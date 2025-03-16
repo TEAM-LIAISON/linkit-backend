@@ -25,13 +25,26 @@ public class TeamLogMapper {
     }
 
     public TeamLogResponseDTO.TeamLogItems toTeamLogItems(
-            final boolean isMyTeam, final List<TeamLog> teamLogs) {
+            final boolean isTeamManager, final List<TeamLog> teamLogs) {
         List<TeamLogResponseDTO.TeamLogItem> items =
                 teamLogs.stream()
-                        .map(teamLog -> toTeamLogItem(isMyTeam, teamLog))
+                        .map(teamLog -> toTeamLogItem(isTeamManager, teamLog))
                         .collect(Collectors.toList());
 
         return TeamLogResponseDTO.TeamLogItems.builder().teamLogItems(items).build();
+    }
+
+    public TeamLogResponseDTO.TeamLogRepresentItem toTeamLogRepresentItem(
+            final boolean isTeamManager, final List<TeamLog> teamLogs) {
+        List<TeamLogResponseDTO.TeamLogItem> items =
+                teamLogs.stream()
+                        .map(teamLog -> toTeamLogItem(isTeamManager, teamLog))
+                        .collect(Collectors.toList());
+
+        return TeamLogResponseDTO.TeamLogRepresentItem.builder()
+                .isTeamManager(isTeamManager)
+                .teamLogItems(items)
+                .build();
     }
 
     public TeamLogResponseDTO.AddTeamLogResponse toAddTeamLogResponse(final TeamLog teamLog) {
