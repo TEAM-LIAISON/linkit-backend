@@ -36,5 +36,7 @@ public class VisitResponseDTO {
 
         @Builder.Default
         private RegionResponseDTO.RegionDetail regionDetail = new RegionResponseDTO.RegionDetail();
+
+        private String visitedAt;
     }
 }

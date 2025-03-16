@@ -5,6 +5,7 @@ import java.util.List;
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO;
+import liaison.linkit.global.util.DateUtils;
 import liaison.linkit.profile.business.mapper.ProfilePositionMapper;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.region.ProfileRegion;
@@ -46,11 +47,8 @@ public class VisitModalAssembler {
         final List<ProfileVisit> profileVisits =
                 profileVisitQueryAdapter.getProfileVisitsByVisitedProfileId(visitedProfile.getId());
 
-        final List<Profile> profileVisitors =
-                profileVisits.stream().map(ProfileVisit::getProfile).toList();
-
         final List<VisitResponseDTO.VisitInform> profileVisitInforms =
-                getProfileVisitorInfos(profileVisitors);
+                getProfileVisitInforms(profileVisits);
 
         return VisitResponseDTO.VisitInforms.builder().visitInforms(profileVisitInforms).build();
     }
@@ -62,31 +60,50 @@ public class VisitModalAssembler {
         final List<TeamVisit> teamVisits =
                 teamVisitQueryAdapter.getTeamVisitsByVisitedTeamId(visitedTeam.getId());
 
-        final List<Profile> profileVisitors =
-                teamVisits.stream().map(TeamVisit::getProfile).toList();
+        final List<VisitResponseDTO.VisitInform> teamVisitInforms = getTeamVisitInforms(teamVisits);
 
-        final List<VisitResponseDTO.VisitInform> profileVisitInforms =
-                getProfileVisitorInfos(profileVisitors);
-
-        return VisitResponseDTO.VisitInforms.builder().visitInforms(profileVisitInforms).build();
+        return VisitResponseDTO.VisitInforms.builder().visitInforms(teamVisitInforms).build();
     }
 
-    private List<VisitResponseDTO.VisitInform> getProfileVisitorInfos(
-            final List<Profile> visitorProfiles) {
-        return visitorProfiles.stream()
+    private List<VisitResponseDTO.VisitInform> getProfileVisitInforms(
+            final List<ProfileVisit> profileVisits) {
+        return profileVisits.stream()
                 .map(
-                        profile ->
-                                VisitResponseDTO.VisitInform.builder()
-                                        .profileImagePath(profile.getProfileImagePath())
-                                        .memberName(
-                                                profile.getMember()
-                                                        .getMemberBasicInform()
-                                                        .getMemberName())
-                                        .emailId(profile.getMember().getEmailId())
-                                        .profilePositionDetail(
-                                                assembleProfilePositionDetail(profile))
-                                        .regionDetail(assemblerProfileRegionDetail(profile))
-                                        .build())
+                        visit -> {
+                            Profile profile = visit.getProfile();
+                            return VisitResponseDTO.VisitInform.builder()
+                                    .profileImagePath(profile.getProfileImagePath())
+                                    .memberName(
+                                            profile.getMember()
+                                                    .getMemberBasicInform()
+                                                    .getMemberName())
+                                    .emailId(profile.getMember().getEmailId())
+                                    .profilePositionDetail(assembleProfilePositionDetail(profile))
+                                    .regionDetail(assemblerProfileRegionDetail(profile))
+                                    .visitedAt(DateUtils.formatRelativeTime(visit.getVisitTime()))
+                                    .build();
+                        })
+                .toList();
+    }
+
+    private List<VisitResponseDTO.VisitInform> getTeamVisitInforms(
+            final List<TeamVisit> teamVisits) {
+        return teamVisits.stream()
+                .map(
+                        visit -> {
+                            Profile profile = visit.getProfile();
+                            return VisitResponseDTO.VisitInform.builder()
+                                    .profileImagePath(profile.getProfileImagePath())
+                                    .memberName(
+                                            profile.getMember()
+                                                    .getMemberBasicInform()
+                                                    .getMemberName())
+                                    .emailId(profile.getMember().getEmailId())
+                                    .profilePositionDetail(assembleProfilePositionDetail(profile))
+                                    .regionDetail(assemblerProfileRegionDetail(profile))
+                                    .visitedAt(DateUtils.formatRelativeTime(visit.getVisitTime()))
+                                    .build();
+                        })
                 .toList();
     }
 

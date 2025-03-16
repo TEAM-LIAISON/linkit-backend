@@ -51,7 +51,7 @@ public class TeamMemberAnnouncementResponseDTO {
 
         @Builder.Default private Long viewCount = 0L; // 조회수
 
-        @Builder.Default private LocalDateTime createdAt = LocalDateTime.now(); // 공고 생성일
+        @Builder.Default private String createdAt = ""; // 공고 생성일
 
         @Builder.Default
         private AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();

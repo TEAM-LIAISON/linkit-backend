@@ -60,7 +60,8 @@ public class TeamMemberAnnouncementMapper {
                         teamMemberAnnouncement != null ? teamMemberAnnouncement.getViewCount() : 0L)
                 .createdAt(
                         teamMemberAnnouncement != null
-                                ? teamMemberAnnouncement.getCreatedAt()
+                                ? DateUtils.formatRelativeTime(
+                                        teamMemberAnnouncement.getCreatedAt())
                                 : null)
                 .announcementPositionItem(
                         announcementPositionItem != null
