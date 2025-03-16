@@ -167,7 +167,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 baseCondition = baseCondition.and(qProfile.id.notIn(excludeProfileIds));
             }
 
-            // 커서 조건
+            // 커서 조건 (emailId 기준 유지)
             if (cursorRequest != null
                     && cursorRequest.hasNext()
                     && cursorRequest.getCursor() != null) {
@@ -185,7 +185,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                             .select(qProfile.id, qProfile.member.emailId)
                             .from(qProfile)
                             .where(baseCondition)
-                            .orderBy(qProfile.member.emailId.desc())
+                            .orderBy(qProfile.member.emailId.desc()) // 커서 기준 정렬 (emailId)
                             .limit(pageSize + 1)
                             .fetch();
 
@@ -209,12 +209,12 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 nextCursor = profileTuples.get(pageSize).get(qProfile.member.emailId);
             }
 
-            // 2. ID로 프로필 엔터티만 조회 (컬렉션 없이)
+            // 2. ID로 프로필 엔터티만 조회하고 생성 시간 기준으로 정렬
             List<Profile> profiles =
                     jpaQueryFactory
                             .selectFrom(qProfile)
                             .where(qProfile.id.in(profileIds))
-                            .orderBy(qProfile.member.emailId.desc())
+                            .orderBy(qProfile.createdAt.desc()) // 생성 시간 기준 내림차순 정렬
                             .fetch();
 
             return CursorResponse.of(profiles, nextCursor);
@@ -292,7 +292,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                         .where(qProfileState.profileStateName.in(profileStateName));
             }
 
-            // emailId 기준으로 정렬 및 제한
+            // emailId 기준으로 정렬 및 제한 (커서 기준)
             int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
             int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
 
@@ -309,7 +309,9 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
 
             // profileIds 추출
             List<Long> profileIds = new ArrayList<>();
-            for (int i = 0; i < profileTuples.size(); i++) {
+            for (int i = 0;
+                    i < (profileTuples.size() > pageSize ? pageSize : profileTuples.size());
+                    i++) {
                 profileIds.add(profileTuples.get(i).get(qProfile.id));
             }
 
@@ -321,15 +323,14 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             if (hasNext) {
                 // 마지막 엔티티의 emailId를 다음 커서로 사용
                 nextCursor = profileTuples.get(pageSize).get(qProfile.member.emailId);
-                profileIds.remove(profileIds.size() - 1); // 마지막 ID 제거
             }
 
-            // 2. 실제 데이터 조회
+            // 2. 실제 데이터 조회 - 생성 시간 기준으로 정렬
             List<Profile> content =
                     jpaQueryFactory
                             .selectFrom(qProfile)
                             .where(qProfile.id.in(profileIds))
-                            .orderBy(qProfile.member.emailId.desc()) // emailId 기준으로 정렬
+                            .orderBy(qProfile.createdAt.desc()) // 생성 시간 기준 내림차순 정렬
                             .fetch();
 
             return CursorResponse.of(content, nextCursor);
