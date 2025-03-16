@@ -2,9 +2,11 @@ package liaison.linkit.profile.domain.repository.profile;
 
 import static liaison.linkit.global.type.StatusType.USABLE;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -151,7 +153,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         return PageableExecutionUtils.getPage(content, pageable, content::size);
     }
 
-    // 방법 2: 개별 컬렉션 별도 로딩을 위한 추가 메서드
     public CursorResponse<Profile> findAllExcludingIdsWithCursor(
             final List<Long> excludeProfileIds, final CursorRequest cursorRequest) {
         QProfile qProfile = QProfile.profile;
@@ -178,35 +179,42 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
             int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
 
-            // 1. ID만 먼저 조회
-            List<Long> profileIds =
+            // 1. emailId와 id를 함께 조회
+            List<Tuple> profileTuples =
                     jpaQueryFactory
-                            .select(qProfile.id)
+                            .select(qProfile.id, qProfile.member.emailId)
                             .from(qProfile)
                             .where(baseCondition)
-                            .orderBy(qProfile.id.desc())
+                            .orderBy(qProfile.member.emailId.desc())
                             .limit(pageSize + 1)
                             .fetch();
 
-            if (profileIds.isEmpty()) {
+            if (profileTuples.isEmpty()) {
                 return CursorResponse.of(List.of(), null);
             }
 
+            List<Long> profileIds = new ArrayList<>();
+
             // 다음 커서 계산
             String nextCursor = null;
-            boolean hasNext = profileIds.size() > pageSize;
+            boolean hasNext = profileTuples.size() > pageSize;
 
-            if (hasNext) {
-                nextCursor = String.valueOf(profileIds.get(profileIds.size() - 1));
-                profileIds.remove(profileIds.size() - 1);
+            // profileIds 추출
+            for (int i = 0; i < (hasNext ? pageSize : profileTuples.size()); i++) {
+                profileIds.add(profileTuples.get(i).get(qProfile.id));
             }
 
-            // 2. ID로 팀 엔터티만 조회 (컬렉션 없이)
+            // 다음 커서 설정
+            if (hasNext) {
+                nextCursor = profileTuples.get(pageSize).get(qProfile.member.emailId);
+            }
+
+            // 2. ID로 프로필 엔터티만 조회 (컬렉션 없이)
             List<Profile> profiles =
                     jpaQueryFactory
                             .selectFrom(qProfile)
                             .where(qProfile.id.in(profileIds))
-                            .orderBy(qProfile.id.desc())
+                            .orderBy(qProfile.member.emailId.desc())
                             .fetch();
 
             return CursorResponse.of(profiles, nextCursor);
@@ -216,7 +224,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         }
     }
 
-    /** 필터링 조건으로 팀을 커서 기반으로 조회합니다. */
+    /** 필터링 조건으로 프로필을 커서 기반으로 조회합니다. */
     public CursorResponse<Profile> findAllByFilteringWithCursor(
             final List<String> subPosition,
             final List<String> cityName,
@@ -225,10 +233,10 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         QProfile qProfile = QProfile.profile;
 
         try {
-            // 1. 필터링된 팀 ID를 조회
-            JPAQuery<Long> profileIdQuery =
+            // 1. 필터링된 프로필 ID와 emailId를 함께 조회
+            JPAQuery<Tuple> profileQuery =
                     jpaQueryFactory
-                            .select(qProfile.id)
+                            .select(qProfile.id, qProfile.member.emailId)
                             .distinct()
                             .from(qProfile)
                             .where(
@@ -240,16 +248,16 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             if (cursorRequest != null
                     && cursorRequest.hasNext()
                     && cursorRequest.getCursor() != null) {
-                profileIdQuery =
-                        profileIdQuery.where(qProfile.member.emailId.lt(cursorRequest.getCursor()));
+                profileQuery =
+                        profileQuery.where(qProfile.member.emailId.lt(cursorRequest.getCursor()));
             }
 
-            // 규모 필터링
+            // 포지션 필터링
             if (isNotEmpty(subPosition)) {
                 QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
                 QPosition qPosition = QPosition.position;
 
-                profileIdQuery
+                profileQuery
                         .leftJoin(qProfilePosition)
                         .on(qProfilePosition.profile.eq(qProfile))
                         .leftJoin(qPosition)
@@ -262,7 +270,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
                 QRegion qRegion = QRegion.region;
 
-                profileIdQuery
+                profileQuery
                         .leftJoin(qProfileRegion)
                         .on(qProfileRegion.profile.eq(qProfile))
                         .leftJoin(qRegion)
@@ -276,7 +284,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                         QProfileCurrentState.profileCurrentState;
                 QProfileState qProfileState = QProfileState.profileState;
 
-                profileIdQuery
+                profileQuery
                         .leftJoin(qProfileCurrentState)
                         .on(qProfileCurrentState.profile.eq(qProfile))
                         .leftJoin(qProfileState)
@@ -284,44 +292,45 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                         .where(qProfileState.profileStateName.in(profileStateName));
             }
 
-            // ID 내림차순 정렬 및 제한
+            // emailId 기준으로 정렬 및 제한
             int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
             int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
 
-            List<Long> profileIds =
-                    profileIdQuery
-                            .orderBy(qProfile.id.desc())
+            List<Tuple> profileTuples =
+                    profileQuery
+                            .orderBy(qProfile.member.emailId.desc())
                             .limit(pageSize + 1) // 다음 페이지 확인을 위해 +1
                             .fetch();
 
-            // 조회할 팀이 없는 경우 빈 응답 반환
-            if (profileIds.isEmpty()) {
+            // 조회할 프로필이 없는 경우 빈 응답 반환
+            if (profileTuples.isEmpty()) {
                 return CursorResponse.of(List.of(), null);
             }
 
+            // profileIds 추출
+            List<Long> profileIds = new ArrayList<>();
+            for (int i = 0; i < profileTuples.size(); i++) {
+                profileIds.add(profileTuples.get(i).get(qProfile.id));
+            }
+
             // 다음 커서 계산
-            boolean hasNext = profileIds.size() > pageSize;
+            boolean hasNext = profileTuples.size() > pageSize;
             String nextCursor = null;
 
             // 다음 페이지가 있는 경우
             if (hasNext) {
-                nextCursor = String.valueOf(profileIds.get(profileIds.size() - 1));
-                profileIds.remove(profileIds.size() - 1); // 마지막 요소 제거
+                // 마지막 엔티티의 emailId를 다음 커서로 사용
+                nextCursor = profileTuples.get(pageSize).get(qProfile.member.emailId);
+                profileIds.remove(profileIds.size() - 1); // 마지막 ID 제거
             }
 
-            // 2. 실제 데이터 조회 - fetch join을 하나만 적용하거나 제거
-            // 방법 1: fetch join 없이 조회 (가장 안전한 방법)
+            // 2. 실제 데이터 조회
             List<Profile> content =
                     jpaQueryFactory
                             .selectFrom(qProfile)
                             .where(qProfile.id.in(profileIds))
-                            .orderBy(qProfile.id.desc())
+                            .orderBy(qProfile.member.emailId.desc()) // emailId 기준으로 정렬
                             .fetch();
-
-            // 또는 방법 2: EntityGraph를 사용 (TeamRepository에 추가된 메서드 활용)
-            // List<Team> content = teamRepository.findAllByIdIn(teamIds);
-            // 필요한 경우 ID 정렬
-            // content.sort(Comparator.comparing(Team::getId, Comparator.reverseOrder()));
 
             return CursorResponse.of(content, nextCursor);
         } catch (Exception e) {
