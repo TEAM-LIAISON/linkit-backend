@@ -21,4 +21,10 @@ public class TeamVisitQueryAdapter {
         return teamVisitRepository.existsByVisitedTeamIdAndVisitorProfileId(
                 visitedTeamId, visitorProfileId);
     }
+
+    public TeamVisit getTeamVisitByVisitedTeamIdAndVisitorProfileId(
+            final Long visitedTeamId, final Long visitorProfileId) {
+        return teamVisitRepository.getTeamVisitByVisitedTeamIdAndVisitorProfileId(
+                visitedTeamId, visitorProfileId);
+    }
 }

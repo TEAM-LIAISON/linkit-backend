@@ -30,6 +30,21 @@ public class TeamVisitCustomRepositoryImpl implements TeamVisitCustomRepository 
     }
 
     @Override
+    public TeamVisit getTeamVisitByVisitedTeamIdAndVisitorProfileId(
+            final Long visitedTeamId, final Long visitorProfileId) {
+        QTeamVisit qTeamVisit = QTeamVisit.teamVisit;
+
+        return jpaQueryFactory
+                .selectFrom(qTeamVisit)
+                .where(
+                        qTeamVisit
+                                .visitedTeamId
+                                .eq(visitedTeamId)
+                                .and(qTeamVisit.profile.id.eq(visitorProfileId)))
+                .fetchFirst();
+    }
+
+    @Override
     public boolean existsByVisitedTeamIdAndVisitorProfileId(
             final Long visitedTeamId, final Long visitorProfileId) {
         QTeamVisit qTeamVisit = QTeamVisit.teamVisit;
@@ -67,5 +82,29 @@ public class TeamVisitCustomRepositoryImpl implements TeamVisitCustomRepository 
 
         entityManager.flush();
         entityManager.clear();
+    }
+
+    @Override
+    public void updateVisitTime(final TeamVisit teamVisit) {
+        QTeamVisit qTeamVisit = QTeamVisit.teamVisit;
+
+        long affectedRows =
+                jpaQueryFactory
+                        .update(qTeamVisit)
+                        .set(qTeamVisit.visitTime, teamVisit.getVisitTime())
+                        .where(
+                                qTeamVisit
+                                        .visitedTeamId
+                                        .eq(teamVisit.getVisitedTeamId())
+                                        .and(
+                                                qTeamVisit.profile.id.eq(
+                                                        teamVisit.getProfile().getId())))
+                        .execute();
+
+        // 변경 사항을 데이터베이스에서 다시 조회
+        if (affectedRows > 0) {
+            entityManager.flush(); // 동기화
+            entityManager.clear(); // 캐시 무효화
+        }
     }
 }

@@ -43,4 +43,14 @@ public class TeamVisit {
     // 방문 시간
     @Column(name = "visit_time", nullable = false)
     private LocalDateTime visitTime;
+
+    /**
+     * 방문 시간을 현재 시각으로 업데이트합니다. teamDetail 조회 시 호출되어 최신 방문 시각을 기록합니다.
+     *
+     * @return 업데이트된 TeamVisit 객체
+     */
+    public TeamVisit updateVisitTime() {
+        this.visitTime = LocalDateTime.now();
+        return this;
+    }
 }

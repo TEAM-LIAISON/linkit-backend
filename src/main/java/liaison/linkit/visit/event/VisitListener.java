@@ -32,28 +32,29 @@ public class VisitListener {
     @Transactional
     @EventListener
     public void handleTeamVisitedEvent(TeamVisitedEvent event) {
-        boolean isNewCacheVisit =
-                visitService.processTeamVisit(
-                        event.getEntityType(),
-                        event.getVisitedTeamId(),
-                        event.getVisitorProfileId(),
-                        event.getOptionalMemberId());
+        visitService.processTeamVisit(
+                event.getEntityType(),
+                event.getVisitedTeamId(),
+                event.getVisitorProfileId(),
+                event.getOptionalMemberId());
 
-        if (isNewCacheVisit) {
-            boolean isNewDBVisit =
-                    !teamVisitQueryAdapter.existsByVisitedTeamIdAndVisitorProfileId(
+        // DB에 존재하는지 확인
+        if (teamVisitQueryAdapter.existsByVisitedTeamIdAndVisitorProfileId(
+                event.getVisitedTeamId(), event.getVisitorProfileId())) {
+            // 기존 방문 기록이 있으면 시간 업데이트
+            final TeamVisit existingVisit =
+                    teamVisitQueryAdapter.getTeamVisitByVisitedTeamIdAndVisitorProfileId(
                             event.getVisitedTeamId(), event.getVisitorProfileId());
-
-            if (isNewDBVisit) {
-                teamVisitCommandAdapter.save(
-                        TeamVisit.builder()
-                                .profile(
-                                        profileQueryAdapter.findByMemberId(
-                                                event.getVisitorProfileId()))
-                                .visitedTeamId(event.getVisitedTeamId())
-                                .visitTime(LocalDateTime.now())
-                                .build());
-            }
+            teamVisitCommandAdapter.updateVisitTime(existingVisit.updateVisitTime());
+        } else {
+            // 첫 방문이면 새 레코드 생성
+            teamVisitCommandAdapter.save(
+                    TeamVisit.builder()
+                            .profile(
+                                    profileQueryAdapter.findByMemberId(event.getVisitorProfileId()))
+                            .visitedTeamId(event.getVisitedTeamId())
+                            .visitTime(LocalDateTime.now())
+                            .build());
         }
     }
 
@@ -61,28 +62,29 @@ public class VisitListener {
     @Transactional
     @EventListener
     public void handleProfileVisitedEvent(ProfileVisitedEvent event) {
-        boolean isNewCacheVisit =
-                visitService.processProfileVisit(
-                        event.getEntityType(),
-                        event.getVisitedProfileId(),
-                        event.getVisitorProfileId(),
-                        event.getOptionalMemberId());
+        visitService.processProfileVisit(
+                event.getEntityType(),
+                event.getVisitedProfileId(),
+                event.getVisitorProfileId(),
+                event.getOptionalMemberId());
 
-        if (isNewCacheVisit) {
-            boolean isNewDBVisit =
-                    !profileVisitQueryAdapter.existsByVisitedProfileIdAndVisitorProfileId(
+        // DB에 존재하는지 확인
+        if (profileVisitQueryAdapter.existsByVisitedProfileIdAndVisitorProfileId(
+                event.getVisitedProfileId(), event.getVisitorProfileId())) {
+            // 기존 방문 기록이 있으면 시간 업데이트
+            final ProfileVisit existingVisit =
+                    profileVisitQueryAdapter.getProfileVisitByVisitedProfileIdAndVisitorProfileId(
                             event.getVisitedProfileId(), event.getVisitorProfileId());
-
-            if (isNewDBVisit) {
-                profileVisitCommandAdapter.save(
-                        ProfileVisit.builder()
-                                .profile(
-                                        profileQueryAdapter.findByMemberId(
-                                                event.getVisitorProfileId()))
-                                .visitedProfileId(event.getVisitedProfileId())
-                                .visitTime(LocalDateTime.now())
-                                .build());
-            }
+            profileVisitCommandAdapter.updateVisitTime(existingVisit.updateVisitTime());
+        } else {
+            // 첫 방문이면 새 레코드 생성
+            profileVisitCommandAdapter.save(
+                    ProfileVisit.builder()
+                            .profile(
+                                    profileQueryAdapter.findByMemberId(event.getVisitorProfileId()))
+                            .visitedProfileId(event.getVisitedProfileId())
+                            .visitTime(LocalDateTime.now())
+                            .build());
         }
     }
 }

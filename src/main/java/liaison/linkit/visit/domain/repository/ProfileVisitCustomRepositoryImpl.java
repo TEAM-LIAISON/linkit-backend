@@ -71,4 +71,43 @@ public class ProfileVisitCustomRepositoryImpl implements ProfileVisitCustomRepos
         entityManager.flush();
         entityManager.clear();
     }
+
+    @Override
+    public ProfileVisit getProfileVisitByVisitedProfileIdAndVisitorProfileId(
+            final Long visitedProfileId, final Long visitorProfileId) {
+        QProfileVisit qProfileVisit = QProfileVisit.profileVisit;
+
+        return jpaQueryFactory
+                .selectFrom(qProfileVisit)
+                .where(
+                        qProfileVisit
+                                .visitedProfileId
+                                .eq(visitedProfileId)
+                                .and(qProfileVisit.profile.id.eq(visitorProfileId)))
+                .fetchFirst();
+    }
+
+    @Override
+    public void updateVisitTime(final ProfileVisit profileVisit) {
+        QProfileVisit qProfileVisit = QProfileVisit.profileVisit;
+
+        long affectedRows =
+                jpaQueryFactory
+                        .update(qProfileVisit)
+                        .set(qProfileVisit.visitTime, profileVisit.getVisitTime())
+                        .where(
+                                qProfileVisit
+                                        .visitedProfileId
+                                        .eq(profileVisit.getVisitedProfileId())
+                                        .and(
+                                                qProfileVisit.profile.id.eq(
+                                                        profileVisit.getProfile().getId())))
+                        .execute();
+
+        // 변경 사항을 데이터베이스에서 다시 조회
+        if (affectedRows > 0) {
+            entityManager.flush(); // 동기화
+            entityManager.clear(); // 캐시 무효화
+        }
+    }
 }
