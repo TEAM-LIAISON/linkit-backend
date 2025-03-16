@@ -167,25 +167,36 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 baseCondition = baseCondition.and(qProfile.id.notIn(excludeProfileIds));
             }
 
-            // 커서 조건 (emailId 기준 유지)
+            // 커서 조건 - emailId로 profileId를 찾아서 적용
             if (cursorRequest != null
                     && cursorRequest.hasNext()
                     && cursorRequest.getCursor() != null) {
-                baseCondition =
-                        baseCondition.and(qProfile.member.emailId.lt(cursorRequest.getCursor()));
+                // emailId로 해당 프로필의 ID를 조회
+                String cursorEmailId = cursorRequest.getCursor();
+                Long cursorProfileId =
+                        jpaQueryFactory
+                                .select(qProfile.id)
+                                .from(qProfile)
+                                .where(qProfile.member.emailId.eq(cursorEmailId))
+                                .fetchOne();
+
+                // 찾은 ID가 있으면 해당 ID보다 작은 ID를 가진 프로필만 조회
+                if (cursorProfileId != null) {
+                    baseCondition = baseCondition.and(qProfile.id.lt(cursorProfileId));
+                }
             }
 
             // 페이지 크기 6의 배수로 설정
             int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
             int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
 
-            // 1. emailId와 id를 함께 조회
+            // 1. ID와 emailId를 함께 조회
             List<Tuple> profileTuples =
                     jpaQueryFactory
                             .select(qProfile.id, qProfile.member.emailId)
                             .from(qProfile)
                             .where(baseCondition)
-                            .orderBy(qProfile.member.emailId.desc()) // 커서 기준 정렬 (emailId)
+                            .orderBy(qProfile.id.desc()) // ID 기준으로 정렬
                             .limit(pageSize + 1)
                             .fetch();
 
@@ -233,6 +244,20 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         QProfile qProfile = QProfile.profile;
 
         try {
+            // emailId로 profileId를 찾는 로직
+            Long cursorProfileId = null;
+            if (cursorRequest != null
+                    && cursorRequest.hasNext()
+                    && cursorRequest.getCursor() != null) {
+                String cursorEmailId = cursorRequest.getCursor();
+                cursorProfileId =
+                        jpaQueryFactory
+                                .select(qProfile.id)
+                                .from(qProfile)
+                                .where(qProfile.member.emailId.eq(cursorEmailId))
+                                .fetchOne();
+            }
+
             // 1. 필터링된 프로필 ID와 emailId를 함께 조회
             JPAQuery<Tuple> profileQuery =
                     jpaQueryFactory
@@ -244,12 +269,9 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                                             .eq(USABLE)
                                             .and(qProfile.isProfilePublic.eq(true)));
 
-            // 커서 조건 추가
-            if (cursorRequest != null
-                    && cursorRequest.hasNext()
-                    && cursorRequest.getCursor() != null) {
-                profileQuery =
-                        profileQuery.where(qProfile.member.emailId.lt(cursorRequest.getCursor()));
+            // 커서 조건 추가 - 프로필 ID 기준
+            if (cursorProfileId != null) {
+                profileQuery = profileQuery.where(qProfile.id.lt(cursorProfileId));
             }
 
             // 포지션 필터링
@@ -292,13 +314,13 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                         .where(qProfileState.profileStateName.in(profileStateName));
             }
 
-            // emailId 기준으로 정렬 및 제한 (커서 기준)
+            // ID 기준으로 정렬 및 제한
             int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
             int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
 
             List<Tuple> profileTuples =
                     profileQuery
-                            .orderBy(qProfile.member.emailId.desc())
+                            .orderBy(qProfile.id.desc()) // ID 기준 정렬
                             .limit(pageSize + 1) // 다음 페이지 확인을 위해 +1
                             .fetch();
 

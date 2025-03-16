@@ -2,6 +2,7 @@ package liaison.linkit.team.domain.repository.team;
 
 import static liaison.linkit.global.type.StatusType.USABLE;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import java.util.Optional;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -453,46 +455,66 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                 baseCondition = baseCondition.and(qTeam.id.notIn(excludeTeamIds));
             }
 
-            // 커서 조건
+            // 커서 조건 - teamCode로 ID를 찾아서 적용
             if (cursorRequest != null
                     && cursorRequest.hasNext()
                     && cursorRequest.getCursor() != null) {
-                baseCondition = baseCondition.and(qTeam.teamCode.lt(cursorRequest.getCursor()));
+                // teamCode로 해당 팀의 ID를 조회
+                String cursorTeamCode = cursorRequest.getCursor();
+                Long cursorTeamId =
+                        jpaQueryFactory
+                                .select(qTeam.id)
+                                .from(qTeam)
+                                .where(qTeam.teamCode.eq(cursorTeamCode))
+                                .fetchOne();
+
+                // 찾은 ID가 있으면 해당 ID보다 작은 ID를 가진 팀만 조회
+                if (cursorTeamId != null) {
+                    baseCondition = baseCondition.and(qTeam.id.lt(cursorTeamId));
+                }
             }
 
             // 페이지 크기 안전하게 설정
             int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
             int pageSize = (requestedSize % 2 == 0) ? requestedSize : (requestedSize / 2 + 1) * 2;
 
-            // 1. ID만 먼저 조회
-            List<Long> teamIds =
+            // 1. ID와 teamCode를 함께 조회
+            List<Tuple> teamTuples =
                     jpaQueryFactory
-                            .select(qTeam.id)
+                            .select(qTeam.id, qTeam.teamCode)
                             .from(qTeam)
                             .where(baseCondition)
-                            .orderBy(qTeam.id.desc())
+                            .orderBy(qTeam.id.desc()) // ID 기준으로 정렬
                             .limit(pageSize + 1)
                             .fetch();
 
-            if (teamIds.isEmpty()) {
+            if (teamTuples.isEmpty()) {
                 return CursorResponse.of(List.of(), null);
+            }
+
+            // teamIds 추출
+            List<Long> teamIds = new ArrayList<>();
+            for (int i = 0;
+                    i < (teamTuples.size() > pageSize ? pageSize : teamTuples.size());
+                    i++) {
+                teamIds.add(teamTuples.get(i).get(qTeam.id));
             }
 
             // 다음 커서 계산
             String nextCursor = null;
-            boolean hasNext = teamIds.size() > pageSize;
+            boolean hasNext = teamTuples.size() > pageSize;
 
             if (hasNext) {
-                nextCursor = String.valueOf(teamIds.get(teamIds.size() - 1));
-                teamIds.remove(teamIds.size() - 1);
+                // 다음 페이지의 첫 번째 팀의 teamCode를 다음 커서로 설정
+                nextCursor = teamTuples.get(pageSize).get(qTeam.teamCode);
             }
 
-            // 2. ID로 팀 엔터티만 조회 (컬렉션 없이)
+            // 2. ID로 팀 엔터티 조회하고 생성 시간 기준으로 정렬
             List<Team> teams =
                     jpaQueryFactory
                             .selectFrom(qTeam)
                             .where(qTeam.id.in(teamIds))
-                            .orderBy(qTeam.id.desc())
+                            .orderBy(qTeam.createdAt.desc()) // 생성 시간 기준으로 정렬
                             .fetch();
 
             return CursorResponse.of(teams, nextCursor);
@@ -512,27 +534,38 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         QTeam qTeam = QTeam.team;
 
         try {
-            // 1. 필터링된 팀 ID를 조회
-            JPAQuery<Long> teamIdQuery =
+            // teamCode로 ID를 찾는 로직
+            Long cursorTeamId = null;
+            if (cursorRequest != null
+                    && cursorRequest.hasNext()
+                    && cursorRequest.getCursor() != null) {
+                String cursorTeamCode = cursorRequest.getCursor();
+                cursorTeamId =
+                        jpaQueryFactory
+                                .select(qTeam.id)
+                                .from(qTeam)
+                                .where(qTeam.teamCode.eq(cursorTeamCode))
+                                .fetchOne();
+            }
+
+            // 1. 필터링된 팀 ID와 teamCode를 함께 조회
+            JPAQuery<Tuple> teamQuery =
                     jpaQueryFactory
-                            .select(qTeam.id)
+                            .select(qTeam.id, qTeam.teamCode)
                             .distinct()
                             .from(qTeam)
                             .where(qTeam.status.eq(USABLE).and(qTeam.isTeamPublic.eq(true)));
 
-            // 커서 조건 추가
-            if (cursorRequest != null
-                    && cursorRequest.hasNext()
-                    && cursorRequest.getCursor() != null) {
-                teamIdQuery = teamIdQuery.where(qTeam.teamCode.lt(cursorRequest.getCursor()));
+            // 커서 조건 추가 - 팀 ID 기준
+            if (cursorTeamId != null) {
+                teamQuery = teamQuery.where(qTeam.id.lt(cursorTeamId));
             }
-
             // 규모 필터링
             if (isNotEmpty(scaleName)) {
                 QTeamScale qTeamScale = QTeamScale.teamScale;
                 QScale qScale = QScale.scale;
 
-                teamIdQuery
+                teamQuery
                         .leftJoin(qTeamScale)
                         .on(qTeamScale.team.eq(qTeam))
                         .leftJoin(qScale)
@@ -545,7 +578,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                 QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
                 QRegion qRegion = QRegion.region;
 
-                teamIdQuery
+                teamQuery
                         .leftJoin(qTeamRegion)
                         .on(qTeamRegion.team.eq(qTeam))
                         .leftJoin(qRegion)
@@ -558,7 +591,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                 QTeamCurrentState qTeamCurrentState = QTeamCurrentState.teamCurrentState;
                 QTeamState qTeamState = QTeamState.teamState;
 
-                teamIdQuery
+                teamQuery
                         .leftJoin(qTeamCurrentState)
                         .on(qTeamCurrentState.team.eq(qTeam))
                         .leftJoin(qTeamState)
@@ -566,44 +599,46 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                         .where(qTeamState.teamStateName.in(teamStateName));
             }
 
-            // ID 내림차순 정렬 및 제한
+            // ID 기준으로 정렬 및 제한
             int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
             int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
 
-            List<Long> teamIds =
-                    teamIdQuery
-                            .orderBy(qTeam.id.desc())
+            List<Tuple> teamTuples =
+                    teamQuery
+                            .orderBy(qTeam.id.desc()) // ID 기준 정렬
                             .limit(pageSize + 1) // 다음 페이지 확인을 위해 +1
                             .fetch();
 
             // 조회할 팀이 없는 경우 빈 응답 반환
-            if (teamIds.isEmpty()) {
+            if (teamTuples.isEmpty()) {
                 return CursorResponse.of(List.of(), null);
             }
 
+            // teamIds 추출
+            List<Long> teamIds = new ArrayList<>();
+            for (int i = 0;
+                    i < (teamTuples.size() > pageSize ? pageSize : teamTuples.size());
+                    i++) {
+                teamIds.add(teamTuples.get(i).get(qTeam.id));
+            }
+
             // 다음 커서 계산
-            boolean hasNext = teamIds.size() > pageSize;
+            boolean hasNext = teamTuples.size() > pageSize;
             String nextCursor = null;
 
             // 다음 페이지가 있는 경우
             if (hasNext) {
-                nextCursor = String.valueOf(teamIds.get(teamIds.size() - 1));
-                teamIds.remove(teamIds.size() - 1); // 마지막 요소 제거
+                // 마지막 엔티티의 teamCode를 다음 커서로 사용
+                nextCursor = teamTuples.get(pageSize).get(qTeam.teamCode);
             }
 
-            // 2. 실제 데이터 조회 - fetch join을 하나만 적용하거나 제거
-            // 방법 1: fetch join 없이 조회 (가장 안전한 방법)
+            // 2. 실제 데이터 조회 - 생성 시간 기준으로 정렬
             List<Team> content =
                     jpaQueryFactory
                             .selectFrom(qTeam)
                             .where(qTeam.id.in(teamIds))
-                            .orderBy(qTeam.id.desc())
+                            .orderBy(qTeam.createdAt.desc()) // 생성 시간 기준으로 정렬
                             .fetch();
-
-            // 또는 방법 2: EntityGraph를 사용 (TeamRepository에 추가된 메서드 활용)
-            // List<Team> content = teamRepository.findAllByIdIn(teamIds);
-            // 필요한 경우 ID 정렬
-            // content.sort(Comparator.comparing(Team::getId, Comparator.reverseOrder()));
 
             return CursorResponse.of(content, nextCursor);
         } catch (Exception e) {
