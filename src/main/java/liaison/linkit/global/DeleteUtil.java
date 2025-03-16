@@ -48,6 +48,8 @@ import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberCommandAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberInvitationCommandAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
+import liaison.linkit.visit.implement.ProfileVisitCommandAdapter;
+import liaison.linkit.visit.implement.TeamVisitCommandAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -96,6 +98,8 @@ public class DeleteUtil {
     private final ChatService chatService;
     private final TeamProductService teamProductService;
     private final TeamProductQueryAdapter teamProductQueryAdapter;
+    private final ProfileVisitCommandAdapter profileVisitCommandAdapter;
+    private final TeamVisitCommandAdapter teamVisitCommandAdapter;
 
     // 회원 탈퇴 케이스
 
@@ -193,6 +197,13 @@ public class DeleteUtil {
 
         // 7. 링크 데이터 삭제
         profileLinkCommandAdapter.removeProfileLinksByProfileId(profile.getId());
+
+        // 8. 내가 방문한 프로필과 팀들에 대한 데이터 모두 삭제
+        profileVisitCommandAdapter.removeVisitorByVisitorProfileId(profile.getId());
+        teamVisitCommandAdapter.removeVisitorByVisitorProfileId(profile.getId());
+
+        // 9. 나를 방문한 사람들에 대한 데이터 모두 삭제
+        profileVisitCommandAdapter.removeVisitorByVisitedProfileId(profile.getId());
     }
 
     public void deleteTeam(final String teamCode) {
@@ -236,6 +247,9 @@ public class DeleteUtil {
 
         // [4. 모집 공고 삭제]
         deleteAllTeamMemberAnnouncements(deletableAnnouncementIds);
+
+        // 팀을 방문한 데이터 삭제
+        deleteAllTeamVisitors(team.getId());
 
         // 팀 삭제
         deleteTeamWithTeamCode(team.getTeamCode());
@@ -317,6 +331,10 @@ public class DeleteUtil {
 
     public void deleteAllTeamMemberAnnouncements(final List<Long> announcementIds) {
         teamMemberAnnouncementCommandAdapter.deleteAllByIds(announcementIds);
+    }
+
+    public void deleteAllTeamVisitors(final Long teamId) {
+        teamVisitCommandAdapter.removeVisitorByVisitedTeamId(teamId);
     }
 
     public void deleteAllTeamProducts(final String teamCode, final Long teamProductId) {
