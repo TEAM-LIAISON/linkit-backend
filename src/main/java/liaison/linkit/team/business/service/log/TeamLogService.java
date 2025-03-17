@@ -111,7 +111,7 @@ public class TeamLogService {
     }
 
     @Transactional(readOnly = true)
-    public TeamLogItem getRepresentTeamLogItem(
+    public TeamLogResponseDTO.TeamLogRepresentItem getRepresentTeamLogItem(
             final Optional<Long> optionalMemberId, final String teamCode) {
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
@@ -123,13 +123,15 @@ public class TeamLogService {
                                                 targetTeam.getId(), memberId))
                         .orElse(false);
 
+        List<TeamLog> teamLogs = List.of();
+
         if (teamLogQueryAdapter.existsRepresentativePublicTeamLogByTeam(targetTeam.getId())) {
-            final TeamLog teamLog =
+            TeamLog teamLog =
                     teamLogQueryAdapter.getRepresentativePublicTeamLog(targetTeam.getId());
-            return teamLogMapper.toTeamLogItem(isTeamManager, teamLog);
+            teamLogs = List.of(teamLog);
         }
 
-        return TeamLogItem.builder().build();
+        return teamLogMapper.toTeamLogRepresentItem(isTeamManager, teamLogs);
     }
 
     // 팀 로그 본문 이미지 추가

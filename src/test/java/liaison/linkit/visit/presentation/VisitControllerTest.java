@@ -96,6 +96,7 @@ public class VisitControllerTest extends ControllerTest {
                                                                 .cityName("지역 시/도")
                                                                 .divisionName("지역 시/군/구")
                                                                 .build())
+                                                .visitedAt("2시간 전")
                                                 .build(),
                                         VisitResponseDTO.VisitInform.builder()
                                                 .profileImagePath("프로필 이미지 경로")
@@ -112,6 +113,7 @@ public class VisitControllerTest extends ControllerTest {
                                                                 .cityName("지역 시/도")
                                                                 .divisionName("지역 시/군/구")
                                                                 .build())
+                                                .visitedAt("2시간 전")
                                                 .build()))
                         .build();
         // when
@@ -177,7 +179,10 @@ public class VisitControllerTest extends ControllerTest {
                                                 fieldWithPath(
                                                                 "result.visitInforms[].regionDetail.divisionName")
                                                         .type(JsonFieldType.STRING)
-                                                        .description("프로필 지역 시/군/구"))))
+                                                        .description("프로필 지역 시/군/구"),
+                                                fieldWithPath("result.visitInforms[].visitedAt")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("해당 회원의 방문 시간"))))
                         .andReturn();
     }
 
@@ -204,6 +209,7 @@ public class VisitControllerTest extends ControllerTest {
                                                                 .cityName("지역 시/도")
                                                                 .divisionName("지역 시/군/구")
                                                                 .build())
+                                                .visitedAt("2시간 전")
                                                 .build(),
                                         VisitResponseDTO.VisitInform.builder()
                                                 .profileImagePath("프로필 이미지 경로")
@@ -220,6 +226,7 @@ public class VisitControllerTest extends ControllerTest {
                                                                 .cityName("지역 시/도")
                                                                 .divisionName("지역 시/군/구")
                                                                 .build())
+                                                .visitedAt("2시간 전")
                                                 .build()))
                         .build();
         // when
@@ -288,7 +295,10 @@ public class VisitControllerTest extends ControllerTest {
                                                 fieldWithPath(
                                                                 "result.visitInforms[].regionDetail.divisionName")
                                                         .type(JsonFieldType.STRING)
-                                                        .description("프로필 지역 시/군/구"))))
+                                                        .description("프로필 지역 시/군/구"),
+                                                fieldWithPath("result.visitInforms[].visitedAt")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("해당 회원의 방문 시간"))))
                         .andReturn();
     }
 }

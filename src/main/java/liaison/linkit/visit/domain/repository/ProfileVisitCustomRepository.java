@@ -13,4 +13,9 @@ public interface ProfileVisitCustomRepository {
     void removeVisitorByVisitorProfileId(final Long visitorProfileId);
 
     void removeVisitorByVisitedProfileId(final Long visitedProfileId);
+
+    ProfileVisit getProfileVisitByVisitedProfileIdAndVisitorProfileId(
+            final Long visitedProfileId, final Long visitorProfileId);
+
+    void updateVisitTime(final ProfileVisit profileVisit);
 }
