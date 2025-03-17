@@ -13,4 +13,9 @@ public interface TeamVisitCustomRepository {
     void removeVisitorByVisitorProfileId(final Long visitorProfileId);
 
     void removeVisitorByVisitedTeamId(final Long visitedTeamId);
+
+    TeamVisit getTeamVisitByVisitedTeamIdAndVisitorProfileId(
+            final Long visitedTeamId, final Long visitorProfileId);
+
+    void updateVisitTime(final TeamVisit teamVisit);
 }

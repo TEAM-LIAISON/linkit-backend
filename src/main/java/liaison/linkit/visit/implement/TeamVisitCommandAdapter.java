@@ -21,4 +21,8 @@ public class TeamVisitCommandAdapter {
     public void removeVisitorByVisitedTeamId(final Long visitedTeamId) {
         teamVisitRepository.removeVisitorByVisitedTeamId(visitedTeamId);
     }
+
+    public void updateVisitTime(final TeamVisit teamVisit) {
+        teamVisitRepository.updateVisitTime(teamVisit);
+    }
 }

@@ -21,4 +21,8 @@ public class ProfileVisitCommandAdapter {
     public void removeVisitorByVisitedProfileId(final Long visitedProfileId) {
         profileVisitRepository.removeVisitorByVisitedProfileId(visitedProfileId);
     }
+
+    public void updateVisitTime(final ProfileVisit profileVisit) {
+        profileVisitRepository.updateVisitTime(profileVisit);
+    }
 }

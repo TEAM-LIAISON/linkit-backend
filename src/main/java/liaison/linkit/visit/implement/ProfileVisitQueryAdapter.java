@@ -22,4 +22,10 @@ public class ProfileVisitQueryAdapter {
         return profileVisitRepository.existsByVisitedProfileIdAndVisitorProfileId(
                 visitedProfileId, visitorProfileId);
     }
+
+    public ProfileVisit getProfileVisitByVisitedProfileIdAndVisitorProfileId(
+            final Long visitedProfileId, final Long visitorProfileId) {
+        return profileVisitRepository.getProfileVisitByVisitedProfileIdAndVisitorProfileId(
+                visitedProfileId, visitorProfileId);
+    }
 }
