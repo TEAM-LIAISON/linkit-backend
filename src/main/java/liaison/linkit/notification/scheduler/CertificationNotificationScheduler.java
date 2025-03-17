@@ -22,7 +22,7 @@ public class CertificationNotificationScheduler {
         this.certificationNotificationProgressJob = certificationNotificationProgressJob;
     }
 
-    @Scheduled(cron = "0 * * * * *", zone = "Asia/Seoul") // 1분마다 실행
+    @Scheduled(cron = "0 0 9 * * *", zone = "Asia/Seoul") // 1분마다 실행
     public void scheduleCertificationNotificationJob() throws Exception {
         JobParameters params =
                 new JobParametersBuilder()
