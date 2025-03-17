@@ -8,6 +8,8 @@ import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsRequestDTO.Up
 public interface ProfileAwardsCustomRepository {
     List<ProfileAwards> getProfileAwardsGroup(final Long memberId);
 
+    List<ProfileAwards> getByIsAwardsVerifiedTrue();
+
     ProfileAwards updateProfileAwards(
             final Long profileAwardsId,
             final UpdateProfileAwardsRequest updateProfileActivityRequest);

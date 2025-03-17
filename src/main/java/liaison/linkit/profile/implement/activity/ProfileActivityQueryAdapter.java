@@ -27,4 +27,8 @@ public class ProfileActivityQueryAdapter {
     public boolean existsByProfileId(final Long profileId) {
         return profileActivityRepository.existsByProfileId(profileId);
     }
+
+    public List<ProfileActivity> getByIsActivityVerifiedTrue() {
+        return profileActivityRepository.getByIsActivityVerifiedTrue();
+    }
 }

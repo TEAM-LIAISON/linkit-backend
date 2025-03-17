@@ -286,6 +286,88 @@ public class NotificationControllerTest extends ControllerTest {
                                                                         "삭제 완료된 팀 로고 이미지 경로",
                                                                         "삭제 완료된 팀 이름",
                                                                         false))
+                                                .build(),
+
+                                        // 10)
+                                        NotificationItem.builder()
+                                                .notificationId("알림 ID 13")
+                                                .notificationType(NotificationType.CERTIFICATION)
+                                                .subNotificationType(
+                                                        SubNotificationType
+                                                                .ACTIVITY_CERTIFICATION_ACCEPTED)
+                                                .notificationReadStatus(NotificationReadStatus.READ)
+                                                .notificationOccurTime("1일 전")
+                                                .notificationDetails(
+                                                        NotificationResponseDTO.NotificationDetails
+                                                                .certificationAccepted(
+                                                                        1L, "ACTIVITY"))
+                                                .build(),
+                                        NotificationItem.builder()
+                                                .notificationId("알림 ID 14")
+                                                .notificationType(NotificationType.CERTIFICATION)
+                                                .subNotificationType(
+                                                        SubNotificationType
+                                                                .AWARDS_CERTIFICATION_ACCEPTED)
+                                                .notificationReadStatus(NotificationReadStatus.READ)
+                                                .notificationOccurTime("1일 전")
+                                                .notificationDetails(
+                                                        NotificationResponseDTO.NotificationDetails
+                                                                .certificationAccepted(
+                                                                        1L, "AWARDS"))
+                                                .build(),
+                                        NotificationItem.builder()
+                                                .notificationId("알림 ID 15")
+                                                .notificationType(NotificationType.CERTIFICATION)
+                                                .subNotificationType(
+                                                        SubNotificationType
+                                                                .EDUCATION_CERTIFICATION_ACCEPTED)
+                                                .notificationReadStatus(NotificationReadStatus.READ)
+                                                .notificationOccurTime("1일 전")
+                                                .notificationDetails(
+                                                        NotificationResponseDTO.NotificationDetails
+                                                                .certificationAccepted(
+                                                                        1L, "EDUCATION"))
+                                                .build(),
+                                        NotificationItem.builder()
+                                                .notificationId("알림 ID 16")
+                                                .notificationType(NotificationType.CERTIFICATION)
+                                                .subNotificationType(
+                                                        SubNotificationType
+                                                                .LICENSE_CERTIFICATION_ACCEPTED)
+                                                .notificationReadStatus(NotificationReadStatus.READ)
+                                                .notificationOccurTime("1일 전")
+                                                .notificationDetails(
+                                                        NotificationResponseDTO.NotificationDetails
+                                                                .certificationAccepted(
+                                                                        1L, "LICENSE"))
+                                                .build(),
+                                        NotificationItem.builder()
+                                                .notificationId("알림 ID 17")
+                                                .notificationType(NotificationType.VISITOR)
+                                                .subNotificationType(
+                                                        SubNotificationType.PROFILE_VISITOR)
+                                                .notificationReadStatus(NotificationReadStatus.READ)
+                                                .notificationOccurTime("1일 전")
+                                                .notificationDetails(
+                                                        NotificationResponseDTO.NotificationDetails
+                                                                .profileVisitorCount(
+                                                                        "emailId",
+                                                                        1L,
+                                                                        "PROFILE_VISITOR"))
+                                                .build(),
+                                        NotificationItem.builder()
+                                                .notificationId("알림 ID 18")
+                                                .notificationType(NotificationType.VISITOR)
+                                                .subNotificationType(
+                                                        SubNotificationType.TEAM_VISITOR)
+                                                .notificationReadStatus(NotificationReadStatus.READ)
+                                                .notificationOccurTime("1일 전")
+                                                .notificationDetails(
+                                                        NotificationResponseDTO.NotificationDetails
+                                                                .teamVisitorCount(
+                                                                        "teamCode",
+                                                                        2L,
+                                                                        "TEAM_VISITOR"))
                                                 .build()))
                         .build();
 
@@ -338,26 +420,36 @@ public class NotificationControllerTest extends ControllerTest {
                                                                 "result.notificationItems[].notificationType")
                                                         .type(JsonFieldType.STRING)
                                                         .description(
-                                                                "알림 유형 (MATCHING, CHATTING, TEAM_INVITATION, TEAM 등)"),
+                                                                "알림 유형 (MATCHING, ANNOUNCEMENT, CHATTING, TEAM_INVITATION, TEAM, CERTIFICATION, VISITOR, SYSTEM)"),
                                                 fieldWithPath(
                                                                 "result.notificationItems[].subNotificationType")
                                                         .type(JsonFieldType.STRING)
                                                         .description(
                                                                 """
-                                    알림 상세 유형:
-                                    - MATCHING_REQUESTED: 매칭 요청
-                                    - MATCHING_ACCEPTED: 매칭 수락
-                                    - MATCHING_REJECTED: 매칭 거절
-                                    - ANNOUNCEMENT_REQUESTED: 공고 지원 요청
-                                    - ANNOUNCEMENT_ACCEPTED: 공고 지원 수락
-                                    - ANNOUNCEMENT_REJECTED: 공고 지원 거절
-                                    - NEW_CHAT: 새로운 채팅 메시지 수신
-                                    - TEAM_INVITATION_REQUESTED: 팀 초대 요청
-                                    - TEAM_MEMBER_JOINED: 팀에 새로운 멤버 추가
-                                    - REMOVE_TEAM_REQUESTED: 팀 삭제 요청
-                                    - REMOVE_TEAM_REJECTED: 팀 삭제 요청 거절
-                                    - REMOVE_TEAM_COMPLETED: 팀 삭제 완료
-                                """),
+                                                                            알림 상세 유형:
+                                                                            - MATCHING_REQUESTED: 매칭 요청
+                                                                            - MATCHING_ACCEPTED: 매칭 수락
+                                                                            - MATCHING_REJECTED: 매칭 거절
+                                                                            - ANNOUNCEMENT_REQUESTED: 공고 지원 요청
+                                                                            - ANNOUNCEMENT_ACCEPTED: 공고 지원 수락
+                                                                            - ANNOUNCEMENT_REJECTED: 공고 지원 거절
+                                                                            - NEW_CHAT: 새로운 채팅 메시지 수신
+                                                                            - TEAM_INVITATION_REQUESTED: 팀 초대 요청
+                                                                            - TEAM_MEMBER_JOINED: 팀에 새로운 멤버 추가
+                                                                            - REMOVE_TEAM_REQUESTED: 팀 삭제 요청
+                                                                            - REMOVE_TEAM_REJECTED: 팀 삭제 요청 거절
+                                                                            - REMOVE_TEAM_COMPLETED: 팀 삭제 완료
+                                                                            - ACTIVITY_CERTIFICATION_ACCEPTED: 이력 증명서 인증 완료
+                                                                            - ACTIVITY_CERTIFICATION_REJECTED: 이력 증명서 인증 거절
+                                                                            - EDUCATION_CERTIFICATION_ACCEPTED: 학력 증명서 인증 완료
+                                                                            - EDUCATION_CERTIFICATION_REJECTED: 학력 증명서 인증 거절
+                                                                            - AWARDS_CERTIFICATION_ACCEPTED: 수상 증명서 인증 완료
+                                                                            - AWARDS_CERTIFICATION_REJECTED: 수상 증명서 인증 거절
+                                                                            - LICENSE_CERTIFICATION_ACCEPTED: 자격증 증명서 인증 완료
+                                                                            - LICENSE_CERTIFICATION_REJECTED: 자격증 증명서 인증 거절
+                                                                            - PROFILE_VISITOR: 프로필 방문자에 대한 알림
+                                                                            - TEAM_VISITOR: 팀 방문자에 대한 알림
+                                                                        """),
                                                 fieldWithPath(
                                                                 "result.notificationItems[].notificationReadStatus")
                                                         .type(JsonFieldType.STRING)
@@ -445,6 +537,29 @@ public class NotificationControllerTest extends ControllerTest {
                                                                 "result.notificationItems[].notificationDetails.chatSenderName")
                                                         .type(JsonFieldType.STRING)
                                                         .description("메시지 발신자 이름 (채팅 알림인 경우)")
+                                                        .optional(),
+                                                fieldWithPath(
+                                                                "result.notificationItems[].notificationDetails.itemId")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("인증 처리된 객체의 PK")
+                                                        .optional(),
+                                                fieldWithPath(
+                                                                "result.notificationItems[].notificationDetails.itemType")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description(
+                                                                "인증 처리된 객체의 타입 (ACTIVITY, EDUCATION, AWARDS, LICENSE)")
+                                                        .optional(),
+                                                fieldWithPath(
+                                                                "result.notificationItems[].notificationDetails.visitorCount")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description(
+                                                                "프로필/팀 방문자 수 (프로필 방문자/팀 방문자 알림인 경우)")
+                                                        .optional(),
+                                                fieldWithPath(
+                                                                "result.notificationItems[].notificationDetails.visitedType")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description(
+                                                                "프로필/팀 방문자 타입 (PROFILE_VISITOR, TEAM_VISITOR)")
                                                         .optional())))
                         .andReturn();
 

@@ -18,6 +18,10 @@ public class ProfileEducationQueryAdapter {
         return profileEducationRepository.getProfileEducations(profileId);
     }
 
+    public List<ProfileEducation> getByIsEducationVerifiedTrue() {
+        return profileEducationRepository.getByIsEducationVerifiedTrue();
+    }
+
     public ProfileEducation getProfileEducation(final Long profileEducationId) {
         return profileEducationRepository
                 .findById(profileEducationId)

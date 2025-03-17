@@ -50,6 +50,10 @@ public class Notification {
 
     private SystemDetails systemDetails;
 
+    private CertificationDetails certificationDetails;
+
+    private VisitorDetails visitorDetails;
+
     @Data
     @Builder
     @NoArgsConstructor(access = PROTECTED)
@@ -118,6 +122,27 @@ public class Notification {
         private String systemTitle;
     }
 
+    @Data
+    @Builder
+    @NoArgsConstructor(access = PROTECTED)
+    @AllArgsConstructor
+    public static class CertificationDetails {
+
+        private Long itemId;
+        private String itemType;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor(access = PROTECTED)
+    @AllArgsConstructor
+    public static class VisitorDetails {
+
+        private String visitorIdentifier;
+        private Long visitorCount;
+        private String visitedType; // PROFILE, TEAM
+    }
+
     public void setMatchingDetails(final MatchingDetails matchingDetails) {
         this.matchingDetails = matchingDetails;
     }
@@ -140,6 +165,14 @@ public class Notification {
 
     public void setSystemDetails(final SystemDetails systemDetails) {
         this.systemDetails = systemDetails;
+    }
+
+    public void setCertificationDetails(final CertificationDetails certificationDetails) {
+        this.certificationDetails = certificationDetails;
+    }
+
+    public void setVisitorDetails(final VisitorDetails visitorDetails) {
+        this.visitorDetails = visitorDetails;
     }
 
     public void setNotificationReadStatus(final NotificationReadStatus notificationReadStatus) {

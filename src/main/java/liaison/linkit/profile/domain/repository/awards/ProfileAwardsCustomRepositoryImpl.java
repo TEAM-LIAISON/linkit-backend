@@ -30,6 +30,20 @@ public class ProfileAwardsCustomRepositoryImpl implements ProfileAwardsCustomRep
     }
 
     @Override
+    public List<ProfileAwards> getByIsAwardsVerifiedTrue() {
+        QProfileAwards qProfileAwards = QProfileAwards.profileAwards;
+
+        return jpaQueryFactory
+                .selectFrom(qProfileAwards)
+                .where(
+                        qProfileAwards
+                                .isAwardsVerified
+                                .isTrue()
+                                .and(qProfileAwards.isAwardsCertified.isTrue()))
+                .fetch();
+    }
+
+    @Override
     public ProfileAwards updateProfileAwards(
             final Long profileAwardsId,
             final UpdateProfileAwardsRequest updateProfileAwardsRequest) {

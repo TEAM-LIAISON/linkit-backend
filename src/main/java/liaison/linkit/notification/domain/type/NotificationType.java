@@ -7,5 +7,7 @@ public enum NotificationType {
     CHATTING,
     TEAM_INVITATION,
     TEAM,
+    CERTIFICATION,
+    VISITOR,
     SYSTEM
 }

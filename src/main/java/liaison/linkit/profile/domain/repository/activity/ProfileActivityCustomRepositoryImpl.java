@@ -31,6 +31,20 @@ public class ProfileActivityCustomRepositoryImpl implements ProfileActivityCusto
     }
 
     @Override
+    public List<ProfileActivity> getByIsActivityVerifiedTrue() {
+        QProfileActivity qProfileActivity = QProfileActivity.profileActivity;
+
+        return queryFactory
+                .selectFrom(qProfileActivity)
+                .where(
+                        qProfileActivity
+                                .isActivityVerified
+                                .isTrue()
+                                .and(qProfileActivity.isActivityCertified.isTrue()))
+                .fetch();
+    }
+
+    @Override
     public ProfileActivity updateProfileActivity(
             final Long profileActivityId,
             final UpdateProfileActivityRequest updateProfileActivity) {

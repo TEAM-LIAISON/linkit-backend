@@ -1,4 +1,4 @@
-package liaison.linkit.chat.scheduler;
+package liaison.linkit.notification.scheduler;
 
 import java.util.UUID;
 
@@ -12,26 +12,24 @@ import org.springframework.stereotype.Component;
 
 @Component
 @EnableScheduling
-public class UnreadMessageNotificationScheduler {
-
+public class VisitorNotificationScheduler {
     private final JobLauncher jobLauncher;
-    private final Job unreadMessageNotificationJob;
+    private final Job visitorNotificationProgressJob;
 
-    public UnreadMessageNotificationScheduler(
-            JobLauncher jobLauncher, Job unreadMessageNotificationJob) {
+    public VisitorNotificationScheduler(
+            JobLauncher jobLauncher, Job visitorNotificationProgressJob) {
         this.jobLauncher = jobLauncher;
-        this.unreadMessageNotificationJob = unreadMessageNotificationJob;
+        this.visitorNotificationProgressJob = visitorNotificationProgressJob;
     }
 
-    // 1분마다 실행
-    @Scheduled(fixedRate = 60000)
-    public void scheduleUnreadMessageNotificationJob() throws Exception {
+    @Scheduled(cron = "0 0 8 * * *", zone = "Asia/Seoul") // 매일 아침 8시에 실행
+    public void scheduleVisitorNotificationJob() throws Exception {
         JobParameters params =
                 new JobParametersBuilder()
                         .addLong("time", System.currentTimeMillis())
                         .addString("uuid", UUID.randomUUID().toString())
                         .toJobParameters();
 
-        jobLauncher.run(unreadMessageNotificationJob, params);
+        jobLauncher.run(visitorNotificationProgressJob, params);
     }
 }
