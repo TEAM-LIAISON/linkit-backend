@@ -81,6 +81,10 @@ public class TeamMemberAnnouncement extends BaseEntity {
     // 공고 진행/완료 여부
     private boolean isAnnouncementInProgress;
 
+    // 기존(legacy) 공고임을 식별하는 컬럼 추가
+    @Column(name = "is_legacy_announcement")
+    private boolean isLegacyAnnouncement;
+
     @Column(nullable = false)
     private Long viewCount;
 
