@@ -15,4 +15,6 @@ public interface ProfileActivityCustomRepository {
     boolean existsByProfileId(final Long profileId);
 
     void removeProfileActivitiesByProfileId(final Long profileId);
+
+    List<ProfileActivity> getByIsActivityVerifiedTrue();
 }

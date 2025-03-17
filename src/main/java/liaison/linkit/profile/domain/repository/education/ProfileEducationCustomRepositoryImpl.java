@@ -32,6 +32,20 @@ public class ProfileEducationCustomRepositoryImpl implements ProfileEducationCus
     }
 
     @Override
+    public List<ProfileEducation> getByIsEducationVerifiedTrue() {
+        QProfileEducation qProfileEducation = QProfileEducation.profileEducation;
+
+        return jpaQueryFactory
+                .selectFrom(qProfileEducation)
+                .where(
+                        qProfileEducation
+                                .isEducationVerified
+                                .isTrue()
+                                .and(qProfileEducation.isEducationCertified.isTrue()))
+                .fetch();
+    }
+
+    @Override
     public ProfileEducation updateProfileEducation(
             final Long profileEducationId,
             final University university,

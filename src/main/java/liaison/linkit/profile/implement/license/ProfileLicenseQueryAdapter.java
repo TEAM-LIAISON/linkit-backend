@@ -17,6 +17,10 @@ public class ProfileLicenseQueryAdapter {
         return profileLicenseRepository.getProfileLicenses(memberId);
     }
 
+    public List<ProfileLicense> getByIsLicenseVerifiedTrue() {
+        return profileLicenseRepository.getByIsLicenseVerifiedTrue();
+    }
+
     public ProfileLicense getProfileLicense(final Long profileLicenseId) {
         return profileLicenseRepository
                 .findById(profileLicenseId)
