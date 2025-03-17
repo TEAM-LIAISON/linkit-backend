@@ -144,8 +144,10 @@ public class VisitorNotificationBatchConfig {
             if (!recentNotificationExists) {
                 // 알림 생성
                 NotificationResponseDTO.NotificationDetails visitorNotificationDetails =
-                        NotificationResponseDTO.NotificationDetails.visitorCount(
-                                visitorCount, "PROFILE_VISITOR");
+                        NotificationResponseDTO.NotificationDetails.profileVisitorCount(
+                                visitedProfile.getMember().getEmailId(),
+                                visitorCount,
+                                "PROFILE_VISITOR");
 
                 Notification notification =
                         notificationMapper.toNotification(
@@ -215,8 +217,8 @@ public class VisitorNotificationBatchConfig {
                 if (!recentNotificationExists) {
                     // 알림 상세 정보 생성
                     NotificationResponseDTO.NotificationDetails visitorNotificationDetails =
-                            NotificationResponseDTO.NotificationDetails.visitorCount(
-                                    visitorCount, "TEAM_VISITOR");
+                            NotificationResponseDTO.NotificationDetails.teamVisitorCount(
+                                    visitedTeam.getTeamCode(), visitorCount, "TEAM_VISITOR");
 
                     // 알림 객체 생성
                     Notification notification =

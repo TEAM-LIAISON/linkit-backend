@@ -164,8 +164,16 @@ public class NotificationMapper {
 
             case VISITOR -> {
                 switch (subNotificationType) {
-                    case PROFILE_VISITOR, TEAM_VISITOR -> notification.setVisitorDetails(
+                    case PROFILE_VISITOR -> notification.setVisitorDetails(
                             Notification.VisitorDetails.builder()
+                                    .visitorIdentifier(notificationDetails.getEmailId())
+                                    .visitorCount(notificationDetails.getVisitorCount())
+                                    .visitedType(notificationDetails.getVisitedType())
+                                    .build());
+
+                    case TEAM_VISITOR -> notification.setVisitorDetails(
+                            Notification.VisitorDetails.builder()
+                                    .visitorIdentifier(notificationDetails.getTeamCode())
                                     .visitorCount(notificationDetails.getVisitorCount())
                                     .visitedType(notificationDetails.getVisitedType())
                                     .build());
@@ -350,8 +358,15 @@ public class NotificationMapper {
 
             case VISITOR -> {
                 switch (subType) {
-                    case PROFILE_VISITOR, TEAM_VISITOR -> notificationDetails =
-                            NotificationDetails.visitorCount(
+                    case PROFILE_VISITOR -> notificationDetails =
+                            NotificationDetails.profileVisitorCount(
+                                    notification.getVisitorDetails().getVisitorIdentifier(),
+                                    notification.getVisitorDetails().getVisitorCount(),
+                                    notification.getVisitorDetails().getVisitedType());
+
+                    case TEAM_VISITOR -> notificationDetails =
+                            NotificationDetails.teamVisitorCount(
+                                    notification.getVisitorDetails().getVisitorIdentifier(),
                                     notification.getVisitorDetails().getVisitorCount(),
                                     notification.getVisitorDetails().getVisitedType());
                 }

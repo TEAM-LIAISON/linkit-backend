@@ -344,10 +344,20 @@ public class NotificationResponseDTO {
             return NotificationDetails.builder().itemId(itemId).itemType(itemType).build();
         }
 
-        // 방문자 조회 알림
-        public static NotificationDetails visitorCount(
-                final Long visitorCount, final String visitedType) {
+        // 프로필 방문자 조회 알림
+        public static NotificationDetails profileVisitorCount(
+                final String emailId, final Long visitorCount, final String visitedType) {
             return NotificationDetails.builder()
+                    .emailId(emailId)
+                    .visitorCount(visitorCount)
+                    .visitedType(visitedType)
+                    .build();
+        }
+
+        public static NotificationDetails teamVisitorCount(
+                final String teamCode, final Long visitorCount, final String visitedType) {
+            return NotificationDetails.builder()
+                    .teamCode(teamCode)
                     .visitorCount(visitorCount)
                     .visitedType(visitedType)
                     .build();

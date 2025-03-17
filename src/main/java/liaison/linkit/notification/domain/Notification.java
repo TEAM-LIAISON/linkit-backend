@@ -138,6 +138,7 @@ public class Notification {
     @AllArgsConstructor
     public static class VisitorDetails {
 
+        private String visitorIdentifier;
         private Long visitorCount;
         private String visitedType; // PROFILE, TEAM
     }

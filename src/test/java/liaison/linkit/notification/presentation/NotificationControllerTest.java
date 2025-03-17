@@ -350,8 +350,10 @@ public class NotificationControllerTest extends ControllerTest {
                                                 .notificationOccurTime("1일 전")
                                                 .notificationDetails(
                                                         NotificationResponseDTO.NotificationDetails
-                                                                .visitorCount(
-                                                                        1L, "PROFILE_VISITOR"))
+                                                                .profileVisitorCount(
+                                                                        "emailId",
+                                                                        1L,
+                                                                        "PROFILE_VISITOR"))
                                                 .build(),
                                         NotificationItem.builder()
                                                 .notificationId("알림 ID 18")
@@ -362,7 +364,10 @@ public class NotificationControllerTest extends ControllerTest {
                                                 .notificationOccurTime("1일 전")
                                                 .notificationDetails(
                                                         NotificationResponseDTO.NotificationDetails
-                                                                .visitorCount(2L, "TEAM_VISITOR"))
+                                                                .teamVisitorCount(
+                                                                        "teamCode",
+                                                                        2L,
+                                                                        "TEAM_VISITOR"))
                                                 .build()))
                         .build();
 
