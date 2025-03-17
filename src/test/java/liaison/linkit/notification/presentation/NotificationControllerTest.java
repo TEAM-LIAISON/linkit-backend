@@ -340,6 +340,29 @@ public class NotificationControllerTest extends ControllerTest {
                                                         NotificationResponseDTO.NotificationDetails
                                                                 .certificationAccepted(
                                                                         1L, "LICENSE"))
+                                                .build(),
+                                        NotificationItem.builder()
+                                                .notificationId("알림 ID 17")
+                                                .notificationType(NotificationType.VISITOR)
+                                                .subNotificationType(
+                                                        SubNotificationType.PROFILE_VISITOR)
+                                                .notificationReadStatus(NotificationReadStatus.READ)
+                                                .notificationOccurTime("1일 전")
+                                                .notificationDetails(
+                                                        NotificationResponseDTO.NotificationDetails
+                                                                .visitorCount(
+                                                                        1L, "PROFILE_VISITOR"))
+                                                .build(),
+                                        NotificationItem.builder()
+                                                .notificationId("알림 ID 18")
+                                                .notificationType(NotificationType.VISITOR)
+                                                .subNotificationType(
+                                                        SubNotificationType.TEAM_VISITOR)
+                                                .notificationReadStatus(NotificationReadStatus.READ)
+                                                .notificationOccurTime("1일 전")
+                                                .notificationDetails(
+                                                        NotificationResponseDTO.NotificationDetails
+                                                                .visitorCount(2L, "TEAM_VISITOR"))
                                                 .build()))
                         .build();
 
@@ -392,7 +415,7 @@ public class NotificationControllerTest extends ControllerTest {
                                                                 "result.notificationItems[].notificationType")
                                                         .type(JsonFieldType.STRING)
                                                         .description(
-                                                                "알림 유형 (MATCHING, ANNOUNCEMENT, CHATTING, TEAM_INVITATION, TEAM, CERTIFICATION, SYSTEM)"),
+                                                                "알림 유형 (MATCHING, ANNOUNCEMENT, CHATTING, TEAM_INVITATION, TEAM, CERTIFICATION, VISITOR, SYSTEM)"),
                                                 fieldWithPath(
                                                                 "result.notificationItems[].subNotificationType")
                                                         .type(JsonFieldType.STRING)
@@ -419,6 +442,8 @@ public class NotificationControllerTest extends ControllerTest {
                                                                             - AWARDS_CERTIFICATION_REJECTED: 수상 증명서 인증 거절
                                                                             - LICENSE_CERTIFICATION_ACCEPTED: 자격증 증명서 인증 완료
                                                                             - LICENSE_CERTIFICATION_REJECTED: 자격증 증명서 인증 거절
+                                                                            - PROFILE_VISITOR: 프로필 방문자에 대한 알림
+                                                                            - TEAM_VISITOR: 팀 방문자에 대한 알림
                                                                         """),
                                                 fieldWithPath(
                                                                 "result.notificationItems[].notificationReadStatus")
@@ -518,6 +543,18 @@ public class NotificationControllerTest extends ControllerTest {
                                                         .type(JsonFieldType.STRING)
                                                         .description(
                                                                 "인증 처리된 객체의 타입 (ACTIVITY, EDUCATION, AWARDS, LICENSE)")
+                                                        .optional(),
+                                                fieldWithPath(
+                                                                "result.notificationItems[].notificationDetails.visitorCount")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description(
+                                                                "프로필/팀 방문자 수 (프로필 방문자/팀 방문자 알림인 경우)")
+                                                        .optional(),
+                                                fieldWithPath(
+                                                                "result.notificationItems[].notificationDetails.visitedType")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description(
+                                                                "프로필/팀 방문자 타입 (PROFILE_VISITOR, TEAM_VISITOR)")
                                                         .optional())))
                         .andReturn();
 
