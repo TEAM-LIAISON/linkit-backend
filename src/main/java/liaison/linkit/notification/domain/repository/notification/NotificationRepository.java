@@ -1,5 +1,6 @@
 package liaison.linkit.notification.domain.repository.notification;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import liaison.linkit.notification.domain.Notification;
@@ -37,4 +38,14 @@ public interface NotificationRepository extends MongoRepository<Notification, St
             SubNotificationType subNotificationType,
             Long itemId,
             String itemType);
+
+    @Query(
+            value =
+                    "{ 'receiver_member_id': ?0, 'notification_type': ?1, 'sub_notification_type': ?2, 'createdAt': { $gte: ?3 } }",
+            exists = true)
+    boolean existsByReceiverMemberIdAndNotificationTypeAndCreatedAtAfterOneWeekAgo(
+            Long memberId,
+            NotificationType notificationType,
+            SubNotificationType subNotificationType,
+            LocalDateTime createdAt);
 }

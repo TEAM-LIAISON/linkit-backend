@@ -161,6 +161,16 @@ public class NotificationMapper {
                                     .build());
                 }
             }
+
+            case VISITOR -> {
+                switch (subNotificationType) {
+                    case PROFILE_VISITOR, TEAM_VISITOR -> notification.setVisitorDetails(
+                            Notification.VisitorDetails.builder()
+                                    .visitorCount(notificationDetails.getVisitorCount())
+                                    .visitedType(notificationDetails.getVisitedType())
+                                    .build());
+                }
+            }
         }
 
         return notification;
@@ -335,6 +345,15 @@ public class NotificationMapper {
                             NotificationDetails.certificationAccepted(
                                     notification.getCertificationDetails().getItemId(),
                                     notification.getCertificationDetails().getItemType());
+                }
+            }
+
+            case VISITOR -> {
+                switch (subType) {
+                    case PROFILE_VISITOR, TEAM_VISITOR -> notificationDetails =
+                            NotificationDetails.visitorCount(
+                                    notification.getVisitorDetails().getVisitorCount(),
+                                    notification.getVisitorDetails().getVisitedType());
                 }
             }
         }

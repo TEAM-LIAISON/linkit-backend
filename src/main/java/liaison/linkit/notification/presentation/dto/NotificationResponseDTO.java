@@ -115,6 +115,10 @@ public class NotificationResponseDTO {
         private Long itemId;
         private String itemType;
 
+        // 방문자 알림
+        private Long visitorCount;
+        private String visitedType;
+
         @Builder
         private NotificationDetails(
                 final String emailId,
@@ -132,7 +136,9 @@ public class NotificationResponseDTO {
                 final Boolean isTeamDeleted,
                 final String systemTitle,
                 final Long itemId,
-                final String itemType) {
+                final String itemType,
+                final Long visitorCount,
+                final String visitedType) {
             this.emailId = emailId;
 
             this.chatRoomId = chatRoomId;
@@ -155,6 +161,9 @@ public class NotificationResponseDTO {
 
             this.itemId = itemId;
             this.itemType = itemType;
+
+            this.visitorCount = visitorCount;
+            this.visitedType = visitedType;
         }
 
         // 팀 초대 요청 알림 생성 (팀 삭제 여부 포함)
@@ -329,9 +338,19 @@ public class NotificationResponseDTO {
             return NotificationDetails.builder().emailId(emailId).systemTitle(systemTitle).build();
         }
 
+        // 인증 완료 알림
         public static NotificationDetails certificationAccepted(
                 final Long itemId, final String itemType) {
             return NotificationDetails.builder().itemId(itemId).itemType(itemType).build();
+        }
+
+        // 방문자 조회 알림
+        public static NotificationDetails visitorCount(
+                final Long visitorCount, final String visitedType) {
+            return NotificationDetails.builder()
+                    .visitorCount(visitorCount)
+                    .visitedType(visitedType)
+                    .build();
         }
     }
 }

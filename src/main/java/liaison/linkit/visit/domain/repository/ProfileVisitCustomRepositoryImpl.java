@@ -1,10 +1,14 @@
 package liaison.linkit.visit.domain.repository;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.visit.domain.ProfileVisit;
 import liaison.linkit.visit.domain.QProfileVisit;
@@ -26,6 +30,18 @@ public class ProfileVisitCustomRepositoryImpl implements ProfileVisitCustomRepos
         return jpaQueryFactory
                 .selectFrom(qProfileVisit)
                 .where(qProfileVisit.visitedProfileId.eq(visitedProfileId))
+                .fetch();
+    }
+
+    @Override
+    public List<ProfileVisit> getOneWeekAgoProfileVisitsProfileVisits(
+            final LocalDateTime oneWeekAgo) {
+        QProfileVisit qProfileVisit = QProfileVisit.profileVisit;
+
+        return jpaQueryFactory
+                .selectFrom(qProfileVisit)
+                .where(qProfileVisit.visitTime.after(oneWeekAgo))
+                .orderBy(qProfileVisit.visitTime.desc())
                 .fetch();
     }
 
@@ -109,5 +125,40 @@ public class ProfileVisitCustomRepositoryImpl implements ProfileVisitCustomRepos
             entityManager.flush(); // 동기화
             entityManager.clear(); // 캐시 무효화
         }
+    }
+
+    /**
+     * 프로필별 일주일 이내 방문자 수를 계산합니다. visitedProfileId 기준으로 집계합니다.
+     *
+     * @return 방문받은 프로필 ID를 키로, 방문자 수를 값으로 하는 맵
+     */
+    @Override
+    public Map<Long, Long> countVisitsPerProfileWithinLastWeek() {
+        QProfileVisit qProfileVisit = QProfileVisit.profileVisit;
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(7);
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
+        List<Tuple> results =
+                queryFactory
+                        .select(qProfileVisit.visitedProfileId, qProfileVisit.count())
+                        .from(qProfileVisit)
+                        .where(qProfileVisit.visitTime.after(oneWeekAgo))
+                        .groupBy(qProfileVisit.visitedProfileId)
+                        .fetch();
+
+        Map<Long, Long> visitCountMap = new HashMap<>();
+
+        // 안전하게 값을 Map에 추가
+        for (Tuple tuple : results) {
+            Long profileId = tuple.get(qProfileVisit.visitedProfileId);
+            Long count = tuple.get(qProfileVisit.count());
+
+            if (profileId != null) {
+                visitCountMap.put(profileId, count != null ? count : 0L);
+            }
+        }
+
+        return visitCountMap;
     }
 }

@@ -1,10 +1,14 @@
 package liaison.linkit.visit.domain.repository;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.visit.domain.QTeamVisit;
 import liaison.linkit.visit.domain.TeamVisit;
@@ -27,6 +31,36 @@ public class TeamVisitCustomRepositoryImpl implements TeamVisitCustomRepository 
                 .selectFrom(qTeamVisit)
                 .where(qTeamVisit.visitedTeamId.eq(visitedTeamId))
                 .fetch();
+    }
+
+    @Override
+    public Map<Long, Long> countVisitsPerTeamWithinLastWeek() {
+        QTeamVisit qTeamVisit = QTeamVisit.teamVisit;
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(7);
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
+        List<Tuple> results =
+                queryFactory
+                        .select(qTeamVisit.visitedTeamId, qTeamVisit.count())
+                        .from(qTeamVisit)
+                        .where(qTeamVisit.visitTime.after(oneWeekAgo))
+                        .groupBy(qTeamVisit.visitedTeamId)
+                        .fetch();
+
+        Map<Long, Long> visitCountMap = new HashMap<>();
+
+        // 안전하게 값을 Map에 추가
+        for (Tuple tuple : results) {
+            Long teamId = tuple.get(qTeamVisit.visitedTeamId);
+            Long count = tuple.get(qTeamVisit.count());
+
+            if (teamId != null) {
+                visitCountMap.put(teamId, count != null ? count : 0L);
+            }
+        }
+
+        return visitCountMap;
     }
 
     @Override

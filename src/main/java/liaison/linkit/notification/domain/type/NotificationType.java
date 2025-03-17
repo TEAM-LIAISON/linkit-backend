@@ -8,5 +8,6 @@ public enum NotificationType {
     TEAM_INVITATION,
     TEAM,
     CERTIFICATION,
+    VISITOR,
     SYSTEM
 }

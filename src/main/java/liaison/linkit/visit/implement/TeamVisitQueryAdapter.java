@@ -1,6 +1,7 @@
 package liaison.linkit.visit.implement;
 
 import java.util.List;
+import java.util.Map;
 
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.visit.domain.TeamVisit;
@@ -14,6 +15,10 @@ public class TeamVisitQueryAdapter {
 
     public List<TeamVisit> getTeamVisitsByVisitedTeamId(final Long visitedTeamId) {
         return teamVisitRepository.getTeamVisitsByVisitedTeamId(visitedTeamId);
+    }
+
+    public Map<Long, Long> countVisitsPerTeamWithinLastWeek() {
+        return teamVisitRepository.countVisitsPerTeamWithinLastWeek();
     }
 
     public boolean existsByVisitedTeamIdAndVisitorProfileId(

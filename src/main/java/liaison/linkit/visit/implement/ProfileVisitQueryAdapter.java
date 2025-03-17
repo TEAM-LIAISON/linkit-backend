@@ -1,6 +1,8 @@
 package liaison.linkit.visit.implement;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.visit.domain.ProfileVisit;
@@ -27,5 +29,14 @@ public class ProfileVisitQueryAdapter {
             final Long visitedProfileId, final Long visitorProfileId) {
         return profileVisitRepository.getProfileVisitByVisitedProfileIdAndVisitorProfileId(
                 visitedProfileId, visitorProfileId);
+    }
+
+    public List<ProfileVisit> getOneWeekAgoProfileVisitsProfileVisits(
+            final LocalDateTime oneWeekAgo) {
+        return profileVisitRepository.getOneWeekAgoProfileVisitsProfileVisits(oneWeekAgo);
+    }
+
+    public Map<Long, Long> countVisitsPerProfileWithinLastWeek() {
+        return profileVisitRepository.countVisitsPerProfileWithinLastWeek();
     }
 }
