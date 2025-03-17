@@ -121,6 +121,7 @@ public class TeamMemberAnnouncementMapper {
                 .preferredQualifications(teamMemberAnnouncement.getPreferredQualifications())
                 .joiningProcess(teamMemberAnnouncement.getJoiningProcess())
                 .benefits(teamMemberAnnouncement.getBenefits())
+                .isLegacyAnnouncement(teamMemberAnnouncement.isLegacyAnnouncement())
                 .build();
     }
 
@@ -141,6 +142,7 @@ public class TeamMemberAnnouncementMapper {
                 .benefits(request.getBenefits())
                 .isAnnouncementPublic(true)
                 .isAnnouncementInProgress(true)
+                .isLegacyAnnouncement(false)
                 .viewCount(0L)
                 .build();
     }
@@ -195,6 +197,7 @@ public class TeamMemberAnnouncementMapper {
                 .preferredQualifications(teamMemberAnnouncement.getPreferredQualifications())
                 .joiningProcess(teamMemberAnnouncement.getJoiningProcess())
                 .benefits(teamMemberAnnouncement.getBenefits())
+                .isLegacyAnnouncement(teamMemberAnnouncement.isLegacyAnnouncement())
                 .build();
     }
 
@@ -217,6 +220,7 @@ public class TeamMemberAnnouncementMapper {
                 .preferredQualifications(teamMemberAnnouncement.getPreferredQualifications())
                 .joiningProcess(teamMemberAnnouncement.getJoiningProcess())
                 .benefits(teamMemberAnnouncement.getBenefits())
+                .isLegacyAnnouncement(teamMemberAnnouncement.isLegacyAnnouncement())
                 .build();
     }
 
