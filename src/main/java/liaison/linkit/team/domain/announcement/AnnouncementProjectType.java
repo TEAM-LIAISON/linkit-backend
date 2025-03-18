@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-import liaison.linkit.team.domain.recruit.ProjectType;
+import liaison.linkit.team.domain.projectType.ProjectType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

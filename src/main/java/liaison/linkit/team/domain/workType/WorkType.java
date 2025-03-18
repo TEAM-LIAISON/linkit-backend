@@ -1,4 +1,4 @@
-package liaison.linkit.team.domain.work;
+package liaison.linkit.team.domain.workType;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
