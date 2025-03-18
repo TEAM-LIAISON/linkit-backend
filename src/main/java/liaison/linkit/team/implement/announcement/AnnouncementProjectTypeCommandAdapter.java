@@ -14,4 +14,9 @@ public class AnnouncementProjectTypeCommandAdapter {
     public AnnouncementProjectType save(final AnnouncementProjectType announcementProjectType) {
         return announcementProjectTypeRepository.save(announcementProjectType);
     }
+
+    public void deleteByTeamMemberAnnouncementId(final Long teamMemberAnnouncementId) {
+        announcementProjectTypeRepository.deleteByTeamMemberAnnouncementId(
+                teamMemberAnnouncementId);
+    }
 }

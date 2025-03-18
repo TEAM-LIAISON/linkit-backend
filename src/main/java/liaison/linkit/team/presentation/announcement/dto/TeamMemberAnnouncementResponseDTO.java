@@ -192,6 +192,13 @@ public class TeamMemberAnnouncementResponseDTO {
         private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
                 announcementSkillNames = new ArrayList<>();
 
+        @Builder.Default
+        private AnnouncementProjectTypeItem announcementProjectTypeItem =
+                new AnnouncementProjectTypeItem();
+
+        @Builder.Default
+        private AnnouncementWorkTypeItem announcementWorkTypeItem = new AnnouncementWorkTypeItem();
+
         private String announcementEndDate;
         private Boolean isPermanentRecruitment;
 

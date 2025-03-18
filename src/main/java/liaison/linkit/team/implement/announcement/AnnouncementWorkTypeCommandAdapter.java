@@ -13,4 +13,8 @@ public class AnnouncementWorkTypeCommandAdapter {
     public AnnouncementWorkType save(final AnnouncementWorkType announcementWorkType) {
         return announcementWorkTypeRepository.save(announcementWorkType);
     }
+
+    public void deleteByTeamMemberAnnouncementId(final Long teamMemberAnnouncementId) {
+        announcementWorkTypeRepository.deleteByTeamMemberAnnouncementId(teamMemberAnnouncementId);
+    }
 }

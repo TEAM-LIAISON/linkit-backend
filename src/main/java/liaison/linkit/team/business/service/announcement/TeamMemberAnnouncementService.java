@@ -32,9 +32,11 @@ import liaison.linkit.team.exception.teamMember.TeamAdminNotRegisteredException;
 import liaison.linkit.team.implement.announcement.AnnouncementPositionCommandAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementPositionQueryAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementProjectTypeCommandAdapter;
+import liaison.linkit.team.implement.announcement.AnnouncementProjectTypeQueryAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementSkillCommandAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementWorkTypeCommandAdapter;
+import liaison.linkit.team.implement.announcement.AnnouncementWorkTypeQueryAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementCommandAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import liaison.linkit.team.implement.projectType.ProjectTypeQueryAdapter;
@@ -87,6 +89,8 @@ public class TeamMemberAnnouncementService {
     private final AnnouncementProjectTypeMapper announcementProjectTypeMapper;
     private final AnnouncementWorkTypeCommandAdapter announcementWorkTypeCommandAdapter;
     private final AnnouncementWorkTypeMapper announcementWorkTypeMapper;
+    private final AnnouncementProjectTypeQueryAdapter announcementProjectTypeQueryAdapter;
+    private final AnnouncementWorkTypeQueryAdapter announcementWorkTypeQueryAdapter;
 
     @Transactional(readOnly = true)
     public TeamMemberAnnouncementItems getTeamMemberAnnouncementViewItems(
@@ -257,8 +261,52 @@ public class TeamMemberAnnouncementService {
         final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames =
                 announcementSkillMapper.toAnnouncementSkillNames(newAnnouncementSkills);
 
+        // 기존 프로젝트 유형 삭제
+        final ProjectType projectType =
+                projectTypeQueryAdapter.findByProjectTypeName(
+                        updateTeamMemberAnnouncementRequest.getProjectTypeName());
+        if (announcementProjectTypeQueryAdapter
+                .existsAnnouncementProjectTypeByTeamMemberAnnouncementId(
+                        teamMemberAnnouncementId)) {
+            announcementProjectTypeCommandAdapter.deleteByTeamMemberAnnouncementId(
+                    teamMemberAnnouncementId);
+        }
+
+        final AnnouncementProjectType announcementProjectType =
+                new AnnouncementProjectType(null, updatedTeamMemberAnnouncement, projectType);
+
+        final AnnouncementProjectType savedAnnouncementProjectType =
+                announcementProjectTypeCommandAdapter.save(announcementProjectType);
+
+        final TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem
+                announcementProjectTypeItem =
+                        announcementProjectTypeMapper.toAnnouncementProjectTypeItem(
+                                savedAnnouncementProjectType);
+
+        // 기존 업무 형태 삭제
+        final WorkType workType =
+                workTypeQueryAdapter.findByWorkTypeName(
+                        updateTeamMemberAnnouncementRequest.getWorkTypeName());
+        if (announcementWorkTypeQueryAdapter.existsAnnouncementWorkTypeByTeamMemberAnnouncementId(
+                teamMemberAnnouncementId)) {
+            announcementWorkTypeCommandAdapter.deleteByTeamMemberAnnouncementId(
+                    teamMemberAnnouncementId);
+        }
+        final AnnouncementWorkType announcementWorkType =
+                new AnnouncementWorkType(null, updatedTeamMemberAnnouncement, workType);
+
+        final AnnouncementWorkType savedAnnouncementWorkType =
+                announcementWorkTypeCommandAdapter.save(announcementWorkType);
+
+        final TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem announcementWorkTypeItem =
+                announcementWorkTypeMapper.toAnnouncementWorkTypeItem(savedAnnouncementWorkType);
+
         return teamMemberAnnouncementMapper.toUpdateTeamMemberAnnouncementResponse(
-                updatedTeamMemberAnnouncement, announcementPositionItem, announcementSkillNames);
+                updatedTeamMemberAnnouncement,
+                announcementPositionItem,
+                announcementSkillNames,
+                announcementProjectTypeItem,
+                announcementWorkTypeItem);
     }
 
     public TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse
