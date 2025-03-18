@@ -550,6 +550,12 @@ public class NotificationControllerTest extends ControllerTest {
                                                                 "인증 처리된 객체의 타입 (ACTIVITY, EDUCATION, AWARDS, LICENSE)")
                                                         .optional(),
                                                 fieldWithPath(
+                                                                "result.notificationItems[].notificationDetails.emailId")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description(
+                                                                "방문자의 유저 아이디 (PROFILE_VISITOR)인 경우에")
+                                                        .optional(),
+                                                fieldWithPath(
                                                                 "result.notificationItems[].notificationDetails.visitorCount")
                                                         .type(JsonFieldType.NUMBER)
                                                         .description(

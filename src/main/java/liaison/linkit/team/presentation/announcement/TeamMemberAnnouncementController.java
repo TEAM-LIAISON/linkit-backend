@@ -81,7 +81,7 @@ public class TeamMemberAnnouncementController {
                         optionalMemberId, teamCode, teamMemberAnnouncementId));
     }
 
-    // 팀원 공고 생성
+    // 팀원 공고 생성 (프로젝트 유형 및 업무 형태 반영 완료)
     @PostMapping("/team/{teamCode}/announcement")
     @MemberOnly
     @Logging(
@@ -100,7 +100,7 @@ public class TeamMemberAnnouncementController {
                         accessor.getMemberId(), teamCode, addTeamMemberAnnouncementRequest));
     }
 
-    // 팀원 공고 수정
+    // 팀원 공고 수정 (프로젝트 유형 및 업무 형태 반영 완료)
     @PostMapping("/team/{teamCode}/announcement/{teamMemberAnnouncementId}")
     @MemberOnly
     @Logging(
@@ -124,7 +124,7 @@ public class TeamMemberAnnouncementController {
                         updateTeamMemberAnnouncementRequest));
     }
 
-    // 팀원 공고 삭제
+    // 팀원 공고 삭제 (프로젝트 유형 및 업무 형태 반영 완료)
     @DeleteMapping("/team/{teamCode}/announcement/{teamMemberAnnouncementId}")
     @MemberOnly
     @Logging(

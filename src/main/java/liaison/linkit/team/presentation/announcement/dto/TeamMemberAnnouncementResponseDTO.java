@@ -89,6 +89,13 @@ public class TeamMemberAnnouncementResponseDTO {
         private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
                 announcementSkillNames = new ArrayList<>();
 
+        @Builder.Default
+        private AnnouncementProjectTypeItem announcementProjectTypeItem =
+                new AnnouncementProjectTypeItem();
+
+        @Builder.Default
+        private AnnouncementWorkTypeItem announcementWorkTypeItem = new AnnouncementWorkTypeItem();
+
         private Boolean isRegionFlexible; // 지역 무관
         private String mainTasks; // 주요 업무
         private String workMethod; // 업무 방식
@@ -98,6 +105,8 @@ public class TeamMemberAnnouncementResponseDTO {
         private String preferredQualifications; // 이런 분이면 더 좋아요
         private String joiningProcess; // 이런 과정으로 합류해요
         private String benefits; // 합류하면 이런 것들을 얻어 갈 수 있어요
+
+        private Boolean isLegacyAnnouncement;
     }
 
     @Builder
@@ -150,6 +159,13 @@ public class TeamMemberAnnouncementResponseDTO {
         private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
                 announcementSkillNames = new ArrayList<>();
 
+        @Builder.Default
+        private AnnouncementProjectTypeItem announcementProjectTypeItem =
+                new AnnouncementProjectTypeItem();
+
+        @Builder.Default
+        private AnnouncementWorkTypeItem announcementWorkTypeItem = new AnnouncementWorkTypeItem();
+
         private String announcementEndDate;
 
         private Boolean isPermanentRecruitment;
@@ -164,6 +180,8 @@ public class TeamMemberAnnouncementResponseDTO {
         private String preferredQualifications; // 이런 분이면 더 좋아요
         private String joiningProcess; // 이런 과정으로 합류해요
         private String benefits; // 합류하면 이런 것들을 얻어 갈 수 있어요
+
+        private Boolean isLegacyAnnouncement;
     }
 
     @Builder
@@ -181,6 +199,13 @@ public class TeamMemberAnnouncementResponseDTO {
         private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
                 announcementSkillNames = new ArrayList<>();
 
+        @Builder.Default
+        private AnnouncementProjectTypeItem announcementProjectTypeItem =
+                new AnnouncementProjectTypeItem();
+
+        @Builder.Default
+        private AnnouncementWorkTypeItem announcementWorkTypeItem = new AnnouncementWorkTypeItem();
+
         private String announcementEndDate;
         private Boolean isPermanentRecruitment;
 
@@ -194,6 +219,8 @@ public class TeamMemberAnnouncementResponseDTO {
         private String preferredQualifications; // 이런 분이면 더 좋아요
         private String joiningProcess; // 이런 과정으로 합류해요
         private String benefits; // 합류하면 이런 것들을 얻어 갈 수 있어요
+
+        private Boolean isLegacyAnnouncement;
     }
 
     @Builder
@@ -220,6 +247,22 @@ public class TeamMemberAnnouncementResponseDTO {
     @AllArgsConstructor
     public static class AnnouncementSkillName {
         @Builder.Default private String announcementSkillName = "";
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AnnouncementProjectTypeItem {
+        @Builder.Default private String announcementProjectTypeName = "";
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AnnouncementWorkTypeItem {
+        @Builder.Default private String announcementWorkTypeName = "";
     }
 
     @Builder
