@@ -86,7 +86,11 @@ public class TeamMemberAnnouncementMapper {
                     final boolean isAnnouncementScrap,
                     final int announcementScrapCount,
                     final AnnouncementPositionItem announcementPositionItem,
-                    final List<AnnouncementSkillName> announcementSkillNames) {
+                    final List<AnnouncementSkillName> announcementSkillNames,
+                    final TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem
+                            announcementProjectTypeItem,
+                    final TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem
+                            announcementWorkTypeItem) {
         // D-Day 계산 (isPermanentRecruitment가 true이면 -1, 아니면 정상 계산)
         int announcementDDay = -1;
         boolean isClosed = false;
@@ -113,6 +117,8 @@ public class TeamMemberAnnouncementMapper {
                 .createdAt(teamMemberAnnouncement.getCreatedAt())
                 .announcementPositionItem(announcementPositionItem)
                 .announcementSkillNames(announcementSkillNames)
+                .announcementProjectTypeItem(announcementProjectTypeItem)
+                .announcementWorkTypeItem(announcementWorkTypeItem)
                 .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
                 .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
                 .mainTasks(teamMemberAnnouncement.getMainTasks())

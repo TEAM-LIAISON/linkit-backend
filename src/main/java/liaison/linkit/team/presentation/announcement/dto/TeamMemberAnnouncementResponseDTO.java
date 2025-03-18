@@ -89,6 +89,13 @@ public class TeamMemberAnnouncementResponseDTO {
         private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
                 announcementSkillNames = new ArrayList<>();
 
+        @Builder.Default
+        private AnnouncementProjectTypeItem announcementProjectTypeItem =
+                new AnnouncementProjectTypeItem();
+
+        @Builder.Default
+        private AnnouncementWorkTypeItem announcementWorkTypeItem = new AnnouncementWorkTypeItem();
+
         private Boolean isRegionFlexible; // 지역 무관
         private String mainTasks; // 주요 업무
         private String workMethod; // 업무 방식

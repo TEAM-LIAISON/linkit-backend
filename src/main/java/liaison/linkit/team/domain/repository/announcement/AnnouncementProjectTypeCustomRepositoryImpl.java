@@ -1,9 +1,12 @@
 package liaison.linkit.team.domain.repository.announcement;
 
+import java.util.Optional;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import liaison.linkit.team.domain.announcement.AnnouncementProjectType;
 import liaison.linkit.team.domain.announcement.QAnnouncementProjectType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +38,23 @@ public class AnnouncementProjectTypeCustomRepositoryImpl
                         .fetchFirst();
 
         return count != null;
+    }
+
+    @Override
+    public Optional<AnnouncementProjectType> findAnnouncementProjectTypeByTeamMemberAnnouncementId(
+            final Long teamMemberAnnouncementId) {
+        QAnnouncementProjectType qAnnouncementProjectType =
+                QAnnouncementProjectType.announcementProjectType;
+
+        AnnouncementProjectType announcementProjectType =
+                jpaQueryFactory
+                        .selectFrom(qAnnouncementProjectType)
+                        .where(
+                                qAnnouncementProjectType.teamMemberAnnouncement.id.eq(
+                                        teamMemberAnnouncementId))
+                        .fetchFirst();
+
+        return Optional.ofNullable(announcementProjectType);
     }
 
     @Override

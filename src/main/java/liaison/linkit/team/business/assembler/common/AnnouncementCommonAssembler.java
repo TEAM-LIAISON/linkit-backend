@@ -9,19 +9,26 @@ import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.util.DateUtils;
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
+import liaison.linkit.team.business.mapper.announcement.AnnouncementProjectTypeMapper;
 import liaison.linkit.team.business.mapper.announcement.AnnouncementSkillMapper;
+import liaison.linkit.team.business.mapper.announcement.AnnouncementWorkTypeMapper;
 import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
 import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
+import liaison.linkit.team.domain.announcement.AnnouncementProjectType;
 import liaison.linkit.team.domain.announcement.AnnouncementSkill;
+import liaison.linkit.team.domain.announcement.AnnouncementWorkType;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.region.TeamRegion;
 import liaison.linkit.team.domain.scale.TeamScale;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.announcement.AnnouncementPositionQueryAdapter;
+import liaison.linkit.team.implement.announcement.AnnouncementProjectTypeQueryAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
+import liaison.linkit.team.implement.announcement.AnnouncementWorkTypeQueryAdapter;
 import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
@@ -47,6 +54,10 @@ public class AnnouncementCommonAssembler {
     private final TeamMemberAnnouncementMapper teamMemberAnnouncementMapper;
     private final AnnouncementSkillMapper announcementSkillMapper;
     private final TeamMemberQueryAdapter teamMemberQueryAdapter;
+    private final AnnouncementProjectTypeQueryAdapter announcementProjectTypeQueryAdapter;
+    private final AnnouncementProjectTypeMapper announcementProjectTypeMapper;
+    private final AnnouncementWorkTypeQueryAdapter announcementWorkTypeQueryAdapter;
+    private final AnnouncementWorkTypeMapper announcementWorkTypeMapper;
 
     /**
      * 팀 규모 정보를 조회하여 TeamScaleItem으로 반환합니다. 실제 구현에서는 teamScaleQueryAdapter와 teamScaleMapper를 사용합니다.
@@ -111,6 +122,48 @@ public class AnnouncementCommonAssembler {
             return announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
         }
         return Collections.emptyList();
+    }
+
+    /**
+     * 공고 프로젝트 유형 정보를 조회하여 AnnouncementProjectTypeItem으로 반환합니다.
+     *
+     * @param teamMemberAnnouncement 조회 대상 공고 엔티티.
+     * @return AnnouncementProjectTypeItem DTO, 정보가 없으면 기본 인스턴스 반환.
+     */
+    public TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem
+            fetchAnnouncementProjectTypeItem(final TeamMemberAnnouncement teamMemberAnnouncement) {
+        if (announcementProjectTypeQueryAdapter
+                .existsAnnouncementProjectTypeByTeamMemberAnnouncementId(
+                        teamMemberAnnouncement.getId())) {
+            AnnouncementProjectType announcementProjectType =
+                    announcementProjectTypeQueryAdapter
+                            .findAnnouncementProjectTypeByTeamMemberAnnouncementId(
+                                    teamMemberAnnouncement.getId());
+
+            return announcementProjectTypeMapper.toAnnouncementProjectTypeItem(
+                    announcementProjectType);
+        }
+        return new TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem();
+    }
+
+    /**
+     * 공고 프로젝트 유형 정보를 조회하여 AnnouncementWorkTypeItem 으로 반환합니다.
+     *
+     * @param teamMemberAnnouncement 조회 대상 공고 엔티티.
+     * @return AnnouncementWorkTypeItem DTO, 정보가 없으면 기본 인스턴스 반환.
+     */
+    public TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem fetchAnnouncementWorkTypeItem(
+            final TeamMemberAnnouncement teamMemberAnnouncement) {
+        if (announcementWorkTypeQueryAdapter.existsAnnouncementWorkTypeByTeamMemberAnnouncementId(
+                teamMemberAnnouncement.getId())) {
+            AnnouncementWorkType announcementWorkType =
+                    announcementWorkTypeQueryAdapter
+                            .findAnnouncementWorkTypeByTeamMemberAnnouncementId(
+                                    teamMemberAnnouncement.getId());
+
+            return announcementWorkTypeMapper.toAnnouncementWorkTypeItem(announcementWorkType);
+        }
+        return new TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem();
     }
 
     /**
