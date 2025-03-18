@@ -588,6 +588,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                         .preferredQualifications("이런 분이면 더 좋아요")
                         .joiningProcess("이런 과정으로 합류해요")
                         .benefits("합류하면 이런 것들을 얻어갈 수 있어요")
+                        .isLegacyAnnouncement(false)
                         .build();
 
         // when
@@ -698,7 +699,10 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                         .description("이런 과정으로 합류해요"),
                                                 fieldWithPath("result.benefits")
                                                         .type(JsonFieldType.STRING)
-                                                        .description("합류하면 이런 것들을 얻어 갈 수 있어요"))))
+                                                        .description("합류하면 이런 것들을 얻어 갈 수 있어요"),
+                                                fieldWithPath("result.isLegacyAnnouncement")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("기존(legacy) 공고 여부"))))
                         .andReturn();
 
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
@@ -876,7 +880,10 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                         .description("이런 과정으로 합류해요"),
                                                 fieldWithPath("result.benefits")
                                                         .type(JsonFieldType.STRING)
-                                                        .description("합류하면 이런 것들을 얻어 갈 수 있어요"))))
+                                                        .description("합류하면 이런 것들을 얻어 갈 수 있어요"),
+                                                fieldWithPath("result.isLegacyAnnouncement")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("기존(legacy) 공고 여부"))))
                         .andReturn();
 
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
@@ -1060,7 +1067,10 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                         .description("이런 과정으로 합류해요"),
                                                 fieldWithPath("result.benefits")
                                                         .type(JsonFieldType.STRING)
-                                                        .description("합류하면 이런 것들을 얻어 갈 수 있어요"))))
+                                                        .description("합류하면 이런 것들을 얻어 갈 수 있어요"),
+                                                fieldWithPath("result.isLegacyAnnouncement")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("기존(legacy) 공고 여부"))))
                         .andReturn();
 
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
@@ -1297,6 +1307,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 .preferredQualifications("이런 분이면 더 좋아요")
                 .joiningProcess("이런 과정으로 합류해요")
                 .benefits("합류하면 이런 것들을 얻어 갈 수 있어요")
+                .isLegacyAnnouncement(false)
                 .build();
     }
 
@@ -1326,6 +1337,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 .preferredQualifications("이런 분이면 더 좋아요")
                 .joiningProcess("이런 과정으로 합류해요")
                 .benefits("합류하면 이런 것들을 얻어 갈 수 있어요")
+                .isLegacyAnnouncement(false)
                 .build();
     }
 }
