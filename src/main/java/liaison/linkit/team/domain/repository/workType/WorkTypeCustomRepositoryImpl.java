@@ -1,3 +1,3 @@
 package liaison.linkit.team.domain.repository.workType;
 
-public class WorkTypeCustomRepositoryImpl {}
+public class WorkTypeCustomRepositoryImpl implements WorkTypeCustomRepository {}
