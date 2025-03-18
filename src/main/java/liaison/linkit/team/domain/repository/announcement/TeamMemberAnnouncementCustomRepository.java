@@ -6,6 +6,7 @@ import java.util.Set;
 
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.search.sortType.AnnouncementSortType;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest;
 import org.springframework.data.domain.Page;
@@ -42,7 +43,9 @@ public interface TeamMemberAnnouncementCustomRepository {
     CursorResponse<TeamMemberAnnouncement> findAllByFilteringWithCursor(
             final List<String> subPosition,
             final List<String> cityName,
-            final List<String> scaleName,
+            final List<String> projectTypeName,
+            final List<String> workTypeName,
+            final AnnouncementSortType sortType,
             final CursorRequest cursorRequest);
 
     List<TeamMemberAnnouncement> findHomeTopTeamMemberAnnouncements(final int limit);

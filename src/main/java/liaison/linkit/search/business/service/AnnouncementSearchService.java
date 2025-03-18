@@ -6,6 +6,7 @@ import java.util.Optional;
 import liaison.linkit.search.presentation.dto.announcement.AnnouncementListResponseDTO;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.search.sortType.AnnouncementSortType;
 import liaison.linkit.team.business.assembler.announcement.AnnouncementInformMenuAssembler;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
@@ -48,9 +49,11 @@ public class AnnouncementSearchService {
             final Optional<Long> optionalMemberId,
             List<String> subPosition,
             List<String> cityName,
-            List<String> scaleName,
+            List<String> projectTypeName,
+            List<String> workTypeName,
+            AnnouncementSortType sortType,
             CursorRequest cursorRequest) {
-        if (isDefaultSearch(subPosition, cityName, scaleName)) {
+        if (isDefaultSearch(subPosition, cityName, projectTypeName, workTypeName, sortType)) {
             List<Long> excludeAnnouncementIds = getExcludeAnnouncementIds();
 
             CursorResponse<TeamMemberAnnouncement> teamMemberAnnouncements =
@@ -62,7 +65,12 @@ public class AnnouncementSearchService {
             // 필터링 검색
             CursorResponse<TeamMemberAnnouncement> teamMemberAnnouncements =
                     teamMemberAnnouncementQueryAdapter.findAllByFilteringWithCursor(
-                            subPosition, cityName, scaleName, cursorRequest);
+                            subPosition,
+                            cityName,
+                            projectTypeName,
+                            workTypeName,
+                            sortType,
+                            cursorRequest);
 
             return convertTeamMemberAnnouncementsToDTOs(teamMemberAnnouncements, optionalMemberId);
         }
@@ -70,10 +78,17 @@ public class AnnouncementSearchService {
 
     /** 기본 검색 여부를 판단합니다. */
     private boolean isDefaultSearch(
-            List<String> subPosition, List<String> cityName, List<String> scaleName) {
+            List<String> subPosition,
+            List<String> cityName,
+            List<String> projectTypeNames,
+            List<String> workTypeNames,
+            AnnouncementSortType sortType) {
+
         return (subPosition == null || subPosition.isEmpty())
                 && (cityName == null || cityName.isEmpty())
-                && (scaleName == null || scaleName.isEmpty());
+                && (projectTypeNames == null || projectTypeNames.isEmpty())
+                && (workTypeNames == null || workTypeNames.isEmpty())
+                && (sortType == AnnouncementSortType.LATEST);
     }
 
     private CursorResponse<AnnouncementInformMenu> convertTeamMemberAnnouncementsToDTOs(

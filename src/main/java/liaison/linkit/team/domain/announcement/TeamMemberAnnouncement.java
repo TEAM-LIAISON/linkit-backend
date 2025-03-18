@@ -40,6 +40,12 @@ public class TeamMemberAnnouncement extends BaseEntity {
     @OneToOne(mappedBy = "teamMemberAnnouncement")
     private AnnouncementPosition announcementPosition;
 
+    @OneToOne(mappedBy = "teamMemberAnnouncement")
+    private AnnouncementProjectType announcementProjectType;
+
+    @OneToOne(mappedBy = "teamMemberAnnouncement")
+    private AnnouncementWorkType announcementWorkType;
+
     @Column(nullable = false, length = 100)
     private String announcementTitle; // 공고 제목
 

@@ -1,0 +1,5 @@
+ALTER TABLE announcement_work_type
+ADD CONSTRAINT uniq_team_member_announcement UNIQUE (team_member_announcement_id);
+
+ALTER TABLE announcement_project_type
+ADD CONSTRAINT uniq_team_member_announcement UNIQUE (team_member_announcement_id);

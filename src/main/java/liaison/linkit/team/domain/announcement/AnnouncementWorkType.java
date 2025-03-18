@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 
 import liaison.linkit.team.domain.workType.WorkType;
 import lombok.AllArgsConstructor;
@@ -26,8 +27,8 @@ public class AnnouncementWorkType {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "team_member_announcement_id", nullable = false)
+    @OneToOne(fetch = LAZY)
+    @JoinColumn(name = "team_member_announcement_id", unique = true, nullable = false)
     private TeamMemberAnnouncement teamMemberAnnouncement;
 
     @ManyToOne(fetch = LAZY)
