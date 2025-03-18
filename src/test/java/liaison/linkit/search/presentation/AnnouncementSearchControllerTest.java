@@ -23,6 +23,7 @@ import liaison.linkit.search.business.service.AnnouncementSearchService;
 import liaison.linkit.search.presentation.dto.announcement.AnnouncementListResponseDTO;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.search.sortType.AnnouncementSortType;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
@@ -57,7 +58,9 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
     private ResultActions performSearchAnnouncements(
             List<String> subPositions,
             List<String> cityNames,
-            List<String> scaleNames,
+            List<String> projectTypeNames,
+            List<String> workTypeNames,
+            AnnouncementSortType sortBy,
             CursorRequest cursorRequest)
             throws Exception {
 
@@ -82,8 +85,16 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
         if (cityNames != null && !cityNames.isEmpty()) {
             cityNames.forEach(cityName -> requestBuilder.param("cityName", cityName));
         }
-        if (scaleNames != null && !scaleNames.isEmpty()) {
-            scaleNames.forEach(scaleName -> requestBuilder.param("scaleName", scaleName));
+        if (projectTypeNames != null && !projectTypeNames.isEmpty()) {
+            projectTypeNames.forEach(
+                    projectTypeName -> requestBuilder.param("projectTypeName", projectTypeName));
+        }
+        if (workTypeNames != null && !workTypeNames.isEmpty()) {
+            workTypeNames.forEach(
+                    workTypeName -> requestBuilder.param("workTypeName", workTypeName));
+        }
+        if (sortBy != null) {
+            requestBuilder.param("sortBy", sortBy.name());
         }
 
         return mockMvc.perform(requestBuilder);
@@ -196,7 +207,9 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                 performSearchAnnouncements(
                         Arrays.asList("프론트엔드 개발자", "백엔드 개발자"),
                         Arrays.asList("서울특별시", "경기도"),
-                        Arrays.asList("1인", "6~9인"),
+                        Arrays.asList("스터디", "창업·스타트업"),
+                        Arrays.asList("대면", "비대면"),
+                        AnnouncementSortType.LATEST,
                         cursorRequest);
 
         // then
@@ -215,9 +228,16 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                                 parameterWithName("cityName")
                                                         .optional()
                                                         .description("시/도 이름 (선택사항)"),
-                                                parameterWithName("scaleName")
+                                                parameterWithName("projectTypeName")
                                                         .optional()
-                                                        .description("팀 규모 이름 (선택사항)"),
+                                                        .description("프로젝트 유형 (선택사항)"),
+                                                parameterWithName("workTypeName")
+                                                        .optional()
+                                                        .description("업무 형태 이름 (선택사항)"),
+                                                parameterWithName("sortBy")
+                                                        .optional()
+                                                        .description(
+                                                                "1차 필터 적용 이후에 적용되는 내부 필터 (LATEST, POPULAR, DEADLINE (선택사항))"),
                                                 parameterWithName("cursor")
                                                         .optional()
                                                         .description("마지막으로 조회한 팀의 ID (선택적)"),
