@@ -15,24 +15,32 @@ import liaison.linkit.team.business.assembler.announcement.AnnouncementDetailAss
 import liaison.linkit.team.business.assembler.announcement.AnnouncementInformMenuAssembler;
 import liaison.linkit.team.business.assembler.announcement.AnnouncementViewItemsAssembler;
 import liaison.linkit.team.business.mapper.announcement.AnnouncementPositionMapper;
+import liaison.linkit.team.business.mapper.announcement.AnnouncementProjectTypeMapper;
 import liaison.linkit.team.business.mapper.announcement.AnnouncementSkillMapper;
+import liaison.linkit.team.business.mapper.announcement.AnnouncementWorkTypeMapper;
 import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
+import liaison.linkit.team.domain.announcement.AnnouncementProjectType;
 import liaison.linkit.team.domain.announcement.AnnouncementSkill;
+import liaison.linkit.team.domain.announcement.AnnouncementWorkType;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.projectType.ProjectType;
 import liaison.linkit.team.domain.team.Team;
+import liaison.linkit.team.domain.workType.WorkType;
 import liaison.linkit.team.exception.announcement.TeamMemberAnnouncementClosedBadRequestException;
 import liaison.linkit.team.exception.teamMember.TeamAdminNotRegisteredException;
 import liaison.linkit.team.implement.announcement.AnnouncementPositionCommandAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementPositionQueryAdapter;
+import liaison.linkit.team.implement.announcement.AnnouncementProjectTypeCommandAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementSkillCommandAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
+import liaison.linkit.team.implement.announcement.AnnouncementWorkTypeCommandAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementCommandAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import liaison.linkit.team.implement.projectType.ProjectTypeQueryAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
+import liaison.linkit.team.implement.workType.WorkTypeQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenus;
@@ -74,6 +82,11 @@ public class TeamMemberAnnouncementService {
 
     private final ViewCountService viewCountService;
     private final ProjectTypeQueryAdapter projectTypeQueryAdapter;
+    private final WorkTypeQueryAdapter workTypeQueryAdapter;
+    private final AnnouncementProjectTypeCommandAdapter announcementProjectTypeCommandAdapter;
+    private final AnnouncementProjectTypeMapper announcementProjectTypeMapper;
+    private final AnnouncementWorkTypeCommandAdapter announcementWorkTypeCommandAdapter;
+    private final AnnouncementWorkTypeMapper announcementWorkTypeMapper;
 
     @Transactional(readOnly = true)
     public TeamMemberAnnouncementItems getTeamMemberAnnouncementViewItems(
@@ -144,9 +157,32 @@ public class TeamMemberAnnouncementService {
         final ProjectType projectType =
                 projectTypeQueryAdapter.findByProjectTypeName(
                         addTeamMemberAnnouncementRequest.getProjectTypeName());
+        AnnouncementProjectType announcementProjectType =
+                new AnnouncementProjectType(null, savedTeamMemberAnnouncement, projectType);
+        AnnouncementProjectType savedAnnouncementProjectType =
+                announcementProjectTypeCommandAdapter.save(announcementProjectType);
+        final TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem
+                announcementProjectTypeItem =
+                        announcementProjectTypeMapper.toAnnouncementProjectTypeItem(
+                                savedAnnouncementProjectType);
+
+        final WorkType workType =
+                workTypeQueryAdapter.findByWorkTypeName(
+                        addTeamMemberAnnouncementRequest.getWorkTypeName());
+
+        AnnouncementWorkType announcementWorkType =
+                new AnnouncementWorkType(null, savedTeamMemberAnnouncement, workType);
+        AnnouncementWorkType savedAnnouncementWorkType =
+                announcementWorkTypeCommandAdapter.save(announcementWorkType);
+        final TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem announcementWorkTypeItem =
+                announcementWorkTypeMapper.toAnnouncementWorkTypeItem(savedAnnouncementWorkType);
 
         return teamMemberAnnouncementMapper.toAddTeamMemberAnnouncementResponse(
-                teamMemberAnnouncement, announcementPositionItem, announcementSkillNames);
+                teamMemberAnnouncement,
+                announcementPositionItem,
+                announcementSkillNames,
+                announcementProjectTypeItem,
+                announcementWorkTypeItem);
     }
 
     // 팀원 공고 수정 메서드

@@ -182,12 +182,18 @@ public class TeamMemberAnnouncementMapper {
             toAddTeamMemberAnnouncementResponse(
                     final TeamMemberAnnouncement teamMemberAnnouncement,
                     final AnnouncementPositionItem announcementPositionItem,
-                    final List<AnnouncementSkillName> announcementSkillNames) {
+                    final List<AnnouncementSkillName> announcementSkillNames,
+                    final TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem
+                            announcementProjectTypeItem,
+                    final TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem
+                            announcementWorkTypeItem) {
         return AddTeamMemberAnnouncementResponse.builder()
                 .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
                 .announcementPositionItem(announcementPositionItem)
                 .announcementSkillNames(announcementSkillNames)
+                .announcementProjectTypeItem(announcementProjectTypeItem)
+                .announcementWorkTypeItem(announcementWorkTypeItem)
                 .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
                 .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
                 .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
