@@ -20,6 +20,7 @@ import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMa
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
 import liaison.linkit.team.domain.announcement.AnnouncementSkill;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.domain.projectType.ProjectType;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.exception.announcement.TeamMemberAnnouncementClosedBadRequestException;
 import liaison.linkit.team.exception.teamMember.TeamAdminNotRegisteredException;
@@ -29,6 +30,7 @@ import liaison.linkit.team.implement.announcement.AnnouncementSkillCommandAdapte
 import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementCommandAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
+import liaison.linkit.team.implement.projectType.ProjectTypeQueryAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO;
@@ -71,6 +73,7 @@ public class TeamMemberAnnouncementService {
     private final AnnouncementScrapCommandAdapter announcementScrapCommandAdapter;
 
     private final ViewCountService viewCountService;
+    private final ProjectTypeQueryAdapter projectTypeQueryAdapter;
 
     @Transactional(readOnly = true)
     public TeamMemberAnnouncementItems getTeamMemberAnnouncementViewItems(
@@ -137,6 +140,10 @@ public class TeamMemberAnnouncementService {
                         announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
             }
         }
+
+        final ProjectType projectType =
+                projectTypeQueryAdapter.findByProjectTypeName(
+                        addTeamMemberAnnouncementRequest.getProjectTypeName());
 
         return teamMemberAnnouncementMapper.toAddTeamMemberAnnouncementResponse(
                 teamMemberAnnouncement, announcementPositionItem, announcementSkillNames);
