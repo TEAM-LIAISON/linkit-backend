@@ -365,6 +365,7 @@ public class NotificationControllerTest extends ControllerTest {
                                                 .notificationDetails(
                                                         NotificationResponseDTO.NotificationDetails
                                                                 .teamVisitorCount(
+                                                                        "팀이름",
                                                                         "teamCode",
                                                                         2L,
                                                                         "TEAM_VISITOR"))

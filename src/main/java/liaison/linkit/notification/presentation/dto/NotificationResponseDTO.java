@@ -355,8 +355,12 @@ public class NotificationResponseDTO {
         }
 
         public static NotificationDetails teamVisitorCount(
-                final String teamCode, final Long visitorCount, final String visitedType) {
+                final String teamName,
+                final String teamCode,
+                final Long visitorCount,
+                final String visitedType) {
             return NotificationDetails.builder()
+                    .teamName(teamName)
                     .teamCode(teamCode)
                     .visitorCount(visitorCount)
                     .visitedType(visitedType)

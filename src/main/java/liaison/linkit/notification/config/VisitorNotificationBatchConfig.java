@@ -218,7 +218,10 @@ public class VisitorNotificationBatchConfig {
                     // 알림 상세 정보 생성
                     NotificationResponseDTO.NotificationDetails visitorNotificationDetails =
                             NotificationResponseDTO.NotificationDetails.teamVisitorCount(
-                                    visitedTeam.getTeamCode(), visitorCount, "TEAM_VISITOR");
+                                    visitedTeam.getTeamName(),
+                                    visitedTeam.getTeamCode(),
+                                    visitorCount,
+                                    "TEAM_VISITOR");
 
                     // 알림 객체 생성
                     Notification notification =
