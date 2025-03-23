@@ -46,7 +46,7 @@ public class TeamMemberAnnouncement extends BaseEntity {
     @OneToOne(mappedBy = "teamMemberAnnouncement")
     private AnnouncementWorkType announcementWorkType;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 50)
     private String announcementTitle; // 공고 제목
 
     private String announcementEndDate; // 공고 마감 기간
