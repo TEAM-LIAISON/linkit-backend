@@ -166,15 +166,15 @@ public class NotificationMapper {
                 switch (subNotificationType) {
                     case PROFILE_VISITOR -> notification.setVisitorDetails(
                             Notification.VisitorDetails.builder()
-                                    .visitorIdentifier(notificationDetails.getEmailId())
+                                    .emailId(notificationDetails.getEmailId())
                                     .visitorCount(notificationDetails.getVisitorCount())
                                     .visitedType(notificationDetails.getVisitedType())
                                     .build());
 
                     case TEAM_VISITOR -> notification.setVisitorDetails(
                             Notification.VisitorDetails.builder()
-                                    .visitorName(notificationDetails.getTeamName())
-                                    .visitorIdentifier(notificationDetails.getTeamCode())
+                                    .teamCode(notificationDetails.getTeamCode())
+                                    .teamName(notificationDetails.getTeamName())
                                     .visitorCount(notificationDetails.getVisitorCount())
                                     .visitedType(notificationDetails.getVisitedType())
                                     .build());
@@ -361,14 +361,14 @@ public class NotificationMapper {
                 switch (subType) {
                     case PROFILE_VISITOR -> notificationDetails =
                             NotificationDetails.profileVisitorCount(
-                                    notification.getVisitorDetails().getVisitorIdentifier(),
+                                    notification.getVisitorDetails().getEmailId(),
                                     notification.getVisitorDetails().getVisitorCount(),
                                     notification.getVisitorDetails().getVisitedType());
 
                     case TEAM_VISITOR -> notificationDetails =
                             NotificationDetails.teamVisitorCount(
-                                    notification.getVisitorDetails().getVisitorName(),
-                                    notification.getVisitorDetails().getVisitorIdentifier(),
+                                    notification.getVisitorDetails().getTeamCode(),
+                                    notification.getVisitorDetails().getTeamName(),
                                     notification.getVisitorDetails().getVisitorCount(),
                                     notification.getVisitorDetails().getVisitedType());
                 }
