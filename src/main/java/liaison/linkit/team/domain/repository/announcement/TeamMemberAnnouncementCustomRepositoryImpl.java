@@ -792,6 +792,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
         return jpaQueryFactory
                 .selectFrom(qTeamMemberAnnouncement)
                 .where(qTeamMemberAnnouncement.team.id.eq(teamId))
+                .orderBy(qTeamMemberAnnouncement.createdAt.desc())
                 .fetch();
     }
 
@@ -808,6 +809,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                 .id
                                 .eq(teamId)
                                 .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true)))
+                .orderBy(qTeamMemberAnnouncement.createdAt.desc())
                 .fetch();
     }
 
