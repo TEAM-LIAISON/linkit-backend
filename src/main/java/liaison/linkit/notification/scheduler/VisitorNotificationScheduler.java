@@ -22,7 +22,7 @@ public class VisitorNotificationScheduler {
         this.visitorNotificationProgressJob = visitorNotificationProgressJob;
     }
 
-    @Scheduled(cron = "0 0 8 * * *", zone = "Asia/Seoul") // 매일 아침 8시에 실행
+    @Scheduled(cron = "0 */3 * * * *", zone = "Asia/Seoul") // 3분마다 실행
     public void scheduleVisitorNotificationJob() throws Exception {
         JobParameters params =
                 new JobParametersBuilder()
