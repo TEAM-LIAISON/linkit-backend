@@ -89,12 +89,8 @@ public class TeamMemberAnnouncementResponseDTO {
         private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
                 announcementSkillNames = new ArrayList<>();
 
-        @Builder.Default
-        private AnnouncementProjectTypeItem announcementProjectTypeItem =
-                new AnnouncementProjectTypeItem();
-
-        @Builder.Default
-        private AnnouncementWorkTypeItem announcementWorkTypeItem = new AnnouncementWorkTypeItem();
+        private String projectTypeName;
+        private String workTypeName;
 
         private Boolean isRegionFlexible; // 지역 무관
         private String mainTasks; // 주요 업무
@@ -159,12 +155,8 @@ public class TeamMemberAnnouncementResponseDTO {
         private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
                 announcementSkillNames = new ArrayList<>();
 
-        @Builder.Default
-        private AnnouncementProjectTypeItem announcementProjectTypeItem =
-                new AnnouncementProjectTypeItem();
-
-        @Builder.Default
-        private AnnouncementWorkTypeItem announcementWorkTypeItem = new AnnouncementWorkTypeItem();
+        private String projectTypeName;
+        private String workTypeName;
 
         private String announcementEndDate;
 
@@ -199,12 +191,8 @@ public class TeamMemberAnnouncementResponseDTO {
         private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
                 announcementSkillNames = new ArrayList<>();
 
-        @Builder.Default
-        private AnnouncementProjectTypeItem announcementProjectTypeItem =
-                new AnnouncementProjectTypeItem();
-
-        @Builder.Default
-        private AnnouncementWorkTypeItem announcementWorkTypeItem = new AnnouncementWorkTypeItem();
+        private String projectTypeName;
+        private String workTypeName;
 
         private String announcementEndDate;
         private Boolean isPermanentRecruitment;
