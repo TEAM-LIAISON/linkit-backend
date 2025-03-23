@@ -367,8 +367,8 @@ public class NotificationMapper {
 
                     case TEAM_VISITOR -> notificationDetails =
                             NotificationDetails.teamVisitorCount(
-                                    notification.getVisitorDetails().getTeamCode(),
                                     notification.getVisitorDetails().getTeamName(),
+                                    notification.getVisitorDetails().getTeamCode(),
                                     notification.getVisitorDetails().getVisitorCount(),
                                     notification.getVisitorDetails().getVisitedType());
                 }
