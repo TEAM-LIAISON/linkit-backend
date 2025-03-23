@@ -89,8 +89,8 @@ public class TeamMemberAnnouncementResponseDTO {
         private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
                 announcementSkillNames = new ArrayList<>();
 
-        private String announcementProjectTypeName;
-        private String announcementWorkTypeName;
+        private String projectTypeName;
+        private String workTypeName;
 
         private Boolean isRegionFlexible; // 지역 무관
         private String mainTasks; // 주요 업무
@@ -155,8 +155,8 @@ public class TeamMemberAnnouncementResponseDTO {
         private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
                 announcementSkillNames = new ArrayList<>();
 
-        private String announcementProjectTypeName;
-        private String announcementWorkTypeName;
+        private String projectTypeName;
+        private String workTypeName;
 
         private String announcementEndDate;
 
@@ -191,8 +191,8 @@ public class TeamMemberAnnouncementResponseDTO {
         private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
                 announcementSkillNames = new ArrayList<>();
 
-        private String announcementProjectTypeName;
-        private String announcementWorkTypeName;
+        private String projectTypeName;
+        private String workTypeName;
 
         private String announcementEndDate;
         private Boolean isPermanentRecruitment;
