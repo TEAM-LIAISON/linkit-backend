@@ -29,7 +29,6 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -65,7 +64,7 @@ public class AnnouncementAdvertiseBatchConfig {
     public Step announcementAdvertiseStep() {
         return new StepBuilder("announcementAdvertiseStep", jobRepository)
                 .<TeamMemberAnnouncement, AnnouncementAdvertiseDTO>chunk(100, transactionManager)
-                .reader(advertiseAnnouncementReader(null))
+                .reader(advertiseAnnouncementReader())
                 .processor(advertiseAnnouncementProcessor())
                 .writer(advertiseAnnouncementWriter())
                 .allowStartIfComplete(true)
@@ -75,12 +74,11 @@ public class AnnouncementAdvertiseBatchConfig {
     /** 광고 발송이 필요한 모집 공고를 조회하는 Reader 아직 광고 메일이 발송되지 않은 공고를 조회합니다. */
     @Bean
     @StepScope
-    public ItemReader<TeamMemberAnnouncement> advertiseAnnouncementReader(
-            @Value("#{jobParameters['time']}") Long time) {
+    public ItemReader<TeamMemberAnnouncement> advertiseAnnouncementReader() {
 
-        // 24시간 전 시간 계산
+        // 24시간 전 시간 계산 <- 35시간 전으로 임의 변경
         LocalDateTime twentyFourHoursAgo =
-                LocalDateTime.now(ZoneId.of("Asia/Seoul")).minusHours(24);
+                LocalDateTime.now(ZoneId.of("Asia/Seoul")).minusHours(35);
         log.info("광고 발송 대상 공고 조회 시작: 기준 시간 = {}", twentyFourHoursAgo);
 
         // 쿼리 어댑터를 사용해 조건에 맞는 공고 목록 조회
