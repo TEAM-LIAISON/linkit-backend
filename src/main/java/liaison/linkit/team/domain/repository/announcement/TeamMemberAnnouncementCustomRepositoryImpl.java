@@ -830,9 +830,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                         qTeamMemberAnnouncement
                                 .createdAt
                                 .goe(since)
-                                .and(qTeamMemberAnnouncement.isAnnouncementPublic.isTrue())
-                                .and(qTeamMemberAnnouncement.isAnnouncementInProgress.isTrue())
-                                .and(qTeamMemberAnnouncement.isAdvertisingMailSent.isFalse()))
+                                .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
+                                .and(qTeamMemberAnnouncement.isAnnouncementInProgress.eq(true))
+                                .and(qTeamMemberAnnouncement.isAdvertisingMailSent.eq(false)))
                 .orderBy(qTeamMemberAnnouncement.createdAt.desc())
                 .fetch();
     }
