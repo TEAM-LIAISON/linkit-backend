@@ -1,6 +1,7 @@
 package liaison.linkit.team.domain.repository.announcement;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Set;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -19,13 +21,18 @@ import liaison.linkit.global.util.QueryDslUtil;
 import liaison.linkit.profile.domain.region.QRegion;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.search.sortType.AnnouncementSortType;
 import liaison.linkit.team.domain.announcement.QAnnouncementPosition;
+import liaison.linkit.team.domain.announcement.QAnnouncementProjectType;
+import liaison.linkit.team.domain.announcement.QAnnouncementWorkType;
 import liaison.linkit.team.domain.announcement.QTeamMemberAnnouncement;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.domain.projectType.QProjectType;
 import liaison.linkit.team.domain.region.QTeamRegion;
 import liaison.linkit.team.domain.scale.QScale;
 import liaison.linkit.team.domain.scale.QTeamScale;
 import liaison.linkit.team.domain.team.QTeam;
+import liaison.linkit.team.domain.workType.QWorkType;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -505,7 +512,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
     public CursorResponse<TeamMemberAnnouncement> findAllByFilteringWithCursor(
             final List<String> subPosition,
             final List<String> cityName,
-            final List<String> scaleName,
+            final List<String> projectTypeName,
+            final List<String> workTypeName,
+            final AnnouncementSortType sortType,
             final CursorRequest cursorRequest) {
 
         QTeamMemberAnnouncement qTeamMemberAnnouncement =
@@ -565,22 +574,76 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                         .where(qRegion.cityName.in(cityName));
             }
 
-            // scaleName 필터링
-            if (isNotEmpty(scaleName)) {
-                QTeamScale qTeamScale = QTeamScale.teamScale;
-                QScale qScale = QScale.scale;
+            if (isNotEmpty(projectTypeName)) {
+                QAnnouncementProjectType qAnnouncementProjectType =
+                        QAnnouncementProjectType.announcementProjectType;
+                QProjectType qProjectType = QProjectType.projectType;
 
                 announcementIdQuery
-                        .leftJoin(qTeamScale)
-                        .on(qTeamScale.team.eq(qTeam))
-                        .leftJoin(qScale)
-                        .on(qTeamScale.scale.eq(qScale))
-                        .where(qScale.scaleName.in(scaleName));
+                        .leftJoin(qAnnouncementProjectType)
+                        .on(
+                                qAnnouncementProjectType.teamMemberAnnouncement.eq(
+                                        qTeamMemberAnnouncement))
+                        .leftJoin(qProjectType)
+                        .on(qAnnouncementProjectType.projectType.eq(qProjectType))
+                        .where(qProjectType.projectTypeName.in(projectTypeName));
+            }
+
+            if (isNotEmpty(workTypeName)) {
+                QAnnouncementWorkType qAnnouncementWorkType =
+                        QAnnouncementWorkType.announcementWorkType;
+                QWorkType qWorkType = QWorkType.workType;
+
+                announcementIdQuery
+                        .leftJoin(qAnnouncementWorkType)
+                        .on(
+                                qAnnouncementWorkType.teamMemberAnnouncement.eq(
+                                        qTeamMemberAnnouncement))
+                        .leftJoin(qWorkType)
+                        .on(qAnnouncementWorkType.workType.eq(qWorkType))
+                        .where(qWorkType.workTypeName.in(workTypeName));
             }
 
             // ID 내림차순 정렬 및 제한
             int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
             int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
+
+            // 정렬 조건 적용
+            List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
+            switch (sortType) {
+                case LATEST:
+                    orderSpecifiers.add(qTeamMemberAnnouncement.createdAt.desc());
+                    break;
+                case POPULAR:
+                    orderSpecifiers.add(qTeamMemberAnnouncement.viewCount.desc());
+                    break;
+                case DEADLINE:
+                    // [마감임박순 정렬]
+                    // 1. 상시 모집 공고는 나중에 보여주기 위해 false인 공고를 우선 배치 (0: 일반, 1: 상시)
+                    orderSpecifiers.add(
+                            new CaseBuilder()
+                                    .when(qTeamMemberAnnouncement.isPermanentRecruitment.eq(true))
+                                    .then(1)
+                                    .otherwise(0)
+                                    .asc());
+                    // 2. 일반 공고는 마감일(announcementEndDate) 오름차순, 상시 공고는 기본값("9999-12-31") 사용하여 뒤로 배치
+                    orderSpecifiers.add(
+                            new CaseBuilder()
+                                    .when(qTeamMemberAnnouncement.isPermanentRecruitment.eq(false))
+                                    .then(qTeamMemberAnnouncement.announcementEndDate)
+                                    .otherwise("9999-12-31")
+                                    .asc());
+                    // 3. 상시 모집 공고는 최신순(생성일 내림차순) 정렬
+                    orderSpecifiers.add(
+                            new CaseBuilder()
+                                    .when(qTeamMemberAnnouncement.isPermanentRecruitment.eq(true))
+                                    .then(qTeamMemberAnnouncement.createdAt)
+                                    .otherwise((LocalDateTime) null)
+                                    .desc());
+                    break;
+                default:
+                    orderSpecifiers.add(qTeamMemberAnnouncement.createdAt.desc());
+            }
 
             List<Long> announcementIds =
                     announcementIdQuery
@@ -607,15 +670,16 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
             List<TeamMemberAnnouncement> announcements =
                     jpaQueryFactory
                             .selectFrom(qTeamMemberAnnouncement)
-                            // 필요한 연관관계를 모두 fetch join
                             .leftJoin(qTeamMemberAnnouncement.team, QTeam.team)
                             .fetchJoin()
                             .leftJoin(qTeamMemberAnnouncement.announcementPosition)
                             .fetchJoin()
-                            // 예) team -> teamRegions -> region, team -> teamScale -> scale 등
-                            //    팀에 필요한 다른 연관관계가 LAZY라면 추가로 fetch join
+                            .leftJoin(qTeamMemberAnnouncement.announcementProjectType)
+                            .fetchJoin()
+                            .leftJoin(qTeamMemberAnnouncement.announcementWorkType)
+                            .fetchJoin()
                             .where(qTeamMemberAnnouncement.id.in(announcementIds))
-                            .orderBy(qTeamMemberAnnouncement.createdAt.desc())
+                            .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
                             .distinct()
                             .fetch();
 
@@ -728,6 +792,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
         return jpaQueryFactory
                 .selectFrom(qTeamMemberAnnouncement)
                 .where(qTeamMemberAnnouncement.team.id.eq(teamId))
+                .orderBy(qTeamMemberAnnouncement.modifiedAt.desc())
                 .fetch();
     }
 
@@ -744,6 +809,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                 .id
                                 .eq(teamId)
                                 .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true)))
+                .orderBy(qTeamMemberAnnouncement.modifiedAt.desc())
                 .fetch();
     }
 

@@ -7,6 +7,7 @@ import java.util.Set;
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.search.sortType.AnnouncementSortType;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
 import liaison.linkit.team.exception.announcement.TeamMemberAnnouncementNotFoundException;
@@ -52,10 +53,12 @@ public class TeamMemberAnnouncementQueryAdapter {
     public CursorResponse<TeamMemberAnnouncement> findAllByFilteringWithCursor(
             final List<String> subPosition,
             final List<String> cityName,
-            final List<String> scaleName,
+            final List<String> projectTypeName,
+            final List<String> workTypeName,
+            final AnnouncementSortType sortType,
             final CursorRequest cursorRequest) {
         return teamMemberAnnouncementRepository.findAllByFilteringWithCursor(
-                subPosition, cityName, scaleName, cursorRequest);
+                subPosition, cityName, projectTypeName, workTypeName, sortType, cursorRequest);
     }
 
     @Cacheable(

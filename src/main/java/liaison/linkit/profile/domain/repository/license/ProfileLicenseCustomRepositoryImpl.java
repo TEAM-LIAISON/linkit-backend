@@ -31,6 +31,20 @@ public class ProfileLicenseCustomRepositoryImpl implements ProfileLicenseCustomR
     }
 
     @Override
+    public List<ProfileLicense> getByIsLicenseVerifiedTrue() {
+        QProfileLicense qProfileLicense = QProfileLicense.profileLicense;
+
+        return jpaQueryFactory
+                .selectFrom(qProfileLicense)
+                .where(
+                        qProfileLicense
+                                .isLicenseVerified
+                                .isTrue()
+                                .and(qProfileLicense.isLicenseCertified.isTrue()))
+                .fetch();
+    }
+
+    @Override
     public ProfileLicense updateProfileLicense(
             final Long profileLicenseId, final UpdateProfileLicenseRequest updateProfileLicense) {
         QProfileLicense qProfileLicense = QProfileLicense.profileLicense;

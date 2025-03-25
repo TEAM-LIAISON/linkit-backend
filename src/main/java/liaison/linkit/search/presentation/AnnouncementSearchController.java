@@ -11,6 +11,7 @@ import liaison.linkit.search.business.service.AnnouncementSearchService;
 import liaison.linkit.search.presentation.dto.announcement.AnnouncementListResponseDTO;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.search.sortType.AnnouncementSortType;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +55,8 @@ public class AnnouncementSearchController {
      *
      * @param subPosition 포지션 대분류 (선택적)
      * @param cityName 활동 지역 (선택적)
-     * @param scaleName 규모 (선택적)
+     * @param projectTypeName 프로젝트 유형 (선택적)
+     * @param workTypeName 업무 형태 (선택적)
      * @param size 페이지 크기 (기본값: 20)
      * @return 팀원 목록과 페이지 정보
      */
@@ -70,7 +72,12 @@ public class AnnouncementSearchController {
                     @RequestParam(value = "size", defaultValue = "100") int size,
                     @RequestParam(value = "subPosition", required = false) List<String> subPosition,
                     @RequestParam(value = "cityName", required = false) List<String> cityName,
-                    @RequestParam(value = "scaleName", required = false) List<String> scaleName) {
+                    @RequestParam(value = "projectTypeName", required = false)
+                            List<String> projectTypeName,
+                    @RequestParam(value = "workTypeName", required = false)
+                            List<String> workTypeName,
+                    @RequestParam(value = "sortBy", defaultValue = "LATEST")
+                            AnnouncementSortType sortType) {
         Optional<Long> optionalMemberId =
                 accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
 
@@ -80,7 +87,13 @@ public class AnnouncementSearchController {
         CursorResponse<TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu>
                 announcementSearchResult =
                         announcementSearchService.searchAnnouncementsWithCursor(
-                                optionalMemberId, subPosition, cityName, scaleName, cursorRequest);
+                                optionalMemberId,
+                                subPosition,
+                                cityName,
+                                projectTypeName,
+                                workTypeName,
+                                sortType,
+                                cursorRequest);
 
         return CommonResponse.onSuccess(announcementSearchResult);
     }

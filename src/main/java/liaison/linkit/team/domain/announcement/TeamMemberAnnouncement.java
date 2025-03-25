@@ -40,7 +40,13 @@ public class TeamMemberAnnouncement extends BaseEntity {
     @OneToOne(mappedBy = "teamMemberAnnouncement")
     private AnnouncementPosition announcementPosition;
 
-    @Column(nullable = false, length = 100)
+    @OneToOne(mappedBy = "teamMemberAnnouncement")
+    private AnnouncementProjectType announcementProjectType;
+
+    @OneToOne(mappedBy = "teamMemberAnnouncement")
+    private AnnouncementWorkType announcementWorkType;
+
+    @Column(nullable = false, length = 50)
     private String announcementTitle; // 공고 제목
 
     private String announcementEndDate; // 공고 마감 기간
@@ -80,6 +86,10 @@ public class TeamMemberAnnouncement extends BaseEntity {
 
     // 공고 진행/완료 여부
     private boolean isAnnouncementInProgress;
+
+    // 기존(legacy) 공고임을 식별하는 컬럼 추가
+    @Column(name = "is_legacy_announcement")
+    private boolean isLegacyAnnouncement;
 
     @Column(nullable = false)
     private Long viewCount;

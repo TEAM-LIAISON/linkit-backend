@@ -9,6 +9,8 @@ import liaison.linkit.profile.presentation.education.dto.ProfileEducationRequest
 public interface ProfileEducationCustomRepository {
     List<ProfileEducation> getProfileEducations(final Long profileId);
 
+    List<ProfileEducation> getByIsEducationVerifiedTrue();
+
     ProfileEducation updateProfileEducation(
             final Long profileEducationId,
             final University university,

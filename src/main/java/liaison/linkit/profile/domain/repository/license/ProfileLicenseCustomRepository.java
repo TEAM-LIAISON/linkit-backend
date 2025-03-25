@@ -8,6 +8,8 @@ import liaison.linkit.profile.presentation.license.dto.ProfileLicenseRequestDTO.
 public interface ProfileLicenseCustomRepository {
     List<ProfileLicense> getProfileLicenses(final Long memberId);
 
+    List<ProfileLicense> getByIsLicenseVerifiedTrue();
+
     ProfileLicense updateProfileLicense(
             final Long profileLicenseId,
             final UpdateProfileLicenseRequest updateProfileLicenseRequest);

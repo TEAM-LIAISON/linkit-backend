@@ -95,6 +95,7 @@ public class NotificationMapper {
                 }
             }
 
+                // 팀 초대 케이스
             case TEAM_INVITATION -> {
                 switch (subNotificationType) {
                     case TEAM_INVITATION_REQUESTED -> notification.setTeamInvitationDetails(
@@ -139,6 +140,43 @@ public class NotificationMapper {
                             Notification.SystemDetails.builder()
                                     .emailId(notificationDetails.getEmailId())
                                     .systemTitle(notificationDetails.getSystemTitle())
+                                    .build());
+                }
+            }
+
+                // 인증서 케이스
+            case CERTIFICATION -> {
+                switch (subNotificationType) {
+                    case ACTIVITY_CERTIFICATION_ACCEPTED,
+                            ACTIVITY_CERTIFICATION_REJECTED,
+                            EDUCATION_CERTIFICATION_ACCEPTED,
+                            EDUCATION_CERTIFICATION_REJECTED,
+                            AWARDS_CERTIFICATION_ACCEPTED,
+                            AWARDS_CERTIFICATION_REJECTED,
+                            LICENSE_CERTIFICATION_ACCEPTED,
+                            LICENSE_CERTIFICATION_REJECTED -> notification.setCertificationDetails(
+                            Notification.CertificationDetails.builder()
+                                    .itemId(notificationDetails.getItemId())
+                                    .itemType(notificationDetails.getItemType())
+                                    .build());
+                }
+            }
+
+            case VISITOR -> {
+                switch (subNotificationType) {
+                    case PROFILE_VISITOR -> notification.setVisitorDetails(
+                            Notification.VisitorDetails.builder()
+                                    .emailId(notificationDetails.getEmailId())
+                                    .visitorCount(notificationDetails.getVisitorCount())
+                                    .visitedType(notificationDetails.getVisitedType())
+                                    .build());
+
+                    case TEAM_VISITOR -> notification.setVisitorDetails(
+                            Notification.VisitorDetails.builder()
+                                    .teamCode(notificationDetails.getTeamCode())
+                                    .teamName(notificationDetails.getTeamName())
+                                    .visitorCount(notificationDetails.getVisitorCount())
+                                    .visitedType(notificationDetails.getVisitedType())
                                     .build());
                 }
             }
@@ -304,6 +342,35 @@ public class NotificationMapper {
                             NotificationDetails.welcomeLinkit(
                                     notification.getSystemDetails().getEmailId(),
                                     notification.getSystemDetails().getSystemTitle());
+                }
+            }
+
+            case CERTIFICATION -> {
+                switch (subType) {
+                    case ACTIVITY_CERTIFICATION_ACCEPTED,
+                            EDUCATION_CERTIFICATION_ACCEPTED,
+                            AWARDS_CERTIFICATION_ACCEPTED,
+                            LICENSE_CERTIFICATION_ACCEPTED -> notificationDetails =
+                            NotificationDetails.certificationAccepted(
+                                    notification.getCertificationDetails().getItemId(),
+                                    notification.getCertificationDetails().getItemType());
+                }
+            }
+
+            case VISITOR -> {
+                switch (subType) {
+                    case PROFILE_VISITOR -> notificationDetails =
+                            NotificationDetails.profileVisitorCount(
+                                    notification.getVisitorDetails().getEmailId(),
+                                    notification.getVisitorDetails().getVisitorCount(),
+                                    notification.getVisitorDetails().getVisitedType());
+
+                    case TEAM_VISITOR -> notificationDetails =
+                            NotificationDetails.teamVisitorCount(
+                                    notification.getVisitorDetails().getTeamName(),
+                                    notification.getVisitorDetails().getTeamCode(),
+                                    notification.getVisitorDetails().getVisitorCount(),
+                                    notification.getVisitorDetails().getVisitedType());
                 }
             }
         }

@@ -53,6 +53,9 @@ public class AnnouncementDetailAssembler {
                         teamMemberAnnouncement, optionalMemberId),
                 announcementCommonAssembler.getAnnouncementScrapCount(teamMemberAnnouncement),
                 announcementCommonAssembler.fetchAnnouncementPositionItem(teamMemberAnnouncement),
-                announcementCommonAssembler.fetchAnnouncementSkills(teamMemberAnnouncement));
+                announcementCommonAssembler.fetchAnnouncementSkills(teamMemberAnnouncement),
+                announcementCommonAssembler.fetchAnnouncementProjectTypeItem(
+                        teamMemberAnnouncement),
+                announcementCommonAssembler.fetchAnnouncementWorkTypeItem(teamMemberAnnouncement));
     }
 }

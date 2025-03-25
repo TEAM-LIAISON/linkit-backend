@@ -86,7 +86,11 @@ public class TeamMemberAnnouncementMapper {
                     final boolean isAnnouncementScrap,
                     final int announcementScrapCount,
                     final AnnouncementPositionItem announcementPositionItem,
-                    final List<AnnouncementSkillName> announcementSkillNames) {
+                    final List<AnnouncementSkillName> announcementSkillNames,
+                    final TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem
+                            announcementProjectTypeItem,
+                    final TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem
+                            announcementWorkTypeItem) {
         // D-Day 계산 (isPermanentRecruitment가 true이면 -1, 아니면 정상 계산)
         int announcementDDay = -1;
         boolean isClosed = false;
@@ -113,6 +117,8 @@ public class TeamMemberAnnouncementMapper {
                 .createdAt(teamMemberAnnouncement.getCreatedAt())
                 .announcementPositionItem(announcementPositionItem)
                 .announcementSkillNames(announcementSkillNames)
+                .projectTypeName(announcementProjectTypeItem.getAnnouncementProjectTypeName())
+                .workTypeName(announcementWorkTypeItem.getAnnouncementWorkTypeName())
                 .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
                 .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
                 .mainTasks(teamMemberAnnouncement.getMainTasks())
@@ -121,6 +127,7 @@ public class TeamMemberAnnouncementMapper {
                 .preferredQualifications(teamMemberAnnouncement.getPreferredQualifications())
                 .joiningProcess(teamMemberAnnouncement.getJoiningProcess())
                 .benefits(teamMemberAnnouncement.getBenefits())
+                .isLegacyAnnouncement(teamMemberAnnouncement.isLegacyAnnouncement())
                 .build();
     }
 
@@ -141,6 +148,7 @@ public class TeamMemberAnnouncementMapper {
                 .benefits(request.getBenefits())
                 .isAnnouncementPublic(true)
                 .isAnnouncementInProgress(true)
+                .isLegacyAnnouncement(false)
                 .viewCount(0L)
                 .build();
     }
@@ -180,12 +188,18 @@ public class TeamMemberAnnouncementMapper {
             toAddTeamMemberAnnouncementResponse(
                     final TeamMemberAnnouncement teamMemberAnnouncement,
                     final AnnouncementPositionItem announcementPositionItem,
-                    final List<AnnouncementSkillName> announcementSkillNames) {
+                    final List<AnnouncementSkillName> announcementSkillNames,
+                    final TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem
+                            announcementProjectTypeItem,
+                    final TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem
+                            announcementWorkTypeItem) {
         return AddTeamMemberAnnouncementResponse.builder()
                 .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
                 .announcementPositionItem(announcementPositionItem)
                 .announcementSkillNames(announcementSkillNames)
+                .projectTypeName(announcementProjectTypeItem.getAnnouncementProjectTypeName())
+                .workTypeName(announcementWorkTypeItem.getAnnouncementWorkTypeName())
                 .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
                 .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
                 .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
@@ -195,6 +209,7 @@ public class TeamMemberAnnouncementMapper {
                 .preferredQualifications(teamMemberAnnouncement.getPreferredQualifications())
                 .joiningProcess(teamMemberAnnouncement.getJoiningProcess())
                 .benefits(teamMemberAnnouncement.getBenefits())
+                .isLegacyAnnouncement(teamMemberAnnouncement.isLegacyAnnouncement())
                 .build();
     }
 
@@ -202,12 +217,18 @@ public class TeamMemberAnnouncementMapper {
             toUpdateTeamMemberAnnouncementResponse(
                     final TeamMemberAnnouncement teamMemberAnnouncement,
                     final AnnouncementPositionItem announcementPositionItem,
-                    final List<AnnouncementSkillName> announcementSkillNames) {
+                    final List<AnnouncementSkillName> announcementSkillNames,
+                    final TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem
+                            announcementProjectTypeItem,
+                    final TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem
+                            announcementWorkTypeItem) {
         return UpdateTeamMemberAnnouncementResponse.builder()
                 .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
                 .announcementPositionItem(announcementPositionItem)
                 .announcementSkillNames(announcementSkillNames)
+                .projectTypeName(announcementProjectTypeItem.getAnnouncementProjectTypeName())
+                .workTypeName(announcementWorkTypeItem.getAnnouncementWorkTypeName())
                 .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
                 .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
                 .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
@@ -217,6 +238,7 @@ public class TeamMemberAnnouncementMapper {
                 .preferredQualifications(teamMemberAnnouncement.getPreferredQualifications())
                 .joiningProcess(teamMemberAnnouncement.getJoiningProcess())
                 .benefits(teamMemberAnnouncement.getBenefits())
+                .isLegacyAnnouncement(teamMemberAnnouncement.isLegacyAnnouncement())
                 .build();
     }
 

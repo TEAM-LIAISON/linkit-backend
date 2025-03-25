@@ -5,6 +5,7 @@ import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import lombok.AccessLevel;
@@ -36,6 +37,18 @@ public class TeamMemberAnnouncementRequestDTO {
 
         @Builder.Default
         private List<AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
+
+        @NotBlank(message = "프로젝트 유형은 필수입니다")
+        @Pattern(
+                regexp = "창업·스타트업|사이드 프로젝트|스터디",
+                message = "프로젝트 유형은 '창업·스타트업', '사이드 프로젝트', '스터디' 중 하나여야 합니다")
+        private String projectTypeName;
+
+        @NotBlank(message = "업무 형태는 필수입니다")
+        @Pattern(
+                regexp = "대면|비대면|대면·비대면 혼합",
+                message = "업무 형태는 '대면', '비대면', '대면·비대면 혼합' 중 하나여야 합니다")
+        private String workTypeName;
 
         private String announcementEndDate;
         private Boolean isPermanentRecruitment;
@@ -80,6 +93,18 @@ public class TeamMemberAnnouncementRequestDTO {
 
         @Builder.Default
         private List<AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
+
+        @NotBlank(message = "프로젝트 유형은 필수입니다")
+        @Pattern(
+                regexp = "창업·스타트업|사이드 프로젝트|스터디",
+                message = "프로젝트 유형은 '창업·스타트업', '사이드 프로젝트', '스터디' 중 하나여야 합니다")
+        private String projectTypeName;
+
+        @NotBlank(message = "업무 형태는 필수입니다")
+        @Pattern(
+                regexp = "대면|비대면|대면·비대면 혼합",
+                message = "업무 형태는 '대면', '비대면', '대면·비대면 혼합' 중 하나여야 합니다")
+        private String workTypeName;
 
         private String announcementEndDate;
 

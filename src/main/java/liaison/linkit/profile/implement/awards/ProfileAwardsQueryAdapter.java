@@ -18,6 +18,10 @@ public class ProfileAwardsQueryAdapter {
         return profileAwardsRepository.getProfileAwardsGroup(memberId);
     }
 
+    public List<ProfileAwards> getByIsAwardsVerifiedTrue() {
+        return profileAwardsRepository.getByIsAwardsVerifiedTrue();
+    }
+
     public ProfileAwards getProfileAwards(final Long profileAwardsId) {
         return profileAwardsRepository
                 .findById(profileAwardsId)
