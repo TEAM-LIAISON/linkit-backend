@@ -117,6 +117,6 @@ public class AnnouncementSearchService {
         // 코지메이커스 37L
         // 독스헌트 4L
         // 앤유 50L
-        return List.of(51L, 35L, 27L, 37L, 4L, 50L);
+        return List.of(69L, 67L, 47L, 40L, 38L, 42L);
     }
 }
