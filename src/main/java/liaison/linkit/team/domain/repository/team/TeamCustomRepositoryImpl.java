@@ -221,7 +221,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                 .orderBy(
                         // CASE WHEN 구문으로 지정한 순서대로 정렬
                         new CaseBuilder()
-                                .when(qTeam.id.eq(49L))
+                                .when(qTeam.id.eq(50L))
                                 .then(0)
                                 .when(qTeam.id.eq(52L))
                                 .then(1)
