@@ -1,5 +1,7 @@
 package liaison.linkit.team.business.service.announcement;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -95,6 +97,17 @@ public class TeamMemberAnnouncementService {
     @Transactional(readOnly = true)
     public TeamMemberAnnouncementItems getTeamMemberAnnouncementViewItems(
             final Optional<Long> optionalMemberId, final String teamCode) {
+
+        // 24시간 전 시간 계산 <- 35시간 전으로 임의 변경
+        LocalDateTime twentyFourHoursAgo =
+                LocalDateTime.now(ZoneId.of("Asia/Seoul")).minusHours(39);
+        log.info("광고 발송 대상 공고 조회 시작: 기준 시간 = {}", twentyFourHoursAgo);
+
+        // 쿼리 어댑터를 사용해 조건에 맞는 공고 목록 조회
+        List<TeamMemberAnnouncement> announcements =
+                teamMemberAnnouncementQueryAdapter.findRecentPublicAnnouncementsNotAdvertised(
+                        twentyFourHoursAgo);
+
         return announcementViewItemsAssembler.assembleTeamMemberAnnouncementViewItems(
                 optionalMemberId, teamCode);
     }
