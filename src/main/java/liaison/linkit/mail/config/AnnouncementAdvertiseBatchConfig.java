@@ -76,15 +76,15 @@ public class AnnouncementAdvertiseBatchConfig {
     @StepScope
     public ItemReader<TeamMemberAnnouncement> advertiseAnnouncementReader() {
 
-        // 24시간 전 시간 계산 <- 35시간 전으로 임의 변경
-        LocalDateTime twentyFourHoursAgo =
-                LocalDateTime.now(ZoneId.of("Asia/Seoul")).minusHours(35);
-        log.info("광고 발송 대상 공고 조회 시작: 기준 시간 = {}", twentyFourHoursAgo);
+        // 24시간 전 시간 계산 <- 39시간 전으로 임의 변경
+        LocalDateTime thirtyNineHoursAgo =
+                LocalDateTime.now(ZoneId.of("Asia/Seoul")).minusHours(39);
+        log.info("광고 발송 대상 공고 조회 시작: 기준 시간 = {}", thirtyNineHoursAgo);
 
         // 쿼리 어댑터를 사용해 조건에 맞는 공고 목록 조회
         List<TeamMemberAnnouncement> announcements =
                 teamMemberAnnouncementQueryAdapter.findRecentPublicAnnouncementsNotAdvertised(
-                        twentyFourHoursAgo);
+                        thirtyNineHoursAgo);
 
         log.info("광고 발송 대상 공고 조회 완료: 총 {}개 공고 발견", announcements.size());
 

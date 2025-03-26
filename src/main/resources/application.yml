@@ -46,6 +46,7 @@ spring:
         generate_statistics: false   # 성능 모니터링 설정
         jdbc:
           batch_size: 50
+          time_zone: Asia/Seoul
         order_inserts: true
         order_updates: true
     hibernate:

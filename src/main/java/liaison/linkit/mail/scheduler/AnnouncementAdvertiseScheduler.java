@@ -19,7 +19,7 @@ public class AnnouncementAdvertiseScheduler {
 
     @Autowired private Job announcementAdvertiseJob;
 
-    @Scheduled(cron = "0 30 8 * * ?", zone = "Asia/Seoul") // 매일 오전 8시 30분에 실행
+    @Scheduled(cron = "0 0 13 * * ?", zone = "Asia/Seoul") // 매일 오후 1시에 실행
     public void scheduleAnnouncementAdvertiseJob() throws Exception {
         JobParameters params =
                 new JobParametersBuilder()
