@@ -820,30 +820,20 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
     @Override
     public List<TeamMemberAnnouncement> findRecentPublicAnnouncementsNotAdvertised(
             final LocalDateTime since) {
-        QTeamMemberAnnouncement q = QTeamMemberAnnouncement.teamMemberAnnouncement;
+        QTeamMemberAnnouncement qTeamMemberAnnouncement =
+                QTeamMemberAnnouncement.teamMemberAnnouncement;
 
-        // First check just by date
-        List<TeamMemberAnnouncement> dateOnly =
-                jpaQueryFactory.selectFrom(q).where(q.createdAt.goe(since)).fetch();
-        log.info("Records by date only: {}", dateOnly.size());
-
-        // Then add each condition one by one
-        List<TeamMemberAnnouncement> withPublic =
-                jpaQueryFactory
-                        .selectFrom(q)
-                        .where(q.createdAt.goe(since), q.isAnnouncementPublic.eq(true))
-                        .fetch();
-        log.info("With isPublic: {}", withPublic.size());
-
-        // Complete query with all conditions
+        // 공개된 모집 공고, 배치 기준 1일 전 업로드 된 공고, 광고로 발송되지 않은 공고
         return jpaQueryFactory
-                .selectFrom(q)
+                .selectFrom(qTeamMemberAnnouncement)
                 .where(
-                        q.createdAt.goe(since),
-                        q.isAnnouncementPublic.eq(true),
-                        q.isAnnouncementInProgress.eq(true),
-                        q.isAdvertisingMailSent.eq(false))
-                .orderBy(q.createdAt.desc())
+                        qTeamMemberAnnouncement
+                                .createdAt
+                                .goe(since)
+                                .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
+                                .and(qTeamMemberAnnouncement.isAnnouncementInProgress.eq(true))
+                                .and(qTeamMemberAnnouncement.isAdvertisingMailSent.eq(false)))
+                .orderBy(qTeamMemberAnnouncement.createdAt.desc())
                 .fetch();
     }
 

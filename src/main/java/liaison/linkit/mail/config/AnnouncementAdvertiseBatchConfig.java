@@ -78,7 +78,7 @@ public class AnnouncementAdvertiseBatchConfig {
 
         // 24시간 전 시간 계산 <- 35시간 전으로 임의 변경
         LocalDateTime twentyFourHoursAgo =
-                LocalDateTime.now(ZoneId.of("Asia/Seoul")).minusHours(35);
+                LocalDateTime.now(ZoneId.of("Asia/Seoul")).minusHours(48);
         log.info("광고 발송 대상 공고 조회 시작: 기준 시간 = {}", twentyFourHoursAgo);
 
         // 쿼리 어댑터를 사용해 조건에 맞는 공고 목록 조회
