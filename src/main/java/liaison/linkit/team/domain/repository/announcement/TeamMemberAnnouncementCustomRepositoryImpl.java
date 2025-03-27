@@ -720,7 +720,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                 .then(6)
                                 .when(qTeamMemberAnnouncement.id.eq(32L))
                                 .then(7)
-                                .when(qTeamMemberAnnouncement.id.eq(50L))
+                                .when(qTeamMemberAnnouncement.id.eq(22L))
                                 .then(8)
                                 .otherwise(9)
                                 .asc())
