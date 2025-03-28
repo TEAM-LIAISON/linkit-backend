@@ -58,7 +58,6 @@ public class StompHandler implements ChannelInterceptor {
         if (StompCommand.SUBSCRIBE.equals(headerAccessor.getCommand())) {
             String destination = headerAccessor.getDestination();
             String sessionId = headerAccessor.getSessionId();
-            Principal user = headerAccessor.getUser();
             Long memberId = sessionRegistry.getMemberIdBySession(sessionId);
 
             // 구독 경로에 따른 초기 데이터 전송
@@ -72,6 +71,7 @@ public class StompHandler implements ChannelInterceptor {
             if (destination != null) {
                 if (destination.startsWith("/user/sub/chat/read/")) {
                     Long chatRoomId = extractChatRoomId(destination);
+                    sessionRegistry.subscribeToChatRoom(chatRoomId, memberId);
                     eventPublisher.publishEvent(new ChatRoomReadEvent(memberId, chatRoomId));
                 }
             }
@@ -133,6 +133,19 @@ public class StompHandler implements ChannelInterceptor {
                             message.getPayload(), headerAccessor.getMessageHeaders());
                 } else {
                     throw new IllegalArgumentException("잘못된 destination 형식입니다.");
+                }
+            }
+        }
+
+        if (StompCommand.UNSUBSCRIBE.equals(headerAccessor.getCommand())) {
+            String sessionId = headerAccessor.getSessionId();
+            Long memberId = sessionRegistry.getMemberIdBySession(sessionId);
+            String destination = headerAccessor.getDestination();
+
+            if (destination != null) {
+                if (destination.startsWith("/user/sub/chat/read/")) {
+                    Long chatRoomId = extractChatRoomId(destination);
+                    sessionRegistry.unsubscribeFromChatRoom(chatRoomId, memberId);
                 }
             }
         }

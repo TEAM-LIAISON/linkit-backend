@@ -172,6 +172,15 @@ public class ChatResponseDTO {
         private boolean isRead; // 읽음 여부
     }
 
+    public static class ChatRoomReadStateResponse {
+        private Long chatRoomId; // 채팅방 ID
+        private String lastMessageId; // 메시지 ID
+
+        private Boolean isMyMessage; // 내 메시지인지 여부
+
+        private boolean isRead; // 읽음 여부
+    }
+
     // 채팅방 나가기에 대한 응답
     @Getter
     @Builder
