@@ -25,6 +25,22 @@ public class AccountMapper {
                 .build();
     }
 
+    public AccountResponseDTO.LoginServiceResponse toDummyLogin(
+            final MemberTokens memberTokens,
+            final String email,
+            final String emailId,
+            final String memberName,
+            final boolean isMemberBasicInform) {
+        return AccountResponseDTO.LoginServiceResponse.builder()
+                .accessToken(memberTokens.getAccessToken())
+                .refreshToken(memberTokens.getRefreshToken())
+                .email(email)
+                .emailId(emailId)
+                .memberName(memberName)
+                .isMemberBasicInform(isMemberBasicInform)
+                .build();
+    }
+
     public AccountResponseDTO.LogoutResponse toLogout() {
         return AccountResponseDTO.LogoutResponse.builder().logoutAt(LocalDateTime.now()).build();
     }
