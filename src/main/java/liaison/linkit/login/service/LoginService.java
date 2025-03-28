@@ -94,6 +94,35 @@ public class LoginService {
                 isMemberBasicInform);
     }
 
+    // 더미 회원이 로그인한다.
+    public AccountResponseDTO.LoginServiceResponse dummyLogin(final String email) {
+        final Member member = memberQueryAdapter.findByEmail(email);
+
+        final boolean isMemberBasicInform = member.isCreateMemberBasicInform();
+
+        // 토큰을 생성한다
+        final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
+
+        // 생성한 토큰 중 refreshToken을 레디스에 저장한다
+        final RefreshToken savedRefreshToken =
+                new RefreshToken(memberTokens.getRefreshToken(), member.getId());
+        refreshTokenRepository.save(savedRefreshToken);
+
+        // 1) memberName 가져오기 (null-safe)
+        String memberName = null;
+        if (member.getMemberBasicInform() != null) {
+            memberName = member.getMemberBasicInform().getMemberName();
+            // 여기서 memberName이 null일 수도 있음
+        }
+
+        return accountMapper.toDummyLogin(
+                memberTokens,
+                member.getEmail(),
+                member.getEmailId(),
+                memberName,
+                isMemberBasicInform);
+    }
+
     private Member findOrCreateMember(
             final String socialLoginId, final String email, final Platform platform) {
         final Optional<Member> member = memberQueryAdapter.findBySocialLoginId(socialLoginId);

@@ -69,6 +69,34 @@ public class LoginController {
                         loginResponse.getIsMemberBasicInform()));
     }
 
+    @PostMapping("/login")
+    public CommonResponse<AccountResponseDTO.LoginResponse> login(
+            @RequestBody final AccountRequestDTO.DummyLoginRequest dummyLoginRequest,
+            final HttpServletResponse response) {
+        final AccountResponseDTO.LoginServiceResponse loginResponse =
+                loginService.dummyLogin(dummyLoginRequest.getEmail());
+
+        // 1) refreshToken 쿠키 설정
+        final ResponseCookie cookie =
+                ResponseCookie.from("refreshToken", loginResponse.getRefreshToken())
+                        .maxAge(COOKIE_AGE_SECONDS)
+                        .secure(true)
+                        .sameSite("None")
+                        .path("/")
+                        .httpOnly(true)
+                        .build();
+
+        response.addHeader(SET_COOKIE, cookie.toString());
+
+        return CommonResponse.onSuccess(
+                new AccountResponseDTO.LoginResponse(
+                        loginResponse.getAccessToken(),
+                        loginResponse.getEmail(),
+                        loginResponse.getEmailId(),
+                        loginResponse.getMemberName(),
+                        loginResponse.getIsMemberBasicInform()));
+    }
+
     // accessToken을 재발행한다
     @PostMapping("/renew/token")
     @Logging(item = "Login", action = "POST_RENEW_TOKEN", includeResult = true)
