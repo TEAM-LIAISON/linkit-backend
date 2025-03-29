@@ -16,6 +16,7 @@ import liaison.linkit.chat.implement.ChatQueryAdapter;
 import liaison.linkit.chat.implement.ChatRoomCommandAdapter;
 import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.ChatMessageRequest;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatLeftMenu;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatMessageHistoryResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatMessageResponse;
@@ -221,6 +222,23 @@ public class ChatService {
 
     private void sendChatMessages(
             ChatRoom chatRoom, ChatMessage chatMessage, Long senderMemberId, String sessionId) {
+        // 수신자 ID 계산
+        Long receiverMemberId =
+                chatRoom.getParticipantAMemberId().equals(senderMemberId)
+                        ? chatRoom.getParticipantBMemberId()
+                        : chatRoom.getParticipantAMemberId();
+
+        // 수신자가 현재 채팅방을 보고 있는지 확인
+        boolean isReceiverInChatRoom =
+                sessionRegistry.isSubscribedToChatRoom(chatRoom.getId(), receiverMemberId);
+
+        // 수신자가 채팅방을 보고 있다면 메시지를 읽음 처리
+        if (isReceiverInChatRoom) {
+            chatMessage.markAsRead(); // 메시지를 읽음 상태로 변경하는 메소드 (구현 필요)
+            chatMessageRepository.save(chatMessage); // 변경사항 저장
+        }
+
+        // 채팅 메시지 응답 생성
         // 채팅방의 양쪽 참여자에게 메시지 전송
         ChatMessageResponse senderResponse =
                 chatMapper.toChatMessageResponse(chatRoom, chatMessage, senderMemberId);
@@ -228,17 +246,37 @@ public class ChatService {
                 chatMapper.toChatMessageResponse(
                         chatRoom, chatMessage, chatMessage.getMessageReceiverMemberId());
 
-        // 발신자에게 메시지 전송
+        // 읽기 상태 응답 생성
+        ChatResponseDTO.ChatRoomReadStateResponse senderReadResponse =
+                ChatResponseDTO.ChatRoomReadStateResponse.builder()
+                        .chatRoomId(chatRoom.getId())
+                        .isChatPartnerIsJoinChatRoom(isReceiverInChatRoom)
+                        .lastMessageId(chatMessage.getId())
+                        .isLastMessageIsMyMessage(true) // 발신자 입장에서는 마지막 메시지가 자신의 메시지
+                        .isLastMessageRead(isReceiverInChatRoom) // 수신자가 채팅방에 있으면 읽음 처리
+                        .build();
+
+        ChatResponseDTO.ChatRoomReadStateResponse receiverReadResponse =
+                ChatResponseDTO.ChatRoomReadStateResponse.builder()
+                        .chatRoomId(chatRoom.getId())
+                        .isChatPartnerIsJoinChatRoom(
+                                sessionRegistry.isSubscribedToChatRoom(
+                                        chatRoom.getId(), senderMemberId))
+                        .lastMessageId(chatMessage.getId())
+                        .isLastMessageIsMyMessage(false) // 수신자 입장에서는 마지막 메시지가 상대방 메시지
+                        .isLastMessageRead(true) // 자신이 채팅방에 있으므로 읽음 처리
+                        .build();
+
+        // 발신자에게 메시지 및 읽기 상태 전송
         sendMessageToAllSessions(senderMemberId, "/sub/chat/" + chatRoom.getId(), senderResponse);
+        sendMessageToAllSessions(
+                senderMemberId, "/sub/chat/read/" + chatRoom.getId(), senderReadResponse);
 
-        // 수신자에게 메시지 전송
-        Long receiverMemberId =
-                chatRoom.getParticipantAMemberId().equals(senderMemberId)
-                        ? chatRoom.getParticipantBMemberId()
-                        : chatRoom.getParticipantAMemberId();
-
+        // 수신자에게 메시지 및 읽기 상태 전송
         sendMessageToAllSessions(
                 receiverMemberId, "/sub/chat/" + chatRoom.getId(), receiverResponse);
+        sendMessageToAllSessions(
+                receiverMemberId, "/sub/chat/read/" + chatRoom.getId(), receiverReadResponse);
     }
 
     /** 채팅방의 이전 메시지 내역 조회 */
