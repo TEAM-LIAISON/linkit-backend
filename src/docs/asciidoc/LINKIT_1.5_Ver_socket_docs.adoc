@@ -43,6 +43,13 @@ Authorization: Bearer {accessToken}
 SUBSCRIBE /sub/chat/{chatRoomId}
 ----
 
+==== 채팅방 읽기/안읽기 상태 구독
+
+[source,http]
+----
+SUBSCRIBE /sub/chat/read/{chatRoomId}
+----
+
 === 채팅 메시지 전송 (/pub)
 
 [source,http]
