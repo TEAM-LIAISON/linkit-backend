@@ -581,15 +581,8 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         AnnouncementSkillName.builder()
                                                 .announcementSkillName("스킬 이름 2")
                                                 .build()))
-                        .announcementProjectTypeItem(
-                                TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem
-                                        .builder()
-                                        .announcementProjectTypeName("프로젝트 유형 이름")
-                                        .build())
-                        .announcementWorkTypeItem(
-                                TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem.builder()
-                                        .announcementWorkTypeName("업무 형태 이름")
-                                        .build())
+                        .projectTypeName("프로젝트 유형 이름")
+                        .workTypeName("업무 형태 이름")
                         .isRegionFlexible(true)
                         .mainTasks("주요 업무")
                         .workMethod("업무 방식")
@@ -688,14 +681,14 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                                 "result.announcementSkillNames[].announcementSkillName")
                                                         .type(JsonFieldType.STRING)
                                                         .description("공고 스킬 이름"),
-                                                fieldWithPath(
-                                                                "result.announcementProjectTypeItem.announcementProjectTypeName")
+                                                fieldWithPath("result.projectTypeName")
                                                         .type(JsonFieldType.STRING)
-                                                        .description("공고 프로젝트 유형 이름"),
-                                                fieldWithPath(
-                                                                "result.announcementWorkTypeItem.announcementWorkTypeName")
+                                                        .description("프로젝트 유형 이름")
+                                                        .optional(),
+                                                fieldWithPath("result.workTypeName")
                                                         .type(JsonFieldType.STRING)
-                                                        .description("공고 업무 형태 이름"),
+                                                        .description("업무 형태 이름")
+                                                        .optional(),
                                                 fieldWithPath("result.isRegionFlexible")
                                                         .type(JsonFieldType.BOOLEAN)
                                                         .description("지역 무관 여부"),
@@ -884,14 +877,14 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                                 "result.announcementSkillNames[].announcementSkillName")
                                                         .type(JsonFieldType.STRING)
                                                         .description("공고 스킬 이름"),
-                                                fieldWithPath(
-                                                                "result.announcementProjectTypeItem.announcementProjectTypeName")
+                                                fieldWithPath("result.projectTypeName")
                                                         .type(JsonFieldType.STRING)
-                                                        .description("공고 프로젝트 유형 이름"),
-                                                fieldWithPath(
-                                                                "result.announcementWorkTypeItem.announcementWorkTypeName")
+                                                        .description("프로젝트 유형 이름")
+                                                        .optional(),
+                                                fieldWithPath("result.workTypeName")
                                                         .type(JsonFieldType.STRING)
-                                                        .description("공고 업무 형태 이름"),
+                                                        .description("업무 형태 이름")
+                                                        .optional(),
                                                 fieldWithPath("result.announcementEndDate")
                                                         .type(JsonFieldType.STRING)
                                                         .description("공고 종료 날짜"),
@@ -1089,14 +1082,14 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                                 "result.announcementSkillNames[].announcementSkillName")
                                                         .type(JsonFieldType.STRING)
                                                         .description("공고 스킬 이름"),
-                                                fieldWithPath(
-                                                                "result.announcementProjectTypeItem.announcementProjectTypeName")
+                                                fieldWithPath("result.projectTypeName")
                                                         .type(JsonFieldType.STRING)
-                                                        .description("공고 프로젝트 유형 이름"),
-                                                fieldWithPath(
-                                                                "result.announcementWorkTypeItem.announcementWorkTypeName")
+                                                        .description("프로젝트 유형 이름")
+                                                        .optional(),
+                                                fieldWithPath("result.workTypeName")
                                                         .type(JsonFieldType.STRING)
-                                                        .description("공고 업무 형태 이름"),
+                                                        .description("업무 형태 이름")
+                                                        .optional(),
                                                 fieldWithPath("result.announcementEndDate")
                                                         .type(JsonFieldType.STRING)
                                                         .description("공고 종료 날짜"),
@@ -1351,14 +1344,8 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 .announcementTitle("공고 제목")
                 .announcementPositionItem(announcementPositionItem)
                 .announcementSkillNames(announcementSkillNamesResponse)
-                .announcementProjectTypeItem(
-                        TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem.builder()
-                                .announcementProjectTypeName("프로젝트 유형 이름")
-                                .build())
-                .announcementWorkTypeItem(
-                        TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem.builder()
-                                .announcementWorkTypeName("업무 형태 이름")
-                                .build())
+                .projectTypeName("프로젝트 유형 이름")
+                .workTypeName("업무 형태 이름")
                 .announcementEndDate("공고 종료 날짜")
                 .isPermanentRecruitment(true)
                 .isRegionFlexible(false)
@@ -1389,14 +1376,8 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 .announcementTitle("공고 제목")
                 .announcementPositionItem(announcementPositionItem)
                 .announcementSkillNames(announcementSkillNamesResponse)
-                .announcementProjectTypeItem(
-                        TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem.builder()
-                                .announcementProjectTypeName("프로젝트 유형 이름")
-                                .build())
-                .announcementWorkTypeItem(
-                        TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem.builder()
-                                .announcementWorkTypeName("업무 형태 이름")
-                                .build())
+                .projectTypeName("프로젝트 유형 이름")
+                .workTypeName("업무 형태 이름")
                 .announcementEndDate("공고 종료 날짜")
                 .isPermanentRecruitment(true)
                 .isRegionFlexible(false)

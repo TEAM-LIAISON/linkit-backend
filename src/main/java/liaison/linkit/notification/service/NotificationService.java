@@ -2,6 +2,9 @@ package liaison.linkit.notification.service;
 
 import java.util.List;
 
+import liaison.linkit.chat.domain.ChatRoom;
+import liaison.linkit.chat.implement.ChatMessageQueryAdapter;
+import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.notification.business.NotificationMapper;
 import liaison.linkit.notification.domain.Notification;
@@ -29,11 +32,18 @@ public class NotificationService {
     private final NotificationMapper notificationMapper;
     private final MemberQueryAdapter memberQueryAdapter;
     private final HeaderNotificationService headerNotificationService;
+    private final ChatRoomQueryAdapter chatRoomQueryAdapter;
+    private final ChatMessageQueryAdapter chatMessageQueryAdapter;
 
     public NotificationResponseDTO.NotificationItems getNotificationItems(final Long memberId) {
         final List<Notification> notifications =
                 notificationQueryAdapter.getNotificationsByMember(memberId);
         return notificationMapper.toNotificationItems(notifications);
+    }
+
+    public NotificationResponseDTO.NotificationCountResponse getNotificationCount(
+            final Long memberId) {
+        return getUnreadCount(memberId);
     }
 
     public void alertNewNotification(final Notification notification) {
@@ -63,8 +73,26 @@ public class NotificationService {
         notification.setNotificationReadStatus(NotificationReadStatus.READ);
         final Notification savedNotification = notificationCommandAdapter.save(notification);
 
-        headerNotificationService.publishNotificationCount(memberId);
+        //        headerNotificationService.publishNotificationCount(memberId);
 
         return notificationMapper.toReadNotification(savedNotification);
+    }
+
+    private NotificationResponseDTO.NotificationCountResponse getUnreadCount(final Long memberId) {
+        long unreadNotificationCount = notificationQueryAdapter.countUnreadMessages(memberId);
+        // 4. 채팅방 참여 이력이 없을 경우 처리
+        long unreadChatCount = 0;
+        if (chatRoomQueryAdapter.existsChatRoomByMemberId(memberId)) {
+            // 2. 사용자의 채팅방 참여 이력 조회
+            List<ChatRoom> chatRooms = chatRoomQueryAdapter.findAllChatRoomsByMemberId(memberId);
+
+            // 3. 채팅방 ID 추출
+            List<Long> chatRoomIds = chatRooms.stream().map(ChatRoom::getId).toList();
+            unreadChatCount =
+                    chatMessageQueryAdapter.countUnreadMessagesByChatRoomIdsAndReceiver(
+                            memberId, chatRoomIds);
+        }
+
+        return notificationMapper.toNotificationCount(unreadChatCount, unreadNotificationCount);
     }
 }

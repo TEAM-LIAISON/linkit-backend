@@ -369,8 +369,8 @@ public class TeamMemberService {
                                         teamMemberJoinedNotificationDetails));
                     }
 
-                    headerNotificationService.publishNotificationCount(
-                            currentMember.getMember().getId());
+                    //                    headerNotificationService.publishNotificationCount(
+                    //                            currentMember.getMember().getId());
                 }
             } else {
                 // 거절
@@ -425,7 +425,7 @@ public class TeamMemberService {
                                 SubNotificationType.REMOVE_TEAM_COMPLETED,
                                 removeTeamNotificationDetails));
 
-                headerNotificationService.publishNotificationCount(memberId);
+                //                headerNotificationService.publishNotificationCount(memberId);
             }
         } else if (updateManagingTeamStateRequest
                 .getTeamMemberManagingTeamState()
@@ -460,8 +460,8 @@ public class TeamMemberService {
                                 SubNotificationType.REMOVE_TEAM_REJECTED,
                                 rejectRemoveTeamNotificationDetails));
 
-                headerNotificationService.publishNotificationCount(
-                        currentManagingMember.getMember().getId());
+                //                headerNotificationService.publishNotificationCount(
+                //                        currentManagingMember.getMember().getId());
             }
         }
 

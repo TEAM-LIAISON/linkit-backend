@@ -363,8 +363,8 @@ public class TeamService {
                                 SubNotificationType.REMOVE_TEAM_REQUESTED,
                                 removeTeamNotificationDetails));
 
-                headerNotificationService.publishNotificationCount(
-                        currentTeamMember.getMember().getId());
+                //                headerNotificationService.publishNotificationCount(
+                //                        currentTeamMember.getMember().getId());
             }
         } else { // 오너만 해당 팀을 소유하고 있는 경우
             isTeamLastDeleteRequester = true;
@@ -384,7 +384,7 @@ public class TeamService {
                             SubNotificationType.REMOVE_TEAM_COMPLETED,
                             removeTeamNotificationDetails));
 
-            headerNotificationService.publishNotificationCount(memberId);
+            //            headerNotificationService.publishNotificationCount(memberId);
         }
 
         return teamMapper.toDeleteTeam(teamCode, isTeamLastDeleteRequester);

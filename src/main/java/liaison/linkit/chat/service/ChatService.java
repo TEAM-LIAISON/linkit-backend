@@ -12,7 +12,7 @@ import liaison.linkit.chat.domain.repository.chatMessage.ChatMessageRepository;
 import liaison.linkit.chat.domain.type.ParticipantType;
 import liaison.linkit.chat.exception.ChatRoomLeaveBadRequestException;
 import liaison.linkit.chat.exception.SendChatMessageBadRequestException;
-import liaison.linkit.chat.implement.ChatQueryAdapter;
+import liaison.linkit.chat.implement.ChatMessageQueryAdapter;
 import liaison.linkit.chat.implement.ChatRoomCommandAdapter;
 import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.ChatMessageRequest;
@@ -92,7 +92,7 @@ public class ChatService {
     private final TeamScaleQueryAdapter teamScaleQueryAdapter;
     private final TeamScaleMapper teamScaleMapper;
     private final SessionRegistry sessionRegistry;
-    private final ChatQueryAdapter chatQueryAdapter;
+    private final ChatMessageQueryAdapter chatMessageQueryAdapter;
     private final HeaderNotificationService headerNotificationService;
     private final DiscordChatReportService discordChatReportService;
 
@@ -115,7 +115,7 @@ public class ChatService {
         unreadMessages.forEach(ChatMessage::markAsRead);
         chatMessageRepository.saveAll(unreadMessages);
 
-        headerNotificationService.publishNotificationCount(memberId);
+        //        headerNotificationService.publishNotificationCount(memberId);
         // 5. 응답 DTO 생성
         long updatedCount = unreadMessages.size();
 
@@ -172,8 +172,8 @@ public class ChatService {
         discordChatReportService.sendChatMessageReport(chatMessageReportDto);
 
         // 5. 헤더 알림 전송
-        headerNotificationService.publishNotificationCount(
-                chatMessage.getMessageReceiverMemberId());
+        //        headerNotificationService.publishNotificationCount(
+        //                chatMessage.getMessageReceiverMemberId());
     }
 
     private String getParticipantLogoImagePath(SenderType type, String id) {
@@ -328,7 +328,7 @@ public class ChatService {
 
                 isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
                 long unreadCount =
-                        chatQueryAdapter.countUnreadMessagesInRoomForMember(
+                        chatMessageQueryAdapter.countUnreadMessagesInRoomForMember(
                                 chatRoom.getId(), memberId);
 
                 chatPartnerInformation =
@@ -370,7 +370,7 @@ public class ChatService {
 
                 isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
                 long unreadCount =
-                        chatQueryAdapter.countUnreadMessagesInRoomForMember(
+                        chatMessageQueryAdapter.countUnreadMessagesInRoomForMember(
                                 chatRoom.getId(), memberId);
 
                 chatPartnerInformation =
@@ -413,7 +413,7 @@ public class ChatService {
 
                 isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
                 long unreadCount =
-                        chatQueryAdapter.countUnreadMessagesInRoomForMember(
+                        chatMessageQueryAdapter.countUnreadMessagesInRoomForMember(
                                 chatRoom.getId(), memberId);
 
                 chatPartnerInformation =
@@ -457,7 +457,7 @@ public class ChatService {
 
                 isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
                 long unreadCount =
-                        chatQueryAdapter.countUnreadMessagesInRoomForMember(
+                        chatMessageQueryAdapter.countUnreadMessagesInRoomForMember(
                                 chatRoom.getId(), memberId);
 
                 chatPartnerInformation =
@@ -499,7 +499,7 @@ public class ChatService {
 
                 isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
                 long unreadCount =
-                        chatQueryAdapter.countUnreadMessagesInRoomForMember(
+                        chatMessageQueryAdapter.countUnreadMessagesInRoomForMember(
                                 chatRoom.getId(), memberId);
 
                 chatPartnerInformation =
@@ -542,7 +542,7 @@ public class ChatService {
 
                 isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
                 long unreadCount =
-                        chatQueryAdapter.countUnreadMessagesInRoomForMember(
+                        chatMessageQueryAdapter.countUnreadMessagesInRoomForMember(
                                 chatRoom.getId(), memberId);
 
                 chatPartnerInformation =
@@ -601,7 +601,7 @@ public class ChatService {
                     RegionDetail regionDetail = getProfileRegionDetail(partnerProfile);
                     boolean isPartnerOnline = sessionRegistry.isOnline(partnerMember.getId());
                     long unreadCount =
-                            chatQueryAdapter.countUnreadMessagesInRoomForMember(
+                            chatMessageQueryAdapter.countUnreadMessagesInRoomForMember(
                                     chatRoom.getId(), memberId);
 
                     ChatRoomSummary chatRoomSummary =
@@ -645,7 +645,7 @@ public class ChatService {
                     RegionDetail regionDetail = getTeamRegionDetail(partnerTeam);
                     boolean isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
                     long unreadCount =
-                            chatQueryAdapter.countUnreadMessagesInRoomForMember(
+                            chatMessageQueryAdapter.countUnreadMessagesInRoomForMember(
                                     chatRoom.getId(), memberId);
 
                     ChatRoomSummary chatRoomSummary =
@@ -695,7 +695,7 @@ public class ChatService {
                     RegionDetail regionDetail = getTeamRegionDetail(partnerTeam);
                     boolean isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
                     long unreadCount =
-                            chatQueryAdapter.countUnreadMessagesInRoomForMember(
+                            chatMessageQueryAdapter.countUnreadMessagesInRoomForMember(
                                     chatRoom.getId(), memberId);
 
                     ChatRoomSummary chatRoomSummary =
@@ -742,7 +742,7 @@ public class ChatService {
                     RegionDetail regionDetail = getProfileRegionDetail(partnerProfile);
                     boolean isPartnerOnline = sessionRegistry.isOnline(partnerMember.getId());
                     long unreadCount =
-                            chatQueryAdapter.countUnreadMessagesInRoomForMember(
+                            chatMessageQueryAdapter.countUnreadMessagesInRoomForMember(
                                     chatRoom.getId(), memberId);
 
                     ChatRoomSummary chatRoomSummary =
@@ -787,7 +787,7 @@ public class ChatService {
                     RegionDetail regionDetail = getTeamRegionDetail(partnerTeam);
                     boolean isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
                     long unreadCount =
-                            chatQueryAdapter.countUnreadMessagesInRoomForMember(
+                            chatMessageQueryAdapter.countUnreadMessagesInRoomForMember(
                                     chatRoom.getId(), memberId);
 
                     ChatRoomSummary chatRoomSummary =
@@ -836,7 +836,7 @@ public class ChatService {
                     RegionDetail regionDetail = getTeamRegionDetail(partnerTeam);
                     boolean isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
                     long unreadCount =
-                            chatQueryAdapter.countUnreadMessagesInRoomForMember(
+                            chatMessageQueryAdapter.countUnreadMessagesInRoomForMember(
                                     chatRoom.getId(), memberId);
 
                     ChatRoomSummary chatRoomSummary =

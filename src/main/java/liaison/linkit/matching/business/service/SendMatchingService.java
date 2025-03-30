@@ -238,7 +238,7 @@ public class SendMatchingService {
                         savedMatching);
         notificationHandler.alertNewRequestedNotificationToReceiver(
                 savedMatching, notificationDetails);
-        headerNotificationService.publishNotificationCount(
-                matchingInfoResolver.getReceiverMemberId(savedMatching));
+        //        headerNotificationService.publishNotificationCount(
+        //                matchingInfoResolver.getReceiverMemberId(savedMatching));
     }
 }

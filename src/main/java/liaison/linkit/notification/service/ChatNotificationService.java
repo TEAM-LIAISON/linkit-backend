@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 import liaison.linkit.chat.domain.ChatMessage;
 import liaison.linkit.chat.domain.ChatRoom;
 import liaison.linkit.chat.domain.repository.chatMessage.ChatMessageRepository;
-import liaison.linkit.chat.implement.ChatQueryAdapter;
+import liaison.linkit.chat.implement.ChatMessageQueryAdapter;
 import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
 import liaison.linkit.global.presentation.dto.ChatRoomConnectedEvent;
 import liaison.linkit.global.presentation.dto.ChatRoomReadEvent;
@@ -32,7 +32,7 @@ public class ChatNotificationService {
     private final SessionRegistry sessionRegistry;
     // 채팅방 및 메시지 쿼리
     private final ChatRoomQueryAdapter chatRoomQueryAdapter;
-    private final ChatQueryAdapter chatQueryAdapter;
+    private final ChatMessageQueryAdapter chatMessageQueryAdapter;
     private final ChatMessageRepository chatMessageRepository;
 
     @EventListener
@@ -81,7 +81,7 @@ public class ChatNotificationService {
         boolean isPartnerOnline = sessionRegistry.isOnline(partnerId);
         // 4. 읽지 않은 메시지 개수
         long unreadCount =
-                chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoomId, memberId);
+                chatMessageQueryAdapter.countUnreadMessagesInRoomForMember(chatRoomId, memberId);
         // 5. 마지막 메시지 정보 (ChatRoom 엔티티가 lastMessage, lastMessageTime 필드를 가지고 있다고 가정)
         //    만약 ChatRoom이 아니라 ChatMessageRepository에서 직접 최신 메시지를 조회한다면 변경 필요
         String lastMessage = chatRoom.getLastMessage();

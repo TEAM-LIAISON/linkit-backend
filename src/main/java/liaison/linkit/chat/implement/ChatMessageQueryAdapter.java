@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 @Adapter
 @RequiredArgsConstructor
-public class ChatQueryAdapter {
+public class ChatMessageQueryAdapter {
     private final ChatMessageRepository chatMessageRepository;
 
     public long countUnreadMessagesByChatRoomIdsAndReceiver(
