@@ -6,6 +6,7 @@ import java.util.List;
 import liaison.linkit.chat.event.ChatEvent.UserConnectedEvent;
 import liaison.linkit.chat.event.ChatEvent.UserDisconnectedEvent;
 import liaison.linkit.global.presentation.dto.ChatRoomConnectedEvent;
+import liaison.linkit.global.presentation.dto.ChatRoomReadEvent;
 import liaison.linkit.global.presentation.dto.SubscribeEvent;
 import liaison.linkit.login.infrastructure.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -67,11 +68,17 @@ public class StompHandler implements ChannelInterceptor {
                 }
             }
 
-            // 채팅방 입장 (구독)
+            if (destination != null) {
+                if (destination.startsWith("/user/sub/chat/read/")) {
+                    Long chatRoomId = extractChatRoomId(destination);
+                    sessionRegistry.subscribeToChatRoom(chatRoomId, memberId);
+                    eventPublisher.publishEvent(new ChatRoomReadEvent(memberId, chatRoomId));
+                }
+            }
+
             if (destination != null) {
                 if (destination.startsWith("/user/sub/chat/")) {
                     Long chatRoomId = extractChatRoomId(destination);
-                    sessionRegistry.subscribeToChatRoom(chatRoomId, memberId);
                     eventPublisher.publishEvent(new ChatRoomConnectedEvent(memberId, chatRoomId));
                 }
             }
@@ -136,7 +143,7 @@ public class StompHandler implements ChannelInterceptor {
             String destination = headerAccessor.getDestination();
 
             if (destination != null) {
-                if (destination.startsWith("/user/sub/chat/")) {
+                if (destination.startsWith("/user/sub/chat/read/")) {
                     Long chatRoomId = extractChatRoomId(destination);
                     sessionRegistry.unsubscribeFromChatRoom(chatRoomId, memberId);
                 }

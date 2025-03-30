@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class ChatRoomConnectedEvent {
+public class ChatRoomReadEvent {
     private final Long memberId;
     private final Long chatRoomId;
 }

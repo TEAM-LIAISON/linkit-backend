@@ -16,6 +16,7 @@ import liaison.linkit.chat.implement.ChatMessageQueryAdapter;
 import liaison.linkit.chat.implement.ChatRoomCommandAdapter;
 import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.ChatMessageRequest;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatLeftMenu;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatMessageHistoryResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatMessageResponse;
@@ -219,15 +220,6 @@ public class ChatService {
         }
     }
 
-    /**
-     * 채팅 메시지를 전송합니다. 발신자와 수신자가 현재 채팅방에 입장해 있는지 여부에 따라 메시지 전송 대상이 결정됩니다. 두 참여자가 모두 채팅방에 입장해 있다면 양쪽
-     * 모두에게 메시지가 전송되고, 한 명만 입장해 있다면 입장한 참여자에게만 메시지가 전송됩니다.
-     *
-     * @param chatRoom 메시지가 전송될 채팅방
-     * @param chatMessage 전송할 채팅 메시지
-     * @param senderMemberId 메시지 발신자 ID
-     * @param sessionId 발신자의 세션 ID
-     */
     private void sendChatMessages(
             ChatRoom chatRoom, ChatMessage chatMessage, Long senderMemberId, String sessionId) {
         // 수신자 ID 계산
@@ -236,67 +228,55 @@ public class ChatService {
                         ? chatRoom.getParticipantBMemberId()
                         : chatRoom.getParticipantAMemberId();
 
-        // 발신자와 수신자가 채팅방에 입장해 있는지 확인
-        boolean isSenderInChatRoom =
-                sessionRegistry.isSubscribedToChatRoom(chatRoom.getId(), senderMemberId);
+        // 수신자가 현재 채팅방을 보고 있는지 확인
         boolean isReceiverInChatRoom =
                 sessionRegistry.isSubscribedToChatRoom(chatRoom.getId(), receiverMemberId);
 
         // 수신자가 채팅방을 보고 있다면 메시지를 읽음 처리
         if (isReceiverInChatRoom) {
-            chatMessage.markAsRead();
-            chatMessageRepository.save(chatMessage);
+            chatMessage.markAsRead(); // 메시지를 읽음 상태로 변경하는 메소드 (구현 필요)
+            chatMessageRepository.save(chatMessage); // 변경사항 저장
         }
 
-        // 발신자 응답 생성 (발신자가 채팅방에 입장한 경우에만 전송)
-        if (isSenderInChatRoom) {
-            ChatMessageResponse senderResponse =
-                    chatMapper.toChatMessageResponse(
-                            chatRoom,
-                            chatMessage,
-                            senderMemberId,
-                            isReceiverInChatRoom, // 상대방(수신자)이 채팅방에 있는지 여부
-                            chatMessage.getId(),
-                            true, // 자신의 메시지임
-                            chatMessage.isRead() // 메시지 읽음 상태
-                            );
+        // 채팅 메시지 응답 생성
+        // 채팅방의 양쪽 참여자에게 메시지 전송
+        ChatMessageResponse senderResponse =
+                chatMapper.toChatMessageResponse(chatRoom, chatMessage, senderMemberId);
+        ChatMessageResponse receiverResponse =
+                chatMapper.toChatMessageResponse(
+                        chatRoom, chatMessage, chatMessage.getMessageReceiverMemberId());
 
-            // 발신자에게 메시지 전송
-            sendMessageToAllSessions(
-                    senderMemberId, "/sub/chat/" + chatRoom.getId(), senderResponse);
-        }
+        // 읽기 상태 응답 생성
+        ChatResponseDTO.ChatRoomReadStateResponse senderReadResponse =
+                ChatResponseDTO.ChatRoomReadStateResponse.builder()
+                        .chatRoomId(chatRoom.getId())
+                        .isChatPartnerIsJoinChatRoom(isReceiverInChatRoom)
+                        .lastMessageId(chatMessage.getId())
+                        .isLastMessageIsMyMessage(true) // 발신자 입장에서는 마지막 메시지가 자신의 메시지
+                        .isLastMessageRead(isReceiverInChatRoom) // 수신자가 채팅방에 있으면 읽음 처리
+                        .build();
 
-        // 수신자 응답 생성 (수신자가 채팅방에 입장한 경우에만 전송)
-        if (isReceiverInChatRoom) {
-            ChatMessageResponse receiverResponse =
-                    chatMapper.toChatMessageResponse(
-                            chatRoom,
-                            chatMessage,
-                            receiverMemberId,
-                            isSenderInChatRoom, // 상대방(발신자)이 채팅방에 있는지 여부
-                            chatMessage.getId(),
-                            false, // 자신의 메시지가 아님
-                            chatMessage.isRead() // 메시지 읽음 상태
-                            );
+        ChatResponseDTO.ChatRoomReadStateResponse receiverReadResponse =
+                ChatResponseDTO.ChatRoomReadStateResponse.builder()
+                        .chatRoomId(chatRoom.getId())
+                        .isChatPartnerIsJoinChatRoom(
+                                sessionRegistry.isSubscribedToChatRoom(
+                                        chatRoom.getId(), senderMemberId))
+                        .lastMessageId(chatMessage.getId())
+                        .isLastMessageIsMyMessage(false) // 수신자 입장에서는 마지막 메시지가 상대방 메시지
+                        .isLastMessageRead(true) // 자신이 채팅방에 있으므로 읽음 처리
+                        .build();
 
-            // 수신자에게 메시지 전송
-            sendMessageToAllSessions(
-                    receiverMemberId, "/sub/chat/" + chatRoom.getId(), receiverResponse);
-        }
+        // 발신자에게 메시지 및 읽기 상태 전송
+        sendMessageToAllSessions(senderMemberId, "/sub/chat/" + chatRoom.getId(), senderResponse);
+        sendMessageToAllSessions(
+                senderMemberId, "/sub/chat/read/" + chatRoom.getId(), senderReadResponse);
 
-        // 로깅
-        String participants =
-                isSenderInChatRoom && isReceiverInChatRoom
-                        ? "발신자와 수신자 모두에게"
-                        : isSenderInChatRoom
-                                ? "발신자에게만"
-                                : isReceiverInChatRoom ? "수신자에게만" : "아무에게도 전송되지 않음";
-
-        log.info(
-                "메시지 전송 완료. 채팅방: {}, 메시지 ID: {}, 전송 대상: {}",
-                chatRoom.getId(),
-                chatMessage.getId(),
-                participants);
+        // 수신자에게 메시지 및 읽기 상태 전송
+        sendMessageToAllSessions(
+                receiverMemberId, "/sub/chat/" + chatRoom.getId(), receiverResponse);
+        sendMessageToAllSessions(
+                receiverMemberId, "/sub/chat/read/" + chatRoom.getId(), receiverReadResponse);
     }
 
     /** 채팅방의 이전 메시지 내역 조회 */

@@ -29,7 +29,7 @@ Authorization: Bearer {accessToken}
 }
 ----
 
-=== 채팅방 구독 연결 (/user/sub)
+=== 채팅방 구독 연결 (/sub)
 
 [source,http]
 ----
@@ -40,7 +40,51 @@ Authorization: Bearer {accessToken}
 
 [source,http]
 ----
-SUBSCRIBE /user/sub/chat/{chatRoomId}
+SUBSCRIBE /sub/chat/{chatRoomId}
+----
+
+=== 채팅방 읽기/안읽기 구독 (/sub)
+
+==== 채팅방 읽기/안읽기 상태 구독
+
+[source,http]
+----
+SUBSCRIBE /sub/chat/read/{chatRoomId}
+----
+
+구독 성공 시, 서버에서 `ChatRoomReadInitResponse` 형태의 메시지가 다음과 같이 전송됩니다:
+
+===== ChatRoomReadInitResponse
+
+[cols="1,1,4",options="header"]
+|===
+|필드명 |타입 |설명
+
+|isChatPartnerIsJoinChatRoom |boolean
+|상대방이 현재 채팅방에 접속(구독)중인지 여부
+
+|lastMessageId |String
+|마지막 메시지의 고유 식별자
+
+|isLastMessageIsMyMessage |Boolean
+|마지막 메시지가 나의 메시지인지 여부
+
+|isLastMessageRead |Boolean
+|마지막 메시지가 어떤 사람이 보냈든 읽음 상태인지 여부
+|===
+
+===== Example Payload
+
+아래는 실제로 전송되는 JSON 예시입니다.
+
+[source,json]
+----
+{
+  "isChatPartnerIsJoinChatRoom": true,
+  "lastMessageId": "msg-123456",
+  "isLastMessageIsMyMessage": false,
+  "isLastMessageRead": true
+}
 ----
 
 === 채팅 메시지 전송 (/pub)
@@ -55,4 +99,50 @@ Authorization: Bearer {accessToken}
 [source,http]
 ----
 SEND /pub/chat/send/{chatRoomId}
+----
+
+=== 상단바 구독 연결 (/sub)
+
+[source,http]
+----
+Authorization: Bearer {accessToken}
+----
+
+==== 상단바 신규 채팅/신규 알림 정보 구독 (빨간점 표시)
+
+이 구독 경로를 통해, 새로 온 채팅 메시지나 알림의 미확인(안 읽음) 개수를 실시간으로 받아볼 수 있습니다.
+
+[source,http]
+----
+SUBSCRIBE /sub/notification/header/{emailId}
+----
+
+**Path Parameter**
+- `emailId`: 이메일 ID (문자열)
+
+구독 성공 시, 서버에서 `NotificationCountResponse` 형태의 메시지가 다음과 같이 전송됩니다:
+
+==== NotificationCountResponse
+
+[cols="1,1,4",options="header"]
+|===
+|필드명 |타입 |설명
+
+|unreadChatCount |int
+|안 읽은 채팅 메시지의 개수
+
+|unreadNotificationCount |int
+|안 읽은 알림의 개수
+|===
+
+==== Example Payload
+
+아래는 실제로 전송되는 JSON 예시입니다.
+
+[source,json]
+----
+{
+  "unreadChatCount": 3,
+  "unreadNotificationCount": 2
+}
 ----
