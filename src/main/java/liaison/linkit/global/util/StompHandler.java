@@ -71,6 +71,7 @@ public class StompHandler implements ChannelInterceptor {
             if (destination != null) {
                 if (destination.startsWith("/user/sub/chat/")) {
                     Long chatRoomId = extractChatRoomId(destination);
+                    sessionRegistry.subscribeToChatRoom(chatRoomId, memberId);
                     eventPublisher.publishEvent(new ChatRoomConnectedEvent(memberId, chatRoomId));
                 }
             }
