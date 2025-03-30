@@ -1,14 +1,19 @@
 package liaison.linkit.notification.service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import liaison.linkit.chat.domain.ChatMessage;
 import liaison.linkit.chat.domain.ChatRoom;
+import liaison.linkit.chat.domain.repository.chatMessage.ChatMessageRepository;
 import liaison.linkit.chat.implement.ChatQueryAdapter;
 import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
 import liaison.linkit.global.presentation.dto.ChatRoomConnectedEvent;
+import liaison.linkit.global.presentation.dto.ChatRoomReadEvent;
 import liaison.linkit.global.util.SessionRegistry;
+import liaison.linkit.notification.presentation.dto.NotificationResponseDTO;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.ChatRoomConnectedInitResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +33,7 @@ public class ChatNotificationService {
     // 채팅방 및 메시지 쿼리
     private final ChatRoomQueryAdapter chatRoomQueryAdapter;
     private final ChatQueryAdapter chatQueryAdapter;
+    private final ChatMessageRepository chatMessageRepository;
 
     @EventListener
     public void handleChatRoomConnectedEvent(final ChatRoomConnectedEvent event) {
@@ -42,6 +48,24 @@ public class ChatNotificationService {
                             // (1) 유저별 전용 경로로 전송
                             messagingTemplate.convertAndSendToUser(
                                     memberId.toString(), "/sub/chat/" + chatRoomId, response);
+                        },
+                        300,
+                        TimeUnit.MILLISECONDS);
+    }
+
+    @EventListener
+    public void handleChatRoomReadEvent(final ChatRoomReadEvent event) {
+        Long memberId = event.getMemberId();
+        Long chatRoomId = event.getChatRoomId();
+
+        Executors.newSingleThreadScheduledExecutor()
+                .schedule(
+                        () -> {
+                            NotificationResponseDTO.ChatRoomReadInitResponse response =
+                                    getChatRoomReadInitState(memberId, chatRoomId);
+                            // (1) 유저별 전용 경로로 전송
+                            messagingTemplate.convertAndSendToUser(
+                                    memberId.toString(), "/sub/chat/read/" + chatRoomId, response);
                         },
                         300,
                         TimeUnit.MILLISECONDS);
@@ -69,6 +93,41 @@ public class ChatNotificationService {
                 .unreadChatMessageCount(unreadCount)
                 .lastMessage(lastMessage)
                 .lastMessageTime(lastMessageTime)
+                .build();
+    }
+
+    public NotificationResponseDTO.ChatRoomReadInitResponse getChatRoomReadInitState(
+            final Long memberId, final Long chatRoomId) {
+        // 1. 채팅방 조회
+        ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatRoomId);
+
+        // 2. 상대방 ID 찾기
+        Long partnerId = getChatPartnerId(chatRoom, memberId);
+
+        // 3. 상대방이 채팅방을 보고 있는지 확인 (채팅방 구독 여부 확인)
+        boolean isChatPartnerIsJoinChatRoom =
+                sessionRegistry.isSubscribedToChatRoom(chatRoomId, partnerId);
+
+        // 4. 마지막 메시지 정보 조회
+        String lastMessageId = null;
+        boolean isLastMessageIsMyMessage = false;
+        boolean isLastMessageRead = false;
+
+        Optional<ChatMessage> lastMessageOptional =
+                chatMessageRepository.findFirstByChatRoomIdOrderByTimestampDesc(chatRoomId);
+        if (lastMessageOptional.isPresent()) {
+            ChatMessage message = lastMessageOptional.get();
+            lastMessageId = message.getId();
+            isLastMessageIsMyMessage = message.getMessageSenderMemberId().equals(memberId);
+            isLastMessageRead = message.isRead();
+        }
+
+        // 5. 응답 DTO 생성
+        return NotificationResponseDTO.ChatRoomReadInitResponse.builder()
+                .isChatPartnerIsJoinChatRoom(isChatPartnerIsJoinChatRoom)
+                .lastMessageId(lastMessageId)
+                .isLastMessageIsMyMessage(isLastMessageIsMyMessage)
+                .isLastMessageRead(isLastMessageRead)
                 .build();
     }
 

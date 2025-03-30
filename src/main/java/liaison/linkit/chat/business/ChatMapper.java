@@ -70,6 +70,21 @@ public class ChatMapper {
                 .build();
     }
 
+    public ChatResponseDTO.ChatRoomReadStateResponse toChatRoomReadStateResponse(
+            final Long chatRoomId,
+            final boolean isChatPartnerIsJoinChatRoom,
+            final String lastMessageId,
+            final boolean isLastMessageIsMyMessage,
+            final boolean isLastMessageRead) {
+        return ChatResponseDTO.ChatRoomReadStateResponse.builder()
+                .chatRoomId(chatRoomId)
+                .isChatPartnerIsJoinChatRoom(isChatPartnerIsJoinChatRoom)
+                .lastMessageId(lastMessageId)
+                .isLastMessageIsMyMessage(isLastMessageIsMyMessage)
+                .isLastMessageRead(isLastMessageRead)
+                .build();
+    }
+
     public ChatMessage toChatMessage(
             final Long chatRoomId,
             final String chatMessageContent,

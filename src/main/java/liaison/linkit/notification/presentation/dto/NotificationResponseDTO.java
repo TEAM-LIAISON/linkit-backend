@@ -50,6 +50,24 @@ public class NotificationResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class ChatRoomReadInitResponse {
+        // 상대방의 온라인 여부
+        private boolean isChatPartnerIsJoinChatRoom;
+
+        // 마지막 메시지
+        private String lastMessageId;
+
+        // 마지막 메시지가 나의 메시지인지
+        private Boolean isLastMessageIsMyMessage;
+
+        // 마지막 메시지가 어떤 사람이 보냈든 읽음 상태인지
+        private Boolean isLastMessageRead;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class NotificationCountResponse {
 
         private long unreadChatCount;
