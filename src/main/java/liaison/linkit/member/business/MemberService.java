@@ -92,7 +92,7 @@ public class MemberService {
                         SubNotificationType.WELCOME_LINKIT,
                         welcomeLinkitNotificationDetails));
 
-        headerNotificationService.publishNotificationCount(updatedMember.getId());
+        //        headerNotificationService.publishNotificationCount(updatedMember.getId());
 
         if (teamMemberInvitationQueryAdapter.existsByEmail(updatedMember.getEmail())) {
             final List<Team> teams =

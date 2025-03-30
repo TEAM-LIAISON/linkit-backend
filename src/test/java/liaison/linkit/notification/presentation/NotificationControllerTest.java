@@ -77,6 +77,14 @@ public class NotificationControllerTest extends ControllerTest {
                         .accept(MediaType.APPLICATION_JSON));
     }
 
+    private ResultActions performGetNotificationCount() throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/api/v1/notification/header")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .accept(MediaType.APPLICATION_JSON));
+    }
+
     private ResultActions performUpdateNotificationReadStatus(final String notificationId)
             throws Exception {
         return mockMvc.perform(
@@ -581,6 +589,61 @@ public class NotificationControllerTest extends ControllerTest {
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
+    @DisplayName("회원이 알림 카운트를 조회할 수 있다.")
+    @Test
+    void getNotificationCounts() throws Exception {
+        // given
+        final NotificationResponseDTO.NotificationCountResponse notificationCountResponse =
+                NotificationResponseDTO.NotificationCountResponse.builder()
+                        .unreadChatCount(1L)
+                        .unreadNotificationCount(10L)
+                        .build();
+
+        // when
+
+        when(notificationService.getNotificationCount(anyLong()))
+                .thenReturn(notificationCountResponse);
+
+        final ResultActions resultActions = performGetNotificationCount();
+
+        // then
+        final MvcResult mvcResult =
+                resultActions
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.isSuccess").value(true))
+                        .andExpect(jsonPath("$.code").value("1000"))
+                        .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                        .andDo(
+                                restDocs.document(
+                                        responseFields(
+                                                fieldWithPath("isSuccess")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("요청 성공 여부")
+                                                        .attributes(
+                                                                field("constraint", "boolean 값")),
+                                                fieldWithPath("code")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 코드")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("message")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 메시지")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("result")
+                                                        .type(JsonFieldType.OBJECT)
+                                                        .description("결과 데이터 객체")
+                                                        .attributes(field("constraint", "object")),
+                                                fieldWithPath("result.unreadChatCount")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("읽지 않은 채팅방 메시지 개수")
+                                                        .attributes(field("constraint", "숫자")),
+                                                fieldWithPath("result.unreadNotificationCount")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("읽지 않은 알림 개수")
+                                                        .attributes(field("constraint", "숫자")))))
+                        .andReturn();
+    }
+
     @DisplayName("회원이 내가 수신한 알림을 읽음 상태로 처리할 수 있다.")
     @Test
     void updateNotificationReadStatus() throws Exception {
@@ -597,7 +660,6 @@ public class NotificationControllerTest extends ControllerTest {
 
         final ResultActions resultActions = performUpdateNotificationReadStatus("random_id");
 
-        // then
         // then
         final MvcResult mvcResult =
                 resultActions
