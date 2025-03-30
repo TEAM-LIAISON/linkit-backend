@@ -37,4 +37,13 @@ public interface ChatMessageRepository extends MongoRepository<ChatMessage, Stri
     // 특정 채팅방의 마지막 메시지 조회 (timestamp 기준 내림차순 정렬 후 첫 번째 항목)
     @Query(value = "{ 'chat_room_id': ?0 }", sort = "{ 'timestamp': -1 }")
     Optional<ChatMessage> findFirstByChatRoomIdOrderByTimestampDesc(Long chatRoomId);
+
+    /**
+     * 특정 채팅방의 가장 최근 메시지를 조회합니다. 채팅방 목록이나 채팅방 미리보기에 사용됩니다.
+     *
+     * @param chatRoomId 채팅방 ID
+     * @return 해당 채팅방의 가장 최근 메시지 (Optional로 래핑됨)
+     */
+    @Query(value = "{ 'chat_room_id': ?0 }", sort = "{ 'timestamp': -1 }")
+    ChatMessage findTopByChatRoomIdOrderByTimestampDesc(Long chatRoomId);
 }
