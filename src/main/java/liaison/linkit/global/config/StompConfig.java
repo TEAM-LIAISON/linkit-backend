@@ -23,7 +23,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/sub/chat", "/sub/notification/header");
+        config.enableSimpleBroker("/sub/chat", "/sub/notification/header", "/sub/chat/read");
 
         config.setUserDestinationPrefix("/user");
         config.setApplicationDestinationPrefixes("/pub"); // /pub 경로로 서버 수신
