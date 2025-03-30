@@ -270,13 +270,13 @@ public class ChatService {
         // 발신자에게 메시지 및 읽기 상태 전송
         sendMessageToAllSessions(senderMemberId, "/sub/chat/" + chatRoom.getId(), senderResponse);
         sendMessageToAllSessions(
-                senderMemberId, "/sub/chat/read/" + chatRoom.getId(), senderReadResponse);
+                senderMemberId, "/sub/chat/" + chatRoom.getId(), senderReadResponse);
 
         // 수신자에게 메시지 및 읽기 상태 전송
         sendMessageToAllSessions(
                 receiverMemberId, "/sub/chat/" + chatRoom.getId(), receiverResponse);
         sendMessageToAllSessions(
-                receiverMemberId, "/sub/chat/read/" + chatRoom.getId(), receiverReadResponse);
+                receiverMemberId, "/sub/chat/" + chatRoom.getId(), receiverReadResponse);
     }
 
     /** 채팅방의 이전 메시지 내역 조회 */
