@@ -44,13 +44,22 @@ public class ChatMapper {
                 .chatPartnerInformation(partnerInfo)
                 .messages(
                         messagePage.getContent().stream()
-                                .map(message -> toChatMessageResponse(chatRoom, message, memberId))
+                                .map(
+                                        message ->
+                                                toPartialChatMessageHistoryResponse(
+                                                        chatRoom, message, memberId))
                                 .collect(Collectors.toList()))
                 .build();
     }
 
     public ChatResponseDTO.ChatMessageResponse toChatMessageResponse(
-            final ChatRoom chatRoom, final ChatMessage message, final Long memberId) {
+            final ChatRoom chatRoom,
+            final ChatMessage message,
+            final Long memberId,
+            final boolean isChatPartnerIsJoinChatRoom,
+            final String lastMessageId,
+            final boolean isLastMessageIsMyMessage,
+            final boolean isLastMessageRead) {
         ParticipantType myType = determineMyParticipantType(chatRoom, message, memberId);
         ParticipantType messageSenderType = message.getMessageSenderParticipantType();
 
@@ -66,22 +75,30 @@ public class ChatMapper {
                 .messageSenderLogoImagePath(message.getMessageSenderLogoImagePath())
                 .content(message.getContent())
                 .timestamp(message.getTimestamp())
-                .isRead(message.isRead())
-                .build();
-    }
-
-    public ChatResponseDTO.ChatRoomReadStateResponse toChatRoomReadStateResponse(
-            final Long chatRoomId,
-            final boolean isChatPartnerIsJoinChatRoom,
-            final String lastMessageId,
-            final boolean isLastMessageIsMyMessage,
-            final boolean isLastMessageRead) {
-        return ChatResponseDTO.ChatRoomReadStateResponse.builder()
-                .chatRoomId(chatRoomId)
                 .isChatPartnerIsJoinChatRoom(isChatPartnerIsJoinChatRoom)
                 .lastMessageId(lastMessageId)
                 .isLastMessageIsMyMessage(isLastMessageIsMyMessage)
                 .isLastMessageRead(isLastMessageRead)
+                .build();
+    }
+
+    public ChatResponseDTO.ChatMessageListResponse toPartialChatMessageHistoryResponse(
+            final ChatRoom chatRoom, final ChatMessage message, final Long memberId) {
+        ParticipantType myType = determineMyParticipantType(chatRoom, message, memberId);
+        ParticipantType messageSenderType = message.getMessageSenderParticipantType();
+
+        // String 타입으로 비교
+        boolean isMyMessage = myType.equals(messageSenderType);
+
+        return ChatResponseDTO.ChatMessageListResponse.builder()
+                .messageId(message.getId())
+                .chatRoomId(message.getChatRoomId())
+                .myParticipantType(myType.name())
+                .messageSenderParticipantType(message.getMessageSenderParticipantType())
+                .isMyMessage(isMyMessage)
+                .messageSenderLogoImagePath(message.getMessageSenderLogoImagePath())
+                .content(message.getContent())
+                .timestamp(message.getTimestamp())
                 .build();
     }
 
