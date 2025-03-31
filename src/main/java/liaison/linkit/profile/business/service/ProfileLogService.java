@@ -142,7 +142,8 @@ public class ProfileLogService {
                         addProfileLogRequest.getLogContent(),
                         addProfileLogRequest.getIsLogPublic(),
                         addProfileLogType,
-                        0L);
+                        0L, // viewCount 초기값
+                        0L); // commentCount 초기값
 
         final ProfileLog savedProfileLog = profileLogCommandAdapter.addProfileLog(profileLog);
 

@@ -1,11 +1,7 @@
 package liaison.linkit.profile.domain.log;
 
-import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,7 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.profile.domain.profile.Profile;
@@ -27,6 +23,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "profile_log")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -57,10 +54,6 @@ public class ProfileLog extends BaseDateTimeEntity {
     // 기본값 0
     @Column(nullable = false)
     private Long viewCount;
-
-    // 댓글 연관관계 추가
-    @OneToMany(mappedBy = "profileLog", cascade = REMOVE)
-    private List<ProfileLogComment> comments = new ArrayList<>();
 
     // 댓글 수 필드 추가
     @Column(nullable = false)

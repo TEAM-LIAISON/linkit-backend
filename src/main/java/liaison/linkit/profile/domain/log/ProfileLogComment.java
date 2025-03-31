@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.profile.domain.profile.Profile;
@@ -19,6 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "profile_log_comment")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
