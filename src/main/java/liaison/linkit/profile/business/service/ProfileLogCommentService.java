@@ -1,5 +1,9 @@
 package liaison.linkit.profile.business.service;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import liaison.linkit.profile.business.mapper.ProfileLogCommentMapper;
 import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.domain.log.ProfileLogComment;
@@ -13,6 +17,9 @@ import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogCommentRequestDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogCommentResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,5 +92,83 @@ public class ProfileLogCommentService {
         // 8. 응답 생성
         return profileLogCommentMapper.toAddProfileLogCommentResponse(
                 savedComment, authorProfile, profileLogId);
+    }
+
+    /**
+     * 프로필 로그 댓글 목록을 페이지 없이 조회합니다.
+     *
+     * @param memberId 조회 요청자의 회원 ID (선택적)
+     * @param profileLogId 조회할 프로필 로그 ID
+     * @return 댓글 목록 응답
+     */
+    @Transactional(readOnly = true)
+    public ProfileLogCommentResponseDTO.PageResponse getPageProfileLogComments(
+            final Optional<Long> memberId, final Long profileLogId) {
+        // 1. 대상 프로필 로그 조회
+        final ProfileLog targetProfileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
+
+        // 2. 댓글 목록 조회 (페이징 없이 모든 댓글 조회)
+        final List<ProfileLogComment> comments =
+                profileLogCommentQueryAdapter.getProfileLogComments(profileLogId);
+
+        // 3. 댓글 목록 응답 생성
+        List<ProfileLogCommentResponseDTO.ParentCommentResponse> commentResponses =
+                comments.stream()
+                        .map(
+                                comment ->
+                                        profileLogCommentMapper.toProfileLogCommentResponse(
+                                                comment, memberId))
+                        .collect(Collectors.toList());
+
+        return ProfileLogCommentResponseDTO.PageResponse.builder()
+                .comments(commentResponses)
+                .totalElements(commentResponses.size())
+                .totalPages(1)
+                .currentPage(0)
+                .hasNext(false)
+                .build();
+    }
+
+    /**
+     * 프로필 로그 댓글을 페이징하여 조회합니다.
+     *
+     * @param memberId 조회 요청자의 회원 ID (선택적)
+     * @param profileLogId 조회할 프로필 로그 ID
+     * @param page 페이지 번호 (0부터 시작)
+     * @param size 페이지 크기
+     * @return 페이징된 댓글 목록 응답
+     */
+    @Transactional(readOnly = true)
+    public ProfileLogCommentResponseDTO.PageResponse getPageProfileLogComments(
+            final Optional<Long> memberId,
+            final Long profileLogId,
+            final int page,
+            final int size) {
+        // 1. 대상 프로필 로그 조회
+        final ProfileLog targetProfileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
+
+        // 2. 페이징 객체 생성
+        final Pageable pageable = PageRequest.of(page, size);
+
+        // 3. 댓글 목록 조회 (페이징)
+        final Page<ProfileLogComment> commentsPage =
+                profileLogCommentQueryAdapter.getPageProfileLogComments(profileLogId, pageable);
+
+        // 4. 댓글 목록 응답 생성
+        List<ProfileLogCommentResponseDTO.ParentCommentResponse> commentResponses =
+                commentsPage.getContent().stream()
+                        .map(
+                                comment ->
+                                        profileLogCommentMapper.toProfileLogCommentResponse(
+                                                comment, memberId))
+                        .collect(Collectors.toList());
+
+        return ProfileLogCommentResponseDTO.PageResponse.builder()
+                .comments(commentResponses)
+                .totalElements(commentsPage.getTotalElements())
+                .totalPages(commentsPage.getTotalPages())
+                .currentPage(page)
+                .hasNext(commentsPage.hasNext())
+                .build();
     }
 }
