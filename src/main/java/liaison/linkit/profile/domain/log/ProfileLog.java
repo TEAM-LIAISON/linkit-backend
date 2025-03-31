@@ -1,7 +1,11 @@
 package liaison.linkit.profile.domain.log;
 
+import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.profile.domain.profile.Profile;
@@ -53,6 +58,14 @@ public class ProfileLog extends BaseDateTimeEntity {
     @Column(nullable = false)
     private Long viewCount;
 
+    // 댓글 연관관계 추가
+    @OneToMany(mappedBy = "profileLog", cascade = REMOVE)
+    private List<ProfileLogComment> comments = new ArrayList<>();
+
+    // 댓글 수 필드 추가
+    @Column(nullable = false)
+    private Long commentCount;
+
     public void setLogType(final LogType logType) {
         this.logType = logType;
     }
@@ -69,5 +82,17 @@ public class ProfileLog extends BaseDateTimeEntity {
     // == 2) 배치에서 주기적으로 호출할 메서드 (조회수 초기화) ==
     public void resetViewCount() {
         this.viewCount = 0L;
+    }
+
+    // 댓글 수 증가 메서드
+    public void increaseCommentCount() {
+        this.commentCount++;
+    }
+
+    // 댓글 수 감소 메서드
+    public void decreaseCommentCount() {
+        if (this.commentCount > 0) {
+            this.commentCount--;
+        }
     }
 }
