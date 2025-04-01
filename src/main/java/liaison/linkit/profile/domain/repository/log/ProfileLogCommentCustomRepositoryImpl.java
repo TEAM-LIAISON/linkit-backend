@@ -26,39 +26,21 @@ public class ProfileLogCommentCustomRepositoryImpl implements ProfileLogCommentC
     public Page<ProfileLogComment> findTopLevelCommentsByProfileLogId(
             Long profileLogId, Pageable pageable) {
         QProfileLogComment profileLogComment = QProfileLogComment.profileLogComment;
-        QProfile profile = QProfile.profile;
 
-        // 1. 상위 레벨 댓글 ID 목록 조회 (프로필 조인 없이)
-        List<Long> commentIds =
-                queryFactory
-                        .select(profileLogComment.id)
-                        .from(profileLogComment)
-                        .where(profileLogIdEq(profileLogId), isTopLevelComment())
-                        .orderBy(profileLogComment.createdAt.asc())
-                        .offset(pageable.getOffset())
-                        .limit(pageable.getPageSize())
-                        .fetch();
+        // 직접 엔티티 조회 (프로필 조인 없이)
+        List<ProfileLogComment> content = queryFactory
+                .selectFrom(profileLogComment)
+                .where(profileLogIdEq(profileLogId), isTopLevelComment())
+                .orderBy(profileLogComment.createdAt.asc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
-        if (commentIds.isEmpty()) {
-            return Page.empty(pageable);
-        }
-
-        // 2. ID로 댓글 엔티티 조회 (프로필 조인 포함)
-        List<ProfileLogComment> content =
-                queryFactory
-                        .selectFrom(profileLogComment)
-                        .leftJoin(profileLogComment.profile, profile)
-                        .fetchJoin()
-                        .where(profileLogComment.id.in(commentIds))
-                        .orderBy(profileLogComment.createdAt.asc())
-                        .fetch();
-
-        // 3. 총 개수 쿼리
-        JPAQuery<Long> countQuery =
-                queryFactory
-                        .select(profileLogComment.count())
-                        .from(profileLogComment)
-                        .where(profileLogIdEq(profileLogId), isTopLevelComment());
+        // 총 개수 쿼리
+        JPAQuery<Long> countQuery = queryFactory
+                .select(profileLogComment.count())
+                .from(profileLogComment)
+                .where(profileLogIdEq(profileLogId), isTopLevelComment());
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -66,27 +48,11 @@ public class ProfileLogCommentCustomRepositoryImpl implements ProfileLogCommentC
     @Override
     public List<ProfileLogComment> findRepliesByParentCommentId(Long parentCommentId) {
         QProfileLogComment profileLogComment = QProfileLogComment.profileLogComment;
-        QProfile profile = QProfile.profile;
 
-        // 1. 대댓글 ID 목록 조회 (프로필 조인 없이)
-        List<Long> replyIds =
-                queryFactory
-                        .select(profileLogComment.id)
-                        .from(profileLogComment)
-                        .where(parentCommentIdEq(parentCommentId), isNotDeleted())
-                        .orderBy(profileLogComment.createdAt.asc())
-                        .fetch();
-
-        if (replyIds.isEmpty()) {
-            return List.of();
-        }
-
-        // 2. ID로 대댓글 엔티티 조회 (프로필 조인 포함)
+        // 직접 엔티티 조회 (프로필 조인 없이)
         return queryFactory
                 .selectFrom(profileLogComment)
-                .leftJoin(profileLogComment.profile, profile)
-                .fetchJoin()
-                .where(profileLogComment.id.in(replyIds))
+                .where(parentCommentIdEq(parentCommentId), isNotDeleted())
                 .orderBy(profileLogComment.createdAt.asc())
                 .fetch();
     }
@@ -95,22 +61,20 @@ public class ProfileLogCommentCustomRepositoryImpl implements ProfileLogCommentC
     public Page<ProfileLogComment> findCommentsByProfileId(Long profileId, Pageable pageable) {
         QProfileLogComment profileLogComment = QProfileLogComment.profileLogComment;
 
-        List<ProfileLogComment> content =
-                queryFactory
-                        .selectFrom(profileLogComment)
-                        .join(profileLogComment.profileLog)
-                        .fetchJoin()
-                        .where(profileIdEq(profileId), isNotDeleted())
-                        .orderBy(profileLogComment.createdAt.desc())
-                        .offset(pageable.getOffset())
-                        .limit(pageable.getPageSize())
-                        .fetch();
+        List<ProfileLogComment> content = queryFactory
+                .selectFrom(profileLogComment)
+                .join(profileLogComment.profileLog)
+                .fetchJoin()
+                .where(profileIdEq(profileId), isNotDeleted())
+                .orderBy(profileLogComment.createdAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
-        JPAQuery<Long> countQuery =
-                queryFactory
-                        .select(profileLogComment.count())
-                        .from(profileLogComment)
-                        .where(profileIdEq(profileId), isNotDeleted());
+        JPAQuery<Long> countQuery = queryFactory
+                .select(profileLogComment.count())
+                .from(profileLogComment)
+                .where(profileIdEq(profileId), isNotDeleted());
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
