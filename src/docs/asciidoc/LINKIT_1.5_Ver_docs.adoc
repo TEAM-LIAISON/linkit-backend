@@ -1919,3 +1919,14 @@ include::{snippets}/profile-log-comment-controller-test/delete-profile-log-comme
 *응답 필드*
 include::{snippets}/profile-log-comment-controller-test/delete-profile-log-comment-test/response-fields.adoc[]
 ====
+
+=== 팀 로그 댓글 생성
+
+====
+*요청*
+
+*요청 헤더*
+*요청 경로 파라미터*
+*응답*
+*응답 필드*
+====

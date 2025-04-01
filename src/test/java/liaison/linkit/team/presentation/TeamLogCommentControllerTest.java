@@ -225,6 +225,189 @@ public class TeamLogCommentControllerTest extends ControllerTest {
     @Test
     @DisplayName("팀 로그 댓글 조회 API 테스트")
     void getPageTeamLogCommentsTest() throws Exception {
+        // given
+        final long teamLogId = 1L;
+
+        // Mock 응답 데이터 생성
+        List<TeamLogCommentResponseDTO.ReplyResponse> replies = new ArrayList<>();
+        replies.add(
+                TeamLogCommentResponseDTO.ReplyResponse.builder()
+                        .id(2L)
+                        .authorProfileImagePath("profile/image/path2.jpg")
+                        .authorName("댓글작성자")
+                        .emailId("유저 아이디")
+                        .createdAt("30분 전")
+                        .content("대댓글입니다.")
+                        .isUpdated("false")
+                        .isDeleted(false)
+                        .isQuitAccount(false)
+                        .isAuthor(false)
+                        .build());
+
+        List<TeamLogCommentResponseDTO.ParentCommentResponse> comments = new ArrayList<>();
+        comments.add(
+                TeamLogCommentResponseDTO.ParentCommentResponse.builder()
+                        .id(1L)
+                        .authorProfileImagePath("profile/image/path.jpg")
+                        .authorName("테스터")
+                        .emailId("tester")
+                        .createdAt("1시간 전")
+                        .content("부모 댓글입니다.")
+                        .isUpdated("false")
+                        .isDeleted(false)
+                        .isQuitAccount(false)
+                        .isAuthor(true)
+                        .replies(replies)
+                        .build());
+
+        // 커서 기반 응답으로 변경
+        CursorResponse<TeamLogCommentResponseDTO.ParentCommentResponse> cursorResponse =
+                CursorResponse.<TeamLogCommentResponseDTO.ParentCommentResponse>builder()
+                        .content(comments)
+                        .nextCursor("1") // 다음 페이지의 커서 값 (마지막 댓글 ID)
+                        .hasNext(true) // 다음 페이지 존재 여부
+                        .build();
+
+        given(teamLogCommentService.getPageTeamLogComments(Optional.of(1L), teamLogId, null, 10))
+                .willReturn(cursorResponse);
+
+        // when
+        final ResultActions resultActions =
+                mockMvc.perform(
+                        get("/api/v1/team/log/{teamLogId}/comments", teamLogId)
+                                .header(
+                                        HttpHeaders.AUTHORIZATION,
+                                        "Bearer " + MEMBER_TOKENS.getAccessToken())
+                                .cookie(COOKIE)
+                                .param("size", "10")); // page 파라미터를 제거하고 cursor가 없는 첫 요청으로 변경
+
+        // Then
+        resultActions
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamLogId").description("조회할 팀 로그 ID")),
+                                queryParameters(
+                                        parameterWithName("cursor")
+                                                .description("커서 값 (다음 페이지 조회 시 사용)")
+                                                .optional(),
+                                        parameterWithName("size")
+                                                .description("조회할 댓글 개수")
+                                                .optional()),
+                                requestHeaders(
+                                        headerWithName(HttpHeaders.AUTHORIZATION)
+                                                .description("Bearer 인증 토큰")
+                                                .attributes(
+                                                        field(
+                                                                "constraint",
+                                                                "Bearer Access Token"))),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("요청 성공 여부"),
+                                        fieldWithPath("code").description("응답 코드"),
+                                        fieldWithPath("message").description("응답 메시지"),
+                                        fieldWithPath("result.content").description("댓글 목록"),
+                                        fieldWithPath("result.content[].id").description("댓글 ID"),
+                                        fieldWithPath("result.content[].authorProfileImagePath")
+                                                .description("댓글 작성자 프로필 이미지 경로"),
+                                        fieldWithPath("result.content[].authorName")
+                                                .description("댓글 작성자 이름"),
+                                        fieldWithPath("result.content[].emailId")
+                                                .description("댓글 작성자 유저 아이디"),
+                                        fieldWithPath("result.content[].createdAt")
+                                                .description("댓글 작성 시간"),
+                                        fieldWithPath("result.content[].content")
+                                                .description("댓글 내용"),
+                                        fieldWithPath("result.content[].isUpdated")
+                                                .description("댓글 수정 여부"),
+                                        fieldWithPath("result.content[].isDeleted")
+                                                .description("댓글 삭제 여부"),
+                                        fieldWithPath("result.content[].isQuitAccount")
+                                                .description("탈퇴한 계정 여부"),
+                                        fieldWithPath("result.content[].isAuthor")
+                                                .description("현재 사용자가 댓글 작성자인지 여부"),
+                                        fieldWithPath("result.content[].replies")
+                                                .description("대댓글 목록"),
+                                        fieldWithPath("result.content[].replies[].id")
+                                                .description("대댓글 ID"),
+                                        fieldWithPath("result.content[].replies[].authorName")
+                                                .description("대댓글 작성자 이름"),
+                                        fieldWithPath("result.content[].replies[].emailId")
+                                                .description("대댓글 작성자 이메일 ID"),
+                                        fieldWithPath(
+                                                        "result.content[].replies[].authorProfileImagePath")
+                                                .description("대댓글 작성자 프로필 이미지 경로"),
+                                        fieldWithPath("result.content[].replies[].content")
+                                                .description("대댓글 내용"),
+                                        fieldWithPath("result.content[].replies[].createdAt")
+                                                .description("대댓글 작성 시간"),
+                                        fieldWithPath("result.content[].replies[].isUpdated")
+                                                .description("대댓글 수정 여부"),
+                                        fieldWithPath("result.content[].replies[].isDeleted")
+                                                .description("대댓글 삭제 여부"),
+                                        fieldWithPath("result.content[].replies[].isQuitAccount")
+                                                .description("탈퇴한 계정 여부"),
+                                        fieldWithPath("result.content[].replies[].isAuthor")
+                                                .description("현재 사용자가 대댓글 작성자인지 여부"),
+                                        fieldWithPath("result.nextCursor")
+                                                .description("다음 페이지 조회 시 사용할 커서 값"),
+                                        fieldWithPath("result.hasNext")
+                                                .description("다음 페이지 존재 여부"))));
+    }
+
+    @Test
+    @DisplayName("팀 로그 댓글 삭제 API 테스트")
+    void deleteTeamLogCommentTest() throws Exception {
+        // Given
+        final long commentId = 1L;
+
+        final TeamLogCommentResponseDTO.DeleteTeamLogCommentResponse response =
+                TeamLogCommentResponseDTO.DeleteTeamLogCommentResponse.builder()
+                        .commentId(commentId)
+                        .teamLogId(1L)
+                        .build();
+
+        given(teamLogCommentService.deleteTeamLogComment(anyLong(), anyLong()))
+                .willReturn(response);
+
+        // When
+        final ResultActions resultActions =
+                mockMvc.perform(
+                        post("/api/v1/team/log/comment/{teamLogCommentId}/delete", commentId)
+                                .header(
+                                        HttpHeaders.AUTHORIZATION,
+                                        "Bearer " + MEMBER_TOKENS.getAccessToken())
+                                .cookie(COOKIE));
+
+        // Then
+        resultActions
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamLogCommentId")
+                                                .description("삭제할 팀 로그 댓글 ID")),
+                                requestHeaders(
+                                        headerWithName(HttpHeaders.AUTHORIZATION)
+                                                .description("Bearer 인증 토큰")
+                                                .attributes(
+                                                        field(
+                                                                "constraint",
+                                                                "Bearer Access Token"))),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("요청 성공 여부"),
+                                        fieldWithPath("code").description("응답 코드"),
+                                        fieldWithPath("message").description("응답 메시지"),
+                                        fieldWithPath("result.commentId").description("삭제된 댓글 ID"),
+                                        fieldWithPath("result.teamLogId")
+                                                .description("댓글이 작성된 팀 로그 ID"))));
+    }
+
+    @Test
+    @DisplayName("팀 로그 댓글 커서 기반 다음 페이지 조회 API 테스트")
+    void getNextPageTeamLogCommentsWithCursorTest() throws Exception {
         // Given
         final long teamLogId = 1L;
         final String cursor = "1"; // 이전 페이지의 마지막 댓글 ID
@@ -283,78 +466,6 @@ public class TeamLogCommentControllerTest extends ControllerTest {
                                 .param("size", "10"));
 
         // Then
-        resultActions
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("teamLogId")
-                                                .description("댓글을 조회할 팀 로그 ID")
-                                                .attributes(field("constraint", "숫자 (NOT NULL)"))),
-                                requestHeaders(
-                                        headerWithName(HttpHeaders.AUTHORIZATION)
-                                                .description("Bearer 인증 토큰")
-                                                .attributes(
-                                                        field(
-                                                                "constraint",
-                                                                "Bearer Access Token"))),
-                                queryParameters(
-                                        parameterWithName("cursor")
-                                                .description("페이지네이션 커서")
-                                                .attributes(field("constraint", "숫자 (NOT NULL)")),
-                                        parameterWithName("size")
-                                                .description("페이지 크기")
-                                                .attributes(field("constraint", "숫자 (NOT NULL)")),
-                                        parameterWithName("sort")
-                                                .description("정렬 기준")
-                                                .attributes(field("constraint", "문자열 (NOT NULL)"))),
-                                responseFields(
-                                        fieldWithPath("isSuccess").description("요청 성공 여부"),
-                                        fieldWithPath("code").description("응답 코드"),
-                                        fieldWithPath("message").description("응답 메시지"),
-                                        fieldWithPath("result.content[].id").description("댓글 ID"),
-                                        fieldWithPath("result.content[].authorName")
-                                                .description("댓글 작성자 이름"),
-                                        fieldWithPath("result.content[].emailId")
-                                                .description("댓글 작성자 이메일 ID"),
-                                        fieldWithPath("result.content[].authorProfileImagePath")
-                                                .description("댓글 작성자 프로필 이미지 경로"),
-                                        fieldWithPath("result.content[].content")
-                                                .description("댓글 내용"),
-                                        fieldWithPath("result.content[].createdAt")
-                                                .description("댓글 작성 시간"),
-                                        fieldWithPath("result.content[].isUpdated")
-                                                .description("댓글 수정 여부"),
-                                        fieldWithPath("result.content[].isDeleted")
-                                                .description("댓글 삭제 여부"),
-                                        fieldWithPath("result.content[].isQuitAccount")
-                                                .description("계정 탈퇴 여부"),
-                                        fieldWithPath("result.content[].isAuthor")
-                                                .description("작성자 여부"),
-                                        fieldWithPath("result.content[].replies[].id")
-                                                .description("대댓글 ID"),
-                                        fieldWithPath("result.content[].replies[].authorName")
-                                                .description("대댓글 작성자 이름"),
-                                        fieldWithPath("result.content[].replies[].emailId")
-                                                .description("대댓글 작성자 이메일 ID"),
-                                        fieldWithPath(
-                                                        "result.content[].replies[].authorProfileImagePath")
-                                                .description("대댓글 작성자 프로필 이미지 경로"),
-                                        fieldWithPath("result.content[].replies[].content")
-                                                .description("대댓글 내용"),
-                                        fieldWithPath("result.content[].replies[].createdAt")
-                                                .description("대댓글 작성 시간"),
-                                        fieldWithPath("result.content[].replies[].isUpdated")
-                                                .description("대댓글 수정 여부"),
-                                        fieldWithPath("result.content[].replies[].isDeleted")
-                                                .description("대댓글 삭제 여부"),
-                                        fieldWithPath("result.content[].replies[].isQuitAccount")
-                                                .description("계정 탈퇴 여부"),
-                                        fieldWithPath("result.content[].replies[].isAuthor")
-                                                .description("작성자 여부"),
-                                        fieldWithPath("result.hasNext").description("다음 페이지 존재 여부"),
-                                        fieldWithPath("result.nextCursor")
-                                                .description("다음 페이지 커서"))));
+        resultActions.andExpect(status().isOk()).andDo(print());
     }
 }
