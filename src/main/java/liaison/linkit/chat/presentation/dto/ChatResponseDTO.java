@@ -147,7 +147,7 @@ public class ChatResponseDTO {
         // 상대방의 온라인 여부
         private boolean isChatPartnerOnline;
 
-        @Builder.Default private List<ChatMessageResponse> messages = new ArrayList<>();
+        @Builder.Default private List<ChatMessageListResponse> messages = new ArrayList<>();
     }
 
     // 개별 메시지에 대한 응답
@@ -169,15 +169,6 @@ public class ChatResponseDTO {
 
         private String content; // 메시지 내용
         private LocalDateTime timestamp; // 전송 시간
-        private boolean isRead; // 읽음 여부
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ChatRoomReadStateResponse {
-        private Long chatRoomId; // 채팅방 ID
 
         // 상대방의 온라인 여부
         private boolean isChatPartnerIsJoinChatRoom;
@@ -190,6 +181,27 @@ public class ChatResponseDTO {
 
         // 마지막 메시지가 어떤 사람이 보냈든 읽음 상태인지
         private Boolean isLastMessageRead;
+    }
+
+    // 개별 메시지에 대한 응답
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ChatMessageListResponse {
+
+        private String messageId; // 메시지 ID
+        private Long chatRoomId; // 채팅방 ID
+
+        private String myParticipantType; // 나의 참여 타입
+        private ParticipantType messageSenderParticipantType; // A_TYPE / B_TYPE 구별
+
+        private Boolean isMyMessage;
+
+        private String messageSenderLogoImagePath; // 메시지 발신자의 로고 이미지 경로
+
+        private String content; // 메시지 내용
+        private LocalDateTime timestamp; // 전송 시간
     }
 
     // 채팅방 나가기에 대한 응답
