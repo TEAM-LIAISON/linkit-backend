@@ -55,42 +55,42 @@ SUBSCRIBE /user/sub/chat/list
 
 ===== 응답 데이터 형식
 
-[source,json]
-----
-{
-  "chatRoomSummaries": [
-    {
-      "chatRoomId": 123,
-      "chatPartnerInformation": {
-        "chatPartnerName": "홍길동",
-        "chatPartnerImageUrl": "https://example.com/profile.jpg",
-        "partnerProfileDetailInformation": {
-          "profilePositionDetail": {
-            "positionName": "프론트엔드 개발자"
-          },
-          "regionDetail": {
-            "name": "서울"
-          },
-          "emailId": "user@example.com"
-        },
-        "partnerTeamDetailInformation": {
-          "teamScaleItem": {
-            "scale": "5-10명"
-          },
-          "regionDetail": {
-            "name": "서울"
-          },
-          "teamCode": "TEAM12345"
-        },
-        "lastMessage": "안녕하세요",
-        "lastMessageTime": "2023-01-01T12:34:56"
-      },
-      "isChatPartnerOnline": true,
-      "unreadChatMessageCount": 3
-    }
-  ]
-}
-----
+// [source,json]
+// ----
+// {
+//   "chatRoomSummaries": [
+//     {
+//       "chatRoomId": 123,
+//       "chatPartnerInformation": {
+//         "chatPartnerName": "홍길동",
+//         "chatPartnerImageUrl": "https://example.com/profile.jpg",
+//         "partnerProfileDetailInformation": {
+//           "profilePositionDetail": {
+//             "positionName": "프론트엔드 개발자"
+//           },
+//           "regionDetail": {
+//             "name": "서울"
+//           },
+//           "emailId": "user@example.com"
+//         },
+//         "partnerTeamDetailInformation": {
+//           "teamScaleItem": {
+//             "scale": "5-10명"
+//           },
+//           "regionDetail": {
+//             "name": "서울"
+//           },
+//           "teamCode": "TEAM12345"
+//         },
+//         "lastMessage": "안녕하세요",
+//         "lastMessageTime": "2023-01-01T12:34:56"
+//       },
+//       "isChatPartnerOnline": true,
+//       "unreadChatMessageCount": 3
+//     }
+//   ]
+// }
+// ----
 
 ==== 채팅방 구독
 
@@ -103,23 +103,23 @@ SUBSCRIBE /user/sub/chat/{chatRoomId}
 
 ===== 채팅방 메시지 응답 형식
 
-[source,json]
-----
-{
-  "messageId": "msg123",
-  "chatRoomId": 123,
-  "myParticipantType": "A_TYPE",
-  "messageSenderParticipantType": "A_TYPE",
-  "isMyMessage": true,
-  "messageSenderLogoImagePath": "https://example.com/profile.jpg",
-  "content": "안녕하세요, 반갑습니다!",
-  "timestamp": "2023-01-01T12:34:56",
-  "isChatPartnerIsJoinChatRoom": true,
-  "lastMessageId": "msg123",
-  "isLastMessageIsMyMessage": true,
-  "isLastMessageRead": false
-}
-----
+// [source,json]
+// ----
+// {
+//   "messageId": "msg123",
+//   "chatRoomId": 123,
+//   "myParticipantType": "A_TYPE",
+//   "messageSenderParticipantType": "A_TYPE",
+//   "isMyMessage": true,
+//   "messageSenderLogoImagePath": "https://example.com/profile.jpg",
+//   "content": "안녕하세요, 반갑습니다!",
+//   "timestamp": "2023-01-01T12:34:56",
+//   "isChatPartnerIsJoinChatRoom": true,
+//   "lastMessageId": "msg123",
+//   "isLastMessageIsMyMessage": true,
+//   "isLastMessageRead": false
+// }
+// ----
 
 ==== 채팅 메시지 전송
 
@@ -129,3 +129,12 @@ SUBSCRIBE /user/sub/chat/{chatRoomId}
 ----
 SEND /pub/chat/send/{chatRoomId}
 ----
+
+===== 요청 데이터 형식
+
+// [source,json]
+// ----
+// {
+//   "content": "안녕하세요, 반갑습니다!"
+// }
+// ----
