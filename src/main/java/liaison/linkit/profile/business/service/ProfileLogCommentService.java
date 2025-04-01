@@ -151,42 +151,6 @@ public class ProfileLogCommentService {
     }
 
     /**
-     * 프로필 로그 댓글 목록을 페이지 없이 조회합니다.
-     *
-     * @param memberId 조회 요청자의 회원 ID (선택적)
-     * @param profileLogId 조회할 프로필 로그 ID
-     * @return 댓글 목록 응답
-     */
-    @Transactional(readOnly = true)
-    public ProfileLogCommentResponseDTO.PageResponse getPageProfileLogComments(
-            final Optional<Long> memberId, final Long profileLogId) {
-        // 1. 대상 프로필 로그 조회
-        final ProfileLog targetProfileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
-
-        // 2. 댓글 목록 조회 (페이징 없이 모든 댓글 조회)
-        final List<ProfileLogComment> comments =
-                profileLogCommentQueryAdapter.getProfileLogComments(profileLogId);
-
-        // 3. 댓글 목록 응답 생성
-        List<ParentCommentResponse> commentResponses =
-                comments.stream()
-                        .map(
-                                comment ->
-                                        profileLogCommentMapper.toProfileLogCommentResponse(
-                                                comment, memberId))
-                        .filter(comment -> comment != null) // null인 응답은 필터링 (삭제된 댓글)
-                        .collect(Collectors.toList());
-
-        return ProfileLogCommentResponseDTO.PageResponse.builder()
-                .comments(commentResponses)
-                .totalElements(commentResponses.size())
-                .totalPages(1)
-                .currentPage(0)
-                .hasNext(false)
-                .build();
-    }
-
-    /**
      * 프로필 로그 댓글을 페이징하여 조회합니다.
      *
      * @param memberId 조회 요청자의 회원 ID (선택적)
@@ -201,13 +165,10 @@ public class ProfileLogCommentService {
             final Long profileLogId,
             final int page,
             final int size) {
-        // 1. 대상 프로필 로그 조회
-        final ProfileLog targetProfileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
-
-        // 2. 페이징 객체 생성
+        // 1. 페이징 객체 생성
         final Pageable pageable = PageRequest.of(page, size);
 
-        // 3. 댓글 목록 조회 (페이징)
+        // 2. 댓글 목록 조회 (페이징)
         final Page<ProfileLogComment> commentsPage =
                 profileLogCommentQueryAdapter.getPageProfileLogComments(profileLogId, pageable);
 

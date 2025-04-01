@@ -33,7 +33,7 @@ public class ProfileLogCommentCustomRepositoryImpl implements ProfileLogCommentC
                         .selectFrom(profileLogComment)
                         .join(profileLogComment.profile, profile)
                         .fetchJoin()
-                        .where(profileLogIdEq(profileLogId), isTopLevelComment(), isNotDeleted())
+                        .where(profileLogIdEq(profileLogId), isTopLevelComment())
                         .orderBy(profileLogComment.createdAt.asc())
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize())
@@ -43,7 +43,7 @@ public class ProfileLogCommentCustomRepositoryImpl implements ProfileLogCommentC
                 queryFactory
                         .select(profileLogComment.count())
                         .from(profileLogComment)
-                        .where(profileLogIdEq(profileLogId), isTopLevelComment(), isNotDeleted());
+                        .where(profileLogIdEq(profileLogId), isTopLevelComment());
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
