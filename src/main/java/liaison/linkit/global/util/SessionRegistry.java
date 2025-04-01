@@ -18,6 +18,9 @@ public class SessionRegistry {
     /** memberId -> 여러 세션(sessionId) 매핑 */
     private final Map<Long, Set<String>> memberToSessionsMap = new ConcurrentHashMap<>();
 
+    /** chatRoomId -> 구독 중인 memberId 목록 */
+    private final Map<Long, Set<Long>> chatRoomSubscribersMap = new ConcurrentHashMap<>();
+
     /** sessionId로 memberId 조회 */
     public Long getMemberIdBySession(String sessionId) {
         Long memberId = sessionToMemberMap.get(sessionId);
@@ -71,5 +74,36 @@ public class SessionRegistry {
     /** 특정 memberId가 가진 모든 sessionId 반환 */
     public Set<String> getMemberSessions(Long memberId) {
         return memberToSessionsMap.getOrDefault(memberId, Collections.emptySet());
+    }
+
+    /** 채팅방 구독 등록 (SUBSCRIBE 시점) */
+    public void subscribeToChatRoom(Long chatRoomId, Long memberId) {
+        chatRoomSubscribersMap
+                .computeIfAbsent(chatRoomId, k -> ConcurrentHashMap.newKeySet())
+                .add(memberId);
+        log.debug("subscribeToChatRoom: chatRoomId={}, memberId={}", chatRoomId, memberId);
+    }
+
+    /** 채팅방 구독 해제 (UNSUBSCRIBE 시점) */
+    public void unsubscribeFromChatRoom(Long chatRoomId, Long memberId) {
+        Set<Long> subscribers = chatRoomSubscribersMap.get(chatRoomId);
+        if (subscribers != null) {
+            subscribers.remove(memberId);
+            if (subscribers.isEmpty()) {
+                chatRoomSubscribersMap.remove(chatRoomId);
+            }
+        }
+        log.debug("unsubscribeFromChatRoom: chatRoomId={}, memberId={}", chatRoomId, memberId);
+    }
+
+    /** 특정 사용자가 특정 채팅방을 구독 중인지 확인 */
+    public boolean isSubscribedToChatRoom(Long chatRoomId, Long memberId) {
+        Set<Long> subscribers = chatRoomSubscribersMap.get(chatRoomId);
+        return subscribers != null && subscribers.contains(memberId);
+    }
+
+    /** 특정 채팅방의 모든 구독자 목록 반환 */
+    public Set<Long> getChatRoomSubscribers(Long chatRoomId) {
+        return chatRoomSubscribersMap.getOrDefault(chatRoomId, Collections.emptySet());
     }
 }

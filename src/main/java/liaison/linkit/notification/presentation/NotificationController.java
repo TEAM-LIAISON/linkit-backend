@@ -31,6 +31,15 @@ public class NotificationController {
                 notificationService.getNotificationItems(accessor.getMemberId()));
     }
 
+    @GetMapping("/notification/header")
+    @MemberOnly
+    @Logging(item = "Notification", action = "GET_NOTIFICATION_COUNT")
+    public CommonResponse<NotificationResponseDTO.NotificationCountResponse> getNotificationCount(
+            @Auth final Accessor accessor) {
+        return CommonResponse.onSuccess(
+                notificationService.getNotificationCount(accessor.getMemberId()));
+    }
+
     @PostMapping("/notification/read/{notificationId}")
     @MemberOnly
     @Logging(item = "Notification", action = "POST_READ_NOTIFICATION")

@@ -2,6 +2,7 @@ package liaison.linkit.chat.domain.repository.chatMessage;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import liaison.linkit.chat.domain.ChatMessage;
 import org.springframework.data.domain.Page;
@@ -32,4 +33,8 @@ public interface ChatMessageRepository extends MongoRepository<ChatMessage, Stri
     // 읽지 않은 메시지 중 특정 시간보다 오래된 메시지 조회 - 필드명 확인
     @Query(value = "{ 'is_read': false, 'timestamp': {$lte: ?0} }")
     List<ChatMessage> findUnreadMessagesOlderThan(LocalDateTime timeThreshold);
+
+    // 특정 채팅방의 마지막 메시지 조회 (timestamp 기준 내림차순 정렬 후 첫 번째 항목)
+    @Query(value = "{ 'chat_room_id': ?0 }", sort = "{ 'timestamp': -1 }")
+    Optional<ChatMessage> findFirstByChatRoomIdOrderByTimestampDesc(Long chatRoomId);
 }

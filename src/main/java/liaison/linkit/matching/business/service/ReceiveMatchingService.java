@@ -294,14 +294,14 @@ public class ReceiveMatchingService {
                 notificationHandler.generateAcceptedStateReceiverNotificationDetails(matching);
         notificationHandler.alertNewAcceptedNotificationToReceiver(
                 matching, acceptedReceiverDetails);
-        headerNotificationService.publishNotificationCount(
-                matchingInfoResolver.getReceiverMemberId(matching));
+        //        headerNotificationService.publishNotificationCount(
+        //                matchingInfoResolver.getReceiverMemberId(matching));
 
         NotificationDetails acceptedSenderDetails =
                 notificationHandler.generateAcceptedStateSenderNotificationDetails(matching);
         notificationHandler.alertNewAcceptedNotificationToSender(matching, acceptedSenderDetails);
-        headerNotificationService.publishNotificationCount(
-                matchingInfoResolver.getSenderMemberId(matching));
+        //        headerNotificationService.publishNotificationCount(
+        //                matchingInfoResolver.getSenderMemberId(matching));
     }
 
     /** COMPLETED 상태가 아닌 경우(거절 등)의 후속 처리: - 발신자에게 거절 알림 전송 및 카운트 업데이트 */
@@ -310,8 +310,8 @@ public class ReceiveMatchingService {
         NotificationDetails rejectedDetails =
                 notificationHandler.generatedRejectedStateSenderNotificationDetails(matching);
         notificationHandler.alertNewRejectedNotificationToSender(matching, rejectedDetails);
-        headerNotificationService.publishNotificationCount(
-                matchingInfoResolver.getSenderMemberId(matching));
+        //        headerNotificationService.publishNotificationCount(
+        //                matchingInfoResolver.getSenderMemberId(matching));
     }
 
     // ※ 예제에서는 handleChatRoomSetting() 메서드에서 buildAndSaveChatRoomAsReceiver()를 호출하는 형태로 사용합니다.
