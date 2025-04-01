@@ -33,6 +33,7 @@ import liaison.linkit.profile.business.service.ProfileLogCommentService;
 import liaison.linkit.profile.presentation.log.ProfileLogCommentController;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogCommentRequestDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogCommentResponseDTO;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -131,8 +132,6 @@ public class ProfileLogCommentControllerTest extends ControllerTest {
                                         fieldWithPath("result.commentId").description("생성된 댓글 ID"),
                                         fieldWithPath("result.profileLogId")
                                                 .description("댓글이 작성된 프로필 로그 ID"),
-                                        fieldWithPath("result.authorProfileId")
-                                                .description("댓글 작성자 프로필 ID"),
                                         fieldWithPath("result.authorName").description("댓글 작성자 이름"),
                                         fieldWithPath("result.authorProfileImagePath")
                                                 .description("댓글 작성자 프로필 이미지 경로"),
@@ -211,8 +210,6 @@ public class ProfileLogCommentControllerTest extends ControllerTest {
                                         fieldWithPath("result.commentId").description("수정된 댓글 ID"),
                                         fieldWithPath("result.profileLogId")
                                                 .description("댓글이 작성된 프로필 로그 ID"),
-                                        fieldWithPath("result.authorProfileId")
-                                                .description("댓글 작성자 프로필 ID"),
                                         fieldWithPath("result.authorName").description("댓글 작성자 이름"),
                                         fieldWithPath("result.authorProfileImagePath")
                                                 .description("댓글 작성자 프로필 이미지 경로"),
@@ -264,19 +261,18 @@ public class ProfileLogCommentControllerTest extends ControllerTest {
                         .replies(replies)
                         .build());
 
-        ProfileLogCommentResponseDTO.PageResponse response =
-                ProfileLogCommentResponseDTO.PageResponse.builder()
-                        .comments(comments)
-                        .totalElements(1)
-                        .totalPages(1)
-                        .currentPage(0)
-                        .hasNext(false)
+        // 커서 기반 응답으로 변경
+        CursorResponse<ProfileLogCommentResponseDTO.ParentCommentResponse> cursorResponse =
+                CursorResponse.<ProfileLogCommentResponseDTO.ParentCommentResponse>builder()
+                        .content(comments)
+                        .nextCursor("1") // 다음 페이지의 커서 값 (마지막 댓글 ID)
+                        .hasNext(true) // 다음 페이지 존재 여부
                         .build();
 
         given(
                         profileLogCommentService.getPageProfileLogComments(
-                                Optional.of(1L), profileLogId, 0, 10))
-                .willReturn(response);
+                                Optional.of(1L), profileLogId, null, 10))
+                .willReturn(cursorResponse);
 
         // When
         final ResultActions resultActions =
@@ -286,8 +282,7 @@ public class ProfileLogCommentControllerTest extends ControllerTest {
                                         HttpHeaders.AUTHORIZATION,
                                         "Bearer " + MEMBER_TOKENS.getAccessToken())
                                 .cookie(COOKIE)
-                                .param("page", "0")
-                                .param("size", "10"));
+                                .param("size", "10")); // page 파라미터를 제거하고 cursor가 없는 첫 요청으로 변경
 
         // Then
         resultActions
@@ -299,10 +294,12 @@ public class ProfileLogCommentControllerTest extends ControllerTest {
                                         parameterWithName("profileLogId")
                                                 .description("조회할 프로필 로그 ID")),
                                 queryParameters(
-                                        parameterWithName("page")
-                                                .description("페이지 번호 (0부터 시작)")
+                                        parameterWithName("cursor")
+                                                .description("커서 값 (다음 페이지 조회 시 사용)")
                                                 .optional(),
-                                        parameterWithName("size").description("페이지 크기").optional()),
+                                        parameterWithName("size")
+                                                .description("조회할 댓글 개수")
+                                                .optional()),
                                 requestHeaders(
                                         headerWithName(HttpHeaders.AUTHORIZATION)
                                                 .description("Bearer 인증 토큰")
@@ -314,54 +311,51 @@ public class ProfileLogCommentControllerTest extends ControllerTest {
                                         fieldWithPath("isSuccess").description("요청 성공 여부"),
                                         fieldWithPath("code").description("응답 코드"),
                                         fieldWithPath("message").description("응답 메시지"),
-                                        fieldWithPath("result.comments").description("댓글 목록"),
-                                        fieldWithPath("result.comments[].id").description("댓글 ID"),
-                                        fieldWithPath("result.comments[].authorName")
+                                        fieldWithPath("result.content").description("댓글 목록"),
+                                        fieldWithPath("result.content[].id").description("댓글 ID"),
+                                        fieldWithPath("result.content[].authorName")
                                                 .description("댓글 작성자 이름"),
-                                        fieldWithPath("result.comments[].emailId")
+                                        fieldWithPath("result.content[].emailId")
                                                 .description("댓글 작성자 이메일 ID"),
-                                        fieldWithPath("result.comments[].authorProfileImagePath")
+                                        fieldWithPath("result.content[].authorProfileImagePath")
                                                 .description("댓글 작성자 프로필 이미지 경로"),
-                                        fieldWithPath("result.comments[].content")
+                                        fieldWithPath("result.content[].content")
                                                 .description("댓글 내용"),
-                                        fieldWithPath("result.comments[].createdAt")
+                                        fieldWithPath("result.content[].createdAt")
                                                 .description("댓글 작성 시간"),
-                                        fieldWithPath("result.comments[].isUpdated")
+                                        fieldWithPath("result.content[].isUpdated")
                                                 .description("댓글 수정 여부"),
-                                        fieldWithPath("result.comments[].isDeleted")
+                                        fieldWithPath("result.content[].isDeleted")
                                                 .description("댓글 삭제 여부"),
-                                        fieldWithPath("result.comments[].isQuitAccount")
+                                        fieldWithPath("result.content[].isQuitAccount")
                                                 .description("탈퇴한 계정 여부"),
-                                        fieldWithPath("result.comments[].isAuthor")
+                                        fieldWithPath("result.content[].isAuthor")
                                                 .description("현재 사용자가 댓글 작성자인지 여부"),
-                                        fieldWithPath("result.comments[].replies")
+                                        fieldWithPath("result.content[].replies")
                                                 .description("대댓글 목록"),
-                                        fieldWithPath("result.comments[].replies[].id")
+                                        fieldWithPath("result.content[].replies[].id")
                                                 .description("대댓글 ID"),
-                                        fieldWithPath("result.comments[].replies[].authorName")
+                                        fieldWithPath("result.content[].replies[].authorName")
                                                 .description("대댓글 작성자 이름"),
-                                        fieldWithPath("result.comments[].replies[].emailId")
+                                        fieldWithPath("result.content[].replies[].emailId")
                                                 .description("대댓글 작성자 이메일 ID"),
                                         fieldWithPath(
-                                                        "result.comments[].replies[].authorProfileImagePath")
+                                                        "result.content[].replies[].authorProfileImagePath")
                                                 .description("대댓글 작성자 프로필 이미지 경로"),
-                                        fieldWithPath("result.comments[].replies[].content")
+                                        fieldWithPath("result.content[].replies[].content")
                                                 .description("대댓글 내용"),
-                                        fieldWithPath("result.comments[].replies[].createdAt")
+                                        fieldWithPath("result.content[].replies[].createdAt")
                                                 .description("대댓글 작성 시간"),
-                                        fieldWithPath("result.comments[].replies[].isUpdated")
+                                        fieldWithPath("result.content[].replies[].isUpdated")
                                                 .description("대댓글 수정 여부"),
-                                        fieldWithPath("result.comments[].replies[].isDeleted")
+                                        fieldWithPath("result.content[].replies[].isDeleted")
                                                 .description("대댓글 삭제 여부"),
-                                        fieldWithPath("result.comments[].replies[].isQuitAccount")
+                                        fieldWithPath("result.content[].replies[].isQuitAccount")
                                                 .description("탈퇴한 계정 여부"),
-                                        fieldWithPath("result.comments[].replies[].isAuthor")
+                                        fieldWithPath("result.content[].replies[].isAuthor")
                                                 .description("현재 사용자가 대댓글 작성자인지 여부"),
-                                        fieldWithPath("result.totalElements")
-                                                .description("전체 댓글 수"),
-                                        fieldWithPath("result.totalPages").description("전체 페이지 수"),
-                                        fieldWithPath("result.currentPage")
-                                                .description("현재 페이지 번호"),
+                                        fieldWithPath("result.nextCursor")
+                                                .description("다음 페이지 조회 시 사용할 커서 값"),
                                         fieldWithPath("result.hasNext")
                                                 .description("다음 페이지 존재 여부"))));
     }
@@ -413,5 +407,72 @@ public class ProfileLogCommentControllerTest extends ControllerTest {
                                         fieldWithPath("result.commentId").description("삭제된 댓글 ID"),
                                         fieldWithPath("result.profileLogId")
                                                 .description("댓글이 작성된 프로필 로그 ID"))));
+    }
+
+    @Test
+    @DisplayName("프로필 로그 댓글 커서 기반 다음 페이지 조회 API 테스트")
+    void getNextPageProfileLogCommentsWithCursorTest() throws Exception {
+        // Given
+        final long profileLogId = 1L;
+        final String cursor = "1"; // 이전 페이지의 마지막 댓글 ID
+
+        // Mock 응답 데이터 생성
+        List<ProfileLogCommentResponseDTO.ReplyResponse> replies = new ArrayList<>();
+        replies.add(
+                ProfileLogCommentResponseDTO.ReplyResponse.builder()
+                        .id(4L)
+                        .authorName("대댓글작성자")
+                        .emailId("replier@example.com")
+                        .authorProfileImagePath("profile/image/path2.jpg")
+                        .content("두 번째 페이지 대댓글입니다.")
+                        .createdAt("30분 전")
+                        .isUpdated("false")
+                        .isDeleted(false)
+                        .isQuitAccount(false)
+                        .isAuthor(false)
+                        .build());
+
+        List<ProfileLogCommentResponseDTO.ParentCommentResponse> comments = new ArrayList<>();
+        comments.add(
+                ProfileLogCommentResponseDTO.ParentCommentResponse.builder()
+                        .id(3L)
+                        .authorName("두번째페이지")
+                        .emailId("second@example.com")
+                        .authorProfileImagePath("profile/image/path.jpg")
+                        .content("두 번째 페이지 댓글입니다.")
+                        .createdAt("2시간 전")
+                        .isUpdated("false")
+                        .isDeleted(false)
+                        .isQuitAccount(false)
+                        .isAuthor(true)
+                        .replies(replies)
+                        .build());
+
+        // 커서 기반 응답
+        CursorResponse<ProfileLogCommentResponseDTO.ParentCommentResponse> cursorResponse =
+                CursorResponse.<ProfileLogCommentResponseDTO.ParentCommentResponse>builder()
+                        .content(comments)
+                        .nextCursor(null) // 더 이상 다음 페이지가 없음
+                        .hasNext(false)
+                        .build();
+
+        given(
+                        profileLogCommentService.getPageProfileLogComments(
+                                Optional.of(1L), profileLogId, cursor, 10))
+                .willReturn(cursorResponse);
+
+        // When
+        final ResultActions resultActions =
+                mockMvc.perform(
+                        get("/api/v1/profile/log/{profileLogId}/comments", profileLogId)
+                                .header(
+                                        HttpHeaders.AUTHORIZATION,
+                                        "Bearer " + MEMBER_TOKENS.getAccessToken())
+                                .cookie(COOKIE)
+                                .param("cursor", cursor)
+                                .param("size", "10"));
+
+        // Then
+        resultActions.andExpect(status().isOk()).andDo(print());
     }
 }

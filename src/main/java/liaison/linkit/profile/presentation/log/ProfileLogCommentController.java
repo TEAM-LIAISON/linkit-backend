@@ -12,6 +12,7 @@ import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.profile.business.service.ProfileLogCommentService;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogCommentRequestDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogCommentResponseDTO;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -79,18 +80,19 @@ public class ProfileLogCommentController {
      */
     @GetMapping("/profile/log/{profileLogId}/comments")
     @Logging(item = "Profile_Log_Comment", action = "Read", includeResult = true)
-    public CommonResponse<ProfileLogCommentResponseDTO.PageResponse> getPageProfileLogComments(
-            @Auth final Accessor accessor,
-            @PathVariable final Long profileLogId,
-            @RequestParam(value = "page", defaultValue = "0") final int page,
-            @RequestParam(value = "size", defaultValue = "10") final int size) {
+    public CommonResponse<CursorResponse<ProfileLogCommentResponseDTO.ParentCommentResponse>>
+            getPageProfileLogComments(
+                    @Auth final Accessor accessor,
+                    @PathVariable final Long profileLogId,
+                    @RequestParam(value = "cursor", required = false) final String cursor,
+                    @RequestParam(value = "size", defaultValue = "10") final int size) {
 
         Optional<Long> optionalMemberId =
                 accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
 
         return CommonResponse.onSuccess(
                 profileLogCommentService.getPageProfileLogComments(
-                        optionalMemberId, profileLogId, page, size));
+                        optionalMemberId, profileLogId, cursor, size));
     }
 
     /**

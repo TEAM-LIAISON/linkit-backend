@@ -1,7 +1,6 @@
 package liaison.linkit.profile.business.service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -18,300 +17,261 @@ import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogCommentRequestDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogCommentResponseDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogCommentResponseDTO.ParentCommentResponse;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class ProfileLogCommentService {
 
-        private static final Logger log = LoggerFactory.getLogger(ProfileLogCommentService.class);
+    private static final Logger log = LoggerFactory.getLogger(ProfileLogCommentService.class);
 
-        // Adapters
-        private final ProfileQueryAdapter profileQueryAdapter;
-        private final ProfileLogQueryAdapter profileLogQueryAdapter;
-        private final ProfileLogCommentQueryAdapter profileLogCommentQueryAdapter;
-        private final ProfileLogCommentCommandAdapter profileLogCommentCommandAdapter;
+    // Adapters
+    private final ProfileQueryAdapter profileQueryAdapter;
+    private final ProfileLogQueryAdapter profileLogQueryAdapter;
+    private final ProfileLogCommentQueryAdapter profileLogCommentQueryAdapter;
+    private final ProfileLogCommentCommandAdapter profileLogCommentCommandAdapter;
 
-        // Mappers
-        private final ProfileLogCommentMapper profileLogCommentMapper;
+    // Mappers
+    private final ProfileLogCommentMapper profileLogCommentMapper;
 
-        /**
-         * 프로필 로그에 댓글을 추가합니다.
-         *
-         * @param memberId     댓글 작성자의 회원 ID
-         * @param profileLogId 댓글이 작성될 프로필 로그 ID
-         * @param request      댓글 작성 요청 데이터
-         * @return 댓글 작성 결과 응답
-         */
-        public ProfileLogCommentResponseDTO.AddProfileLogCommentResponse addProfileLogComment(
-                        final Long memberId,
-                        final Long profileLogId,
-                        final ProfileLogCommentRequestDTO.AddProfileLogCommentRequest request) {
-                // 1. 대상 프로필 로그 조회
-                final ProfileLog targetProfileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
+    /**
+     * 프로필 로그에 댓글을 추가합니다.
+     *
+     * @param memberId 댓글 작성자의 회원 ID
+     * @param profileLogId 댓글이 작성될 프로필 로그 ID
+     * @param request 댓글 작성 요청 데이터
+     * @return 댓글 작성 결과 응답
+     */
+    public ProfileLogCommentResponseDTO.AddProfileLogCommentResponse addProfileLogComment(
+            final Long memberId,
+            final Long profileLogId,
+            final ProfileLogCommentRequestDTO.AddProfileLogCommentRequest request) {
+        // 1. 대상 프로필 로그 조회
+        final ProfileLog targetProfileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
 
-                // 2. 댓글 작성자 프로필 조회
-                final Profile authorProfile = profileQueryAdapter.findByMemberId(memberId);
+        // 2. 댓글 작성자 프로필 조회
+        final Profile authorProfile = profileQueryAdapter.findByMemberId(memberId);
 
-                // 3. 비공개 로그인 경우 작성자만 댓글 작성 가능
-                if (!targetProfileLog.isLogPublic()
-                                && !targetProfileLog.getProfile().getId().equals(authorProfile.getId())) {
-                        throw PrivateProfileLogCommentBadRequestException.EXCEPTION;
-                }
-
-                // 4. 부모 댓글 처리 (대댓글인 경우)
-                ProfileLogComment parentComment = null;
-                if (request.getParentCommentId() != null) {
-                        parentComment = profileLogCommentQueryAdapter.getProfileLogComment(
-                                        request.getParentCommentId());
-
-                        // 답글에 답글을 다는 것은 지원하지 않음
-                        if (parentComment.getParentComment() != null) {
-                                throw ParentCommentBadRequestException.EXCEPTION;
-                        }
-                }
-
-                // 5. 댓글 엔티티 생성
-                ProfileLogComment comment = ProfileLogComment.builder()
-                                .profileLog(targetProfileLog)
-                                .profile(authorProfile)
-                                .content(request.getContent())
-                                .isDeleted(false)
-                                .parentComment(parentComment)
-                                .build();
-
-                // 6. 댓글 저장
-                ProfileLogComment savedComment = profileLogCommentCommandAdapter.addProfileLogComment(comment);
-
-                // 7. 댓글 수 증가
-                targetProfileLog.increaseCommentCount();
-
-                // 8. 응답 생성
-                return profileLogCommentMapper.toAddProfileLogCommentResponse(
-                                savedComment, authorProfile, profileLogId);
+        // 3. 비공개 로그인 경우 작성자만 댓글 작성 가능
+        if (!targetProfileLog.isLogPublic()
+                && !targetProfileLog.getProfile().getId().equals(authorProfile.getId())) {
+            throw PrivateProfileLogCommentBadRequestException.EXCEPTION;
         }
 
-        public ProfileLogCommentResponseDTO.UpdateProfileLogCommentResponse updateProfileLogComment(
-                        final Long authorMemberId,
-                        final Long profileLogCommentId,
-                        final ProfileLogCommentRequestDTO.UpdateProfileLogCommentRequest request) {
-                // 1. 대상 댓글 조회
-                final ProfileLogComment targetComment = profileLogCommentQueryAdapter
-                                .getProfileLogComment(profileLogCommentId);
+        // 4. 부모 댓글 처리 (대댓글인 경우)
+        ProfileLogComment parentComment = null;
+        if (request.getParentCommentId() != null) {
+            parentComment =
+                    profileLogCommentQueryAdapter.getProfileLogComment(
+                            request.getParentCommentId());
 
-                // 2. 댓글 작성자 확인 (권한 검증)
-                final Profile authorProfile = profileQueryAdapter.findByMemberId(authorMemberId);
-                if (!targetComment.getProfile().getId().equals(authorProfile.getId())) {
-                        throw new IllegalStateException("댓글 작성자만 수정할 수 있습니다.");
-                }
-
-                // 3. 댓글 내용 업데이트
-                targetComment.updateContent(request.getContent());
-
-                // 4. 응답 생성
-                return profileLogCommentMapper.toUpdateProfileLogCommentResponse(
-                                targetComment, authorProfile, targetComment.getProfileLog().getId());
+            // 답글에 답글을 다는 것은 지원하지 않음
+            if (parentComment.getParentComment() != null) {
+                throw ParentCommentBadRequestException.EXCEPTION;
+            }
         }
 
-        /**
-         * 프로필 로그 댓글을 삭제합니다.
-         *
-         * @param authorMemberId      삭제 요청자의 회원 ID
-         * @param profileLogCommentId 삭제할 댓글 ID
-         * @return 댓글 삭제 결과 응답
-         */
-        public ProfileLogCommentResponseDTO.DeleteProfileLogCommentResponse deleteProfileLogComment(
-                        final Long authorMemberId, final Long profileLogCommentId) {
-                // 1. 대상 댓글 조회
-                final ProfileLogComment targetComment = profileLogCommentQueryAdapter
-                                .getProfileLogComment(profileLogCommentId);
+        // 5. 댓글 엔티티 생성
+        ProfileLogComment comment =
+                ProfileLogComment.builder()
+                        .profileLog(targetProfileLog)
+                        .profile(authorProfile)
+                        .content(request.getContent())
+                        .isDeleted(false)
+                        .parentComment(parentComment)
+                        .build();
 
-                // 2. 댓글 작성자 확인 (권한 검증)
-                final Profile authorProfile = profileQueryAdapter.findByMemberId(authorMemberId);
-                if (!targetComment.getProfile().getId().equals(authorProfile.getId())) {
-                        throw new IllegalStateException("댓글 작성자만 삭제할 수 있습니다.");
-                }
+        // 6. 댓글 저장
+        ProfileLogComment savedComment =
+                profileLogCommentCommandAdapter.addProfileLogComment(comment);
 
-                // 3. 댓글 논리적 삭제 처리
-                targetComment.delete();
+        // 7. 댓글 수 증가
+        targetProfileLog.increaseCommentCount();
 
-                // 4. 댓글 수 감소
-                targetComment.getProfileLog().decreaseCommentCount();
+        // 8. 응답 생성
+        return profileLogCommentMapper.toAddProfileLogCommentResponse(
+                savedComment, authorProfile, profileLogId);
+    }
 
-                // 5. 응답 생성
-                return profileLogCommentMapper.toDeleteProfileLogCommentResponse(
-                                profileLogCommentId, targetComment.getProfileLog().getId());
+    public ProfileLogCommentResponseDTO.UpdateProfileLogCommentResponse updateProfileLogComment(
+            final Long authorMemberId,
+            final Long profileLogCommentId,
+            final ProfileLogCommentRequestDTO.UpdateProfileLogCommentRequest request) {
+        // 1. 대상 댓글 조회
+        final ProfileLogComment targetComment =
+                profileLogCommentQueryAdapter.getProfileLogComment(profileLogCommentId);
+
+        // 2. 댓글 작성자 확인 (권한 검증)
+        final Profile authorProfile = profileQueryAdapter.findByMemberId(authorMemberId);
+        if (!targetComment.getProfile().getId().equals(authorProfile.getId())) {
+            throw new IllegalStateException("댓글 작성자만 수정할 수 있습니다.");
         }
 
-        /**
-         * 프로필 로그 댓글을 페이징하여 조회합니다.
-         *
-         * @param memberId     조회 요청자의 회원 ID (선택적)
-         * @param profileLogId 조회할 프로필 로그 ID
-         * @param page         페이지 번호 (0부터 시작)
-         * @param size         페이지 크기
-         * @return 페이징된 댓글 목록 응답
-         */
-        @Transactional(readOnly = true)
-        public ProfileLogCommentResponseDTO.PageResponse getPageProfileLogComments(
-                        final Optional<Long> memberId, final Long profileLogId) {
-                // 1. 대상 프로필 로그 조회
-                final ProfileLog targetProfileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
+        // 3. 댓글 내용 업데이트
+        targetComment.updateContent(request.getContent());
 
-                // 2. 댓글 목록 조회 (페이징 없이 모든 댓글 조회)
-                final List<ProfileLogComment> comments = profileLogCommentQueryAdapter
-                                .getProfileLogComments(profileLogId);
+        // 4. 응답 생성
+        return profileLogCommentMapper.toUpdateProfileLogCommentResponse(
+                targetComment, authorProfile, targetComment.getProfileLog().getId());
+    }
 
-                // 3. 댓글 목록 응답 생성 (try-catch 처리로 오류 방지)
-                List<ParentCommentResponse> commentResponses = comments.stream()
-                                .map(comment -> {
-                                        try {
-                                                return profileLogCommentMapper.toProfileLogCommentResponse(
-                                                                comment, memberId);
-                                        } catch (Exception e) {
-                                                // 삭제된 프로필 관련 오류 발생 시 처리
-                                                log.warn("Error processing comment ID: " + comment.getId(), e);
-                                                if (comment.isDeleted()) {
-                                                        return null; // 삭제된 댓글은 null 반환
-                                                }
+    /**
+     * 프로필 로그 댓글을 삭제합니다.
+     *
+     * @param authorMemberId 삭제 요청자의 회원 ID
+     * @param profileLogCommentId 삭제할 댓글 ID
+     * @return 댓글 삭제 결과 응답
+     */
+    public ProfileLogCommentResponseDTO.DeleteProfileLogCommentResponse deleteProfileLogComment(
+            final Long authorMemberId, final Long profileLogCommentId) {
+        // 1. 대상 댓글 조회
+        final ProfileLogComment targetComment =
+                profileLogCommentQueryAdapter.getProfileLogComment(profileLogCommentId);
 
-                                                // 프로필 정보 접근 시 오류가 발생한 경우, 탈퇴한 사용자로 처리
-                                                List<ProfileLogComment> replies = profileLogCommentQueryAdapter
-                                                                .findRepliesByParentCommentId(comment.getId());
+        // 2. 댓글 작성자 확인 (권한 검증)
+        final Profile authorProfile = profileQueryAdapter.findByMemberId(authorMemberId);
+        if (!targetComment.getProfile().getId().equals(authorProfile.getId())) {
+            throw new IllegalStateException("댓글 작성자만 삭제할 수 있습니다.");
+        }
 
-                                                List<ProfileLogCommentResponseDTO.ReplyResponse> replyResponses = new java.util.ArrayList<>();
+        // 3. 댓글 논리적 삭제 처리
+        targetComment.delete();
 
-                                                for (ProfileLogComment reply : replies) {
-                                                        try {
-                                                                // 안전한 공개 메서드 사용
-                                                                ProfileLogCommentResponseDTO.ReplyResponse replyResponse = profileLogCommentMapper
-                                                                                .toReplyResponseForOrphanedComment(
-                                                                                                reply, memberId);
-                                                                if (replyResponse != null) {
-                                                                        replyResponses.add(replyResponse);
-                                                                }
-                                                        } catch (Exception ex) {
-                                                                log.warn("Error processing reply ID: " + reply.getId(),
-                                                                                ex);
-                                                        }
-                                                }
+        // 4. 댓글 수 감소
+        targetComment.getProfileLog().decreaseCommentCount();
 
-                                                return ParentCommentResponse.builder()
-                                                                .id(comment.getId())
-                                                                .authorName("(탈퇴한 사용자)")
-                                                                .emailId(null)
-                                                                .authorProfileImagePath(null)
-                                                                .content(comment.getContent())
-                                                                .createdAt(null)
-                                                                .isUpdated("false")
-                                                                .isDeleted(false)
-                                                                .isAuthor(false)
-                                                                .replies(replyResponses)
-                                                                .build();
+        // 5. 응답 생성
+        return profileLogCommentMapper.toDeleteProfileLogCommentResponse(
+                profileLogCommentId, targetComment.getProfileLog().getId());
+    }
+
+    /**
+     * 프로필 로그 댓글을 페이징 없이 조회합니다.
+     *
+     * @param memberId 조회 요청자의 회원 ID (선택적)
+     * @param profileLogId 조회할 프로필 로그 ID
+     * @return 댓글 목록 응답
+     */
+    @Transactional(readOnly = true)
+    public ProfileLogCommentResponseDTO.PageResponse getPageProfileLogComments(
+            final Optional<Long> memberId, final Long profileLogId) {
+        throw new UnsupportedOperationException(
+                "This method is no longer supported. Use cursor-based pagination instead.");
+    }
+
+    /**
+     * 프로필 로그 댓글을 무한 스크롤 방식으로 조회합니다.
+     *
+     * @param memberId 조회 요청자의 회원 ID (선택적)
+     * @param profileLogId 조회할 프로필 로그 ID
+     * @param cursor 커서 값 (이전 페이지의 마지막 댓글 ID)
+     * @param size 페이지 크기
+     * @return 커서 기반 댓글 목록 응답
+     */
+    @Transactional(readOnly = true)
+    public CursorResponse<ProfileLogCommentResponseDTO.ParentCommentResponse>
+            getPageProfileLogComments(
+                    final Optional<Long> memberId,
+                    final Long profileLogId,
+                    final String cursor,
+                    final int size) {
+        // 1. 대상 프로필 로그 조회
+        final ProfileLog targetProfileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
+
+        // 2. 커서 값 처리
+        Long cursorId = null;
+        if (cursor != null && !cursor.isBlank()) {
+            try {
+                cursorId = Long.parseLong(cursor);
+            } catch (NumberFormatException e) {
+                log.warn("잘못된 커서 값: {}", cursor);
+                // 잘못된 커서 값은 무시하고 첫 페이지를 조회
+            }
+        }
+
+        // 3. 댓글 목록 조회 (커서 기반)
+        final List<ProfileLogComment> comments =
+                profileLogCommentQueryAdapter.getProfileLogCommentsWithCursor(
+                        profileLogId, cursorId, size);
+
+        // 4. 댓글 목록 응답 생성 (try-catch 처리로 오류 방지)
+        List<ParentCommentResponse> commentResponses =
+                comments.stream()
+                        .map(
+                                comment -> {
+                                    try {
+                                        return profileLogCommentMapper.toProfileLogCommentResponse(
+                                                comment, memberId);
+                                    } catch (Exception e) {
+                                        // 삭제된 프로필 관련 오류 발생 시 처리
+                                        log.warn(
+                                                "Error processing comment ID: " + comment.getId(),
+                                                e);
+                                        if (comment.isDeleted()) {
+                                            return null; // 삭제된 댓글은 null 반환
                                         }
-                                })
-                                .filter(comment -> comment != null) // null인 응답은 필터링 (삭제된 댓글)
-                                .collect(Collectors.toList());
 
-                return ProfileLogCommentResponseDTO.PageResponse.builder()
-                                .comments(commentResponses)
-                                .totalElements(commentResponses.size())
-                                .totalPages(1)
-                                .currentPage(0)
-                                .hasNext(false)
-                                .build();
-        }
+                                        // 프로필 정보 접근 시 오류가 발생한 경우, 탈퇴한 사용자로 처리
+                                        List<ProfileLogComment> replies =
+                                                profileLogCommentQueryAdapter
+                                                        .findRepliesByParentCommentId(
+                                                                comment.getId());
 
-        /**
-         * 프로필 로그 댓글을 페이징하여 조회합니다.
-         *
-         * @param memberId     조회 요청자의 회원 ID (선택적)
-         * @param profileLogId 조회할 프로필 로그 ID
-         * @param page         페이지 번호 (0부터 시작)
-         * @param size         페이지 크기
-         * @return 페이징된 댓글 목록 응답
-         */
-        @Transactional(readOnly = true)
-        public ProfileLogCommentResponseDTO.PageResponse getPageProfileLogComments(
-                        final Optional<Long> memberId,
-                        final Long profileLogId,
-                        final int page,
-                        final int size) {
-                // 1. 대상 프로필 로그 조회
-                final ProfileLog targetProfileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
+                                        List<ProfileLogCommentResponseDTO.ReplyResponse>
+                                                replyResponses = new java.util.ArrayList<>();
 
-                // 2. 페이징 객체 생성
-                final Pageable pageable = PageRequest.of(page, size);
-
-                // 3. 댓글 목록 조회 (페이징)
-                final Page<ProfileLogComment> commentsPage = profileLogCommentQueryAdapter
-                                .getPageProfileLogComments(profileLogId, pageable);
-
-                // 4. 댓글 목록 응답 생성 (try-catch 처리로 오류 방지)
-                List<ParentCommentResponse> commentResponses = commentsPage.getContent().stream()
-                                .map(comment -> {
-                                        try {
-                                                return profileLogCommentMapper.toProfileLogCommentResponse(
-                                                                comment, memberId);
-                                        } catch (Exception e) {
-                                                // 삭제된 프로필 관련 오류 발생 시 처리
-                                                log.warn("Error processing comment ID: " + comment.getId(), e);
-                                                if (comment.isDeleted()) {
-                                                        return null; // 삭제된 댓글은 null 반환
+                                        for (ProfileLogComment reply : replies) {
+                                            try {
+                                                // 안전한 공개 메서드 사용
+                                                ProfileLogCommentResponseDTO.ReplyResponse
+                                                        replyResponse =
+                                                                profileLogCommentMapper
+                                                                        .toReplyResponseForOrphanedComment(
+                                                                                reply, memberId);
+                                                if (replyResponse != null) {
+                                                    replyResponses.add(replyResponse);
                                                 }
-
-                                                // 프로필 정보 접근 시 오류가 발생한 경우, 탈퇴한 사용자로 처리
-                                                List<ProfileLogComment> replies = profileLogCommentQueryAdapter
-                                                                .findRepliesByParentCommentId(comment.getId());
-
-                                                List<ProfileLogCommentResponseDTO.ReplyResponse> replyResponses = new java.util.ArrayList<>();
-
-                                                for (ProfileLogComment reply : replies) {
-                                                        try {
-                                                                // 안전한 공개 메서드 사용
-                                                                ProfileLogCommentResponseDTO.ReplyResponse replyResponse = profileLogCommentMapper
-                                                                                .toReplyResponseForOrphanedComment(
-                                                                                                reply, memberId);
-                                                                if (replyResponse != null) {
-                                                                        replyResponses.add(replyResponse);
-                                                                }
-                                                        } catch (Exception ex) {
-                                                                log.warn("Error processing reply ID: " + reply.getId(),
-                                                                                ex);
-                                                        }
-                                                }
-
-                                                return ParentCommentResponse.builder()
-                                                                .id(comment.getId())
-                                                                .authorName("(탈퇴한 사용자)")
-                                                                .emailId(null)
-                                                                .authorProfileImagePath(null)
-                                                                .content(comment.getContent())
-                                                                .createdAt(null)
-                                                                .isUpdated("false")
-                                                                .isDeleted(false)
-                                                                .isAuthor(false)
-                                                                .replies(replyResponses)
-                                                                .build();
+                                            } catch (Exception ex) {
+                                                log.warn(
+                                                        "Error processing reply ID: "
+                                                                + reply.getId(),
+                                                        ex);
+                                            }
                                         }
-                                })
-                                .filter(comment -> comment != null) // null인 응답은 필터링 (삭제된 댓글)
-                                .collect(Collectors.toList());
 
-                return ProfileLogCommentResponseDTO.PageResponse.builder()
-                                .comments(commentResponses)
-                                .totalElements(commentsPage.getTotalElements())
-                                .totalPages(commentsPage.getTotalPages())
-                                .currentPage(page)
-                                .hasNext(commentsPage.hasNext())
-                                .build();
+                                        return ParentCommentResponse.builder()
+                                                .id(comment.getId())
+                                                .authorName("(탈퇴한 사용자)")
+                                                .emailId(null)
+                                                .authorProfileImagePath(null)
+                                                .content(comment.getContent())
+                                                .createdAt(null)
+                                                .isUpdated("false")
+                                                .isDeleted(false)
+                                                .isAuthor(false)
+                                                .replies(replyResponses)
+                                                .build();
+                                    }
+                                })
+                        .filter(comment -> comment != null) // null인 응답은 필터링 (삭제된 댓글)
+                        .collect(Collectors.toList());
+
+        // 5. 다음 커서 값 설정 (조회된 댓글이 size보다 적으면 다음 페이지 없음)
+        String nextCursor = null;
+        if (commentResponses.size() == size && !commentResponses.isEmpty()) {
+            nextCursor = String.valueOf(commentResponses.get(commentResponses.size() - 1).getId());
         }
+
+        return CursorResponse.<ProfileLogCommentResponseDTO.ParentCommentResponse>builder()
+                .content(commentResponses)
+                .nextCursor(nextCursor)
+                .hasNext(nextCursor != null)
+                .build();
+    }
 }

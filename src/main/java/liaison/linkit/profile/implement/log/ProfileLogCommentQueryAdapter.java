@@ -57,4 +57,18 @@ public class ProfileLogCommentQueryAdapter {
     public List<ProfileLogComment> findRepliesByParentCommentId(final Long parentCommentId) {
         return profileLogCommentRepository.findRepliesByParentCommentId(parentCommentId);
     }
+
+    /**
+     * 특정 프로필 로그의 최상위 댓글을 커서 기반으로 조회합니다.
+     *
+     * @param profileLogId 프로필 로그 ID
+     * @param cursorId 커서 ID (마지막으로 조회한 댓글 ID)
+     * @param size 조회할 댓글 개수
+     * @return 커서 이후의 댓글 목록
+     */
+    public List<ProfileLogComment> getProfileLogCommentsWithCursor(
+            final Long profileLogId, final Long cursorId, final int size) {
+        return profileLogCommentRepository.findTopLevelCommentsByProfileLogIdWithCursor(
+                profileLogId, cursorId, size);
+    }
 }

@@ -7,7 +7,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.profile.domain.log.ProfileLogComment;
 import liaison.linkit.profile.domain.log.QProfileLogComment;
-import liaison.linkit.profile.domain.profile.QProfile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,19 +27,21 @@ public class ProfileLogCommentCustomRepositoryImpl implements ProfileLogCommentC
         QProfileLogComment profileLogComment = QProfileLogComment.profileLogComment;
 
         // 직접 엔티티 조회 (프로필 조인 없이)
-        List<ProfileLogComment> content = queryFactory
-                .selectFrom(profileLogComment)
-                .where(profileLogIdEq(profileLogId), isTopLevelComment())
-                .orderBy(profileLogComment.createdAt.asc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+        List<ProfileLogComment> content =
+                queryFactory
+                        .selectFrom(profileLogComment)
+                        .where(profileLogIdEq(profileLogId), isTopLevelComment())
+                        .orderBy(profileLogComment.createdAt.asc())
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .fetch();
 
         // 총 개수 쿼리
-        JPAQuery<Long> countQuery = queryFactory
-                .select(profileLogComment.count())
-                .from(profileLogComment)
-                .where(profileLogIdEq(profileLogId), isTopLevelComment());
+        JPAQuery<Long> countQuery =
+                queryFactory
+                        .select(profileLogComment.count())
+                        .from(profileLogComment)
+                        .where(profileLogIdEq(profileLogId), isTopLevelComment());
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -61,20 +62,22 @@ public class ProfileLogCommentCustomRepositoryImpl implements ProfileLogCommentC
     public Page<ProfileLogComment> findCommentsByProfileId(Long profileId, Pageable pageable) {
         QProfileLogComment profileLogComment = QProfileLogComment.profileLogComment;
 
-        List<ProfileLogComment> content = queryFactory
-                .selectFrom(profileLogComment)
-                .join(profileLogComment.profileLog)
-                .fetchJoin()
-                .where(profileIdEq(profileId), isNotDeleted())
-                .orderBy(profileLogComment.createdAt.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+        List<ProfileLogComment> content =
+                queryFactory
+                        .selectFrom(profileLogComment)
+                        .join(profileLogComment.profileLog)
+                        .fetchJoin()
+                        .where(profileIdEq(profileId), isNotDeleted())
+                        .orderBy(profileLogComment.createdAt.desc())
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .fetch();
 
-        JPAQuery<Long> countQuery = queryFactory
-                .select(profileLogComment.count())
-                .from(profileLogComment)
-                .where(profileIdEq(profileId), isNotDeleted());
+        JPAQuery<Long> countQuery =
+                queryFactory
+                        .select(profileLogComment.count())
+                        .from(profileLogComment)
+                        .where(profileIdEq(profileId), isNotDeleted());
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -88,6 +91,24 @@ public class ProfileLogCommentCustomRepositoryImpl implements ProfileLogCommentC
                 .from(profileLogComment)
                 .where(profileLogIdEq(profileLogId), isNotDeleted())
                 .fetchOne();
+    }
+
+    @Override
+    public List<ProfileLogComment> findTopLevelCommentsByProfileLogIdWithCursor(
+            Long profileLogId, Long cursorId, int size) {
+        QProfileLogComment profileLogComment = QProfileLogComment.profileLogComment;
+
+        // 커서 ID가 있는 경우 해당 ID보다 작은 ID의 댓글을 조회 (ID 내림차순으로 최신순)
+        BooleanExpression cursorCondition =
+                cursorId != null ? profileLogComment.id.lt(cursorId) : null;
+
+        // 직접 엔티티 조회 (프로필 조인 없이)
+        return queryFactory
+                .selectFrom(profileLogComment)
+                .where(profileLogIdEq(profileLogId), isTopLevelComment(), cursorCondition)
+                .orderBy(profileLogComment.id.desc()) // ID 내림차순 정렬 (최신순)
+                .limit(size)
+                .fetch();
     }
 
     // 조건 표현식 메서드
