@@ -1924,9 +1924,74 @@ include::{snippets}/profile-log-comment-controller-test/delete-profile-log-comme
 
 ====
 *요청*
+include::{snippets}/team-log-comment-controller-test/add-team-log-comment-test/http-request.adoc[]
+*요청 헤더*
+include::{snippets}/team-log-comment-controller-test/add-team-log-comment-test/request-headers.adoc[]
+*요청 경로 파라미터*
+include::{snippets}/team-log-comment-controller-test/add-team-log-comment-test/path-parameters.adoc[]
+*응답*
+include::{snippets}/team-log-comment-controller-test/add-team-log-comment-test/http-response.adoc[]
+*응답 필드*
+include::{snippets}/team-log-comment-controller-test/add-team-log-comment-test/response-fields.adoc[]
+====
+
+=== 팀 로그 댓글 수정
+
+====
+*요청*
+include::{snippets}/team-log-comment-controller-test/update-team-log-comment-test/http-request.adoc[]
 
 *요청 헤더*
+include::{snippets}/team-log-comment-controller-test/update-team-log-comment-test/request-headers.adoc[]
+
 *요청 경로 파라미터*
+include::{snippets}/team-log-comment-controller-test/update-team-log-comment-test/path-parameters.adoc[]
+
 *응답*
+include::{snippets}/team-log-comment-controller-test/update-team-log-comment-test/http-response.adoc[]
+
 *응답 필드*
+include::{snippets}/team-log-comment-controller-test/update-team-log-comment-test/response-fields.adoc[]
+====
+
+=== 팀 로그 댓글 조회
+
+====
+*요청*
+include::{snippets}/team-log-comment-controller-test/get-page-team-log-comments-test/http-request.adoc[]
+
+*요청 헤더*
+include::{snippets}/team-log-comment-controller-test/get-page-team-log-comments-test/request-headers.adoc[]
+
+*요청 경로 파라미터*
+include::{snippets}/team-log-comment-controller-test/get-page-team-log-comments-test/path-parameters.adoc[]
+
+*요청 쿼리 파라미터*
+include::{snippets}/team-log-comment-controller-test/get-page-team-log-comments-test/query-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-log-comment-controller-test/get-page-team-log-comments-test/http-response.adoc[]
+
+*응답 필드*
+include::{snippets}/team-log-comment-controller-test/get-page-team-log-comments-test/response-fields.adoc[]
+
+====
+
+=== 팀 로그 댓글 삭제
+
+====
+*요청*
+include::{snippets}/team-log-comment-controller-test/delete-team-log-comment-test/http-request.adoc[]
+
+*요청 헤더*
+include::{snippets}/team-log-comment-controller-test/update-team-log-comment-test/request-headers.adoc[]
+
+*요청 경로 파라미터*
+include::{snippets}/team-log-comment-controller-test/delete-team-log-comment-test/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-log-comment-controller-test/delete-team-log-comment-test/http-response.adoc[]
+
+*응답 필드*
+include::{snippets}/team-log-comment-controller-test/delete-team-log-comment-test/response-fields.adoc[]
 ====

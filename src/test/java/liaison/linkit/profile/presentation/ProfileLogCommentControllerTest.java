@@ -295,7 +295,7 @@ public class ProfileLogCommentControllerTest extends ControllerTest {
                                                 .description("조회할 프로필 로그 ID")),
                                 queryParameters(
                                         parameterWithName("cursor")
-                                                .description("커서 값 (다음 페이지 조회 시 사용)")
+                                                .description("제일 마지막 부모 댓글의 ID (다음 페이지 조회 시 사용)")
                                                 .optional(),
                                         parameterWithName("size")
                                                 .description("조회할 댓글 개수")
