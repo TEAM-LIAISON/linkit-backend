@@ -7,8 +7,6 @@ import liaison.linkit.profile.domain.log.ProfileLogComment;
 import liaison.linkit.profile.domain.repository.log.ProfileLogCommentRepository;
 import liaison.linkit.profile.exception.log.ProfileLogCommentNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 @Adapter
 @RequiredArgsConstructor
@@ -19,33 +17,6 @@ public class ProfileLogCommentQueryAdapter {
         return profileLogCommentRepository
                 .findById(profileLogCommentId)
                 .orElseThrow(() -> ProfileLogCommentNotFoundException.EXCEPTION);
-    }
-
-    /**
-     * 특정 프로필 로그의 모든 최상위 댓글 목록을 조회합니다.
-     *
-     * @param profileLogId 프로필 로그 ID
-     * @return 최상위 댓글 목록
-     */
-    public List<ProfileLogComment> getProfileLogComments(final Long profileLogId) {
-        // 페이징 없이 모든 댓글 조회
-        return profileLogCommentRepository
-                .findTopLevelCommentsByProfileLogId(profileLogId, Pageable.unpaged())
-                .getContent();
-    }
-
-    /**
-     * 특정 프로필 로그의 댓글 목록을 페이징하여 조회합니다.
-     *
-     * @param profileLogId 프로필 로그 ID
-     * @param pageable 페이징 정보
-     * @return 페이징된 댓글 목록
-     */
-    public Page<ProfileLogComment> getPageProfileLogComments(
-            final Long profileLogId, final Pageable pageable) {
-        // 페이징하여 댓글 조회
-        return profileLogCommentRepository.findTopLevelCommentsByProfileLogId(
-                profileLogId, pageable);
     }
 
     /**
