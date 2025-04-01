@@ -28,17 +28,32 @@ public class ProfileLogCommentCustomRepositoryImpl implements ProfileLogCommentC
         QProfileLogComment profileLogComment = QProfileLogComment.profileLogComment;
         QProfile profile = QProfile.profile;
 
-        List<ProfileLogComment> content =
+        // 1. 상위 레벨 댓글 ID 목록 조회 (프로필 조인 없이)
+        List<Long> commentIds =
                 queryFactory
-                        .selectFrom(profileLogComment)
-                        .join(profileLogComment.profile, profile)
-                        .fetchJoin()
+                        .select(profileLogComment.id)
+                        .from(profileLogComment)
                         .where(profileLogIdEq(profileLogId), isTopLevelComment())
                         .orderBy(profileLogComment.createdAt.asc())
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize())
                         .fetch();
 
+        if (commentIds.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        // 2. ID로 댓글 엔티티 조회 (프로필 조인 포함)
+        List<ProfileLogComment> content =
+                queryFactory
+                        .selectFrom(profileLogComment)
+                        .leftJoin(profileLogComment.profile, profile)
+                        .fetchJoin()
+                        .where(profileLogComment.id.in(commentIds))
+                        .orderBy(profileLogComment.createdAt.asc())
+                        .fetch();
+
+        // 3. 총 개수 쿼리
         JPAQuery<Long> countQuery =
                 queryFactory
                         .select(profileLogComment.count())
@@ -53,11 +68,25 @@ public class ProfileLogCommentCustomRepositoryImpl implements ProfileLogCommentC
         QProfileLogComment profileLogComment = QProfileLogComment.profileLogComment;
         QProfile profile = QProfile.profile;
 
+        // 1. 대댓글 ID 목록 조회 (프로필 조인 없이)
+        List<Long> replyIds =
+                queryFactory
+                        .select(profileLogComment.id)
+                        .from(profileLogComment)
+                        .where(parentCommentIdEq(parentCommentId), isNotDeleted())
+                        .orderBy(profileLogComment.createdAt.asc())
+                        .fetch();
+
+        if (replyIds.isEmpty()) {
+            return List.of();
+        }
+
+        // 2. ID로 대댓글 엔티티 조회 (프로필 조인 포함)
         return queryFactory
                 .selectFrom(profileLogComment)
-                .join(profileLogComment.profile, profile)
+                .leftJoin(profileLogComment.profile, profile)
                 .fetchJoin()
-                .where(parentCommentIdEq(parentCommentId), isNotDeleted())
+                .where(profileLogComment.id.in(replyIds))
                 .orderBy(profileLogComment.createdAt.asc())
                 .fetch();
     }

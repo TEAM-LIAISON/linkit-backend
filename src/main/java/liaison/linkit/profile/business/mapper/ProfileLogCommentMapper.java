@@ -1,6 +1,7 @@
 package liaison.linkit.profile.business.mapper;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -91,6 +92,32 @@ public class ProfileLogCommentMapper {
 
         // 댓글 작성자 정보
         Profile authorProfile = comment.getProfile();
+
+        // 프로필이나 회원이 null인 경우 탈퇴한 계정으로 처리
+        if (authorProfile == null || authorProfile.getMember() == null) {
+            // 대댓글 목록 조회 및 변환 (필터링 적용)
+            List<ReplyResponse> replies =
+                    profileLogCommentQueryAdapter
+                            .findRepliesByParentCommentId(comment.getId())
+                            .stream()
+                            .map(reply -> toReplyResponse(reply, currentMemberId))
+                            .filter(Objects::nonNull) // null이 아닌 대댓글만 포함
+                            .collect(Collectors.toList());
+
+            return ParentCommentResponse.builder()
+                    .id(comment.getId())
+                    .authorName("(탈퇴한 사용자)")
+                    .emailId(null)
+                    .authorProfileImagePath(null)
+                    .content(comment.getContent()) // 내용은 유지
+                    .createdAt(null)
+                    .isUpdated("false")
+                    .isDeleted(false)
+                    .isAuthor(false)
+                    .replies(replies)
+                    .build();
+        }
+
         Member authorMember = authorProfile.getMember();
 
         // 회원 상태 확인 (탈퇴한 계정 처리)
@@ -150,6 +177,22 @@ public class ProfileLogCommentMapper {
 
         // 댓글 작성자 정보
         Profile authorProfile = reply.getProfile();
+
+        // 프로필이나 회원이 null인 경우 탈퇴한 계정으로 처리
+        if (authorProfile == null || authorProfile.getMember() == null) {
+            return ReplyResponse.builder()
+                    .id(reply.getId())
+                    .authorName("(탈퇴한 사용자)")
+                    .emailId(null)
+                    .authorProfileImagePath(null)
+                    .content(reply.getContent()) // 내용은 유지
+                    .createdAt(null)
+                    .isUpdated("false")
+                    .isDeleted(false)
+                    .isAuthor(false)
+                    .build();
+        }
+
         Member authorMember = authorProfile.getMember();
 
         // 회원 상태 확인 (탈퇴한 계정 처리)
