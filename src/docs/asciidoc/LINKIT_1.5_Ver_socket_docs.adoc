@@ -129,12 +129,3 @@ SUBSCRIBE /user/sub/chat/{chatRoomId}
 ----
 SEND /pub/chat/send/{chatRoomId}
 ----
-
-===== 요청 데이터 형식
-
-[source,json]
-----
-{
-  "content": "안녕하세요, 반갑습니다!"
-}
-----
