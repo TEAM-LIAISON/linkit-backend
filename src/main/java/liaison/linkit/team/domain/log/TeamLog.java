@@ -53,6 +53,10 @@ public class TeamLog extends BaseDateTimeEntity {
     @Column(nullable = false)
     private Long viewCount;
 
+    // 댓글 수 필드 추가
+    @Column(nullable = false)
+    private Long commentCount;
+
     public void setLogType(final LogType logType) {
         this.logType = logType;
     }
@@ -69,5 +73,17 @@ public class TeamLog extends BaseDateTimeEntity {
     // == 2) 배치에서 주기적으로 호출할 메서드 (조회수 초기화) ==
     public void resetViewCount() {
         this.viewCount = 0L;
+    }
+
+    // 댓글 수 증가 메서드
+    public void increaseCommentCount() {
+        this.commentCount++;
+    }
+
+    // 댓글 수 감소 메서드
+    public void decreaseCommentCount() {
+        if (this.commentCount > 0) {
+            this.commentCount--;
+        }
     }
 }
