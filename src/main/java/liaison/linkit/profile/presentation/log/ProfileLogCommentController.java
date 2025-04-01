@@ -52,6 +52,26 @@ public class ProfileLogCommentController {
     }
 
     /**
+     * 프로필 로그 댓글 수정 API
+     *
+     * @param profileLogCommentId 수정할 프로필 로그 댓글 ID
+     */
+    @PostMapping("/profile/log/comment/{profileLogCommentId}")
+    @MemberOnly
+    @Logging(item = "Profile_Log_Comment", action = "Update", includeResult = true)
+    public CommonResponse<ProfileLogCommentResponseDTO.UpdateProfileLogCommentResponse>
+            updateProfileLogComment(
+                    @Auth final Accessor accessor,
+                    @PathVariable final Long profileLogCommentId,
+                    @Valid @RequestBody
+                            ProfileLogCommentRequestDTO.UpdateProfileLogCommentRequest request) {
+
+        return CommonResponse.onSuccess(
+                profileLogCommentService.updateProfileLogComment(
+                        accessor.getMemberId(), profileLogCommentId, request));
+    }
+
+    /**
      * 프로필 로그 댓글 조회 API
      *
      * @param profileLogId 조회할 프로필 로그 ID
@@ -71,5 +91,24 @@ public class ProfileLogCommentController {
         return CommonResponse.onSuccess(
                 profileLogCommentService.getPageProfileLogComments(
                         optionalMemberId, profileLogId, page, size));
+    }
+
+    /**
+     * 프로필 로그 댓글 삭제 API
+     *
+     * @param accessor 인증된 사용자 정보
+     * @param profileLogCommentId 삭제할 프로필 로그 댓글 ID
+     * @return 댓글 삭제 결과 응답
+     */
+    @PostMapping("/profile/log/comment/{profileLogCommentId}/delete")
+    @MemberOnly
+    @Logging(item = "Profile_Log_Comment", action = "Delete", includeResult = true)
+    public CommonResponse<ProfileLogCommentResponseDTO.DeleteProfileLogCommentResponse>
+            deleteProfileLogComment(
+                    @Auth final Accessor accessor, @PathVariable final Long profileLogCommentId) {
+
+        return CommonResponse.onSuccess(
+                profileLogCommentService.deleteProfileLogComment(
+                        accessor.getMemberId(), profileLogCommentId));
     }
 }

@@ -1832,3 +1832,90 @@ include::{snippets}/visit-controller-test/get-team-visit-informs/path-parameters
 include::{snippets}/visit-controller-test/get-team-visit-informs/http-response.adoc[]
 include::{snippets}/visit-controller-test/get-team-visit-informs/response-fields.adoc[]
 ====
+
+== #[로그 댓글]#
+
+=== 프로필 로그 댓글 생성
+
+====
+*요청*
+include::{snippets}/profile-log-comment-controller-test/add-profile-log-comment-test/http-request.adoc[]
+
+*요청 헤더*
+include::{snippets}/profile-log-comment-controller-test/add-profile-log-comment-test/request-headers.adoc[]
+
+*요청 경로 파라미터*
+include::{snippets}/profile-log-comment-controller-test/add-profile-log-comment-test/path-parameters.adoc[]
+
+*요청 필드*
+include::{snippets}/profile-log-comment-controller-test/add-profile-log-comment-test/request-fields.adoc[]
+
+*응답*
+include::{snippets}/profile-log-comment-controller-test/add-profile-log-comment-test/http-response.adoc[]
+
+*응답 필드*
+include::{snippets}/profile-log-comment-controller-test/add-profile-log-comment-test/response-fields.adoc[]
+====
+
+=== 프로필 로그 댓글 수정
+
+====
+*요청*
+include::{snippets}/profile-log-comment-controller-test/update-profile-log-comment-test/http-request.adoc[]
+
+*요청 헤더*
+include::{snippets}/profile-log-comment-controller-test/update-profile-log-comment-test/request-headers.adoc[]
+
+*요청 경로 파라미터*
+include::{snippets}/profile-log-comment-controller-test/update-profile-log-comment-test/path-parameters.adoc[]
+
+*요청 필드*
+include::{snippets}/profile-log-comment-controller-test/update-profile-log-comment-test/request-fields.adoc[]
+
+*응답*
+include::{snippets}/profile-log-comment-controller-test/update-profile-log-comment-test/http-response.adoc[]
+
+*응답 필드*
+include::{snippets}/profile-log-comment-controller-test/update-profile-log-comment-test/response-fields.adoc[]
+====
+
+=== 프로필 로그 댓글 조회
+
+====
+*요청*
+include::{snippets}/profile-log-comment-controller-test/get-page-profile-log-comments-test/http-request.adoc[]
+
+*요청 헤더*
+include::{snippets}/profile-log-comment-controller-test/get-page-profile-log-comments-test/request-headers.adoc[]
+
+*요청 경로 파라미터*
+include::{snippets}/profile-log-comment-controller-test/get-page-profile-log-comments-test/path-parameters.adoc[]
+
+*요청 쿼리 파라미터*
+include::{snippets}/profile-log-comment-controller-test/get-page-profile-log-comments-test/query-parameters.adoc[]
+
+*응답*
+include::{snippets}/profile-log-comment-controller-test/get-page-profile-log-comments-test/http-response.adoc[]
+
+*응답 필드*
+include::{snippets}/profile-log-comment-controller-test/get-page-profile-log-comments-test/response-fields.adoc[]
+====
+
+=== 프로필 로그 댓글 삭제
+
+====
+*요청*
+include::{snippets}/profile-log-comment-controller-test/delete-profile-log-comment-test/http-request.adoc[]
+
+*요청 헤더*
+include::{snippets}/profile-log-comment-controller-test/delete-profile-log-comment-test/request-headers.adoc[]
+
+*요청 경로 파라미터*
+include::{snippets}/profile-log-comment-controller-test/delete-profile-log-comment-test/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/profile-log-comment-controller-test/delete-profile-log-comment-test/http-response.adoc[]
+
+*응답 필드*
+include::{snippets}/profile-log-comment-controller-test/delete-profile-log-comment-test/response-fields.adoc[]
+====

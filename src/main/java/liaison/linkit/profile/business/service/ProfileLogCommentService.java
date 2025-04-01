@@ -1,6 +1,7 @@
 package liaison.linkit.profile.business.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,11 +30,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ProfileLogCommentService {
 
+    // Adapters
     private final ProfileQueryAdapter profileQueryAdapter;
     private final ProfileLogQueryAdapter profileLogQueryAdapter;
     private final ProfileLogCommentQueryAdapter profileLogCommentQueryAdapter;
     private final ProfileLogCommentCommandAdapter profileLogCommentCommandAdapter;
 
+    // Mappers
     private final ProfileLogCommentMapper profileLogCommentMapper;
 
     /**
@@ -95,6 +98,58 @@ public class ProfileLogCommentService {
                 savedComment, authorProfile, profileLogId);
     }
 
+    public ProfileLogCommentResponseDTO.UpdateProfileLogCommentResponse updateProfileLogComment(
+            final Long authorMemberId,
+            final Long profileLogCommentId,
+            final ProfileLogCommentRequestDTO.UpdateProfileLogCommentRequest request) {
+        // 1. 대상 댓글 조회
+        final ProfileLogComment targetComment =
+                profileLogCommentQueryAdapter.getProfileLogComment(profileLogCommentId);
+
+        // 2. 댓글 작성자 확인 (권한 검증)
+        final Profile authorProfile = profileQueryAdapter.findByMemberId(authorMemberId);
+        if (!targetComment.getProfile().getId().equals(authorProfile.getId())) {
+            throw new IllegalStateException("댓글 작성자만 수정할 수 있습니다.");
+        }
+
+        // 3. 댓글 내용 업데이트
+        targetComment.updateContent(request.getContent());
+
+        // 4. 응답 생성
+        return profileLogCommentMapper.toUpdateProfileLogCommentResponse(
+                targetComment, authorProfile, targetComment.getProfileLog().getId());
+    }
+
+    /**
+     * 프로필 로그 댓글을 삭제합니다.
+     *
+     * @param authorMemberId 삭제 요청자의 회원 ID
+     * @param profileLogCommentId 삭제할 댓글 ID
+     * @return 댓글 삭제 결과 응답
+     */
+    public ProfileLogCommentResponseDTO.DeleteProfileLogCommentResponse deleteProfileLogComment(
+            final Long authorMemberId, final Long profileLogCommentId) {
+        // 1. 대상 댓글 조회
+        final ProfileLogComment targetComment =
+                profileLogCommentQueryAdapter.getProfileLogComment(profileLogCommentId);
+
+        // 2. 댓글 작성자 확인 (권한 검증)
+        final Profile authorProfile = profileQueryAdapter.findByMemberId(authorMemberId);
+        if (!targetComment.getProfile().getId().equals(authorProfile.getId())) {
+            throw new IllegalStateException("댓글 작성자만 삭제할 수 있습니다.");
+        }
+
+        // 3. 댓글 논리적 삭제 처리
+        targetComment.delete();
+
+        // 4. 댓글 수 감소
+        targetComment.getProfileLog().decreaseCommentCount();
+
+        // 5. 응답 생성
+        return profileLogCommentMapper.toDeleteProfileLogCommentResponse(
+                profileLogCommentId, targetComment.getProfileLog().getId());
+    }
+
     /**
      * 프로필 로그 댓글 목록을 페이지 없이 조회합니다.
      *
@@ -119,6 +174,7 @@ public class ProfileLogCommentService {
                                 comment ->
                                         profileLogCommentMapper.toProfileLogCommentResponse(
                                                 comment, memberId))
+                        .filter(comment -> comment != null) // null인 응답은 필터링 (삭제된 댓글)
                         .collect(Collectors.toList());
 
         return ProfileLogCommentResponseDTO.PageResponse.builder()
@@ -162,6 +218,7 @@ public class ProfileLogCommentService {
                                 comment ->
                                         profileLogCommentMapper.toProfileLogCommentResponse(
                                                 comment, memberId))
+                        .filter(Objects::nonNull) // null인 응답은 필터링 (삭제된 댓글)
                         .collect(Collectors.toList());
 
         return ProfileLogCommentResponseDTO.PageResponse.builder()
