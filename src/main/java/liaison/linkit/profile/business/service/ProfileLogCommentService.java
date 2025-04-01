@@ -16,6 +16,7 @@ import liaison.linkit.profile.implement.log.ProfileLogQueryAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogCommentRequestDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogCommentResponseDTO;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogCommentResponseDTO.ParentCommentResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,12 +29,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ProfileLogCommentService {
 
-    final ProfileQueryAdapter profileQueryAdapter;
-    final ProfileLogQueryAdapter profileLogQueryAdapter;
-    final ProfileLogCommentQueryAdapter profileLogCommentQueryAdapter;
-    final ProfileLogCommentCommandAdapter profileLogCommentCommandAdapter;
+    private final ProfileQueryAdapter profileQueryAdapter;
+    private final ProfileLogQueryAdapter profileLogQueryAdapter;
+    private final ProfileLogCommentQueryAdapter profileLogCommentQueryAdapter;
+    private final ProfileLogCommentCommandAdapter profileLogCommentCommandAdapter;
 
-    final ProfileLogCommentMapper profileLogCommentMapper;
+    private final ProfileLogCommentMapper profileLogCommentMapper;
 
     /**
      * 프로필 로그에 댓글을 추가합니다.
@@ -112,7 +113,7 @@ public class ProfileLogCommentService {
                 profileLogCommentQueryAdapter.getProfileLogComments(profileLogId);
 
         // 3. 댓글 목록 응답 생성
-        List<ProfileLogCommentResponseDTO.ParentCommentResponse> commentResponses =
+        List<ParentCommentResponse> commentResponses =
                 comments.stream()
                         .map(
                                 comment ->
@@ -155,7 +156,7 @@ public class ProfileLogCommentService {
                 profileLogCommentQueryAdapter.getPageProfileLogComments(profileLogId, pageable);
 
         // 4. 댓글 목록 응답 생성
-        List<ProfileLogCommentResponseDTO.ParentCommentResponse> commentResponses =
+        List<ParentCommentResponse> commentResponses =
                 commentsPage.getContent().stream()
                         .map(
                                 comment ->

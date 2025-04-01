@@ -47,4 +47,14 @@ public class ProfileLogCommentQueryAdapter {
         return profileLogCommentRepository.findTopLevelCommentsByProfileLogId(
                 profileLogId, pageable);
     }
+
+    /**
+     * 특정 부모 댓글에 달린 대댓글 목록을 조회합니다.
+     *
+     * @param parentCommentId 부모 댓글 ID
+     * @return 대댓글 목록
+     */
+    public List<ProfileLogComment> findRepliesByParentCommentId(final Long parentCommentId) {
+        return profileLogCommentRepository.findRepliesByParentCommentId(parentCommentId);
+    }
 }

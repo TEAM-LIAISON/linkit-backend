@@ -2,17 +2,23 @@ package liaison.linkit.profile.business.mapper;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.global.util.DateUtils;
 import liaison.linkit.profile.domain.log.ProfileLogComment;
 import liaison.linkit.profile.domain.profile.Profile;
+import liaison.linkit.profile.implement.log.ProfileLogCommentQueryAdapter;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogCommentResponseDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogCommentResponseDTO.ParentCommentResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogCommentResponseDTO.ReplyResponse;
+import lombok.RequiredArgsConstructor;
 
 @Mapper
+@RequiredArgsConstructor
 public class ProfileLogCommentMapper {
+
+    private final ProfileLogCommentQueryAdapter profileLogCommentQueryAdapter;
 
     public ProfileLogCommentResponseDTO.AddProfileLogCommentResponse toAddProfileLogCommentResponse(
             final ProfileLogComment profileLogComment,
@@ -56,9 +62,11 @@ public class ProfileLogCommentMapper {
                 currentMemberId.isPresent()
                         && currentMemberId.get().equals(authorProfile.getMember().getId());
 
-        // 대댓글 목록 조회는 ProfileLogCommentCustomRepository를 통해 별도 조회 필요
-        // 현재는 빈 리스트로 초기화
-        List<ReplyResponse> replies = List.of();
+        // 대댓글 목록 조회 및 변환
+        List<ReplyResponse> replies =
+                profileLogCommentQueryAdapter.findRepliesByParentCommentId(comment.getId()).stream()
+                        .map(reply -> toReplyResponse(reply, currentMemberId))
+                        .collect(Collectors.toList());
 
         return ParentCommentResponse.builder()
                 .id(comment.getId())
