@@ -21,6 +21,7 @@ public class TeamLogMapper {
                 .modifiedAt(teamLog.getModifiedAt())
                 .logTitle(teamLog.getLogTitle())
                 .logContent(teamLog.getLogContent())
+                .logViewCount(teamLog.getViewCount())
                 .build();
     }
 

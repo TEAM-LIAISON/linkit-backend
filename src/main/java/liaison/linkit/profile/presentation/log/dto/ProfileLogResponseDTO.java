@@ -33,6 +33,7 @@ public class ProfileLogResponseDTO {
         private LocalDateTime modifiedAt;
         private String logTitle;
         private String logContent;
+        private Long logViewCount;
     }
 
     @Builder
