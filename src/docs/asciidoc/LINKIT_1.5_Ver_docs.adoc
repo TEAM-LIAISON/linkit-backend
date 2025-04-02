@@ -259,6 +259,19 @@ include::{snippets}/profile-controller-test/get-profile-detail/http-response.ado
 include::{snippets}/profile-controller-test/get-profile-detail/response-fields.adoc[]
 ====
 
+=== 프로필 요약 정보 조회
+
+====
+*요청*
+include::{snippets}/profile-controller-test/get-profile-summary-inform/http-request.adoc[]
+
+*요청 경로 파라미터*
+include::{snippets}/profile-controller-test/get-profile-summary-inform/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/profile-controller-test/get-profile-summary-inform/http-response.adoc[]
+====
+
 == #[프로필 - 왼쪽 메뉴]#
 
 === 프로필 왼쪽 메뉴 조회

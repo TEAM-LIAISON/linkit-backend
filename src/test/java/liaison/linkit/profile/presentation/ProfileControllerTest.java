@@ -112,7 +112,9 @@ class ProfileControllerTest extends ControllerTest {
     }
 
     private ResultActions performProfileSummaryInform() throws Exception {
-        return mockMvc.perform(get("/api/v1/profile/summary/inform/{emailId}", "kwondm7"));
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get(
+                        "/api/v1/profile/summary/inform/{emailId}", "kwondm7"));
     }
 
     @DisplayName("회원이 나의 프로필 왼쪽 메뉴를 조회할 수 있다.")
@@ -900,6 +902,8 @@ class ProfileControllerTest extends ControllerTest {
                         .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                         .andDo(
                                 restDocs.document(
+                                        pathParameters(
+                                                parameterWithName("emailId").description("유저 아이디")),
                                         responseFields(
                                                 fieldWithPath("isSuccess")
                                                         .type(JsonFieldType.BOOLEAN)
