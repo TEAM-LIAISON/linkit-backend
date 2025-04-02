@@ -61,7 +61,6 @@ public class TeamLogCommentControllerTest extends ControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Setup JWT provider mocks
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
