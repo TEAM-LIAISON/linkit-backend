@@ -34,10 +34,6 @@ public class ProfileService {
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    /*
-       Method
-    */
-
     // 수정창에서 내 프로필 왼쪽 메뉴 조회
     public ProfileLeftMenu getProfileLeftMenu(final Long memberId) {
         final Profile targetProfile = profileQueryAdapter.findByMemberId(memberId);
@@ -116,6 +112,13 @@ public class ProfileService {
                 profiles.stream().map(this::toHomeProfileInformMenuInLogoutState).toList();
 
         return profileMapper.toProfileInformMenus(profileInformMenus);
+    }
+
+    // 프로필 요약 정보를 조회한다.
+    public ProfileResponseDTO.ProfileSummaryInform getProfileSummaryInform(final String emailId) {
+        final Profile targetProfile = profileQueryAdapter.findByEmailId(emailId);
+
+        return profileInformMenuAssembler.assembleProfileSummaryInform(targetProfile);
     }
 
     private ProfileInformMenu toHomeProfileInformMenuInLoginState(

@@ -3,6 +3,7 @@ package liaison.linkit.profile.presentation.profile.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import liaison.linkit.common.presentation.RegionResponseDTO;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItem;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.ProfileAwardsItem;
@@ -79,6 +80,23 @@ public class ProfileResponseDTO {
         @Builder.Default private RegionDetail regionDetail = new RegionDetail();
 
         @Builder.Default private List<ProfileTeamInform> profileTeamInforms = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProfileSummaryInform {
+        private String profileImagePath;
+        private String memberName;
+        private String emailId;
+
+        @Builder.Default
+        private ProfileResponseDTO.ProfilePositionDetail profilePositionDetail =
+                new ProfileResponseDTO.ProfilePositionDetail();
+
+        @Builder.Default
+        private RegionResponseDTO.RegionDetail regionDetail = new RegionResponseDTO.RegionDetail();
     }
 
     @Builder

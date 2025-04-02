@@ -92,6 +92,19 @@ public class ProfileMapper {
                 .build();
     }
 
+    public ProfileResponseDTO.ProfileSummaryInform toProfileSummaryInform(
+            final Profile targetProfile,
+            final ProfilePositionDetail profilePositionDetail,
+            final RegionDetail regionDetail) {
+        return ProfileResponseDTO.ProfileSummaryInform.builder()
+                .profileImagePath(targetProfile.getProfileImagePath())
+                .memberName(targetProfile.getMember().getMemberBasicInform().getMemberName())
+                .emailId(targetProfile.getMember().getEmailId())
+                .profilePositionDetail(profilePositionDetail)
+                .regionDetail(regionDetail)
+                .build();
+    }
+
     public ProfileResponseDTO.ProfileBooleanMenu toProfileBooleanMenu(final Profile profile) {
         return ProfileResponseDTO.ProfileBooleanMenu.builder()
                 .isMiniProfile(profile.isProfileMiniProfile())
