@@ -111,6 +111,12 @@ class ProfileControllerTest extends ControllerTest {
         return mockMvc.perform(get("/api/v1/home/profile"));
     }
 
+    private ResultActions performProfileSummaryInform() throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get(
+                        "/api/v1/profile/summary/inform/{emailId}", "kwondm7"));
+    }
+
     @DisplayName("회원이 나의 프로필 왼쪽 메뉴를 조회할 수 있다.")
     @Test
     void getProfileLeftMenu() throws Exception {
@@ -861,5 +867,83 @@ class ProfileControllerTest extends ControllerTest {
                 CommonResponse.onSuccess(profileInformMenus);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("누구나 프로필 요약 정보를 조회할 수 있다.)")
+    @Test
+    void getProfileSummaryInform() throws Exception {
+        // given
+        final ProfileResponseDTO.ProfileSummaryInform profileSummaryInform =
+                ProfileResponseDTO.ProfileSummaryInform.builder()
+                        .profileImagePath("프로필 이미지 경로")
+                        .memberName("회원 이름")
+                        .emailId("유저 아이디")
+                        .profilePositionDetail(
+                                ProfileResponseDTO.ProfilePositionDetail.builder()
+                                        .majorPosition("포지션 대분류")
+                                        .subPosition("포지션 소분류")
+                                        .build())
+                        .regionDetail(
+                                RegionDetail.builder()
+                                        .cityName("활동지역 시/도")
+                                        .divisionName("활동지역 시/군/구")
+                                        .build())
+                        .build();
+        // when
+        when(profileService.getProfileSummaryInform(anyString())).thenReturn(profileSummaryInform);
+
+        final ResultActions resultActions = performProfileSummaryInform();
+        // then
+        final MvcResult mvcResult =
+                resultActions
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.isSuccess").value("true"))
+                        .andExpect(jsonPath("$.code").value("1000"))
+                        .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                        .andDo(
+                                restDocs.document(
+                                        pathParameters(
+                                                parameterWithName("emailId").description("유저 아이디")),
+                                        responseFields(
+                                                fieldWithPath("isSuccess")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("요청 성공 여부")
+                                                        .attributes(
+                                                                field("constraint", "boolean 값")),
+                                                fieldWithPath("code")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 코드")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("message")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 메시지")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("result.profileImagePath")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("프로필 이미지 경로")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("result.memberName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("회원 이름")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("result.emailId")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("유저 아이디")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath(
+                                                                "result.profilePositionDetail.majorPosition")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("포지션 대분류"),
+                                                fieldWithPath(
+                                                                "result.profilePositionDetail.subPosition")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("포지션 소분류"),
+                                                fieldWithPath("result.regionDetail.cityName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("활동지역 시/도"),
+                                                fieldWithPath("result.regionDetail.divisionName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("활동지역 시/군/구"))))
+                        .andReturn();
     }
 }

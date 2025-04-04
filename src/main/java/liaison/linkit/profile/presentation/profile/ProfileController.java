@@ -62,4 +62,11 @@ public class ProfileController {
                     profileService.getHomeProfileInformMenusInLogoutState());
         }
     }
+
+    @GetMapping("/profile/summary/inform/{emailId}")
+    @Logging(item = "Profile", action = "GET_PROFILE_SUMMARY_INFORM", includeResult = true)
+    public CommonResponse<ProfileResponseDTO.ProfileSummaryInform> getProfileSummaryInform(
+            @PathVariable final String emailId) {
+        return CommonResponse.onSuccess(profileService.getProfileSummaryInform(emailId));
+    }
 }
