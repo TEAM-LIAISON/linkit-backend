@@ -23,6 +23,7 @@ public class ProfileLogMapper {
                 .modifiedAt(profileLog.getModifiedAt())
                 .logTitle(profileLog.getLogTitle())
                 .logContent(profileLog.getLogContent())
+                .logViewCount(profileLog.getViewCount())
                 .build();
     }
 

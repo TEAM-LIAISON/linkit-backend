@@ -111,12 +111,6 @@ public class AnnouncementSearchService {
      * @return 제외할 팀 ID 목록
      */
     public List<Long> getExcludeAnnouncementIds() {
-        // 큐닷 51L
-        // 애프터액션 35L
-        // 하우스테이너 27L
-        // 코지메이커스 37L
-        // 독스헌트 4L
-        // 앤유 50L
         return List.of(69L, 67L, 47L, 40L, 38L, 42L);
     }
 }

@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class SubscribeEvent {
+public class ChatListConnectedEvent { // 채팅 목록 구독에 대한 이벤트 발행
     private final Long memberId;
-    private final String emailId;
 }

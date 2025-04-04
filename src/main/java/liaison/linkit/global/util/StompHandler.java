@@ -5,9 +5,8 @@ import java.util.List;
 
 import liaison.linkit.chat.event.ChatEvent.UserConnectedEvent;
 import liaison.linkit.chat.event.ChatEvent.UserDisconnectedEvent;
+import liaison.linkit.global.presentation.dto.ChatListConnectedEvent;
 import liaison.linkit.global.presentation.dto.ChatRoomConnectedEvent;
-import liaison.linkit.global.presentation.dto.ChatRoomReadEvent;
-import liaison.linkit.global.presentation.dto.SubscribeEvent;
 import liaison.linkit.login.infrastructure.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +35,7 @@ public class StompHandler implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
 
+        // CONNECT 요청 시
         if (StompCommand.CONNECT.equals(headerAccessor.getCommand())) {
 
             String accessToken = validateAndExtractToken(headerAccessor);
@@ -55,35 +55,30 @@ public class StompHandler implements ChannelInterceptor {
             }
         }
 
+        // SUBSCRIBE 요청 시
         if (StompCommand.SUBSCRIBE.equals(headerAccessor.getCommand())) {
             String destination = headerAccessor.getDestination();
             String sessionId = headerAccessor.getSessionId();
             Long memberId = sessionRegistry.getMemberIdBySession(sessionId);
 
-            // 구독 경로에 따른 초기 데이터 전송
+            // 채팅 목록 구독
             if (destination != null) {
-                if (destination.startsWith("/sub/notification/header/")) {
-                    String emailId = extractEmailId(destination);
-                    eventPublisher.publishEvent(new SubscribeEvent(memberId, emailId));
+                if (destination.startsWith("/user/sub/chat/list/")) {
+                    eventPublisher.publishEvent(new ChatListConnectedEvent(memberId));
                 }
             }
 
-            if (destination != null) {
-                if (destination.startsWith("/user/sub/chat/read/")) {
-                    Long chatRoomId = extractChatRoomId(destination);
-                    sessionRegistry.subscribeToChatRoom(chatRoomId, memberId);
-                    eventPublisher.publishEvent(new ChatRoomReadEvent(memberId, chatRoomId));
-                }
-            }
-
+            // 채팅방 입장 (구독)
             if (destination != null) {
                 if (destination.startsWith("/user/sub/chat/")) {
                     Long chatRoomId = extractChatRoomId(destination);
+                    sessionRegistry.subscribeToChatRoom(chatRoomId, memberId);
                     eventPublisher.publishEvent(new ChatRoomConnectedEvent(memberId, chatRoomId));
                 }
             }
         }
 
+        // SEND 요청 시
         if (StompCommand.SEND.equals(headerAccessor.getCommand())) {
             String accessToken = validateAndExtractToken(headerAccessor);
 
@@ -143,7 +138,7 @@ public class StompHandler implements ChannelInterceptor {
             String destination = headerAccessor.getDestination();
 
             if (destination != null) {
-                if (destination.startsWith("/user/sub/chat/read/")) {
+                if (destination.startsWith("/user/sub/chat/")) {
                     Long chatRoomId = extractChatRoomId(destination);
                     sessionRegistry.unsubscribeFromChatRoom(chatRoomId, memberId);
                 }

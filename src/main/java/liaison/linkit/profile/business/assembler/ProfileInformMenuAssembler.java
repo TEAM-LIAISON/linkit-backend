@@ -16,6 +16,7 @@ import liaison.linkit.profile.domain.state.ProfileCurrentState;
 import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
 import liaison.linkit.profile.implement.state.ProfileCurrentStateQueryAdapter;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
@@ -175,5 +176,20 @@ public class ProfileInformMenuAssembler {
                 profilePositionDetail,
                 regionDetail,
                 profileTeamInforms);
+    }
+
+    /**
+     * 8. 최종 ProfileSummaryInform DTO 조립 메서드
+     *
+     * @param targetProfile 조회 대상 프로필
+     * @return 최종 조립된 ProfileInformMenu DTO
+     */
+    public ProfileResponseDTO.ProfileSummaryInform assembleProfileSummaryInform(
+            final Profile targetProfile) {
+        ProfilePositionDetail profilePositionDetail = assembleProfilePositionDetail(targetProfile);
+        RegionDetail regionDetail = assembleRegionDetail(targetProfile);
+
+        return profileMapper.toProfileSummaryInform(
+                targetProfile, profilePositionDetail, regionDetail);
     }
 }

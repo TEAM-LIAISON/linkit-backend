@@ -3,7 +3,6 @@ package liaison.linkit.chat.domain.repository.chatRoom;
 import java.util.List;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.chat.domain.ChatRoom;
@@ -62,12 +61,7 @@ public class ChatRoomCustomRepositoryImpl implements ChatRoomCustomRepository {
         return jpaQueryFactory
                 .selectFrom(qChatRoom)
                 .where(conditionA.or(conditionB))
-                .orderBy(
-                        new CaseBuilder()
-                                .when(qChatRoom.lastMessageTime.isNull())
-                                .then(qChatRoom.createdAt)
-                                .otherwise(qChatRoom.lastMessageTime)
-                                .desc())
+                .orderBy(qChatRoom.lastMessageTime.desc())
                 .groupBy(qChatRoom.id)
                 .fetch();
     }
