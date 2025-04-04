@@ -240,7 +240,7 @@ public class TeamLogCommentService {
                                                 .authorProfileImagePath(null)
                                                 .content(comment.getContent())
                                                 .createdAt(null)
-                                                .isUpdated("false")
+                                                .isUpdated(false)
                                                 .isDeleted(false)
                                                 .isAuthor(false)
                                                 .replies(replyResponses)

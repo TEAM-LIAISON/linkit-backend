@@ -83,7 +83,7 @@ public class ProfileLogCommentMapper {
                     .authorProfileImagePath(null) // 기본 프로필 이미지 경로 설정
                     .content("삭제된 댓글입니다")
                     .createdAt(null)
-                    .isUpdated("false")
+                    .isUpdated(false)
                     .isDeleted(true)
                     .isAuthor(false)
                     .replies(filteredReplies)
@@ -111,7 +111,7 @@ public class ProfileLogCommentMapper {
                     .authorProfileImagePath(null)
                     .content(comment.getContent()) // 내용은 유지
                     .createdAt(null)
-                    .isUpdated("false")
+                    .isUpdated(false)
                     .isDeleted(false)
                     .isAuthor(false)
                     .replies(replies)
@@ -152,8 +152,7 @@ public class ProfileLogCommentMapper {
                 .authorProfileImagePath(profileImagePath)
                 .content(comment.getContent())
                 .createdAt(createdAt)
-                .isUpdated(
-                        comment.getModifiedAt().isAfter(comment.getCreatedAt()) ? "true" : "false")
+                .isUpdated(comment.getModifiedAt().isAfter(comment.getCreatedAt()))
                 .isDeleted(comment.isDeleted())
                 .isAuthor(isAuthor)
                 .replies(replies)
@@ -187,7 +186,7 @@ public class ProfileLogCommentMapper {
                     .authorProfileImagePath(null)
                     .content(reply.getContent()) // 내용은 유지
                     .createdAt(null)
-                    .isUpdated("false")
+                    .isUpdated(false)
                     .isDeleted(false)
                     .isAuthor(false)
                     .build();
@@ -220,7 +219,7 @@ public class ProfileLogCommentMapper {
                 .authorProfileImagePath(profileImagePath)
                 .content(reply.getContent())
                 .createdAt(createdAt)
-                .isUpdated(reply.getModifiedAt().isAfter(reply.getCreatedAt()) ? "true" : "false")
+                .isUpdated(reply.getModifiedAt().isAfter(reply.getCreatedAt()))
                 .isDeleted(reply.isDeleted())
                 .isAuthor(isAuthor)
                 .build();
@@ -251,7 +250,7 @@ public class ProfileLogCommentMapper {
                     .authorProfileImagePath(null)
                     .content(reply.getContent())
                     .createdAt(null)
-                    .isUpdated("false")
+                    .isUpdated(false)
                     .isDeleted(false)
                     .isAuthor(false)
                     .build();

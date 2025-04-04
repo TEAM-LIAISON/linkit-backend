@@ -22,7 +22,7 @@ public class TeamLogCommentResponseDTO {
         private String emailId;
         private String createdAt;
         private String content;
-        private String isUpdated;
+        private Boolean isUpdated;
         private Boolean isDeleted;
         private Boolean isQuitAccount;
         private Boolean isAuthor;
@@ -40,7 +40,7 @@ public class TeamLogCommentResponseDTO {
         private String emailId;
         private String createdAt;
         private String content;
-        private String isUpdated;
+        private Boolean isUpdated;
         private Boolean isDeleted;
         private Boolean isQuitAccount;
         private Boolean isAuthor;
