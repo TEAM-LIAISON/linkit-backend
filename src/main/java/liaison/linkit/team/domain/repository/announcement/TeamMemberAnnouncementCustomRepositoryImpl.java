@@ -611,7 +611,12 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
 
             // 정렬 조건 적용
             List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
-            switch (sortType) {
+
+            // sortType이 null인 경우 LATEST로 처리
+            AnnouncementSortType effectiveSortType =
+                    (sortType != null) ? sortType : AnnouncementSortType.LATEST;
+
+            switch (effectiveSortType) {
                 case LATEST:
                     orderSpecifiers.add(qTeamMemberAnnouncement.createdAt.desc());
                     break;
@@ -646,9 +651,12 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                     orderSpecifiers.add(qTeamMemberAnnouncement.createdAt.desc());
             }
 
+            // 정렬 조건을 ID 쿼리에도 적용
+            OrderSpecifier<?>[] orderArray = orderSpecifiers.toArray(new OrderSpecifier[0]);
+
             List<Long> announcementIds =
                     announcementIdQuery
-                            .orderBy(qTeamMemberAnnouncement.createdAt.desc())
+                            .orderBy(orderArray)
                             .limit(pageSize + 1) // 다음 페이지 확인을 위해 +1
                             .fetch();
 
@@ -759,7 +767,8 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                 jpaQueryFactory
                         .selectFrom(qTeamMemberAnnouncement)
                         .where(
-                                qTeamMemberAnnouncement.team.id.eq(teamId) // 특정 팀 ID와 일치
+                                qTeamMemberAnnouncement.team.id.eq(teamId) // 특정 팀 ID와
+                                // 일치
                                 )
                         .fetch());
     }
