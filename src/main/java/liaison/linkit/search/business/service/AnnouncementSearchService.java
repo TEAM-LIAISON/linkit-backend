@@ -88,7 +88,7 @@ public class AnnouncementSearchService {
                 && (cityName == null || cityName.isEmpty())
                 && (projectTypeNames == null || projectTypeNames.isEmpty())
                 && (workTypeNames == null || workTypeNames.isEmpty())
-                && (sortType == AnnouncementSortType.LATEST);
+                && (sortType == null || sortType == AnnouncementSortType.LATEST);
     }
 
     private CursorResponse<AnnouncementInformMenu> convertTeamMemberAnnouncementsToDTOs(
