@@ -34,6 +34,7 @@ public class ProfileLogResponseDTO {
         private String logTitle;
         private String logContent;
         private Long logViewCount;
+        private Long commentCount;
     }
 
     @Builder
