@@ -113,6 +113,7 @@ public class TeamLogService {
     @Transactional(readOnly = true)
     public TeamLogResponseDTO.TeamLogRepresentItem getRepresentTeamLogItem(
             final Optional<Long> optionalMemberId, final String teamCode) {
+        // 1. 팀 조회
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
         boolean isTeamManager =
