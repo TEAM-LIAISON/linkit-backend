@@ -89,29 +89,23 @@ public class ProfileService {
                 targetProfile, false, profileCompletionMenu, profileInformMenu);
     }
 
-    // 홈화면에서 로그인 상태에서 팀원 정보를 조회한다.
-    public ProfileResponseDTO.ProfileInformMenus getHomeProfileInformMenusInLoginState(
-            final Long memberId) {
+    public ProfileResponseDTO.ProfileInformMenus getHomeProfileInformMenus(
+            Optional<Long> optionalMemberId) {
         List<Profile> profiles = profileQueryAdapter.findHomeTopProfiles(6);
 
-        // Profiles -> ProfileInformMenus 변환
-        List<ProfileResponseDTO.ProfileInformMenu> profileInformMenus =
+        List<ProfileInformMenu> menus =
                 profiles.stream()
-                        .map(profile -> toHomeProfileInformMenuInLoginState(profile, memberId))
+                        .map(profile -> mapProfileToInformMenu(profile, optionalMemberId))
                         .toList();
 
-        return profileMapper.toProfileInformMenus(profileInformMenus);
+        return profileMapper.toProfileInformMenus(menus);
     }
 
-    // 홈화면에서 로그아웃 상태에서 팀원 정보를 조회한다.
-    public ProfileResponseDTO.ProfileInformMenus getHomeProfileInformMenusInLogoutState() {
-        List<Profile> profiles = profileQueryAdapter.findHomeTopProfiles(6);
-
-        // Profiles -> ProfileInformMenus 변환
-        List<ProfileResponseDTO.ProfileInformMenu> profileInformMenus =
-                profiles.stream().map(this::toHomeProfileInformMenuInLogoutState).toList();
-
-        return profileMapper.toProfileInformMenus(profileInformMenus);
+    private ProfileInformMenu mapProfileToInformMenu(
+            Profile profile, Optional<Long> optionalMemberId) {
+        return optionalMemberId
+                .map(memberId -> toHomeProfileInformMenuInLoginState(profile, memberId))
+                .orElseGet(() -> toHomeProfileInformMenuInLogoutState(profile));
     }
 
     // 프로필 요약 정보를 조회한다.

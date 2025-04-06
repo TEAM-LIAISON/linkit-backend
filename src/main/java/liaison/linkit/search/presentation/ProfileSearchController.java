@@ -5,7 +5,9 @@ import java.util.Optional;
 
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.domain.Accessor;
+import liaison.linkit.auth.utils.AuthUtils;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
 import liaison.linkit.search.business.model.ProfileSearchCondition;
 import liaison.linkit.search.business.service.ProfileSearchService;
@@ -39,11 +41,11 @@ public class ProfileSearchController { // 팀원 찾기 컨트롤러
      * @return 팀원 목록을 포함한 공통 응답
      */
     @GetMapping("/featured")
+    @Logging(item = "Profile", action = "GET_FEATURED_PROFILES")
     public CommonResponse<ProfileListResponseDTO> getFeaturedProfiles(
             @Auth final Accessor accessor) {
-        Optional<Long> optionalMemberId =
-                accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
-        return CommonResponse.onSuccess(profileSearchService.getFeaturedProfiles(optionalMemberId));
+        Optional<Long> memberIdOptional = AuthUtils.extractMemberId(accessor);
+        return CommonResponse.onSuccess(profileSearchService.getFeaturedProfiles(memberIdOptional));
     }
 
     /**
@@ -67,14 +69,13 @@ public class ProfileSearchController { // 팀원 찾기 컨트롤러
             @RequestParam(value = "profileStateName", required = false)
                     List<String> profileStateName) {
 
-        Optional<Long> optionalMemberId =
-                accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+        Optional<Long> memberIdOptional = AuthUtils.extractMemberId(accessor);
         CursorRequest cursorRequest = new CursorRequest(cursor, size);
         ProfileSearchCondition condition =
                 new ProfileSearchCondition(subPosition, cityName, profileStateName);
 
         return CommonResponse.onSuccess(
                 profileSearchService.searchProfilesWithCursor(
-                        optionalMemberId, condition, cursorRequest));
+                        memberIdOptional, condition, cursorRequest));
     }
 }

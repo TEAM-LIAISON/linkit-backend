@@ -5,6 +5,7 @@ import java.util.Optional;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
+import liaison.linkit.auth.utils.AuthUtils;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.profile.business.service.ProfileService;
@@ -49,18 +50,12 @@ public class ProfileController {
         }
     }
 
-    // 홈화면에서 팀원 조회 (최대 6개)
     @GetMapping("/home/profile")
     @Logging(item = "Profile", action = "GET_HOME_PROFILE_INFORM_MENUS", includeResult = false)
     public CommonResponse<ProfileResponseDTO.ProfileInformMenus> getHomeProfileInformMenus(
             @Auth final Accessor accessor) {
-        if (accessor.isMember()) {
-            return CommonResponse.onSuccess(
-                    profileService.getHomeProfileInformMenusInLoginState(accessor.getMemberId()));
-        } else {
-            return CommonResponse.onSuccess(
-                    profileService.getHomeProfileInformMenusInLogoutState());
-        }
+        Optional<Long> memberId = AuthUtils.extractMemberId(accessor);
+        return CommonResponse.onSuccess(profileService.getHomeProfileInformMenus(memberId));
     }
 
     @GetMapping("/profile/summary/inform/{emailId}")
