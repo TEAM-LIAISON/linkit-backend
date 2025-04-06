@@ -156,78 +156,81 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
     public CursorResponse<Profile> findAllExcludingIdsWithCursor(
             final List<Long> excludeProfileIds, final CursorRequest cursorRequest) {
         QProfile qProfile = QProfile.profile;
-        QMember qMember = QMember.member;
-        QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
-        QPosition qPosition = QPosition.position;
-        QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
-        QRegion qRegion = QRegion.region;
 
         try {
-            // 기본 조건
+            // 기본 쿼리 조건
             BooleanExpression baseCondition =
                     qProfile.status.eq(USABLE).and(qProfile.isProfilePublic.eq(true));
 
-            // 제외 ID 조건
+            // ID 제외 조건
             if (excludeProfileIds != null && !excludeProfileIds.isEmpty()) {
                 baseCondition = baseCondition.and(qProfile.id.notIn(excludeProfileIds));
             }
 
-            // 커서 조건 (이메일 ID 직접 사용)
+            // 커서 조건 - emailId로 profileId를 찾아서 적용
             if (cursorRequest != null
                     && cursorRequest.hasNext()
                     && cursorRequest.getCursor() != null) {
-                baseCondition =
-                        baseCondition.and(qProfile.member.emailId.ne(cursorRequest.getCursor()));
+                // emailId로 해당 프로필의 ID를 조회
+                String cursorEmailId = cursorRequest.getCursor();
+                Long cursorProfileId =
+                        jpaQueryFactory
+                                .select(qProfile.id)
+                                .from(qProfile)
+                                .where(qProfile.member.emailId.eq(cursorEmailId))
+                                .fetchOne();
+
+                // 찾은 ID가 있으면 해당 ID보다 작은 ID를 가진 프로필만 조회
+                if (cursorProfileId != null) {
+                    baseCondition = baseCondition.and(qProfile.id.lt(cursorProfileId));
+                }
             }
 
-            // 페이지 크기
-            int size = (cursorRequest != null) ? cursorRequest.getSize() : 10;
+            // 페이지 크기 6의 배수로 설정
+            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
 
-            // 단일 쿼리로 모든 정보 조회 (Fetch Join)
-            List<Profile> profiles =
+            // 1. ID와 emailId를 함께 조회
+            List<Tuple> profileTuples =
                     jpaQueryFactory
-                            .selectFrom(qProfile)
-                            .distinct()
-                            .join(qProfile.member, qMember)
-                            .fetchJoin()
-                            .leftJoin(qProfilePosition)
-                            .on(qProfilePosition.profile.eq(qProfile))
-                            .fetchJoin()
-                            .leftJoin(qPosition)
-                            .on(qProfilePosition.position.eq(qPosition))
-                            .fetchJoin()
-                            .leftJoin(qProfileRegion)
-                            .on(qProfileRegion.profile.eq(qProfile))
-                            .fetchJoin()
-                            .leftJoin(qRegion)
-                            .on(qProfileRegion.region.eq(qRegion))
-                            .fetchJoin()
+                            .select(qProfile.id, qProfile.member.emailId)
+                            .from(qProfile)
                             .where(baseCondition)
-                            .orderBy(qProfile.createdAt.desc())
-                            .limit(size + 1)
+                            .orderBy(qProfile.id.desc()) // ID 기준으로 정렬
+                            .limit(pageSize + 1)
                             .fetch();
 
-            // 빈 결과 체크
-            if (profiles.isEmpty()) {
+            if (profileTuples.isEmpty()) {
                 return CursorResponse.of(List.of(), null);
             }
 
-            // 다음 페이지 체크
-            boolean hasNext = profiles.size() > size;
-            String nextCursor = null;
+            List<Long> profileIds = new ArrayList<>();
 
-            // 결과 목록
-            List<Profile> resultProfiles = hasNext ? profiles.subList(0, size) : profiles;
+            // 다음 커서 계산
+            String nextCursor = null;
+            boolean hasNext = profileTuples.size() > pageSize;
+
+            // profileIds 추출
+            for (int i = 0; i < (hasNext ? pageSize : profileTuples.size()); i++) {
+                profileIds.add(profileTuples.get(i).get(qProfile.id));
+            }
 
             // 다음 커서 설정
             if (hasNext) {
-                Profile lastProfile = profiles.get(size);
-                nextCursor = lastProfile.getMember().getEmailId();
+                nextCursor = profileTuples.get(pageSize).get(qProfile.member.emailId);
             }
 
-            return CursorResponse.of(resultProfiles, nextCursor);
+            // 2. ID로 프로필 엔터티만 조회하고 생성 시간 기준으로 정렬
+            List<Profile> profiles =
+                    jpaQueryFactory
+                            .selectFrom(qProfile)
+                            .where(qProfile.id.in(profileIds))
+                            .orderBy(qProfile.createdAt.desc()) // 생성 시간 기준 내림차순 정렬
+                            .fetch();
+
+            return CursorResponse.of(profiles, nextCursor);
         } catch (Exception e) {
-            log.error("쿼리 오류: {}", e.getMessage(), e);
+            log.error("Error in findAllExcludingIdsWithCursor: {}", e.getMessage(), e);
             return CursorResponse.of(List.of(), null);
         }
     }
@@ -241,32 +244,21 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         QProfile qProfile = QProfile.profile;
 
         try {
-            long startTime = System.currentTimeMillis();
-            log.info("findAllByFilteringWithCursor 쿼리 시작");
-
             // emailId로 profileId를 찾는 로직
             Long cursorProfileId = null;
             if (cursorRequest != null
                     && cursorRequest.hasNext()
                     && cursorRequest.getCursor() != null) {
-                try {
-                    String cursorEmailId = cursorRequest.getCursor();
-                    long cursorQueryStart = System.currentTimeMillis();
-                    cursorProfileId =
-                            jpaQueryFactory
-                                    .select(qProfile.id)
-                                    .from(qProfile)
-                                    .where(qProfile.member.emailId.eq(cursorEmailId))
-                                    .fetchOne();
-                    log.info("커서 ID 조회 시간: {} ms", System.currentTimeMillis() - cursorQueryStart);
-                } catch (Exception e) {
-                    log.error("커서 처리 중 오류: {}", e.getMessage());
-                    // 커서 처리 실패 시 계속 진행
-                }
+                String cursorEmailId = cursorRequest.getCursor();
+                cursorProfileId =
+                        jpaQueryFactory
+                                .select(qProfile.id)
+                                .from(qProfile)
+                                .where(qProfile.member.emailId.eq(cursorEmailId))
+                                .fetchOne();
             }
 
             // 1. 필터링된 프로필 ID와 emailId를 함께 조회
-            long idQueryStart = System.currentTimeMillis();
             JPAQuery<Tuple> profileQuery =
                     jpaQueryFactory
                             .select(qProfile.id, qProfile.member.emailId)
@@ -282,140 +274,88 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 profileQuery = profileQuery.where(qProfile.id.lt(cursorProfileId));
             }
 
-            // 포지션 필터링 (안전하게 수행)
+            // 포지션 필터링
             if (isNotEmpty(subPosition)) {
-                try {
-                    QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
-                    QPosition qPosition = QPosition.position;
+                QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
+                QPosition qPosition = QPosition.position;
 
-                    profileQuery
-                            .leftJoin(qProfilePosition)
-                            .on(qProfilePosition.profile.eq(qProfile))
-                            .leftJoin(qPosition)
-                            .on(qProfilePosition.position.eq(qPosition))
-                            .where(qPosition.subPosition.in(subPosition));
-                } catch (Exception e) {
-                    log.error("포지션 필터링 중 오류: {}", e.getMessage());
-                }
+                profileQuery
+                        .leftJoin(qProfilePosition)
+                        .on(qProfilePosition.profile.eq(qProfile))
+                        .leftJoin(qPosition)
+                        .on(qProfilePosition.position.eq(qPosition))
+                        .where(qPosition.subPosition.in(subPosition));
             }
 
-            // 지역 필터링 (안전하게 수행)
+            // 지역 필터링
             if (isNotEmpty(cityName)) {
-                try {
-                    QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
-                    QRegion qRegion = QRegion.region;
+                QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
+                QRegion qRegion = QRegion.region;
 
-                    profileQuery
-                            .leftJoin(qProfileRegion)
-                            .on(qProfileRegion.profile.eq(qProfile))
-                            .leftJoin(qRegion)
-                            .on(qProfileRegion.region.eq(qRegion))
-                            .where(qRegion.cityName.in(cityName));
-                } catch (Exception e) {
-                    log.error("지역 필터링 중 오류: {}", e.getMessage());
-                }
+                profileQuery
+                        .leftJoin(qProfileRegion)
+                        .on(qProfileRegion.profile.eq(qProfile))
+                        .leftJoin(qRegion)
+                        .on(qProfileRegion.region.eq(qRegion))
+                        .where(qRegion.cityName.in(cityName));
             }
 
-            // 상태 필터링 (안전하게 수행)
+            // 상태 필터링
             if (isNotEmpty(profileStateName)) {
-                try {
-                    QProfileCurrentState qProfileCurrentState =
-                            QProfileCurrentState.profileCurrentState;
-                    QProfileState qProfileState = QProfileState.profileState;
+                QProfileCurrentState qProfileCurrentState =
+                        QProfileCurrentState.profileCurrentState;
+                QProfileState qProfileState = QProfileState.profileState;
 
-                    profileQuery
-                            .leftJoin(qProfileCurrentState)
-                            .on(qProfileCurrentState.profile.eq(qProfile))
-                            .leftJoin(qProfileState)
-                            .on(qProfileCurrentState.profileState.eq(qProfileState))
-                            .where(qProfileState.profileStateName.in(profileStateName));
-                } catch (Exception e) {
-                    log.error("상태 필터링 중 오류: {}", e.getMessage());
-                }
+                profileQuery
+                        .leftJoin(qProfileCurrentState)
+                        .on(qProfileCurrentState.profile.eq(qProfile))
+                        .leftJoin(qProfileState)
+                        .on(qProfileCurrentState.profileState.eq(qProfileState))
+                        .where(qProfileState.profileStateName.in(profileStateName));
             }
 
-            // ID 기준으로 정렬 및 제한 (안전하게 계산)
-            int requestedSize = 10; // 기본값
-            if (cursorRequest != null) {
-                requestedSize = Math.max(1, cursorRequest.getSize());
-            }
+            // ID 기준으로 정렬 및 제한
+            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
             int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
 
-            List<Tuple> profileTuples;
-            try {
-                profileTuples =
-                        profileQuery
-                                .orderBy(qProfile.id.desc()) // ID 기준 정렬
-                                .limit(pageSize + 1) // 다음 페이지 확인을 위해 +1
-                                .fetch();
-                log.info("필터링된 ID 목록 조회 시간: {} ms", System.currentTimeMillis() - idQueryStart);
-            } catch (Exception e) {
-                log.error("필터링된 ID 목록 조회 중 오류: {}", e.getMessage());
-                return CursorResponse.of(List.of(), null);
-            }
+            List<Tuple> profileTuples =
+                    profileQuery
+                            .orderBy(qProfile.id.desc()) // ID 기준 정렬
+                            .limit(pageSize + 1) // 다음 페이지 확인을 위해 +1
+                            .fetch();
 
             // 조회할 프로필이 없는 경우 빈 응답 반환
-            if (profileTuples == null || profileTuples.isEmpty()) {
+            if (profileTuples.isEmpty()) {
                 return CursorResponse.of(List.of(), null);
             }
 
-            // profileIds 추출 (안전하게 처리)
+            // profileIds 추출
             List<Long> profileIds = new ArrayList<>();
-            try {
-                for (int i = 0;
-                        i < (profileTuples.size() > pageSize ? pageSize : profileTuples.size());
-                        i++) {
-                    if (profileTuples.get(i) != null
-                            && profileTuples.get(i).get(qProfile.id) != null) {
-                        profileIds.add(profileTuples.get(i).get(qProfile.id));
-                    }
-                }
-            } catch (Exception e) {
-                log.error("필터링된 ID 추출 중 오류: {}", e.getMessage());
-                // 오류 발생 시 수집된 profileIds로 계속 진행
-            }
-
-            // ID 목록이 비어 있으면 빈 결과 반환
-            if (profileIds.isEmpty()) {
-                return CursorResponse.of(List.of(), null);
+            for (int i = 0;
+                    i < (profileTuples.size() > pageSize ? pageSize : profileTuples.size());
+                    i++) {
+                profileIds.add(profileTuples.get(i).get(qProfile.id));
             }
 
             // 다음 커서 계산
             boolean hasNext = profileTuples.size() > pageSize;
             String nextCursor = null;
 
-            // 다음 페이지가 있는 경우 (안전하게 처리)
-            if (hasNext && profileTuples.size() > pageSize) {
-                try {
-                    Tuple lastTuple = profileTuples.get(pageSize);
-                    if (lastTuple != null && lastTuple.get(qProfile.member.emailId) != null) {
-                        nextCursor = lastTuple.get(qProfile.member.emailId);
-                    }
-                } catch (Exception e) {
-                    log.error("다음 커서 계산 중 오류: {}", e.getMessage());
-                }
+            // 다음 페이지가 있는 경우
+            if (hasNext) {
+                // 마지막 엔티티의 emailId를 다음 커서로 사용
+                nextCursor = profileTuples.get(pageSize).get(qProfile.member.emailId);
             }
 
             // 2. 실제 데이터 조회 - 생성 시간 기준으로 정렬
-            long detailQueryStart = System.currentTimeMillis();
-            List<Profile> content;
+            List<Profile> content =
+                    jpaQueryFactory
+                            .selectFrom(qProfile)
+                            .where(qProfile.id.in(profileIds))
+                            .orderBy(qProfile.createdAt.desc()) // 생성 시간 기준 내림차순 정렬
+                            .fetch();
 
-            try {
-                content =
-                        jpaQueryFactory
-                                .selectFrom(qProfile)
-                                .where(qProfile.id.in(profileIds))
-                                .orderBy(qProfile.createdAt.desc()) // 생성 시간 기준 내림차순 정렬
-                                .fetch();
-                log.info("필터링된 상세 프로필 조회 시간: {} ms", System.currentTimeMillis() - detailQueryStart);
-            } catch (Exception e) {
-                log.error("필터링된 상세 프로필 조회 중 오류: {}", e.getMessage());
-                return CursorResponse.of(List.of(), null);
-            }
-
-            log.info("전체 필터링 쿼리 처리 시간: {} ms", System.currentTimeMillis() - startTime);
-
-            return CursorResponse.of(content != null ? content : List.of(), nextCursor);
+            return CursorResponse.of(content, nextCursor);
         } catch (Exception e) {
             log.error("Error in findAllByFilteringWithCursor: {}", e.getMessage(), e);
             return CursorResponse.of(List.of(), null);
