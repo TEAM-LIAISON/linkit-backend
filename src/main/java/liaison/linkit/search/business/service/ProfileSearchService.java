@@ -67,19 +67,27 @@ public class ProfileSearchService {
             List<String> cityName,
             List<String> profileStateName,
             CursorRequest cursorRequest) {
-        if (isDefaultSearch(subPosition, cityName, profileStateName)) {
-            List<Long> excludeProfileIds = getExcludeProfileIds();
 
+        if (isDefaultSearch(subPosition, cityName, profileStateName)) {
+            // 기본 탐색 요청일 경우: 커서가 없는 첫 호출
+            if (!cursorRequest.hasNext()) {
+                List<ProfileInformMenu> results =
+                        profileQueryAdapter.getFirstPageDefaultProfiles(cursorRequest.getSize());
+                String nextCursor =
+                        results.size() > 0 ? results.get(results.size() - 1).getEmailId() : null;
+                return CursorResponse.of(results, nextCursor);
+            }
+
+            // 커서가 있을 경우 기존 방식 사용
+            List<Long> excludeProfileIds = getExcludeProfileIds();
             CursorResponse<Profile> profiles =
                     profileQueryAdapter.findAllExcludingIdsWithCursor(
                             excludeProfileIds, cursorRequest);
-
             return convertProfilesToDTOs(profiles, optionalMemberId);
         } else {
             CursorResponse<Profile> profiles =
                     profileQueryAdapter.findAllByFilteringWithCursor(
                             subPosition, cityName, profileStateName, cursorRequest);
-
             return convertProfilesToDTOs(profiles, optionalMemberId);
         }
     }

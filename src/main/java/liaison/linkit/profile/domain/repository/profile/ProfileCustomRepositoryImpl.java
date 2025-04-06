@@ -5,6 +5,7 @@ import static liaison.linkit.global.type.StatusType.USABLE;
 import java.util.List;
 import java.util.Optional;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -21,6 +22,7 @@ import liaison.linkit.profile.domain.region.QRegion;
 import liaison.linkit.profile.domain.state.QProfileCurrentState;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.search.presentation.dto.profile.FlatProfileWithPositionDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -319,6 +321,38 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                         qProfile.isProfilePublic.eq(true),
                         qPosition.majorPosition.eq(majorPosition),
                         qProfile.member.memberBasicInform.marketingAgree.isTrue())
+                .fetch();
+    }
+
+    public List<FlatProfileWithPositionDTO> findFlatProfilesWithoutCursor(int size) {
+        QProfile qProfile = QProfile.profile;
+        QMember qMember = QMember.member;
+        QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
+        QRegion qRegion = QRegion.region;
+        QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
+        QPosition qPosition = QPosition.position;
+
+        return jpaQueryFactory
+                .select(
+                        Projections.constructor(
+                                FlatProfileWithPositionDTO.class,
+                                qProfile.id,
+                                qMember.memberBasicInform.memberName,
+                                qMember.emailId,
+                                qProfile.profileImagePath,
+                                qPosition.majorPosition,
+                                qPosition.subPosition,
+                                qRegion.cityName))
+                .from(qProfile)
+                .leftJoin(qProfile.member, qMember)
+                .leftJoin(qMember.memberBasicInform)
+                .leftJoin(qProfile.profileRegion, qProfileRegion)
+                .leftJoin(qProfileRegion.region, qRegion)
+                .leftJoin(qProfile.profilePositions, qProfilePosition)
+                .leftJoin(qProfilePosition.position, qPosition)
+                .where(qProfile.status.eq(StatusType.USABLE).and(qProfile.isProfilePublic.eq(true)))
+                .orderBy(qProfile.id.desc())
+                .limit(size + 1)
                 .fetch();
     }
 }

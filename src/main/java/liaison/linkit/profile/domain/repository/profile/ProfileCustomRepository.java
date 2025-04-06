@@ -6,6 +6,7 @@ import java.util.Optional;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.search.presentation.dto.profile.FlatProfileWithPositionDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -31,6 +32,8 @@ public interface ProfileCustomRepository {
     List<Profile> findHomeTopProfiles(final int limit);
 
     Page<Profile> findTopCompletionProfiles(final Pageable pageable);
+
+    List<FlatProfileWithPositionDTO> findFlatProfilesWithoutCursor(int size);
 
     List<Profile> findByMarketingConsentAndMajorPosition(final String majorPosition);
 }

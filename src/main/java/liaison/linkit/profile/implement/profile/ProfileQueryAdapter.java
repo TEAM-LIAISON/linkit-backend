@@ -3,11 +3,14 @@ package liaison.linkit.profile.implement.profile;
 import java.util.List;
 
 import liaison.linkit.common.annotation.Adapter;
+import liaison.linkit.profile.business.assembler.ProfileInformMenuAssembler;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.exception.profile.ProfileNotFoundException;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.search.presentation.dto.profile.FlatProfileWithPositionDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 public class ProfileQueryAdapter {
 
     private final ProfileRepository profileRepository;
+    private final ProfileInformMenuAssembler profileInformMenuAssembler;
 
     public Profile findById(final Long profileId) {
         return profileRepository
@@ -79,6 +83,12 @@ public class ProfileQueryAdapter {
             )
     public List<Profile> findHomeTopProfiles(final int limit) {
         return profileRepository.findHomeTopProfiles(limit);
+    }
+
+    public List<ProfileResponseDTO.ProfileInformMenu> getFirstPageDefaultProfiles(int size) {
+        List<FlatProfileWithPositionDTO> raw =
+                profileRepository.findFlatProfilesWithoutCursor(size);
+        return profileInformMenuAssembler.assembleProfileInformMenus(raw);
     }
 
     public List<Profile> findByMarketingConsentAndMajorPosition(final String majorPosition) {

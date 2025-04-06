@@ -1,7 +1,9 @@
 package liaison.linkit.profile.business.assembler;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import liaison.linkit.common.business.RegionMapper;
@@ -21,6 +23,7 @@ import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.Profil
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.scrap.implement.profileScrap.ProfileScrapQueryAdapter;
+import liaison.linkit.search.presentation.dto.profile.FlatProfileWithPositionDTO;
 import liaison.linkit.team.business.mapper.teamMember.TeamMemberMapper;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
@@ -176,6 +179,30 @@ public class ProfileInformMenuAssembler {
                 profilePositionDetail,
                 regionDetail,
                 profileTeamInforms);
+    }
+
+    public List<ProfileInformMenu> assembleProfileInformMenus(
+            List<FlatProfileWithPositionDTO> flatDtos) {
+        Map<Long, ProfileInformMenu.ProfileInformMenuBuilder> builderMap = new LinkedHashMap<>();
+
+        for (FlatProfileWithPositionDTO dto : flatDtos) {
+            builderMap
+                    .computeIfAbsent(
+                            dto.getProfileId(),
+                            id ->
+                                    ProfileInformMenu.builder()
+                                            .emailId(dto.getEmailId())
+                                            .memberName(dto.getMemberName())
+                                            .profileImagePath(dto.getProfileImagePath())
+                                            .isProfilePublic(true)
+                                            .regionDetail(
+                                                    new RegionDetail(dto.getCityName(), null)))
+                    .subPosition(dto.getSubPosition());
+        }
+
+        return builderMap.values().stream()
+                .map(ProfileInformMenu.ProfileInformMenuBuilder::build)
+                .toList();
     }
 
     /**
