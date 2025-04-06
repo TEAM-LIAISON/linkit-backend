@@ -174,7 +174,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             // Step 2. 본 쿼리
             BooleanExpression baseCondition =
                     qProfile.status.eq(USABLE).and(qProfile.isProfilePublic.eq(true));
-
             if (excludeProfileIds != null && !excludeProfileIds.isEmpty()) {
                 baseCondition = baseCondition.and(qProfile.id.notIn(excludeProfileIds));
             }
@@ -293,7 +292,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             if (hasNext) {
                 content = content.subList(0, pageSize);
             }
-
             return CursorResponse.of(content, nextCursor);
         } catch (Exception e) {
             log.error("Error in findAllByFilteringWithCursor: {}", e.getMessage(), e);
