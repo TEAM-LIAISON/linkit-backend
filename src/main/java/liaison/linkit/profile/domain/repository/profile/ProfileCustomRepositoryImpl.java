@@ -156,6 +156,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
     public CursorResponse<Profile> findAllExcludingIdsWithCursor(
             final List<Long> excludeProfileIds, final CursorRequest cursorRequest) {
         QProfile qProfile = QProfile.profile;
+        QMember qMember = QMember.member;
 
         try {
             // 기본 쿼리 조건
@@ -167,66 +168,46 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 baseCondition = baseCondition.and(qProfile.id.notIn(excludeProfileIds));
             }
 
-            // 커서 조건 - emailId로 profileId를 찾아서 적용
-            if (cursorRequest != null
-                    && cursorRequest.hasNext()
-                    && cursorRequest.getCursor() != null) {
-                // emailId로 해당 프로필의 ID를 조회
-                String cursorEmailId = cursorRequest.getCursor();
-                Long cursorProfileId =
-                        jpaQueryFactory
-                                .select(qProfile.id)
-                                .from(qProfile)
-                                .where(qProfile.member.emailId.eq(cursorEmailId))
-                                .fetchOne();
-
-                // 찾은 ID가 있으면 해당 ID보다 작은 ID를 가진 프로필만 조회
-                if (cursorProfileId != null) {
-                    baseCondition = baseCondition.and(qProfile.id.lt(cursorProfileId));
-                }
-            }
-
             // 페이지 크기 6의 배수로 설정
             int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
             int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
 
-            // 1. ID와 emailId를 함께 조회
-            List<Tuple> profileTuples =
-                    jpaQueryFactory
-                            .select(qProfile.id, qProfile.member.emailId)
-                            .from(qProfile)
-                            .where(baseCondition)
-                            .orderBy(qProfile.id.desc()) // ID 기준으로 정렬
-                            .limit(pageSize + 1)
-                            .fetch();
-
-            if (profileTuples.isEmpty()) {
-                return CursorResponse.of(List.of(), null);
+            // 커서 조건 직접 적용 (중간 쿼리 제거)
+            if (cursorRequest != null
+                    && cursorRequest.hasNext()
+                    && cursorRequest.getCursor() != null) {
+                String cursorEmailId = cursorRequest.getCursor();
+                baseCondition = baseCondition.and(qProfile.member.emailId.ne(cursorEmailId));
             }
 
-            List<Long> profileIds = new ArrayList<>();
-
-            // 다음 커서 계산
-            String nextCursor = null;
-            boolean hasNext = profileTuples.size() > pageSize;
-
-            // profileIds 추출
-            for (int i = 0; i < (hasNext ? pageSize : profileTuples.size()); i++) {
-                profileIds.add(profileTuples.get(i).get(qProfile.id));
-            }
-
-            // 다음 커서 설정
-            if (hasNext) {
-                nextCursor = profileTuples.get(pageSize).get(qProfile.member.emailId);
-            }
-
-            // 2. ID로 프로필 엔터티만 조회하고 생성 시간 기준으로 정렬
+            // 단일 쿼리로 필요한 모든 데이터 조회 (Fetch join 활용)
             List<Profile> profiles =
                     jpaQueryFactory
                             .selectFrom(qProfile)
-                            .where(qProfile.id.in(profileIds))
+                            .join(qProfile.member, qMember)
+                            .fetchJoin()
+                            .where(baseCondition)
                             .orderBy(qProfile.createdAt.desc()) // 생성 시간 기준 내림차순 정렬
+                            .limit(pageSize + 1)
                             .fetch();
+
+            if (profiles.isEmpty()) {
+                return CursorResponse.of(List.of(), null);
+            }
+
+            // 다음 커서 계산
+            boolean hasNext = profiles.size() > pageSize;
+            String nextCursor = null;
+
+            // 다음 페이지가 있는 경우
+            if (hasNext) {
+                // 마지막 프로필의 이메일 ID를 다음 커서로 사용
+                Profile lastProfile = profiles.get(pageSize);
+                nextCursor = lastProfile.getMember().getEmailId();
+
+                // 결과 목록에서 마지막 항목 제거
+                profiles = profiles.subList(0, pageSize);
+            }
 
             return CursorResponse.of(profiles, nextCursor);
         } catch (Exception e) {
