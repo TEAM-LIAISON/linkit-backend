@@ -22,6 +22,7 @@ public class TeamLogMapper {
                 .logTitle(teamLog.getLogTitle())
                 .logContent(teamLog.getLogContent())
                 .logViewCount(teamLog.getViewCount())
+                .commentCount(teamLog.getCommentCount())
                 .build();
     }
 

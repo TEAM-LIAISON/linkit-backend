@@ -24,6 +24,7 @@ public class ProfileLogMapper {
                 .logTitle(profileLog.getLogTitle())
                 .logContent(profileLog.getLogContent())
                 .logViewCount(profileLog.getViewCount())
+                .commentCount(profileLog.getCommentCount())
                 .build();
     }
 

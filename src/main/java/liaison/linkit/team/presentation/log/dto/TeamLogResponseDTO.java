@@ -49,6 +49,7 @@ public class TeamLogResponseDTO {
         private String logTitle;
         private String logContent;
         private Long logViewCount;
+        private Long commentCount;
     }
 
     @Builder
