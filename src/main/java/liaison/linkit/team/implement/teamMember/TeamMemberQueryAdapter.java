@@ -1,10 +1,12 @@
 package liaison.linkit.team.implement.teamMember;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.member.domain.Member;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
 import liaison.linkit.team.domain.repository.teamMember.TeamMemberRepository;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.TeamMember;
@@ -93,5 +95,10 @@ public class TeamMemberQueryAdapter {
 
     public boolean isTeamDeleteRequester(final Long memberId, final Long teamId) {
         return teamMemberRepository.isTeamDeleteRequester(memberId, teamId);
+    }
+
+    public Map<Long, List<ProfileResponseDTO.ProfileTeamInform>> findTeamInformsGroupedByProfile(
+            List<Long> profileIds) {
+        return teamMemberRepository.findTeamInformsGroupedByProfile(profileIds);
     }
 }

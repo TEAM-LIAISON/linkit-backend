@@ -331,6 +331,8 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         QRegion qRegion = QRegion.region;
         QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
         QPosition qPosition = QPosition.position;
+        QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
+        QProfileState qProfileState = QProfileState.profileState;
 
         return jpaQueryFactory
                 .select(
@@ -342,7 +344,9 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                                 qProfile.profileImagePath,
                                 qPosition.majorPosition,
                                 qPosition.subPosition,
-                                qRegion.cityName))
+                                qRegion.cityName,
+                                qRegion.divisionName,
+                                qProfileState.profileStateName))
                 .from(qProfile)
                 .leftJoin(qProfile.member, qMember)
                 .leftJoin(qMember.memberBasicInform)
@@ -350,9 +354,11 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 .leftJoin(qProfileRegion.region, qRegion)
                 .leftJoin(qProfile.profilePositions, qProfilePosition)
                 .leftJoin(qProfilePosition.position, qPosition)
+                .leftJoin(qProfile.profileCurrentStates, qProfileCurrentState)
+                .leftJoin(qProfileCurrentState.profileState, qProfileState)
                 .where(qProfile.status.eq(StatusType.USABLE).and(qProfile.isProfilePublic.eq(true)))
                 .orderBy(qProfile.id.desc())
-                .limit(size + 1)
+                .limit(size * 5)
                 .fetch();
     }
 }

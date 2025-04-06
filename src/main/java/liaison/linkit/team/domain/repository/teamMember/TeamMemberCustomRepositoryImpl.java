@@ -1,17 +1,23 @@
 package liaison.linkit.team.domain.repository.teamMember;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.global.type.StatusType;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.QMember;
+import liaison.linkit.profile.domain.profile.QProfile;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.team.domain.team.QTeam;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.QTeamMember;
@@ -499,5 +505,48 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                                         .and(qTeamMember.status.eq(StatusType.USABLE)))
                         .fetchFirst()
                 != null;
+    }
+
+    @Override
+    public Map<Long, List<ProfileTeamInform>> findTeamInformsGroupedByProfile(
+            List<Long> profileIds) {
+        if (profileIds == null || profileIds.isEmpty()) {
+            return Map.of();
+        }
+
+        QProfile qProfile = QProfile.profile;
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+        QTeam qTeam = QTeam.team;
+        QMember qMember = QMember.member;
+
+        List<Tuple> results =
+                jpaQueryFactory
+                        .select(
+                                qProfile.id,
+                                qTeam.teamName,
+                                qTeam.teamCode,
+                                qTeam.teamLogoImagePath)
+                        .from(qTeamMember)
+                        .join(qTeamMember.member, qMember)
+                        .join(qTeamMember.team, qTeam)
+                        .join(qProfile)
+                        .on(qProfile.member.eq(qTeamMember.member))
+                        .where(qProfile.id.in(profileIds))
+                        .fetch();
+
+        Map<Long, List<ProfileTeamInform>> resultMap = new HashMap<>();
+        for (Tuple t : results) {
+            Long profileId = t.get(qProfile.id);
+            if (profileId == null) {
+                continue;
+            }
+            ProfileTeamInform inform =
+                    new ProfileTeamInform(
+                            t.get(qTeam.teamName),
+                            t.get(qTeam.teamCode),
+                            t.get(qTeam.teamLogoImagePath));
+            resultMap.computeIfAbsent(profileId, k -> new ArrayList<>()).add(inform);
+        }
+        return resultMap;
     }
 }

@@ -13,4 +13,6 @@ public class FlatProfileWithPositionDTO {
     private String majorPosition;
     private String subPosition;
     private String cityName;
+    private String divisionName;
+    private String profileStateName;
 }
