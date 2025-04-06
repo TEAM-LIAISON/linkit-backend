@@ -26,6 +26,7 @@ import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -53,6 +54,7 @@ public class ProfileInformMenuAssembler {
      * @param profile 조회 대상 프로필
      * @return 조회된 RegionDetail, 없으면 기본 인스턴스 반환
      */
+    @Cacheable(value = "regionDetailCache", key = "#profile.id")
     public RegionDetail assembleRegionDetail(final Profile profile) {
         RegionDetail regionDetail = new RegionDetail();
         if (regionQueryAdapter.existsProfileRegionByProfileId(profile.getId())) {
@@ -70,6 +72,7 @@ public class ProfileInformMenuAssembler {
      * @param profile 조회 대상 프로필
      * @return 프로필 상태 목록을 ProfileCurrentStateItem 리스트로 변환한 결과
      */
+    @Cacheable(value = "profileCurrentStateCache", key = "#profile.id")
     public List<ProfileCurrentStateItem> assembleProfileCurrentStateItems(final Profile profile) {
         List<ProfileCurrentState> currentStates =
                 profileCurrentStateQueryAdapter.findProfileCurrentStatesByProfileId(
@@ -86,6 +89,7 @@ public class ProfileInformMenuAssembler {
      * @param profile 조회 대상 프로필
      * @return 조회된 ProfilePositionDetail, 없으면 기본 인스턴스 반환
      */
+    @Cacheable(value = "profilePositionCache", key = "#profile.id")
     public ProfilePositionDetail assembleProfilePositionDetail(final Profile profile) {
         ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
         if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
@@ -104,6 +108,10 @@ public class ProfileInformMenuAssembler {
      * @param profile 조회 대상 프로필
      * @return 조회된 팀 정보를 ProfileTeamInform 리스트로 반환, 없으면 빈 리스트 반환
      */
+    @Cacheable(
+            value = "profileTeamCache",
+            key =
+                    "#profile.id + '_' + (#loggedInMemberId.isPresent() ? #loggedInMemberId.get() : 'notLoggedIn')")
     public List<ProfileTeamInform> assembleProfileTeamInforms(
             final Profile profile, final Optional<Long> loggedInMemberId) {
         boolean isMyProfile =
@@ -129,6 +137,10 @@ public class ProfileInformMenuAssembler {
      * @param loggedInMemberId 로그인한 사용자의 memberId(Optional)
      * @return 스크랩 여부, 로그인 상태가 아니면 기본 false 반환
      */
+    @Cacheable(
+            value = "profileScrapCache",
+            key =
+                    "#profile.id + '_' + (#loggedInMemberId.isPresent() ? #loggedInMemberId.get() : 'notLoggedIn')")
     public boolean assembleIsProfileScrap(
             final Profile profile, final Optional<Long> loggedInMemberId) {
         boolean isProfileScrap = false;
@@ -146,6 +158,7 @@ public class ProfileInformMenuAssembler {
      * @param profile 조회 대상 프로필
      * @return 해당 프로필의 총 스크랩 수
      */
+    @Cacheable(value = "profileScrapCountCache", key = "#profile.id")
     public int assembleProfileScrapCount(final Profile profile) {
         return profileScrapQueryAdapter.countTotalProfileScrapByEmailId(
                 profile.getMember().getEmailId());
@@ -158,6 +171,10 @@ public class ProfileInformMenuAssembler {
      * @param loggedInMemberId Optional 로그인한 사용자의 memberId. 값이 존재하면 로그인 상태, 없으면 로그아웃 상태로 처리
      * @return 최종 조립된 ProfileInformMenu DTO
      */
+    @Cacheable(
+            value = "profileInformMenuCache",
+            key =
+                    "#profile.id + '_' + (#loggedInMemberId.isPresent() ? #loggedInMemberId.get() : 'notLoggedIn')")
     public ProfileInformMenu assembleProfileInformMenu(
             final Profile profile, final Optional<Long> loggedInMemberId) {
         List<ProfileCurrentStateItem> currentStateItems = assembleProfileCurrentStateItems(profile);

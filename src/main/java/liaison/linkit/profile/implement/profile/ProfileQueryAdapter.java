@@ -39,6 +39,10 @@ public class ProfileQueryAdapter {
                 .orElseThrow(() -> ProfileNotFoundException.EXCEPTION);
     }
 
+    @Cacheable(
+            value = "profileExcludingIdsCache",
+            key =
+                    "#cursorRequest.toString() + '_' + (#excludeProfileIds != null ? #excludeProfileIds.toString() : 'null')")
     public CursorResponse<Profile> findAllExcludingIdsWithCursor(
             final List<Long> excludeProfileIds, final CursorRequest cursorRequest) {
         log.debug(
@@ -49,6 +53,10 @@ public class ProfileQueryAdapter {
         return profileRepository.findAllExcludingIdsWithCursor(excludeProfileIds, cursorRequest);
     }
 
+    @Cacheable(
+            value = "profileFilteringCache",
+            key =
+                    "#cursorRequest.toString() + '_' + (#subPosition != null ? #subPosition.toString() : 'null') + '_' + (#cityName != null ? #cityName.toString() : 'null') + '_' + (#profileStateName != null ? #profileStateName.toString() : 'null')")
     public CursorResponse<Profile> findAllByFilteringWithCursor(
             final List<String> subPosition,
             final List<String> cityName,
