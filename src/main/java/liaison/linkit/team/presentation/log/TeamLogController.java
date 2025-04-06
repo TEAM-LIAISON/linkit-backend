@@ -56,7 +56,7 @@ public class TeamLogController {
         return CommonResponse.onSuccess(teamLogService.getTeamLogItems(optionalMemberId, teamCode));
     }
 
-    // 로그 상세 조회
+    // 로그 상세 조회 (댓글 정보 추가)
     @GetMapping("/{teamLogId}")
     @Logging(item = "Team_Log", action = "GET_TEAM_LOG_ITEM", includeResult = true)
     public CommonResponse<TeamLogResponseDTO.TeamLogItem> getTeamLogItem(
