@@ -160,22 +160,40 @@ public class ProfileInformMenuAssembler {
      */
     public ProfileInformMenu assembleProfileInformMenu(
             final Profile profile, final Optional<Long> loggedInMemberId) {
-        List<ProfileCurrentStateItem> currentStateItems = assembleProfileCurrentStateItems(profile);
-        ProfilePositionDetail profilePositionDetail = assembleProfilePositionDetail(profile);
-        RegionDetail regionDetail = assembleRegionDetail(profile);
-        List<ProfileTeamInform> profileTeamInforms =
-                assembleProfileTeamInforms(profile, loggedInMemberId);
-        boolean isProfileScrap = assembleIsProfileScrap(profile, loggedInMemberId);
-        int profileScrapCount = assembleProfileScrapCount(profile);
+        try {
+            List<ProfileCurrentStateItem> currentStateItems =
+                    assembleProfileCurrentStateItems(profile);
+            ProfilePositionDetail profilePositionDetail = assembleProfilePositionDetail(profile);
+            RegionDetail regionDetail = assembleRegionDetail(profile);
+            List<ProfileTeamInform> profileTeamInforms =
+                    assembleProfileTeamInforms(profile, loggedInMemberId);
+            boolean isProfileScrap = assembleIsProfileScrap(profile, loggedInMemberId);
+            int profileScrapCount = assembleProfileScrapCount(profile);
 
+            return profileMapper.toProfileInformMenu(
+                    currentStateItems,
+                    isProfileScrap,
+                    profileScrapCount,
+                    profile,
+                    profilePositionDetail,
+                    regionDetail,
+                    profileTeamInforms);
+        } catch (Exception e) {
+            log.error("프로필 정보 조립 중 오류 발생: {}", e.getMessage(), e);
+            return createDefaultProfileInformMenu(profile);
+        }
+    }
+
+    /** 오류 발생 시 사용하는 기본 ProfileInformMenu 생성 메서드 */
+    private ProfileInformMenu createDefaultProfileInformMenu(final Profile profile) {
         return profileMapper.toProfileInformMenu(
-                currentStateItems,
-                isProfileScrap,
-                profileScrapCount,
+                new ArrayList<>(),
+                false,
+                0,
                 profile,
-                profilePositionDetail,
-                regionDetail,
-                profileTeamInforms);
+                new ProfilePositionDetail(),
+                new RegionDetail(),
+                new ArrayList<>());
     }
 
     /**
