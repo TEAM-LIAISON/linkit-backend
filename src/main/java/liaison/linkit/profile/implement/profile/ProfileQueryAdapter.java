@@ -1,6 +1,5 @@
 package liaison.linkit.profile.implement.profile;
 
-import java.util.Collections;
 import java.util.List;
 
 import liaison.linkit.common.annotation.Adapter;
@@ -42,23 +41,12 @@ public class ProfileQueryAdapter {
 
     public CursorResponse<Profile> findAllExcludingIdsWithCursor(
             final List<Long> excludeProfileIds, final CursorRequest cursorRequest) {
-        long startTime = System.currentTimeMillis();
-
-        log.info(
-                "프로필 찾기 - 기본 조회 요청: excludeProfileIds={}, cursor={}, size={}",
+        log.debug(
+                "커서 기반 팀 조회 요청: excludeProfileIds={}, cursor={}, size={}",
                 excludeProfileIds,
-                cursorRequest != null ? cursorRequest.getCursor() : null,
-                cursorRequest != null ? cursorRequest.getSize() : 0);
-
-        CursorResponse<Profile> result =
-                profileRepository.findAllExcludingIdsWithCursor(
-                        excludeProfileIds != null ? excludeProfileIds : Collections.emptyList(),
-                        cursorRequest);
-
-        long endTime = System.currentTimeMillis();
-        log.info("프로필 찾기 - 기본 조회 완료: {} ms 소요", (endTime - startTime));
-
-        return result;
+                cursorRequest.getCursor(),
+                cursorRequest.getSize());
+        return profileRepository.findAllExcludingIdsWithCursor(excludeProfileIds, cursorRequest);
     }
 
     public CursorResponse<Profile> findAllByFilteringWithCursor(
@@ -66,32 +54,29 @@ public class ProfileQueryAdapter {
             final List<String> cityName,
             final List<String> profileStateName,
             final CursorRequest cursorRequest) {
-        long startTime = System.currentTimeMillis();
-
-        log.info(
-                "프로필 찾기 - 필터링 조회 요청: subPosition={}, cityName={}, profileStateName={}, cursor={}, size={}",
+        log.debug(
+                "필터링된 커서 기반 팀 조회 요청: subPosition={}, cityName={}, profileStateName={}, cursor={}, size={}",
                 subPosition,
                 cityName,
                 profileStateName,
-                cursorRequest != null ? cursorRequest.getCursor() : null,
-                cursorRequest != null ? cursorRequest.getSize() : 0);
-
-        CursorResponse<Profile> result =
-                profileRepository.findAllByFilteringWithCursor(
-                        subPosition, cityName, profileStateName, cursorRequest);
-
-        long endTime = System.currentTimeMillis();
-        log.info("프로필 찾기 - 필터링 조회 완료: {} ms 소요", (endTime - startTime));
-
-        return result;
+                cursorRequest.getCursor(),
+                cursorRequest.getSize());
+        return profileRepository.findAllByFilteringWithCursor(
+                subPosition, cityName, profileStateName, cursorRequest);
     }
 
-    @Cacheable(value = "topCompletionProfiles", key = "'topCompletionProfiles'")
+    @Cacheable(
+            value = "topCompletionProfiles",
+            key = "'topCompletionProfiles'" // 상수 키를 사용
+            )
     public Page<Profile> findTopCompletionProfiles(final Pageable pageable) {
         return profileRepository.findTopCompletionProfiles(pageable);
     }
 
-    @Cacheable(value = "homeTopProfiles", key = "'homeTopProfiles'")
+    @Cacheable(
+            value = "homeTopProfiles",
+            key = "'homeTopProfiles'" // 상수 키를 사용
+            )
     public List<Profile> findHomeTopProfiles(final int limit) {
         return profileRepository.findHomeTopProfiles(limit);
     }
