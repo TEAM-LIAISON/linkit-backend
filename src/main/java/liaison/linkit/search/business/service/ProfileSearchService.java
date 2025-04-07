@@ -18,7 +18,6 @@ import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import liaison.linkit.search.presentation.dto.profile.FlatProfileWithPositionDTO;
 import liaison.linkit.search.presentation.dto.profile.ProfileListResponseDTO;
-import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -38,7 +37,6 @@ public class ProfileSearchService {
     private final ProfileRepository profileRepository;
     private final ProfileScrapRepository profileScrapRepository;
     private final ProfileQueryAdapter profileQueryAdapter;
-    private final TeamMemberQueryAdapter teamMemberQueryAdapter;
     private final ProfileInformMenuAssembler profileInformMenuAssembler;
 
     public ProfileListResponseDTO getFeaturedProfiles(final Optional<Long> optionalMemberId) {
@@ -64,7 +62,8 @@ public class ProfileSearchService {
 
         if (condition.isDefault()) {
             if (!cursorRequest.hasNext()) {
-                List<ProfileInformMenu> results = getFirstPageDefaultProfiles(cursorRequest.size());
+                List<ProfileInformMenu> results =
+                        getFirstPageDefaultProfiles(cursorRequest.size(), optionalMemberId);
                 String nextCursor =
                         results.isEmpty() ? null : results.get(results.size() - 1).getEmailId();
                 return CursorResponse.of(results, nextCursor);
@@ -73,21 +72,22 @@ public class ProfileSearchService {
             CursorResponse<Profile> profiles =
                     profileQueryAdapter.findAllExcludingIdsWithCursor(
                             DEFAULT_EXCLUDE_PROFILE_IDS, cursorRequest);
-            return toCursorResponse(
-                    profiles,
-                    p -> profileInformMenuAssembler.assembleProfileInformMenu(p, optionalMemberId));
 
-        } else {
-            CursorResponse<Profile> profiles =
-                    profileQueryAdapter.findAllByFilteringWithCursor(
-                            condition.subPosition(),
-                            condition.cityName(),
-                            condition.profileStateName(),
-                            cursorRequest);
             return toCursorResponse(
                     profiles,
                     p -> profileInformMenuAssembler.assembleProfileInformMenu(p, optionalMemberId));
         }
+
+        CursorResponse<Profile> profiles =
+                profileQueryAdapter.findAllByFilteringWithCursor(
+                        condition.subPosition(),
+                        condition.cityName(),
+                        condition.profileStateName(),
+                        cursorRequest);
+
+        return toCursorResponse(
+                profiles,
+                p -> profileInformMenuAssembler.assembleProfileInformMenu(p, optionalMemberId));
     }
 
     private <T, R> CursorResponse<R> toCursorResponse(
