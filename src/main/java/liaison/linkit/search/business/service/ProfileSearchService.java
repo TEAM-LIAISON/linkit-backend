@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import jakarta.validation.constraints.NotNull;
+
 import liaison.linkit.global.util.CursorUtils;
 import liaison.linkit.profile.business.assembler.ProfileInformMenuAssembler;
 import liaison.linkit.profile.domain.profile.Profile;
@@ -80,31 +82,18 @@ public class ProfileSearchService {
     private List<ProfileInformMenu> getFirstPageDefaultProfiles(
             int size, Optional<Long> optionalMemberId) {
         List<FlatProfileDTO> raw = profileRepository.findFlatProfilesWithoutCursor(size);
-        List<Long> profileIds = raw.stream().map(FlatProfileDTO::getProfileId).distinct().toList();
-
-        Set<Long> scraps =
-                optionalMemberId
-                        .map(
-                                memberId ->
-                                        profileScrapRepository.findScrappedProfileIdsByMember(
-                                                memberId, profileIds))
-                        .orElse(Set.of());
-
-        Map<Long, Integer> scrapCounts =
-                profileScrapRepository.countScrapsGroupedByProfile(profileIds);
-
-        Map<Long, List<ProfileTeamInform>> teamMap = Map.of();
-
-        List<ProfileInformMenu> menus =
-                profileInformMenuAssembler.assembleProfileInformMenus(
-                        raw, scraps, scrapCounts, teamMap);
-
-        return menus.size() > size ? menus.subList(0, size) : menus;
+        return getProfileInformMenus(size, optionalMemberId, raw);
     }
 
     private List<ProfileInformMenu> getTopCompletionProfiles(
             int size, Optional<Long> optionalMemberId) {
         List<FlatProfileDTO> raw = profileRepository.findTopCompletionProfiles(size);
+        return getProfileInformMenus(size, optionalMemberId, raw);
+    }
+
+    @NotNull
+    private List<ProfileInformMenu> getProfileInformMenus(
+            int size, Optional<Long> optionalMemberId, List<FlatProfileDTO> raw) {
         List<Long> profileIds = raw.stream().map(FlatProfileDTO::getProfileId).distinct().toList();
 
         Set<Long> scraps =

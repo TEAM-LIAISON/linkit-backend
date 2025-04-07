@@ -112,6 +112,48 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 .fetch();
     }
 
+    //    @Override
+    //    public Page<Profile> findTopCompletionProfiles(final Pageable pageable) {
+    //        QMember qMember = QMember.member;
+    //        QMemberBasicInform qMemberBasicInform = QMemberBasicInform.memberBasicInform;
+    //        QProfile qProfile = QProfile.profile;
+    //
+    //        List<Profile> content =
+    //                jpaQueryFactory
+    //                        .selectFrom(qProfile)
+    //                        .leftJoin(qProfile.member, qMember).fetchJoin()
+    //                        .leftJoin(qMember.memberBasicInform, qMemberBasicInform).fetchJoin()
+    //                        .where(
+    //                                qProfile.status
+    //                                        .eq(StatusType.USABLE)
+    //                                        .and(qProfile.isProfilePublic.eq(true)))
+    //                        .orderBy(
+    //                                new CaseBuilder()
+    //                                        .when(qProfile.id.eq(42L))
+    //                                        .then(0)
+    //                                        .when(qProfile.id.eq(58L))
+    //                                        .then(1)
+    //                                        .when(qProfile.id.eq(57L))
+    //                                        .then(2)
+    //                                        .when(qProfile.id.eq(55L))
+    //                                        .then(3)
+    //                                        .when(qProfile.id.eq(73L))
+    //                                        .then(4)
+    //                                        .when(qProfile.id.eq(63L))
+    //                                        .then(5)
+    //                                        .when(qProfile.id.eq(33L))
+    //                                        .then(6)
+    //                                        .when(qProfile.id.eq(26L))
+    //                                        .then(7)
+    //                                        .otherwise(8)
+    //                                        .asc())
+    //                        .limit(pageable.getPageSize())
+    //                        .fetch();
+    //
+    //        // Pageable 정보와 함께 Page 객체로 반환 (항상 최대 6개의 레코드)
+    //        return PageableExecutionUtils.getPage(content, pageable, content::size);
+    //    }
+
     public CursorResponse<Profile> findAllExcludingIdsWithCursor(
             final List<Long> excludeProfileIds, final CursorRequest cursorRequest) {
 
@@ -331,19 +373,55 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
         QProfileState qProfileState = QProfileState.profileState;
 
+        // 1단계: 원하는 Profile ID들을 먼저 조회
+        List<Long> targetProfileIds =
+                jpaQueryFactory
+                        .select(qProfile.id)
+                        .from(qProfile)
+                        .where(
+                                qProfile.status
+                                        .eq(StatusType.USABLE)
+                                        .and(qProfile.isProfilePublic.eq(true))
+                                        .and(
+                                                qProfile.id.in(
+                                                        42L, 58L, 57L, 55L, 73L, 63L, 33L, 26L)))
+                        .orderBy(
+                                new CaseBuilder()
+                                        .when(qProfile.id.eq(42L))
+                                        .then(0)
+                                        .when(qProfile.id.eq(58L))
+                                        .then(1)
+                                        .when(qProfile.id.eq(57L))
+                                        .then(2)
+                                        .when(qProfile.id.eq(55L))
+                                        .then(3)
+                                        .when(qProfile.id.eq(73L))
+                                        .then(4)
+                                        .when(qProfile.id.eq(63L))
+                                        .then(5)
+                                        .when(qProfile.id.eq(33L))
+                                        .then(6)
+                                        .when(qProfile.id.eq(26L))
+                                        .then(7)
+                                        .otherwise(8)
+                                        .asc())
+                        .limit(size)
+                        .fetch();
+
+        // 2단계: 실제 데이터 조회
         return jpaQueryFactory
                 .select(
-                        Projections.constructor(
+                        Projections.fields(
                                 FlatProfileDTO.class,
-                                qProfile.id,
-                                qMember.memberBasicInform.memberName,
-                                qMember.emailId,
-                                qProfile.profileImagePath,
-                                qPosition.majorPosition,
-                                qPosition.subPosition,
-                                qRegion.cityName,
-                                qRegion.divisionName,
-                                qProfileState.profileStateName))
+                                qProfile.id.as("profileId"),
+                                qMember.memberBasicInform.memberName.as("memberName"),
+                                qMember.emailId.as("emailId"),
+                                qProfile.profileImagePath.as("profileImagePath"),
+                                qPosition.majorPosition.as("majorPosition"),
+                                qPosition.subPosition.as("subPosition"),
+                                qRegion.cityName.as("cityName"),
+                                qRegion.divisionName.as("divisionName"),
+                                qProfileState.profileStateName.as("profileStateName")))
                 .from(qProfile)
                 .leftJoin(qProfile.member, qMember)
                 .leftJoin(qMember.memberBasicInform)
@@ -353,7 +431,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 .leftJoin(qProfilePosition.position, qPosition)
                 .leftJoin(qProfile.profileCurrentStates, qProfileCurrentState)
                 .leftJoin(qProfileCurrentState.profileState, qProfileState)
-                .where(qProfile.status.eq(StatusType.USABLE).and(qProfile.isProfilePublic.eq(true)))
+                .where(qProfile.id.in(targetProfileIds))
                 .orderBy(
                         new CaseBuilder()
                                 .when(qProfile.id.eq(42L))
@@ -374,7 +452,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                                 .then(7)
                                 .otherwise(8)
                                 .asc())
-                .limit(size)
                 .fetch();
     }
 }
