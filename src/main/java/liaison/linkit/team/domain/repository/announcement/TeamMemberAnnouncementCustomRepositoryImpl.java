@@ -454,15 +454,15 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
             // 커서 조건
             if (cursorRequest != null
                     && cursorRequest.hasNext()
-                    && cursorRequest.getCursor() != null) {
+                    && cursorRequest.cursor() != null) {
                 baseCondition =
                         baseCondition.and(
                                 qTeamMemberAnnouncement.id.lt(
-                                        Long.valueOf(cursorRequest.getCursor())));
+                                        Long.valueOf(cursorRequest.cursor())));
             }
 
             // 페이지 크기 안전하게 설정
-            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.size()) : 10;
             int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
 
             // 1. ID만 먼저 조회
@@ -541,11 +541,11 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
             // 커서 조건 추가
             if (cursorRequest != null
                     && cursorRequest.hasNext()
-                    && cursorRequest.getCursor() != null) {
+                    && cursorRequest.cursor() != null) {
                 announcementIdQuery =
                         announcementIdQuery.where(
                                 qTeamMemberAnnouncement.id.lt(
-                                        Long.valueOf(cursorRequest.getCursor())));
+                                        Long.valueOf(cursorRequest.cursor())));
             }
 
             // subPosition 필터링
@@ -606,7 +606,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
             }
 
             // ID 내림차순 정렬 및 제한
-            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.size()) : 10;
             int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
 
             // 정렬 조건 적용

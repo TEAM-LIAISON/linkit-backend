@@ -1,14 +1,14 @@
 package liaison.linkit.search.presentation;
 
-import java.util.List;
 import java.util.Optional;
 
 import liaison.linkit.auth.Auth;
+import liaison.linkit.auth.CurrentMemberId;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.auth.utils.AuthUtils;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.config.log.Logging;
-import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
 import liaison.linkit.search.business.model.ProfileSearchCondition;
 import liaison.linkit.search.business.service.ProfileSearchService;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -48,34 +47,13 @@ public class ProfileSearchController { // 팀원 찾기 컨트롤러
         return CommonResponse.onSuccess(profileSearchService.getFeaturedProfiles(memberIdOptional));
     }
 
-    /**
-     * 커서 기반 페이지네이션과 필터를 이용해 팀원 검색을 수행합니다.
-     *
-     * @param accessor 인증된 사용자 정보
-     * @param cursor 이전 페이지의 마지막 유저아이디 (선택)
-     * @param size 페이지 사이즈 (기본값: 100)
-     * @param subPosition 포지션 소분류 필터 (선택)
-     * @param cityName 시/도 필터 (선택)
-     * @param profileStateName 프로필 상태 필터 (선택)
-     * @return 검색 결과와 페이지 정보가 포함된 공통 응답
-     */
+    /** 커서 기반 페이지네이션과 필터를 이용해 팀원 검색을 수행합니다. */
     @GetMapping
-    public CommonResponse<CursorResponse<ProfileResponseDTO.ProfileInformMenu>> searchProfiles(
-            @Auth final Accessor accessor,
-            @RequestParam(value = "cursor", required = false) String cursor,
-            @RequestParam(value = "size", defaultValue = "100") int size,
-            @RequestParam(value = "subPosition", required = false) List<String> subPosition,
-            @RequestParam(value = "cityName", required = false) List<String> cityName,
-            @RequestParam(value = "profileStateName", required = false)
-                    List<String> profileStateName) {
-
-        Optional<Long> memberIdOptional = AuthUtils.extractMemberId(accessor);
-        CursorRequest cursorRequest = new CursorRequest(cursor, size);
-        ProfileSearchCondition condition =
-                new ProfileSearchCondition(subPosition, cityName, profileStateName);
-
+    public CommonResponse<CursorResponse<ProfileInformMenu>> searchProfiles(
+            @CurrentMemberId Optional<Long> memberId,
+            CursorRequest cursorRequest,
+            ProfileSearchCondition condition) {
         return CommonResponse.onSuccess(
-                profileSearchService.searchProfilesWithCursor(
-                        memberIdOptional, condition, cursorRequest));
+                profileSearchService.searchProfilesWithCursor(memberId, condition, cursorRequest));
     }
 }

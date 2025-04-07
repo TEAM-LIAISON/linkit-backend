@@ -163,8 +163,8 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             Long cursorProfileId = null;
             if (cursorRequest != null
                     && cursorRequest.hasNext()
-                    && cursorRequest.getCursor() != null) {
-                String emailId = cursorRequest.getCursor();
+                    && cursorRequest.cursor() != null) {
+                String emailId = cursorRequest.cursor();
                 cursorProfileId =
                         jpaQueryFactory
                                 .select(qProfile.id)
@@ -184,7 +184,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 baseCondition = baseCondition.and(qProfile.id.lt(cursorProfileId));
             }
 
-            int requestedSize = Math.max(1, cursorRequest.getSize());
+            int requestedSize = Math.max(1, cursorRequest.size());
             int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
 
             List<Profile> content =
@@ -229,8 +229,8 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             Long cursorProfileId = null;
             if (cursorRequest != null
                     && cursorRequest.hasNext()
-                    && cursorRequest.getCursor() != null) {
-                String emailId = cursorRequest.getCursor();
+                    && cursorRequest.cursor() != null) {
+                String emailId = cursorRequest.cursor();
                 cursorProfileId =
                         jpaQueryFactory
                                 .select(qProfile.id)
@@ -280,7 +280,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                                 .where(qProfileState.profileStateName.in(profileStateName));
             }
 
-            int requestedSize = Math.max(1, cursorRequest.getSize());
+            int requestedSize = Math.max(1, cursorRequest.size());
             int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
 
             List<Profile> content =

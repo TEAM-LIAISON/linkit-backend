@@ -47,8 +47,8 @@ public class TeamQueryAdapter {
         log.debug(
                 "커서 기반 팀 조회 요청: excludeTeamIds={}, cursor={}, size={}",
                 excludeTeamIds,
-                cursorRequest.getCursor(),
-                cursorRequest.getSize());
+                cursorRequest.cursor(),
+                cursorRequest.size());
         return teamRepository.findAllExcludingIdsWithCursor(excludeTeamIds, cursorRequest);
     }
 
@@ -62,8 +62,8 @@ public class TeamQueryAdapter {
                 scaleName,
                 cityName,
                 teamStateName,
-                cursorRequest.getCursor(),
-                cursorRequest.getSize());
+                cursorRequest.cursor(),
+                cursorRequest.size());
         return teamRepository.findAllByFilteringWithCursor(
                 scaleName, cityName, teamStateName, cursorRequest);
     }
