@@ -11,8 +11,6 @@ import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 @Adapter
 @RequiredArgsConstructor
@@ -63,14 +61,6 @@ public class ProfileQueryAdapter {
                 cursorRequest.size());
         return profileRepository.findAllByFilteringWithCursor(
                 subPosition, cityName, profileStateName, cursorRequest);
-    }
-
-    @Cacheable(
-            value = "topCompletionProfiles",
-            key = "'topCompletionProfiles'" // 상수 키를 사용
-            )
-    public Page<Profile> findTopCompletionProfiles(final Pageable pageable) {
-        return profileRepository.findTopCompletionProfiles(pageable);
     }
 
     @Cacheable(

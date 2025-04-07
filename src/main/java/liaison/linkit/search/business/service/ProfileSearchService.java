@@ -16,11 +16,10 @@ import liaison.linkit.scrap.domain.repository.profileScrap.ProfileScrapRepositor
 import liaison.linkit.search.business.model.ProfileSearchCondition;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
-import liaison.linkit.search.presentation.dto.profile.FlatProfileWithPositionDTO;
+import liaison.linkit.search.presentation.dto.profile.FlatProfileDTO;
 import liaison.linkit.search.presentation.dto.profile.ProfileListResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,17 +38,7 @@ public class ProfileSearchService {
     private final ProfileInformMenuAssembler profileInformMenuAssembler;
 
     public ProfileListResponseDTO getFeaturedProfiles(final Optional<Long> optionalMemberId) {
-        List<Profile> topProfiles =
-                profileQueryAdapter.findTopCompletionProfiles(PageRequest.of(0, 6)).getContent();
-
-        List<ProfileInformMenu> topProfileDTOs =
-                topProfiles.stream()
-                        .map(
-                                p ->
-                                        profileInformMenuAssembler.assembleProfileInformMenu(
-                                                p, optionalMemberId))
-                        .toList();
-
+        List<ProfileInformMenu> topProfileDTOs = getTopCompletionProfiles(6, optionalMemberId);
         return ProfileListResponseDTO.of(topProfileDTOs);
     }
 
@@ -90,10 +79,33 @@ public class ProfileSearchService {
 
     private List<ProfileInformMenu> getFirstPageDefaultProfiles(
             int size, Optional<Long> optionalMemberId) {
-        List<FlatProfileWithPositionDTO> raw =
-                profileRepository.findFlatProfilesWithoutCursor(size);
-        List<Long> profileIds =
-                raw.stream().map(FlatProfileWithPositionDTO::getProfileId).distinct().toList();
+        List<FlatProfileDTO> raw = profileRepository.findFlatProfilesWithoutCursor(size);
+        List<Long> profileIds = raw.stream().map(FlatProfileDTO::getProfileId).distinct().toList();
+
+        Set<Long> scraps =
+                optionalMemberId
+                        .map(
+                                memberId ->
+                                        profileScrapRepository.findScrappedProfileIdsByMember(
+                                                memberId, profileIds))
+                        .orElse(Set.of());
+
+        Map<Long, Integer> scrapCounts =
+                profileScrapRepository.countScrapsGroupedByProfile(profileIds);
+
+        Map<Long, List<ProfileTeamInform>> teamMap = Map.of();
+
+        List<ProfileInformMenu> menus =
+                profileInformMenuAssembler.assembleProfileInformMenus(
+                        raw, scraps, scrapCounts, teamMap);
+
+        return menus.size() > size ? menus.subList(0, size) : menus;
+    }
+
+    private List<ProfileInformMenu> getTopCompletionProfiles(
+            int size, Optional<Long> optionalMemberId) {
+        List<FlatProfileDTO> raw = profileRepository.findTopCompletionProfiles(size);
+        List<Long> profileIds = raw.stream().map(FlatProfileDTO::getProfileId).distinct().toList();
 
         Set<Long> scraps =
                 optionalMemberId

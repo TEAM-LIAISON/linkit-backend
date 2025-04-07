@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class FlatProfileWithPositionDTO {
+public class FlatProfileDTO {
     private Long profileId;
     private String memberName;
     private String emailId;

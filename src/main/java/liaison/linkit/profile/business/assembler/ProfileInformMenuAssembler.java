@@ -25,7 +25,7 @@ import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.Profil
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.scrap.implement.profileScrap.ProfileScrapQueryAdapter;
-import liaison.linkit.search.presentation.dto.profile.FlatProfileWithPositionDTO;
+import liaison.linkit.search.presentation.dto.profile.FlatProfileDTO;
 import liaison.linkit.team.business.mapper.teamMember.TeamMemberMapper;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
@@ -184,7 +184,7 @@ public class ProfileInformMenuAssembler {
     }
 
     public List<ProfileInformMenu> assembleProfileInformMenus(
-            List<FlatProfileWithPositionDTO> flatDtos,
+            List<FlatProfileDTO> flatDtos,
             Set<Long> scrappedProfileIds,
             Map<Long, Integer> scrapCounts,
             Map<Long, List<ProfileTeamInform>> teamInformMap) {
@@ -195,14 +195,14 @@ public class ProfileInformMenuAssembler {
                         .filter(dto -> dto.getProfileStateName() != null)
                         .collect(
                                 Collectors.groupingBy(
-                                        FlatProfileWithPositionDTO::getProfileId,
+                                        FlatProfileDTO::getProfileId,
                                         Collectors.mapping(
                                                 dto ->
                                                         new ProfileCurrentStateItem(
                                                                 dto.getProfileStateName()),
                                                 Collectors.toList())));
 
-        for (FlatProfileWithPositionDTO dto : flatDtos) {
+        for (FlatProfileDTO dto : flatDtos) {
             builderMap.computeIfAbsent(
                     dto.getProfileId(),
                     id ->
