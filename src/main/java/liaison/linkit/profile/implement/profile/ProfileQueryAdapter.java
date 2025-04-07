@@ -10,9 +10,6 @@ import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 @Adapter
 @RequiredArgsConstructor
@@ -39,16 +36,6 @@ public class ProfileQueryAdapter {
                 .orElseThrow(() -> ProfileNotFoundException.EXCEPTION);
     }
 
-    public CursorResponse<Profile> findAllExcludingIdsWithCursor(
-            final List<Long> excludeProfileIds, final CursorRequest cursorRequest) {
-        log.debug(
-                "커서 기반 팀 조회 요청: excludeProfileIds={}, cursor={}, size={}",
-                excludeProfileIds,
-                cursorRequest.getCursor(),
-                cursorRequest.getSize());
-        return profileRepository.findAllExcludingIdsWithCursor(excludeProfileIds, cursorRequest);
-    }
-
     public CursorResponse<Profile> findAllByFilteringWithCursor(
             final List<String> subPosition,
             final List<String> cityName,
@@ -59,26 +46,10 @@ public class ProfileQueryAdapter {
                 subPosition,
                 cityName,
                 profileStateName,
-                cursorRequest.getCursor(),
-                cursorRequest.getSize());
+                cursorRequest.cursor(),
+                cursorRequest.size());
         return profileRepository.findAllByFilteringWithCursor(
                 subPosition, cityName, profileStateName, cursorRequest);
-    }
-
-    @Cacheable(
-            value = "topCompletionProfiles",
-            key = "'topCompletionProfiles'" // 상수 키를 사용
-            )
-    public Page<Profile> findTopCompletionProfiles(final Pageable pageable) {
-        return profileRepository.findTopCompletionProfiles(pageable);
-    }
-
-    @Cacheable(
-            value = "homeTopProfiles",
-            key = "'homeTopProfiles'" // 상수 키를 사용
-            )
-    public List<Profile> findHomeTopProfiles(final int limit) {
-        return profileRepository.findHomeTopProfiles(limit);
     }
 
     public List<Profile> findByMarketingConsentAndMajorPosition(final String majorPosition) {
