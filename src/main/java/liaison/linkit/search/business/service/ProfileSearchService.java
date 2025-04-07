@@ -21,7 +21,6 @@ import liaison.linkit.search.presentation.dto.profile.ProfileListResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,9 +39,8 @@ public class ProfileSearchService {
     private final ProfileInformMenuAssembler profileInformMenuAssembler;
 
     public ProfileListResponseDTO getFeaturedProfiles(final Optional<Long> optionalMemberId) {
-        Pageable topPageable = PageRequest.of(0, 6);
         List<Profile> topProfiles =
-                profileQueryAdapter.findTopCompletionProfiles(topPageable).getContent();
+                profileQueryAdapter.findTopCompletionProfiles(PageRequest.of(0, 6)).getContent();
 
         List<ProfileInformMenu> topProfileDTOs =
                 topProfiles.stream()

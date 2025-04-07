@@ -2,10 +2,7 @@ package liaison.linkit.search.presentation;
 
 import java.util.Optional;
 
-import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.CurrentMemberId;
-import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.auth.utils.AuthUtils;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
@@ -33,18 +30,11 @@ public class ProfileSearchController { // 팀원 찾기 컨트롤러
 
     private final ProfileSearchService profileSearchService;
 
-    /**
-     * 프로필 완성도가 높은 팀원 목록을 조회합니다.
-     *
-     * @param accessor 인증된 사용자 정보
-     * @return 팀원 목록을 포함한 공통 응답
-     */
     @GetMapping("/featured")
     @Logging(item = "Profile", action = "GET_FEATURED_PROFILES")
     public CommonResponse<ProfileListResponseDTO> getFeaturedProfiles(
-            @Auth final Accessor accessor) {
-        Optional<Long> memberIdOptional = AuthUtils.extractMemberId(accessor);
-        return CommonResponse.onSuccess(profileSearchService.getFeaturedProfiles(memberIdOptional));
+            @CurrentMemberId Optional<Long> memberId) {
+        return CommonResponse.onSuccess(profileSearchService.getFeaturedProfiles(memberId));
     }
 
     /** 커서 기반 페이지네이션과 필터를 이용해 팀원 검색을 수행합니다. */
