@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/profile/search")
 @Slf4j
-public class ProfileSearchController { // 팀원 찾기 컨트롤러
+public class ProfileSearchController {
 
     private final ProfileSearchService profileSearchService;
 

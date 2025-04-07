@@ -83,75 +83,11 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 .execute();
     }
 
-    @Override
-    public List<Profile> findHomeTopProfiles(final int limit) {
-        QProfile qProfile = QProfile.profile;
-
-        return jpaQueryFactory
-                .selectFrom(qProfile)
-                .leftJoin(qProfile.member, QMember.member)
-                .fetchJoin()
-                .where(qProfile.status.eq(StatusType.USABLE).and(qProfile.isProfilePublic.eq(true)))
-                .orderBy(
-                        new CaseBuilder()
-                                .when(qProfile.id.eq(42L))
-                                .then(0)
-                                .when(qProfile.id.eq(58L))
-                                .then(1)
-                                .when(qProfile.id.eq(57L))
-                                .then(2)
-                                .when(qProfile.id.eq(55L))
-                                .then(3)
-                                .when(qProfile.id.eq(73L))
-                                .then(4)
-                                .when(qProfile.id.eq(63L))
-                                .then(5)
-                                .otherwise(6)
-                                .asc())
-                .limit(limit)
-                .fetch();
-    }
-
     //    @Override
-    //    public Page<Profile> findTopCompletionProfiles(final Pageable pageable) {
-    //        QMember qMember = QMember.member;
-    //        QMemberBasicInform qMemberBasicInform = QMemberBasicInform.memberBasicInform;
+    //    public List<Profile> findHomeTopProfiles(final int limit) {
     //        QProfile qProfile = QProfile.profile;
     //
-    //        List<Profile> content =
-    //                jpaQueryFactory
-    //                        .selectFrom(qProfile)
-    //                        .leftJoin(qProfile.member, qMember).fetchJoin()
-    //                        .leftJoin(qMember.memberBasicInform, qMemberBasicInform).fetchJoin()
-    //                        .where(
-    //                                qProfile.status
-    //                                        .eq(StatusType.USABLE)
-    //                                        .and(qProfile.isProfilePublic.eq(true)))
-    //                        .orderBy(
-    //                                new CaseBuilder()
-    //                                        .when(qProfile.id.eq(42L))
-    //                                        .then(0)
-    //                                        .when(qProfile.id.eq(58L))
-    //                                        .then(1)
-    //                                        .when(qProfile.id.eq(57L))
-    //                                        .then(2)
-    //                                        .when(qProfile.id.eq(55L))
-    //                                        .then(3)
-    //                                        .when(qProfile.id.eq(73L))
-    //                                        .then(4)
-    //                                        .when(qProfile.id.eq(63L))
-    //                                        .then(5)
-    //                                        .when(qProfile.id.eq(33L))
-    //                                        .then(6)
-    //                                        .when(qProfile.id.eq(26L))
-    //                                        .then(7)
-    //                                        .otherwise(8)
-    //                                        .asc())
-    //                        .limit(pageable.getPageSize())
-    //                        .fetch();
     //
-    //        // Pageable 정보와 함께 Page 객체로 반환 (항상 최대 6개의 레코드)
-    //        return PageableExecutionUtils.getPage(content, pageable, content::size);
     //    }
 
     public CursorResponse<Profile> findAllExcludingIdsWithCursor(
@@ -451,6 +387,88 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                                 .when(qProfile.id.eq(26L))
                                 .then(7)
                                 .otherwise(8)
+                                .asc())
+                .fetch();
+    }
+
+    public List<FlatProfileDTO> findHomeTopProfiles(int size) {
+        QProfile qProfile = QProfile.profile;
+        QMember qMember = QMember.member;
+        QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
+        QRegion qRegion = QRegion.region;
+        QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
+        QPosition qPosition = QPosition.position;
+        QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
+        QProfileState qProfileState = QProfileState.profileState;
+
+        // 1단계: 원하는 Profile ID들을 먼저 조회
+        List<Long> targetProfileIds =
+                jpaQueryFactory
+                        .select(qProfile.id)
+                        .from(qProfile)
+                        .where(
+                                qProfile.status
+                                        .eq(StatusType.USABLE)
+                                        .and(qProfile.isProfilePublic.eq(true))
+                                        .and(qProfile.id.in(42L, 58L, 57L, 55L, 73L, 63L)))
+                        .orderBy(
+                                new CaseBuilder()
+                                        .when(qProfile.id.eq(42L))
+                                        .then(0)
+                                        .when(qProfile.id.eq(58L))
+                                        .then(1)
+                                        .when(qProfile.id.eq(57L))
+                                        .then(2)
+                                        .when(qProfile.id.eq(55L))
+                                        .then(3)
+                                        .when(qProfile.id.eq(73L))
+                                        .then(4)
+                                        .when(qProfile.id.eq(63L))
+                                        .then(5)
+                                        .otherwise(6)
+                                        .asc())
+                        .limit(size)
+                        .fetch();
+
+        // 2단계: 실제 데이터 조회
+        return jpaQueryFactory
+                .select(
+                        Projections.fields(
+                                FlatProfileDTO.class,
+                                qProfile.id.as("profileId"),
+                                qMember.memberBasicInform.memberName.as("memberName"),
+                                qMember.emailId.as("emailId"),
+                                qProfile.profileImagePath.as("profileImagePath"),
+                                qPosition.majorPosition.as("majorPosition"),
+                                qPosition.subPosition.as("subPosition"),
+                                qRegion.cityName.as("cityName"),
+                                qRegion.divisionName.as("divisionName"),
+                                qProfileState.profileStateName.as("profileStateName")))
+                .from(qProfile)
+                .leftJoin(qProfile.member, qMember)
+                .leftJoin(qMember.memberBasicInform)
+                .leftJoin(qProfile.profileRegion, qProfileRegion)
+                .leftJoin(qProfileRegion.region, qRegion)
+                .leftJoin(qProfile.profilePositions, qProfilePosition)
+                .leftJoin(qProfilePosition.position, qPosition)
+                .leftJoin(qProfile.profileCurrentStates, qProfileCurrentState)
+                .leftJoin(qProfileCurrentState.profileState, qProfileState)
+                .where(qProfile.id.in(targetProfileIds))
+                .orderBy(
+                        new CaseBuilder()
+                                .when(qProfile.id.eq(42L))
+                                .then(0)
+                                .when(qProfile.id.eq(58L))
+                                .then(1)
+                                .when(qProfile.id.eq(57L))
+                                .then(2)
+                                .when(qProfile.id.eq(55L))
+                                .then(3)
+                                .when(qProfile.id.eq(73L))
+                                .then(4)
+                                .when(qProfile.id.eq(63L))
+                                .then(5)
+                                .otherwise(6)
                                 .asc())
                 .fetch();
     }

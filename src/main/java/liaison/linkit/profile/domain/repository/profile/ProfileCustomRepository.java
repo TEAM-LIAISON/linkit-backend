@@ -27,7 +27,7 @@ public interface ProfileCustomRepository {
             final List<String> profileStateName,
             final CursorRequest cursorRequest);
 
-    List<Profile> findHomeTopProfiles(final int limit);
+    List<FlatProfileDTO> findHomeTopProfiles(int size);
 
     List<FlatProfileDTO> findTopCompletionProfiles(int size);
 

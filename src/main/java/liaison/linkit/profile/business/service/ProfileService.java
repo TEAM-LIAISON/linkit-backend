@@ -1,19 +1,26 @@
 package liaison.linkit.profile.business.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+
+import jakarta.validation.constraints.NotNull;
 
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.profile.business.assembler.ProfileDetailAssembler;
 import liaison.linkit.profile.business.assembler.ProfileInformMenuAssembler;
 import liaison.linkit.profile.business.mapper.ProfileMapper;
 import liaison.linkit.profile.domain.profile.Profile;
+import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileCompletionMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileLeftMenu;
+import liaison.linkit.scrap.domain.repository.profileScrap.ProfileScrapRepository;
+import liaison.linkit.search.presentation.dto.profile.FlatProfileDTO;
 import liaison.linkit.visit.event.ProfileVisitedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +40,8 @@ public class ProfileService {
     private final ProfileDetailAssembler profileDetailAssembler;
 
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final ProfileRepository profileRepository;
+    private final ProfileScrapRepository profileScrapRepository;
 
     // 수정창에서 내 프로필 왼쪽 메뉴 조회
     public ProfileLeftMenu getProfileLeftMenu(final Long memberId) {
@@ -91,14 +100,11 @@ public class ProfileService {
 
     public ProfileResponseDTO.ProfileInformMenus getHomeProfileInformMenus(
             Optional<Long> optionalMemberId) {
-        List<Profile> profiles = profileQueryAdapter.findHomeTopProfiles(6);
+        List<FlatProfileDTO> raw = profileRepository.findHomeTopProfiles(6);
+        List<ProfileInformMenu> homeProfileInformMenus =
+                getProfileInformMenus(6, optionalMemberId, raw);
 
-        List<ProfileInformMenu> menus =
-                profiles.stream()
-                        .map(profile -> mapProfileToInformMenu(profile, optionalMemberId))
-                        .toList();
-
-        return profileMapper.toProfileInformMenus(menus);
+        return profileMapper.toProfileInformMenus(homeProfileInformMenus);
     }
 
     private ProfileInformMenu mapProfileToInformMenu(
@@ -124,5 +130,30 @@ public class ProfileService {
     private ProfileInformMenu toHomeProfileInformMenuInLogoutState(final Profile targetProfile) {
         return profileInformMenuAssembler.assembleProfileInformMenu(
                 targetProfile, Optional.empty());
+    }
+
+    @NotNull
+    private List<ProfileInformMenu> getProfileInformMenus(
+            int size, Optional<Long> optionalMemberId, List<FlatProfileDTO> raw) {
+        List<Long> profileIds = raw.stream().map(FlatProfileDTO::getProfileId).distinct().toList();
+
+        Set<Long> scraps =
+                optionalMemberId
+                        .map(
+                                memberId ->
+                                        profileScrapRepository.findScrappedProfileIdsByMember(
+                                                memberId, profileIds))
+                        .orElse(Set.of());
+
+        Map<Long, Integer> scrapCounts =
+                profileScrapRepository.countScrapsGroupedByProfile(profileIds);
+
+        Map<Long, List<ProfileResponseDTO.ProfileTeamInform>> teamMap = Map.of();
+
+        List<ProfileInformMenu> menus =
+                profileInformMenuAssembler.assembleProfileInformMenus(
+                        raw, scraps, scrapCounts, teamMap);
+
+        return menus.size() > size ? menus.subList(0, size) : menus;
     }
 }

@@ -3,9 +3,9 @@ package liaison.linkit.profile.presentation.profile;
 import java.util.Optional;
 
 import liaison.linkit.auth.Auth;
+import liaison.linkit.auth.CurrentMemberId;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.auth.utils.AuthUtils;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.profile.business.service.ProfileService;
@@ -53,8 +53,7 @@ public class ProfileController {
     @GetMapping("/home/profile")
     @Logging(item = "Profile", action = "GET_HOME_PROFILE_INFORM_MENUS", includeResult = false)
     public CommonResponse<ProfileResponseDTO.ProfileInformMenus> getHomeProfileInformMenus(
-            @Auth final Accessor accessor) {
-        Optional<Long> memberId = AuthUtils.extractMemberId(accessor);
+            @CurrentMemberId Optional<Long> memberId) {
         return CommonResponse.onSuccess(profileService.getHomeProfileInformMenus(memberId));
     }
 

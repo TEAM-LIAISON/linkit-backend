@@ -10,7 +10,6 @@ import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 
 @Adapter
 @RequiredArgsConstructor
@@ -61,14 +60,6 @@ public class ProfileQueryAdapter {
                 cursorRequest.size());
         return profileRepository.findAllByFilteringWithCursor(
                 subPosition, cityName, profileStateName, cursorRequest);
-    }
-
-    @Cacheable(
-            value = "homeTopProfiles",
-            key = "'homeTopProfiles'" // 상수 키를 사용
-            )
-    public List<Profile> findHomeTopProfiles(final int limit) {
-        return profileRepository.findHomeTopProfiles(limit);
     }
 
     public List<Profile> findByMarketingConsentAndMajorPosition(final String majorPosition) {
