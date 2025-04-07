@@ -1,9 +1,11 @@
 package liaison.linkit.team.domain.repository.teamMember;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import liaison.linkit.member.domain.Member;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.TeamMember;
 import liaison.linkit.team.domain.teamMember.type.TeamMemberManagingTeamState;
@@ -57,4 +59,7 @@ public interface TeamMemberCustomRepository {
     boolean existsTeamOwnerByMemberId(final Long memberId);
 
     boolean existsTeamOwnerAndOtherManagerByMemberId(final Long memberId);
+
+    Map<Long, List<ProfileResponseDTO.ProfileTeamInform>> findTeamInformsGroupedByProfile(
+            List<Long> profileIds);
 }

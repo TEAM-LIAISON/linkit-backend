@@ -1,6 +1,10 @@
 package liaison.linkit.scrap.domain.repository.profileScrap;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.member.domain.QMember;
@@ -132,5 +136,43 @@ public class ProfileScrapCustomRepositoryImpl implements ProfileScrapCustomRepos
                         .fetchOne();
 
         return count != null ? count.intValue() : 0;
+    }
+
+    @Override
+    public Set<Long> findScrappedProfileIdsByMember(Long memberId, List<Long> profileIds) {
+        QProfileScrap qProfileScrap = QProfileScrap.profileScrap;
+
+        if (memberId == null || profileIds == null || profileIds.isEmpty()) {
+            return Set.of();
+        }
+
+        return new HashSet<>(
+                jpaQueryFactory
+                        .select(qProfileScrap.profile.id)
+                        .from(qProfileScrap)
+                        .where(
+                                qProfileScrap.member.id.eq(memberId),
+                                qProfileScrap.profile.id.in(profileIds))
+                        .fetch());
+    }
+
+    @Override
+    public Map<Long, Integer> countScrapsGroupedByProfile(List<Long> profileIds) {
+        QProfileScrap qProfileScrap = QProfileScrap.profileScrap;
+        return jpaQueryFactory
+                .select(qProfileScrap.profile.id, qProfileScrap.count())
+                .from(qProfileScrap)
+                .where(qProfileScrap.profile.id.in(profileIds))
+                .groupBy(qProfileScrap.profile.id)
+                .fetch()
+                .stream()
+                .filter(tuple -> tuple.get(qProfileScrap.profile.id) != null)
+                .collect(
+                        Collectors.toMap(
+                                tuple -> tuple.get(qProfileScrap.profile.id),
+                                tuple -> {
+                                    Long count = tuple.get(qProfileScrap.count());
+                                    return count != null ? count.intValue() : 0;
+                                }));
     }
 }

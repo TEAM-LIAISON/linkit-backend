@@ -1,8 +1,12 @@
 package liaison.linkit.profile.business.assembler;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
@@ -21,6 +25,7 @@ import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.Profil
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.scrap.implement.profileScrap.ProfileScrapQueryAdapter;
+import liaison.linkit.search.presentation.dto.profile.FlatProfileDTO;
 import liaison.linkit.team.business.mapper.teamMember.TeamMemberMapper;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
@@ -176,6 +181,65 @@ public class ProfileInformMenuAssembler {
                 profilePositionDetail,
                 regionDetail,
                 profileTeamInforms);
+    }
+
+    public List<ProfileInformMenu> assembleProfileInformMenus(
+            List<FlatProfileDTO> flatDtos,
+            Set<Long> scrappedProfileIds,
+            Map<Long, Integer> scrapCounts,
+            Map<Long, List<ProfileTeamInform>> teamInformMap) {
+        Map<Long, ProfileInformMenu.ProfileInformMenuBuilder> builderMap = new LinkedHashMap<>();
+
+        Map<Long, List<ProfileCurrentStateItem>> stateMap =
+                flatDtos.stream()
+                        .filter(dto -> dto.getProfileStateName() != null)
+                        .collect(
+                                Collectors.groupingBy(
+                                        FlatProfileDTO::getProfileId,
+                                        Collectors.mapping(
+                                                dto ->
+                                                        new ProfileCurrentStateItem(
+                                                                dto.getProfileStateName()),
+                                                Collectors.toList())));
+
+        for (FlatProfileDTO dto : flatDtos) {
+            builderMap.computeIfAbsent(
+                    dto.getProfileId(),
+                    id ->
+                            ProfileInformMenu.builder()
+                                    .emailId(dto.getEmailId())
+                                    .majorPosition(dto.getMajorPosition())
+                                    .subPosition(dto.getSubPosition())
+                                    .memberName(dto.getMemberName())
+                                    .profileImagePath(dto.getProfileImagePath())
+                                    .isProfilePublic(true)
+                                    .regionDetail(
+                                            new RegionDetail(
+                                                    dto.getCityName(), dto.getDivisionName()))
+                                    .profileCurrentStates(new ArrayList<>())
+                                    .isProfileScrap(scrappedProfileIds.contains(dto.getProfileId()))
+                                    .profileScrapCount(
+                                            scrapCounts.getOrDefault(dto.getProfileId(), 0))
+                                    .profileTeamInforms(
+                                            teamInformMap.getOrDefault(
+                                                    dto.getProfileId(), List.of())));
+
+            var builder = builderMap.get(dto.getProfileId());
+
+            if (dto.getSubPosition() != null && !builderMap.containsKey(dto.getProfileId())) {
+                builder.subPosition(dto.getSubPosition());
+            }
+
+            if (dto.getMajorPosition() != null && !builderMap.containsKey(dto.getProfileId())) {
+                builder.majorPosition(dto.getMajorPosition());
+            }
+
+            builder.profileCurrentStates(stateMap.getOrDefault(dto.getProfileId(), List.of()));
+        }
+
+        return builderMap.values().stream()
+                .map(ProfileInformMenu.ProfileInformMenuBuilder::build)
+                .toList();
     }
 
     /**

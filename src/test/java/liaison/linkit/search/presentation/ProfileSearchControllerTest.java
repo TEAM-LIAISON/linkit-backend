@@ -67,11 +67,11 @@ public class ProfileSearchControllerTest extends ControllerTest {
         // 커서 페이징 요청이 있을 경우
         if (cursorRequest != null) {
             // size 설정
-            requestBuilder.param("size", String.valueOf(cursorRequest.getSize()));
+            requestBuilder.param("size", String.valueOf(cursorRequest.size()));
 
             // cursor가 존재한다면 cursor 파라미터 추가
-            if (cursorRequest.getCursor() != null) {
-                requestBuilder.param("cursor", cursorRequest.getCursor());
+            if (cursorRequest.cursor() != null) {
+                requestBuilder.param("cursor", cursorRequest.cursor());
             }
         }
 
@@ -190,8 +190,7 @@ public class ProfileSearchControllerTest extends ControllerTest {
         CursorResponse<ProfileResponseDTO.ProfileInformMenu> cursorResponse =
                 CursorResponse.of(profiles, "nextProfileId"); // CursorResponse로 변경
 
-        when(profileSearchService.searchProfilesWithCursor(
-                        any(), any(), any(), any(), any(CursorRequest.class)))
+        when(profileSearchService.searchProfilesWithCursor(any(), any(), any(CursorRequest.class)))
                 .thenReturn(cursorResponse);
 
         // when

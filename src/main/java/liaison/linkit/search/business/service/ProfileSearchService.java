@@ -1,22 +1,24 @@
 package liaison.linkit.search.business.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+
+import jakarta.validation.constraints.NotNull;
 
 import liaison.linkit.profile.business.assembler.ProfileInformMenuAssembler;
-import liaison.linkit.profile.domain.profile.Profile;
-import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
-import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
+import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
+import liaison.linkit.scrap.domain.repository.profileScrap.ProfileScrapRepository;
+import liaison.linkit.search.business.model.ProfileSearchCondition;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.search.presentation.dto.profile.FlatProfileDTO;
 import liaison.linkit.search.presentation.dto.profile.ProfileListResponseDTO;
-import liaison.linkit.team.business.assembler.announcement.AnnouncementInformMenuAssembler;
-import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,94 +28,102 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class ProfileSearchService {
 
-    private final ProfileQueryAdapter profileQueryAdapter;
+    private static final List<Long> DEFAULT_EXCLUDE_PROFILE_IDS =
+            List.of(42L, 58L, 57L, 55L, 73L, 63L);
+
+    private final ProfileRepository profileRepository;
+    private final ProfileScrapRepository profileScrapRepository;
     private final ProfileInformMenuAssembler profileInformMenuAssembler;
-    private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
-    private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
 
     public ProfileListResponseDTO getFeaturedProfiles(final Optional<Long> optionalMemberId) {
-        // 1. 상단 영역: 프로필 완성도가 높은 팀원 6명 (completionScore 내림차순)
-        Pageable topPageable = PageRequest.of(0, 6);
-        List<Profile> topProfiles =
-                profileQueryAdapter.findTopCompletionProfiles(topPageable).getContent();
-
-        List<ProfileInformMenu> topProfileDTOs =
-                topProfiles.stream()
-                        .map(
-                                profile ->
-                                        profileInformMenuAssembler.assembleProfileInformMenu(
-                                                profile, optionalMemberId))
-                        .toList();
-
+        List<ProfileInformMenu> topProfileDTOs = getTopCompletionProfiles(6, optionalMemberId);
         return ProfileListResponseDTO.of(topProfileDTOs);
     }
 
-    /**
-     * 팀원 찾기 화면의 검색 로직
-     *
-     * <p>- 쿼리 파라미터가 전혀 없으면 기본 검색으로 간주하여: 1. 상단: 프로필 완성도가 높은 팀원 6명(예: completionScore 기준 내림차순) 2.
-     * 하단: 상단에 포함된 프로필을 제외한 나머지 팀원들을 최신순(createdAt 내림차순)으로 페이지네이션 - 필터 쿼리 파라미터가 있으면 기존의 필터링 로직대로
-     * 검색합니다.
-     *
-     * @param optionalMemberId 로그인한 회원의 ID(Optional)
-     * @param subPosition 포지션 소분류 필터
-     * @param cityName 시/도 필터
-     * @param profileStateName 프로필 상태 필터
-     * @return ProfileInformMenu: 하단(profiles) DTO
-     */
     public CursorResponse<ProfileInformMenu> searchProfilesWithCursor(
             final Optional<Long> optionalMemberId,
-            List<String> subPosition,
-            List<String> cityName,
-            List<String> profileStateName,
+            ProfileSearchCondition condition,
             CursorRequest cursorRequest) {
-        if (isDefaultSearch(subPosition, cityName, profileStateName)) {
-            List<Long> excludeProfileIds = getExcludeProfileIds();
 
-            CursorResponse<Profile> profiles =
-                    profileQueryAdapter.findAllExcludingIdsWithCursor(
-                            excludeProfileIds, cursorRequest);
-
-            return convertProfilesToDTOs(profiles, optionalMemberId);
-        } else {
-            CursorResponse<Profile> profiles =
-                    profileQueryAdapter.findAllByFilteringWithCursor(
-                            subPosition, cityName, profileStateName, cursorRequest);
-
-            return convertProfilesToDTOs(profiles, optionalMemberId);
+        if (condition.isDefault()) {
+            if (!cursorRequest.hasNext()) {
+                List<ProfileInformMenu> results =
+                        getFirstPageDefaultProfiles(cursorRequest.size(), optionalMemberId);
+                String nextCursor =
+                        results.isEmpty() ? null : results.get(results.size() - 1).getEmailId();
+                return CursorResponse.of(results, nextCursor);
+            }
+            List<ProfileInformMenu> results =
+                    getAllProfilesWithoutFilter(
+                            cursorRequest.size(), optionalMemberId, cursorRequest);
+            String nextCursor =
+                    results.isEmpty() ? null : results.get(results.size() - 1).getEmailId();
+            return CursorResponse.of(results, nextCursor);
         }
+
+        List<ProfileInformMenu> results =
+                getAllProfilesWithFilter(
+                        cursorRequest.size(), optionalMemberId, condition, cursorRequest);
+        String nextCursor = results.isEmpty() ? null : results.get(results.size() - 1).getEmailId();
+        return CursorResponse.of(results, nextCursor);
     }
 
-    /** 기본 검색 여부를 판단합니다. */
-    private boolean isDefaultSearch(
-            List<String> subPosition, List<String> cityName, List<String> profileStateName) {
-        return (subPosition == null || subPosition.isEmpty())
-                && (cityName == null || cityName.isEmpty())
-                && (profileStateName == null || profileStateName.isEmpty());
+    private List<ProfileInformMenu> getFirstPageDefaultProfiles(
+            int size, Optional<Long> optionalMemberId) {
+        List<FlatProfileDTO> raw = profileRepository.findFlatProfilesWithoutCursor(size);
+        return getProfileInformMenus(size, optionalMemberId, raw);
     }
 
-    /** 제외할 팀 ID 목록 가져오기 (강제 지정) */
-    public List<Long> getExcludeProfileIds() {
-        // 박주혜 42L
-        // 최민호 58L
-        // 김태범 57L
-        // 최윤수 55L
-        // 박현진 73L
-        // 김시원 63L
-        return List.of(42L, 58L, 57L, 55L, 73L, 63L);
+    private List<ProfileInformMenu> getTopCompletionProfiles(
+            int size, Optional<Long> optionalMemberId) {
+        List<FlatProfileDTO> raw = profileRepository.findTopCompletionProfiles(size);
+        return getProfileInformMenus(size, optionalMemberId, raw);
     }
 
-    /** 팀 엔티티를 DTO로 변환하고 커서 응답으로 래핑 */
-    private CursorResponse<ProfileResponseDTO.ProfileInformMenu> convertProfilesToDTOs(
-            CursorResponse<Profile> profiles, Optional<Long> optionalMemberId) {
-        List<ProfileResponseDTO.ProfileInformMenu> profileDTOs =
-                profiles.getContent().stream()
+    private List<ProfileInformMenu> getAllProfilesWithoutFilter(
+            int size, Optional<Long> optionalMemberId, CursorRequest cursorRequest) {
+        List<FlatProfileDTO> raw =
+                profileRepository.findAllProfilesWithoutFilter(
+                        DEFAULT_EXCLUDE_PROFILE_IDS, cursorRequest);
+        return getProfileInformMenus(size, optionalMemberId, raw);
+    }
+
+    private List<ProfileInformMenu> getAllProfilesWithFilter(
+            int size,
+            Optional<Long> optionalMemberId,
+            ProfileSearchCondition condition,
+            CursorRequest cursorRequest) {
+        List<FlatProfileDTO> raw =
+                profileRepository.findFilteredFlatProfilesWithCursor(
+                        condition.subPosition(),
+                        condition.cityName(),
+                        condition.profileStateName(),
+                        cursorRequest);
+        return getProfileInformMenus(size, optionalMemberId, raw);
+    }
+
+    @NotNull
+    private List<ProfileInformMenu> getProfileInformMenus(
+            int size, Optional<Long> optionalMemberId, List<FlatProfileDTO> raw) {
+        List<Long> profileIds = raw.stream().map(FlatProfileDTO::getProfileId).distinct().toList();
+
+        Set<Long> scraps =
+                optionalMemberId
                         .map(
-                                profile ->
-                                        profileInformMenuAssembler.assembleProfileInformMenu(
-                                                profile, optionalMemberId))
-                        .toList();
+                                memberId ->
+                                        profileScrapRepository.findScrappedProfileIdsByMember(
+                                                memberId, profileIds))
+                        .orElse(Set.of());
 
-        return CursorResponse.of(profileDTOs, profiles.getNextCursor());
+        Map<Long, Integer> scrapCounts =
+                profileScrapRepository.countScrapsGroupedByProfile(profileIds);
+
+        Map<Long, List<ProfileTeamInform>> teamMap = Map.of();
+
+        List<ProfileInformMenu> menus =
+                profileInformMenuAssembler.assembleProfileInformMenus(
+                        raw, scraps, scrapCounts, teamMap);
+
+        return menus.size() > size ? menus.subList(0, size) : menus;
     }
 }

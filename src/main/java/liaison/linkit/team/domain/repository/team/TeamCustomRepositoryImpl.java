@@ -458,9 +458,9 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             // 커서 조건 - teamCode로 ID를 찾아서 적용
             if (cursorRequest != null
                     && cursorRequest.hasNext()
-                    && cursorRequest.getCursor() != null) {
+                    && cursorRequest.cursor() != null) {
                 // teamCode로 해당 팀의 ID를 조회
-                String cursorTeamCode = cursorRequest.getCursor();
+                String cursorTeamCode = cursorRequest.cursor();
                 Long cursorTeamId =
                         jpaQueryFactory
                                 .select(qTeam.id)
@@ -475,7 +475,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             }
 
             // 페이지 크기 안전하게 설정
-            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.size()) : 10;
             int pageSize = (requestedSize % 2 == 0) ? requestedSize : (requestedSize / 2 + 1) * 2;
 
             // 1. ID와 teamCode를 함께 조회
@@ -538,8 +538,8 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             Long cursorTeamId = null;
             if (cursorRequest != null
                     && cursorRequest.hasNext()
-                    && cursorRequest.getCursor() != null) {
-                String cursorTeamCode = cursorRequest.getCursor();
+                    && cursorRequest.cursor() != null) {
+                String cursorTeamCode = cursorRequest.cursor();
                 cursorTeamId =
                         jpaQueryFactory
                                 .select(qTeam.id)
@@ -600,7 +600,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             }
 
             // ID 기준으로 정렬 및 제한
-            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.size()) : 10;
             int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
 
             List<Tuple> teamTuples =
