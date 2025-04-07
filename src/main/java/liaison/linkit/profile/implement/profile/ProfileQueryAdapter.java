@@ -3,14 +3,11 @@ package liaison.linkit.profile.implement.profile;
 import java.util.List;
 
 import liaison.linkit.common.annotation.Adapter;
-import liaison.linkit.profile.business.assembler.ProfileInformMenuAssembler;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.exception.profile.ProfileNotFoundException;
-import liaison.linkit.scrap.domain.repository.profileScrap.ProfileScrapRepository;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
-import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -23,9 +20,6 @@ import org.springframework.data.domain.Pageable;
 public class ProfileQueryAdapter {
 
     private final ProfileRepository profileRepository;
-    private final ProfileScrapRepository profileScrapRepository;
-    private final ProfileInformMenuAssembler profileInformMenuAssembler;
-    private final TeamMemberQueryAdapter teamMemberQueryAdapter;
 
     public Profile findById(final Long profileId) {
         return profileRepository

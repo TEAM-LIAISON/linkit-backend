@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 
+import liaison.linkit.global.util.CursorUtils;
 import liaison.linkit.profile.business.assembler.ProfileInformMenuAssembler;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
@@ -71,7 +71,7 @@ public class ProfileSearchService {
                     profileQueryAdapter.findAllExcludingIdsWithCursor(
                             DEFAULT_EXCLUDE_PROFILE_IDS, cursorRequest);
 
-            return toCursorResponse(
+            return CursorUtils.mapCursorResponse(
                     profiles,
                     p -> profileInformMenuAssembler.assembleProfileInformMenu(p, optionalMemberId));
         }
@@ -83,15 +83,9 @@ public class ProfileSearchService {
                         condition.profileStateName(),
                         cursorRequest);
 
-        return toCursorResponse(
+        return CursorUtils.mapCursorResponse(
                 profiles,
                 p -> profileInformMenuAssembler.assembleProfileInformMenu(p, optionalMemberId));
-    }
-
-    private <T, R> CursorResponse<R> toCursorResponse(
-            CursorResponse<T> source, Function<T, R> mapper) {
-        List<R> mapped = source.getContent().stream().map(mapper).toList();
-        return CursorResponse.of(mapped, source.getNextCursor());
     }
 
     private List<ProfileInformMenu> getFirstPageDefaultProfiles(
