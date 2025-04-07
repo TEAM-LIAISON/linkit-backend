@@ -1,9 +1,11 @@
 package liaison.linkit.search.presentation.dto.profile;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
 public class FlatProfileDTO {
     private Long profileId;
