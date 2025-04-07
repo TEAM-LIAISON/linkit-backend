@@ -36,16 +36,6 @@ public class ProfileQueryAdapter {
                 .orElseThrow(() -> ProfileNotFoundException.EXCEPTION);
     }
 
-    public CursorResponse<Profile> findAllExcludingIdsWithCursor(
-            final List<Long> excludeProfileIds, final CursorRequest cursorRequest) {
-        log.debug(
-                "커서 기반 팀 조회 요청: excludeProfileIds={}, cursor={}, size={}",
-                excludeProfileIds,
-                cursorRequest.cursor(),
-                cursorRequest.size());
-        return profileRepository.findAllExcludingIdsWithCursor(excludeProfileIds, cursorRequest);
-    }
-
     public CursorResponse<Profile> findAllByFilteringWithCursor(
             final List<String> subPosition,
             final List<String> cityName,

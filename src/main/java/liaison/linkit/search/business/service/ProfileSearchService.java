@@ -7,11 +7,8 @@ import java.util.Set;
 
 import jakarta.validation.constraints.NotNull;
 
-import liaison.linkit.global.util.CursorUtils;
 import liaison.linkit.profile.business.assembler.ProfileInformMenuAssembler;
-import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
-import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.scrap.domain.repository.profileScrap.ProfileScrapRepository;
@@ -36,7 +33,6 @@ public class ProfileSearchService {
 
     private final ProfileRepository profileRepository;
     private final ProfileScrapRepository profileScrapRepository;
-    private final ProfileQueryAdapter profileQueryAdapter;
     private final ProfileInformMenuAssembler profileInformMenuAssembler;
 
     public ProfileListResponseDTO getFeaturedProfiles(final Optional<Long> optionalMemberId) {
@@ -57,26 +53,19 @@ public class ProfileSearchService {
                         results.isEmpty() ? null : results.get(results.size() - 1).getEmailId();
                 return CursorResponse.of(results, nextCursor);
             }
-
-            CursorResponse<Profile> profiles =
-                    profileQueryAdapter.findAllExcludingIdsWithCursor(
-                            DEFAULT_EXCLUDE_PROFILE_IDS, cursorRequest);
-
-            return CursorUtils.mapCursorResponse(
-                    profiles,
-                    p -> profileInformMenuAssembler.assembleProfileInformMenu(p, optionalMemberId));
+            List<ProfileInformMenu> results =
+                    getAllProfilesWithoutFilter(
+                            cursorRequest.size(), optionalMemberId, cursorRequest);
+            String nextCursor =
+                    results.isEmpty() ? null : results.get(results.size() - 1).getEmailId();
+            return CursorResponse.of(results, nextCursor);
         }
 
-        CursorResponse<Profile> profiles =
-                profileQueryAdapter.findAllByFilteringWithCursor(
-                        condition.subPosition(),
-                        condition.cityName(),
-                        condition.profileStateName(),
-                        cursorRequest);
-
-        return CursorUtils.mapCursorResponse(
-                profiles,
-                p -> profileInformMenuAssembler.assembleProfileInformMenu(p, optionalMemberId));
+        List<ProfileInformMenu> results =
+                getAllProfilesWithFilter(
+                        cursorRequest.size(), optionalMemberId, condition, cursorRequest);
+        String nextCursor = results.isEmpty() ? null : results.get(results.size() - 1).getEmailId();
+        return CursorResponse.of(results, nextCursor);
     }
 
     private List<ProfileInformMenu> getFirstPageDefaultProfiles(
@@ -88,6 +77,28 @@ public class ProfileSearchService {
     private List<ProfileInformMenu> getTopCompletionProfiles(
             int size, Optional<Long> optionalMemberId) {
         List<FlatProfileDTO> raw = profileRepository.findTopCompletionProfiles(size);
+        return getProfileInformMenus(size, optionalMemberId, raw);
+    }
+
+    private List<ProfileInformMenu> getAllProfilesWithoutFilter(
+            int size, Optional<Long> optionalMemberId, CursorRequest cursorRequest) {
+        List<FlatProfileDTO> raw =
+                profileRepository.findAllProfilesWithoutFilter(
+                        DEFAULT_EXCLUDE_PROFILE_IDS, cursorRequest);
+        return getProfileInformMenus(size, optionalMemberId, raw);
+    }
+
+    private List<ProfileInformMenu> getAllProfilesWithFilter(
+            int size,
+            Optional<Long> optionalMemberId,
+            ProfileSearchCondition condition,
+            CursorRequest cursorRequest) {
+        List<FlatProfileDTO> raw =
+                profileRepository.findFilteredFlatProfilesWithCursor(
+                        condition.subPosition(),
+                        condition.cityName(),
+                        condition.profileStateName(),
+                        cursorRequest);
         return getProfileInformMenus(size, optionalMemberId, raw);
     }
 

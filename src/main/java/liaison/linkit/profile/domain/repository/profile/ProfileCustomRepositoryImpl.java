@@ -83,70 +83,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 .execute();
     }
 
-    //    @Override
-    //    public List<Profile> findHomeTopProfiles(final int limit) {
-    //        QProfile qProfile = QProfile.profile;
-    //
-    //
-    //    }
-
-    public CursorResponse<Profile> findAllExcludingIdsWithCursor(
-            final List<Long> excludeProfileIds, final CursorRequest cursorRequest) {
-
-        QProfile qProfile = QProfile.profile;
-
-        try {
-            // Step 1. 커서 emailId → profileId 조회
-            Long cursorProfileId = null;
-            if (cursorRequest != null
-                    && cursorRequest.hasNext()
-                    && cursorRequest.cursor() != null) {
-                String emailId = cursorRequest.cursor();
-                cursorProfileId =
-                        jpaQueryFactory
-                                .select(qProfile.id)
-                                .from(qProfile)
-                                .where(qProfile.member.emailId.eq(emailId))
-                                .fetchOne();
-            }
-
-            // Step 2. 본 쿼리
-            BooleanExpression baseCondition =
-                    qProfile.status.eq(USABLE).and(qProfile.isProfilePublic.eq(true));
-            if (excludeProfileIds != null && !excludeProfileIds.isEmpty()) {
-                baseCondition = baseCondition.and(qProfile.id.notIn(excludeProfileIds));
-            }
-
-            if (cursorProfileId != null) {
-                baseCondition = baseCondition.and(qProfile.id.lt(cursorProfileId));
-            }
-
-            int requestedSize = Math.max(1, cursorRequest.size());
-            int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
-
-            List<Profile> content =
-                    jpaQueryFactory
-                            .selectFrom(qProfile)
-                            .leftJoin(qProfile.member)
-                            .fetchJoin()
-                            .where(baseCondition)
-                            .orderBy(qProfile.id.desc())
-                            .limit(pageSize + 1)
-                            .fetch();
-
-            boolean hasNext = content.size() > pageSize;
-            String nextCursor = hasNext ? content.get(pageSize).getMember().getEmailId() : null;
-            if (hasNext) {
-                content = content.subList(0, pageSize);
-            }
-
-            return CursorResponse.of(content, nextCursor);
-        } catch (Exception e) {
-            log.error("Error in findAllExcludingIdsWithCursor: {}", e.getMessage(), e);
-            return CursorResponse.of(List.of(), null);
-        }
-    }
-
     public CursorResponse<Profile> findAllByFilteringWithCursor(
             final List<String> subPosition,
             final List<String> cityName,
@@ -261,7 +197,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 .fetch();
     }
 
-    public List<FlatProfileDTO> findFlatProfilesWithoutCursor(int size) {
+    public List<FlatProfileDTO> findHomeTopProfiles(int size) {
         QProfile qProfile = QProfile.profile;
         QMember qMember = QMember.member;
         QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
@@ -271,19 +207,49 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
         QProfileState qProfileState = QProfileState.profileState;
 
+        // 1단계: 원하는 Profile ID들을 먼저 조회
+        List<Long> targetProfileIds =
+                jpaQueryFactory
+                        .select(qProfile.id)
+                        .from(qProfile)
+                        .where(
+                                qProfile.status
+                                        .eq(StatusType.USABLE)
+                                        .and(qProfile.isProfilePublic.eq(true))
+                                        .and(qProfile.id.in(42L, 58L, 57L, 55L, 73L, 63L)))
+                        .orderBy(
+                                new CaseBuilder()
+                                        .when(qProfile.id.eq(42L))
+                                        .then(0)
+                                        .when(qProfile.id.eq(58L))
+                                        .then(1)
+                                        .when(qProfile.id.eq(57L))
+                                        .then(2)
+                                        .when(qProfile.id.eq(55L))
+                                        .then(3)
+                                        .when(qProfile.id.eq(73L))
+                                        .then(4)
+                                        .when(qProfile.id.eq(63L))
+                                        .then(5)
+                                        .otherwise(6)
+                                        .asc())
+                        .limit(size)
+                        .fetch();
+
+        // 2단계: 실제 데이터 조회
         return jpaQueryFactory
                 .select(
-                        Projections.constructor(
+                        Projections.fields(
                                 FlatProfileDTO.class,
-                                qProfile.id,
-                                qMember.memberBasicInform.memberName,
-                                qMember.emailId,
-                                qProfile.profileImagePath,
-                                qPosition.majorPosition,
-                                qPosition.subPosition,
-                                qRegion.cityName,
-                                qRegion.divisionName,
-                                qProfileState.profileStateName))
+                                qProfile.id.as("profileId"),
+                                qMember.memberBasicInform.memberName.as("memberName"),
+                                qMember.emailId.as("emailId"),
+                                qProfile.profileImagePath.as("profileImagePath"),
+                                qPosition.majorPosition.as("majorPosition"),
+                                qPosition.subPosition.as("subPosition"),
+                                qRegion.cityName.as("cityName"),
+                                qRegion.divisionName.as("divisionName"),
+                                qProfileState.profileStateName.as("profileStateName")))
                 .from(qProfile)
                 .leftJoin(qProfile.member, qMember)
                 .leftJoin(qMember.memberBasicInform)
@@ -293,9 +259,23 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 .leftJoin(qProfilePosition.position, qPosition)
                 .leftJoin(qProfile.profileCurrentStates, qProfileCurrentState)
                 .leftJoin(qProfileCurrentState.profileState, qProfileState)
-                .where(qProfile.status.eq(StatusType.USABLE).and(qProfile.isProfilePublic.eq(true)))
-                .orderBy(qProfile.id.desc())
-                .limit(size * 5)
+                .where(qProfile.id.in(targetProfileIds))
+                .orderBy(
+                        new CaseBuilder()
+                                .when(qProfile.id.eq(42L))
+                                .then(0)
+                                .when(qProfile.id.eq(58L))
+                                .then(1)
+                                .when(qProfile.id.eq(57L))
+                                .then(2)
+                                .when(qProfile.id.eq(55L))
+                                .then(3)
+                                .when(qProfile.id.eq(73L))
+                                .then(4)
+                                .when(qProfile.id.eq(63L))
+                                .then(5)
+                                .otherwise(6)
+                                .asc())
                 .fetch();
     }
 
@@ -391,7 +371,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 .fetch();
     }
 
-    public List<FlatProfileDTO> findHomeTopProfiles(int size) {
+    public List<FlatProfileDTO> findFlatProfilesWithoutCursor(int size) {
         QProfile qProfile = QProfile.profile;
         QMember qMember = QMember.member;
         QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
@@ -401,49 +381,19 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
         QProfileState qProfileState = QProfileState.profileState;
 
-        // 1단계: 원하는 Profile ID들을 먼저 조회
-        List<Long> targetProfileIds =
-                jpaQueryFactory
-                        .select(qProfile.id)
-                        .from(qProfile)
-                        .where(
-                                qProfile.status
-                                        .eq(StatusType.USABLE)
-                                        .and(qProfile.isProfilePublic.eq(true))
-                                        .and(qProfile.id.in(42L, 58L, 57L, 55L, 73L, 63L)))
-                        .orderBy(
-                                new CaseBuilder()
-                                        .when(qProfile.id.eq(42L))
-                                        .then(0)
-                                        .when(qProfile.id.eq(58L))
-                                        .then(1)
-                                        .when(qProfile.id.eq(57L))
-                                        .then(2)
-                                        .when(qProfile.id.eq(55L))
-                                        .then(3)
-                                        .when(qProfile.id.eq(73L))
-                                        .then(4)
-                                        .when(qProfile.id.eq(63L))
-                                        .then(5)
-                                        .otherwise(6)
-                                        .asc())
-                        .limit(size)
-                        .fetch();
-
-        // 2단계: 실제 데이터 조회
         return jpaQueryFactory
                 .select(
-                        Projections.fields(
+                        Projections.constructor(
                                 FlatProfileDTO.class,
-                                qProfile.id.as("profileId"),
-                                qMember.memberBasicInform.memberName.as("memberName"),
-                                qMember.emailId.as("emailId"),
-                                qProfile.profileImagePath.as("profileImagePath"),
-                                qPosition.majorPosition.as("majorPosition"),
-                                qPosition.subPosition.as("subPosition"),
-                                qRegion.cityName.as("cityName"),
-                                qRegion.divisionName.as("divisionName"),
-                                qProfileState.profileStateName.as("profileStateName")))
+                                qProfile.id,
+                                qMember.memberBasicInform.memberName,
+                                qMember.emailId,
+                                qProfile.profileImagePath,
+                                qPosition.majorPosition,
+                                qPosition.subPosition,
+                                qRegion.cityName,
+                                qRegion.divisionName,
+                                qProfileState.profileStateName))
                 .from(qProfile)
                 .leftJoin(qProfile.member, qMember)
                 .leftJoin(qMember.memberBasicInform)
@@ -453,23 +403,178 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 .leftJoin(qProfilePosition.position, qPosition)
                 .leftJoin(qProfile.profileCurrentStates, qProfileCurrentState)
                 .leftJoin(qProfileCurrentState.profileState, qProfileState)
-                .where(qProfile.id.in(targetProfileIds))
-                .orderBy(
-                        new CaseBuilder()
-                                .when(qProfile.id.eq(42L))
-                                .then(0)
-                                .when(qProfile.id.eq(58L))
-                                .then(1)
-                                .when(qProfile.id.eq(57L))
-                                .then(2)
-                                .when(qProfile.id.eq(55L))
-                                .then(3)
-                                .when(qProfile.id.eq(73L))
-                                .then(4)
-                                .when(qProfile.id.eq(63L))
-                                .then(5)
-                                .otherwise(6)
-                                .asc())
+                .where(qProfile.status.eq(StatusType.USABLE).and(qProfile.isProfilePublic.eq(true)))
+                .orderBy(qProfile.id.desc())
+                .limit(size * 5)
                 .fetch();
+    }
+
+    public List<FlatProfileDTO> findAllProfilesWithoutFilter(
+            final List<Long> excludeProfileIds, final CursorRequest cursorRequest) {
+
+        QProfile qProfile = QProfile.profile;
+        QMember qMember = QMember.member;
+        QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
+        QRegion qRegion = QRegion.region;
+        QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
+        QPosition qPosition = QPosition.position;
+        QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
+        QProfileState qProfileState = QProfileState.profileState;
+
+        try {
+            // Step 1. 커서 emailId → profileId
+            Long cursorProfileId = null;
+            if (cursorRequest != null
+                    && cursorRequest.hasNext()
+                    && cursorRequest.cursor() != null) {
+                String emailId = cursorRequest.cursor();
+                cursorProfileId =
+                        jpaQueryFactory
+                                .select(qProfile.id)
+                                .from(qProfile)
+                                .where(qProfile.member.emailId.eq(emailId))
+                                .fetchOne();
+            }
+
+            // Step 2. 조건 설정
+            BooleanExpression condition =
+                    qProfile.status.eq(StatusType.USABLE).and(qProfile.isProfilePublic.isTrue());
+
+            if (excludeProfileIds != null && !excludeProfileIds.isEmpty()) {
+                condition = condition.and(qProfile.id.notIn(excludeProfileIds));
+            }
+
+            if (cursorProfileId != null) {
+                condition = condition.and(qProfile.id.lt(cursorProfileId));
+            }
+
+            int requestedSize = Math.max(1, cursorRequest.size());
+            int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
+
+            // Step 3. 조회
+            return jpaQueryFactory
+                    .select(
+                            Projections.constructor(
+                                    FlatProfileDTO.class,
+                                    qProfile.id,
+                                    qMember.memberBasicInform.memberName,
+                                    qMember.emailId,
+                                    qProfile.profileImagePath,
+                                    qPosition.majorPosition,
+                                    qPosition.subPosition,
+                                    qRegion.cityName,
+                                    qRegion.divisionName,
+                                    qProfileState.profileStateName))
+                    .from(qProfile)
+                    .leftJoin(qProfile.member, qMember)
+                    .leftJoin(qMember.memberBasicInform)
+                    .leftJoin(qProfile.profileRegion, qProfileRegion)
+                    .leftJoin(qProfileRegion.region, qRegion)
+                    .leftJoin(qProfile.profilePositions, qProfilePosition)
+                    .leftJoin(qProfilePosition.position, qPosition)
+                    .leftJoin(qProfile.profileCurrentStates, qProfileCurrentState)
+                    .leftJoin(qProfileCurrentState.profileState, qProfileState)
+                    .where(condition)
+                    .orderBy(qProfile.id.desc())
+                    .limit(pageSize)
+                    .fetch();
+
+        } catch (Exception e) {
+            log.error("Error in findAllProfilesWithoutFilter: {}", e.getMessage(), e);
+            return List.of();
+        }
+    }
+
+    public List<FlatProfileDTO> findFilteredFlatProfilesWithCursor(
+            final List<String> subPosition,
+            final List<String> cityName,
+            final List<String> profileStateName,
+            final CursorRequest cursorRequest) {
+
+        QProfile qProfile = QProfile.profile;
+        QMember qMember = QMember.member;
+        QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
+        QRegion qRegion = QRegion.region;
+        QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
+        QPosition qPosition = QPosition.position;
+        QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
+        QProfileState qProfileState = QProfileState.profileState;
+
+        try {
+            // Step 1. emailId → profileId 커서 변환
+            Long cursorProfileId = null;
+            if (cursorRequest != null
+                    && cursorRequest.hasNext()
+                    && cursorRequest.cursor() != null) {
+                String emailId = cursorRequest.cursor();
+                cursorProfileId =
+                        jpaQueryFactory
+                                .select(qProfile.id)
+                                .from(qProfile)
+                                .where(qProfile.member.emailId.eq(emailId))
+                                .fetchOne();
+            }
+
+            // Step 2. 기본 조건
+            BooleanExpression baseCondition =
+                    qProfile.status.eq(USABLE).and(qProfile.isProfilePublic.isTrue());
+
+            if (cursorProfileId != null) {
+                baseCondition = baseCondition.and(qProfile.id.lt(cursorProfileId));
+            }
+
+            int requestedSize = Math.max(1, cursorRequest.size());
+            int pageSize = (requestedSize % 6 == 0) ? requestedSize : ((requestedSize / 6) + 1) * 6;
+
+            // Step 3. 쿼리 구성
+            var query =
+                    jpaQueryFactory
+                            .select(
+                                    Projections.constructor(
+                                            FlatProfileDTO.class,
+                                            qProfile.id,
+                                            qMember.memberBasicInform.memberName,
+                                            qMember.emailId,
+                                            qProfile.profileImagePath,
+                                            qPosition.majorPosition,
+                                            qPosition.subPosition,
+                                            qRegion.cityName,
+                                            qRegion.divisionName,
+                                            qProfileState.profileStateName))
+                            .from(qProfile)
+                            .leftJoin(qProfile.member, qMember)
+                            .leftJoin(qMember.memberBasicInform)
+                            .leftJoin(qProfile.profileRegion, qProfileRegion)
+                            .leftJoin(qProfileRegion.region, qRegion)
+                            .leftJoin(qProfile.profilePositions, qProfilePosition)
+                            .leftJoin(qProfilePosition.position, qPosition)
+                            .leftJoin(qProfile.profileCurrentStates, qProfileCurrentState)
+                            .leftJoin(qProfileCurrentState.profileState, qProfileState)
+                            .where(baseCondition)
+                            .orderBy(qProfile.id.desc());
+
+            // Step 4. 필터 적용
+            if (isNotEmpty(subPosition)) {
+                query = query.where(qPosition.subPosition.in(subPosition));
+            }
+
+            if (isNotEmpty(cityName)) {
+                query = query.where(qRegion.cityName.in(cityName));
+            }
+
+            if (isNotEmpty(profileStateName)) {
+                query = query.where(qProfileState.profileStateName.in(profileStateName));
+            }
+
+            // Step 5. 페이징 처리
+            List<FlatProfileDTO> content = query.limit(pageSize + 1).fetch();
+
+            // 필요시 커서 처리 정보는 추후 CursorResponse<FlatProfileDTO>로 확장 가능
+            return content.size() > pageSize ? content.subList(0, pageSize) : content;
+
+        } catch (Exception e) {
+            log.error("Error in findFilteredFlatProfilesWithCursor: {}", e.getMessage(), e);
+            return List.of();
+        }
     }
 }
