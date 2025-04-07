@@ -96,21 +96,30 @@ public class ProfileSearchService {
         return CursorResponse.of(mapped, source.getNextCursor());
     }
 
-    private List<ProfileInformMenu> getFirstPageDefaultProfiles(int size) {
+    private List<ProfileInformMenu> getFirstPageDefaultProfiles(
+            int size, Optional<Long> optionalMemberId) {
         List<FlatProfileWithPositionDTO> raw =
                 profileRepository.findFlatProfilesWithoutCursor(size);
         List<Long> profileIds =
                 raw.stream().map(FlatProfileWithPositionDTO::getProfileId).distinct().toList();
 
-        Set<Long> scraps = profileScrapRepository.findScrappedProfileIdsByMember(null, profileIds);
+        Set<Long> scraps =
+                optionalMemberId
+                        .map(
+                                memberId ->
+                                        profileScrapRepository.findScrappedProfileIdsByMember(
+                                                memberId, profileIds))
+                        .orElse(Set.of());
+
         Map<Long, Integer> scrapCounts =
                 profileScrapRepository.countScrapsGroupedByProfile(profileIds);
-        Map<Long, List<ProfileTeamInform>> teamMap =
-                teamMemberQueryAdapter.findTeamInformsGroupedByProfile(profileIds);
+
+        Map<Long, List<ProfileTeamInform>> teamMap = Map.of();
 
         List<ProfileInformMenu> menus =
                 profileInformMenuAssembler.assembleProfileInformMenus(
                         raw, scraps, scrapCounts, teamMap);
+
         return menus.size() > size ? menus.subList(0, size) : menus;
     }
 }
