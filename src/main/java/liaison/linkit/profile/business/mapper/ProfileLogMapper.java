@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import liaison.linkit.common.annotation.Mapper;
+import liaison.linkit.global.util.DateUtils;
 import liaison.linkit.image.domain.Image;
 import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO;
@@ -20,6 +21,7 @@ public class ProfileLogMapper {
                 .profileLogId(profileLog.getId())
                 .isLogPublic(profileLog.isLogPublic())
                 .logType(profileLog.getLogType())
+                .createdAt(DateUtils.formatRelativeTime(profileLog.getCreatedAt()))
                 .modifiedAt(profileLog.getModifiedAt())
                 .logTitle(profileLog.getLogTitle())
                 .logContent(profileLog.getLogContent())

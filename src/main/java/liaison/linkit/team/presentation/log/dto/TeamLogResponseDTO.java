@@ -45,6 +45,7 @@ public class TeamLogResponseDTO {
         private Long teamLogId;
         private Boolean isLogPublic;
         private LogType logType;
+        private String createdAt;
         private LocalDateTime modifiedAt;
         private String logTitle;
         private String logContent;
