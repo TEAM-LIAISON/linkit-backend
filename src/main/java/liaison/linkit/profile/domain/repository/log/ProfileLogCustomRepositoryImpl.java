@@ -6,12 +6,17 @@ import java.util.Optional;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import liaison.linkit.member.domain.QMember;
+import liaison.linkit.member.domain.type.MemberState;
 import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.domain.log.QProfileLog;
 import liaison.linkit.profile.domain.log.QProfileLogImage;
+import liaison.linkit.profile.domain.profile.QProfile;
 import liaison.linkit.profile.domain.type.LogType;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogDynamicResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -292,5 +297,30 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
         // 3) ProfileLog 삭제 (부모 테이블)
         long deletedLogCount =
                 queryFactory.delete(qProfileLog).where(qProfileLog.id.in(profileLogIds)).execute();
+    }
+
+    @Override
+    public List<ProfileLogDynamicResponse> findAllDynamicVariablesWithProfileLog() {
+        QProfileLog qProfileLog = QProfileLog.profileLog;
+        QProfile qProfile = QProfile.profile;
+        QMember qMember = QMember.member;
+
+        return queryFactory
+                .select(
+                        Projections.constructor(
+                                ProfileLogDynamicResponse.class,
+                                qMember.emailId,
+                                qMember.memberBasicInform.memberName,
+                                qProfileLog.id,
+                                qProfileLog.createdAt))
+                .from(qProfileLog)
+                .leftJoin(qProfileLog.profile, qProfile)
+                .leftJoin(qProfile.member, qMember)
+                .where(
+                        qMember.memberState
+                                .eq(MemberState.ACTIVE)
+                                .and(qProfile.isProfilePublic.eq(true)))
+                .orderBy(qMember.id.desc())
+                .fetch();
     }
 }

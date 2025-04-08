@@ -1,5 +1,7 @@
 package liaison.linkit.team.domain.repository.announcement;
 
+import static liaison.linkit.global.type.StatusType.USABLE;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,6 +13,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -33,6 +36,7 @@ import liaison.linkit.team.domain.scale.QScale;
 import liaison.linkit.team.domain.scale.QTeamScale;
 import liaison.linkit.team.domain.team.QTeam;
 import liaison.linkit.team.domain.workType.QWorkType;
+import liaison.linkit.team.presentation.announcement.dto.AnnouncementDynamicResponse;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -914,6 +918,31 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                         qTeamMemberAnnouncement.isAnnouncementInProgress.isTrue(),
                         qTeamMemberAnnouncement.isPermanentRecruitment.isFalse())
                 .orderBy(qTeamMemberAnnouncement.id.asc())
+                .fetch();
+    }
+
+    @Override
+    public List<AnnouncementDynamicResponse> findAllDynamicVariablesWithTeamMemberAnnouncement() {
+        QTeamMemberAnnouncement qTeamMemberAnnouncement =
+                QTeamMemberAnnouncement.teamMemberAnnouncement;
+        QTeam qTeam = QTeam.team;
+
+        return jpaQueryFactory
+                .select(
+                        Projections.constructor(
+                                AnnouncementDynamicResponse.class,
+                                qTeam.teamName,
+                                qTeam.teamCode,
+                                qTeamMemberAnnouncement.id,
+                                qTeam.createdAt))
+                .from(qTeamMemberAnnouncement)
+                .leftJoin(qTeamMemberAnnouncement.team, qTeam)
+                .where(
+                        qTeamMemberAnnouncement
+                                .status
+                                .eq(USABLE)
+                                .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true)))
+                .orderBy(qTeamMemberAnnouncement.id.desc())
                 .fetch();
     }
 }

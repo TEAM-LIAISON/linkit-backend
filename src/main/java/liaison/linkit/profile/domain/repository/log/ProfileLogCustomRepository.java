@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import liaison.linkit.profile.domain.log.ProfileLog;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogDynamicResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogRequest;
 
 public interface ProfileLogCustomRepository {
@@ -35,4 +36,6 @@ public interface ProfileLogCustomRepository {
     List<ProfileLog> findTopView(final int limit);
 
     void deleteAllProfileLogs(final Long profileId);
+
+    List<ProfileLogDynamicResponse> findAllDynamicVariablesWithProfileLog();
 }

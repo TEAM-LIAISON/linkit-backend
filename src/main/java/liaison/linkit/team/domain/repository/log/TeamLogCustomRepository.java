@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import liaison.linkit.team.domain.log.TeamLog;
+import liaison.linkit.team.presentation.log.dto.TeamLogDynamicResponse;
 import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO.UpdateTeamLogRequest;
 
 public interface TeamLogCustomRepository {
@@ -31,4 +32,6 @@ public interface TeamLogCustomRepository {
     List<TeamLog> findTopView(final int limit);
 
     void deleteAllTeamLogs(final Long teamId);
+
+    List<TeamLogDynamicResponse> findAllDynamicVariablesWithTeamLog();
 }
