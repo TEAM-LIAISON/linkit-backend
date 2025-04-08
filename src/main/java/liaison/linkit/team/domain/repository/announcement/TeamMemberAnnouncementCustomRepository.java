@@ -8,6 +8,7 @@ import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import liaison.linkit.search.sortType.AnnouncementSortType;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.presentation.announcement.dto.AnnouncementDynamicResponse;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -71,4 +72,6 @@ public interface TeamMemberAnnouncementCustomRepository {
     void incrementViewCount(final Long announcementId);
 
     List<TeamMemberAnnouncement> findAllByIsNotPermanentRecruitment();
+
+    List<AnnouncementDynamicResponse> findAllDynamicVariablesWithTeamMemberAnnouncement();
 }

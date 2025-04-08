@@ -46,6 +46,7 @@ public class ProfileSearchService {
             CursorRequest cursorRequest) {
 
         if (condition.isDefault()) {
+            // /api/v1/profile/search?size=20
             if (!cursorRequest.hasNext()) {
                 List<ProfileInformMenu> results =
                         getFirstPageDefaultProfiles(cursorRequest.size(), optionalMemberId);
@@ -53,6 +54,8 @@ public class ProfileSearchService {
                         results.isEmpty() ? null : results.get(results.size() - 1).getEmailId();
                 return CursorResponse.of(results, nextCursor);
             }
+
+            // /api/v1/profile/search?cursor={emailId}&size=20
             List<ProfileInformMenu> results =
                     getAllProfilesWithoutFilter(
                             cursorRequest.size(), optionalMemberId, cursorRequest);
@@ -61,6 +64,7 @@ public class ProfileSearchService {
             return CursorResponse.of(results, nextCursor);
         }
 
+        // 필터가 포함된 경우
         List<ProfileInformMenu> results =
                 getAllProfilesWithFilter(
                         cursorRequest.size(), optionalMemberId, condition, cursorRequest);
@@ -70,7 +74,8 @@ public class ProfileSearchService {
 
     private List<ProfileInformMenu> getFirstPageDefaultProfiles(
             int size, Optional<Long> optionalMemberId) {
-        List<FlatProfileDTO> raw = profileRepository.findFlatProfilesWithoutCursor(size);
+        List<FlatProfileDTO> raw =
+                profileRepository.findFlatProfilesWithoutCursor(DEFAULT_EXCLUDE_PROFILE_IDS, size);
         return getProfileInformMenus(size, optionalMemberId, raw);
     }
 

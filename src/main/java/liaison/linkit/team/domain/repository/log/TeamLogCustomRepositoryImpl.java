@@ -1,17 +1,22 @@
 package liaison.linkit.team.domain.repository.log;
 
+import static liaison.linkit.global.type.StatusType.USABLE;
+
 import java.util.List;
 import java.util.Optional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.profile.domain.type.LogType;
 import liaison.linkit.team.domain.log.QTeamLog;
 import liaison.linkit.team.domain.log.QTeamLogImage;
 import liaison.linkit.team.domain.log.TeamLog;
+import liaison.linkit.team.domain.team.QTeam;
+import liaison.linkit.team.presentation.log.dto.TeamLogDynamicResponse;
 import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO.UpdateTeamLogRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -263,5 +268,25 @@ public class TeamLogCustomRepositoryImpl implements TeamLogCustomRepository {
             long deletedLogCount =
                     queryFactory.delete(qTeamLog).where(qTeamLog.id.in(teamLogIds)).execute();
         }
+    }
+
+    @Override
+    public List<TeamLogDynamicResponse> findAllDynamicVariablesWithTeamLog() {
+        QTeamLog qTeamLog = QTeamLog.teamLog;
+        QTeam qTeam = QTeam.team;
+
+        return queryFactory
+                .select(
+                        Projections.constructor(
+                                TeamLogDynamicResponse.class,
+                                qTeam.teamName,
+                                qTeam.teamCode,
+                                qTeamLog.id,
+                                qTeamLog.createdAt))
+                .from(qTeamLog)
+                .leftJoin(qTeamLog.team, qTeam)
+                .where(qTeam.status.eq(USABLE).and(qTeam.isTeamPublic.eq(true)))
+                .orderBy(qTeam.id.desc())
+                .fetch();
     }
 }

@@ -7,6 +7,7 @@ import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.team.type.TeamStatus;
+import liaison.linkit.team.presentation.team.dto.TeamDynamicResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -48,4 +49,6 @@ public interface TeamCustomRepository {
             List<String> cityName,
             List<String> teamStateName,
             CursorRequest cursorRequest);
+
+    List<TeamDynamicResponse> findAllDynamicVariablesWithTeam();
 }
