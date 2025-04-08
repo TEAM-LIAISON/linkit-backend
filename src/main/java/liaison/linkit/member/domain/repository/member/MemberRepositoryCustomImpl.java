@@ -1,14 +1,18 @@
 package liaison.linkit.member.domain.repository.member;
 
+import java.util.List;
 import java.util.Optional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.QMember;
 import liaison.linkit.member.domain.type.MemberState;
+import liaison.linkit.member.presentation.dto.MemberDynamicResponse;
+import liaison.linkit.profile.domain.profile.QProfile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -127,5 +131,28 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         Member result = jpaQueryFactory.selectFrom(member).where(member.email.eq(email)).fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public List<MemberDynamicResponse> findAllDynamicVariablesWithMember() {
+        QMember qMember = QMember.member;
+        QProfile qProfile = QProfile.profile;
+
+        return jpaQueryFactory
+                .select(
+                        Projections.constructor(
+                                MemberDynamicResponse.class,
+                                qMember.emailId,
+                                qMember.memberBasicInform.memberName,
+                                qMember.createdAt))
+                .from(qMember)
+                .leftJoin(qMember.memberBasicInform)
+                .leftJoin(qMember.profile, qProfile)
+                .where(
+                        qMember.memberState
+                                .eq(MemberState.ACTIVE)
+                                .and(qProfile.isProfilePublic.eq(true)))
+                .orderBy(qMember.id.desc())
+                .fetch();
     }
 }

@@ -107,18 +107,20 @@ decorator:
       logging: slf4j
 
 springdoc:
-  webjars:
-    prefix:
   api-docs:
-    path: /linkit/api-docs
-    groups:
-      enabled: true
+    path: /v3/api-docs
   swagger-ui:
-    urls:
-      - url: /linkit/api-docs
-        name: all
-    path: /linkit/swagger
-    configUrl: /linkit/api-docs/swagger-config
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+    doc-expansion: none
     disable-swagger-default-url: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  paths-to-match:
+    - /api/**
+  packages-to-scan:
+    - liaison.linkit
 
-swagger.version: "v0.1"
+app:
+  backend-url: http://localhost:8080

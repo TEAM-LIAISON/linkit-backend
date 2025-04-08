@@ -1,8 +1,10 @@
 package liaison.linkit.member.domain.repository.member;
 
+import java.util.List;
 import java.util.Optional;
 
 import liaison.linkit.member.domain.Member;
+import liaison.linkit.member.presentation.dto.MemberDynamicResponse;
 
 public interface MemberRepositoryCustom {
     Optional<Member> findBySocialLoginId(final String socialLoginId);
@@ -22,4 +24,6 @@ public interface MemberRepositoryCustom {
     String findEmailIdById(final Long memberId);
 
     Optional<Member> findByEmail(final String email);
+
+    List<MemberDynamicResponse> findAllDynamicVariablesWithMember();
 }

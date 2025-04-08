@@ -34,7 +34,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
-    
+
     // p6spy for query logging
     implementation 'p6spy:p6spy:3.9.1'
     implementation 'com.github.gavlyukovskiy:datasource-decorator-spring-boot-autoconfigure:1.9.2'
@@ -44,7 +44,7 @@ dependencies {
     implementation 'org.webjars:stomp-websocket:2.3.3-1'
 
     // OpenAPI
-    implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 
     // Json Web Token
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'

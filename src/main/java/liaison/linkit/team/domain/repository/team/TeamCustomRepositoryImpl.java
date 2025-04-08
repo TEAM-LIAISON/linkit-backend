@@ -11,6 +11,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -27,6 +28,7 @@ import liaison.linkit.team.domain.state.QTeamState;
 import liaison.linkit.team.domain.team.QTeam;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.team.type.TeamStatus;
+import liaison.linkit.team.presentation.team.dto.TeamDynamicResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -645,5 +647,22 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             log.error("Error in findAllByFilteringWithCursor: {}", e.getMessage(), e);
             return CursorResponse.of(List.of(), null);
         }
+    }
+
+    @Override
+    public List<TeamDynamicResponse> findAllDynamicVariablesWithTeam() {
+        QTeam qTeam = QTeam.team;
+
+        return jpaQueryFactory
+                .select(
+                        Projections.constructor(
+                                TeamDynamicResponse.class,
+                                qTeam.teamName,
+                                qTeam.teamCode,
+                                qTeam.createdAt))
+                .from(qTeam)
+                .where(qTeam.status.eq(USABLE).and(qTeam.isTeamPublic.eq(true)))
+                .orderBy(qTeam.id.desc())
+                .fetch();
     }
 }

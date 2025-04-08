@@ -31,7 +31,7 @@ public interface ProfileCustomRepository {
     List<FlatProfileDTO> findTopCompletionProfiles(int size);
 
     // cursor 없는 초기 조회
-    List<FlatProfileDTO> findFlatProfilesWithoutCursor(int size);
+    List<FlatProfileDTO> findFlatProfilesWithoutCursor(List<Long> excludeProfileIds, int size);
 
     // cursor 값만 있는 스크롤 조회
     List<FlatProfileDTO> findAllProfilesWithoutFilter(
