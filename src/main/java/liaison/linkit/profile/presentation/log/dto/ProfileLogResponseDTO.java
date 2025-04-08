@@ -30,6 +30,7 @@ public class ProfileLogResponseDTO {
         private Long profileLogId;
         private Boolean isLogPublic;
         private LogType logType;
+        private String createdAt;
         private LocalDateTime modifiedAt;
         private String logTitle;
         private String logContent;
