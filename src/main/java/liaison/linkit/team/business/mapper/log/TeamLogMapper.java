@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import liaison.linkit.common.annotation.Mapper;
+import liaison.linkit.global.util.DateUtils;
 import liaison.linkit.image.domain.Image;
 import liaison.linkit.team.domain.log.TeamLog;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO;
@@ -18,6 +19,7 @@ public class TeamLogMapper {
                 .teamLogId(teamLog.getId())
                 .isLogPublic(teamLog.isLogPublic())
                 .logType(teamLog.getLogType())
+                .createdAt(DateUtils.formatRelativeTime(teamLog.getCreatedAt()))
                 .modifiedAt(teamLog.getModifiedAt())
                 .logTitle(teamLog.getLogTitle())
                 .logContent(teamLog.getLogContent())
