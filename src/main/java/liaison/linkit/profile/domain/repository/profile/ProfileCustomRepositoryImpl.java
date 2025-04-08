@@ -371,7 +371,8 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 .fetch();
     }
 
-    public List<FlatProfileDTO> findFlatProfilesWithoutCursor(int size) {
+    public List<FlatProfileDTO> findFlatProfilesWithoutCursor(
+            List<Long> excludeProfileIds, int size) {
         QProfile qProfile = QProfile.profile;
         QMember qMember = QMember.member;
         QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
@@ -403,7 +404,11 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 .leftJoin(qProfilePosition.position, qPosition)
                 .leftJoin(qProfile.profileCurrentStates, qProfileCurrentState)
                 .leftJoin(qProfileCurrentState.profileState, qProfileState)
-                .where(qProfile.status.eq(StatusType.USABLE).and(qProfile.isProfilePublic.eq(true)))
+                .where(
+                        qProfile.status
+                                .eq(StatusType.USABLE)
+                                .and(qProfile.isProfilePublic.eq(true))
+                                .and(qProfile.id.notIn(excludeProfileIds)))
                 .orderBy(qProfile.id.desc())
                 .limit(size * 5)
                 .fetch();
