@@ -12,7 +12,6 @@ import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.exception.team.TeamNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -73,26 +72,14 @@ public class TeamQueryAdapter {
         return teamRepository.findAllExcludingIds(excludeTeamIds, pageable);
     }
 
-    @Cacheable(
-            value = "homeTopTeams",
-            key = "'homeTopTeams'" // 상수 키를 사용
-            )
     public List<Team> findHomeTopTeams(final int limit) {
         return teamRepository.findHomeTopTeams(limit);
     }
 
-    @Cacheable(
-            value = "topVentureTeams",
-            key = "'topVentureTeams'" // 상수 키를 사용
-            )
     public Page<Team> findTopVentureTeams(final Pageable pageable) {
         return teamRepository.findTopVentureTeams(pageable);
     }
 
-    @Cacheable(
-            value = "supportProjectTeams",
-            key = "'supportProjectTeams'" // 상수 키를 사용
-            )
     public Page<Team> findSupportProjectTeams(final Pageable pageable) {
         return teamRepository.findSupportProjectTeams(pageable);
     }

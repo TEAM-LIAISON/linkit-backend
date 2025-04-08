@@ -12,7 +12,6 @@ import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
 import liaison.linkit.team.exception.announcement.TeamMemberAnnouncementNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -61,10 +60,6 @@ public class TeamMemberAnnouncementQueryAdapter {
                 subPosition, cityName, projectTypeName, workTypeName, sortType, cursorRequest);
     }
 
-    @Cacheable(
-            value = "hotAnnouncements",
-            key = "'hotAnnouncements'" // 상수 키를 사용
-            )
     public Page<TeamMemberAnnouncement> findHotAnnouncements(final Pageable pageable) {
         return teamMemberAnnouncementRepository.findHotAnnouncements(pageable);
     }
@@ -75,7 +70,6 @@ public class TeamMemberAnnouncementQueryAdapter {
                 excludeAnnouncementIds, pageable);
     }
 
-    @Cacheable(value = "homeTopAnnouncements", key = "'homeTopAnnouncements'")
     public List<TeamMemberAnnouncement> findHomeTopTeamMemberAnnouncements(final int limit) {
         return teamMemberAnnouncementRepository.findHomeTopTeamMemberAnnouncements(limit);
     }
