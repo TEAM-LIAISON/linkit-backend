@@ -8,6 +8,7 @@ import liaison.linkit.notification.business.NotificationMapper;
 import liaison.linkit.notification.domain.type.NotificationType;
 import liaison.linkit.notification.domain.type.SubNotificationType;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO;
+import liaison.linkit.notification.service.NotificationService;
 import liaison.linkit.profile.business.mapper.ProfileLogCommentMapper;
 import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.domain.log.ProfileLogComment;
@@ -44,6 +45,7 @@ public class ProfileLogCommentService {
     // Mappers
     private final ProfileLogCommentMapper profileLogCommentMapper;
     private final NotificationMapper notificationMapper;
+    private final NotificationService notificationService;
 
     /**
      * 프로필 로그에 댓글을 추가합니다.
@@ -322,12 +324,13 @@ public class ProfileLogCommentService {
                                 authorProfile.getMember().getMemberBasicInform().getMemberName(),
                                 authorProfile.getProfileImagePath());
 
-        notificationMapper.toNotification(
-                receiverMemberId,
-                NotificationType.COMMENT,
-                isChildComment
-                        ? SubNotificationType.CHILD_COMMENT
-                        : SubNotificationType.PARENT_COMMENT,
-                notificationDetails);
+        notificationService.alertNewNotification(
+                notificationMapper.toNotification(
+                        receiverMemberId,
+                        NotificationType.COMMENT,
+                        isChildComment
+                                ? SubNotificationType.CHILD_COMMENT
+                                : SubNotificationType.PARENT_COMMENT,
+                        notificationDetails));
     }
 }
