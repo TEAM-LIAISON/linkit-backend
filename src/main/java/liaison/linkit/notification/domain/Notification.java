@@ -54,6 +54,8 @@ public class Notification {
 
     private VisitorDetails visitorDetails;
 
+    private CommentDetails commentDetails;
+
     @Data
     @Builder
     @NoArgsConstructor(access = PROTECTED)
@@ -145,6 +147,25 @@ public class Notification {
         private String visitedType; // PROFILE, TEAM
     }
 
+    @Data
+    @Builder
+    @NoArgsConstructor(access = PROTECTED)
+    @AllArgsConstructor
+    public static class CommentDetails {
+        private String logType; // PROFILE_LOG, TEAM_LOG
+
+        private String emailId;
+        private Long profileLogId;
+
+        private String teamCode;
+        private Long teamLogId;
+
+        private String commentType; // PARENT_COMMENT, CHILD_COMMENT
+
+        private String commentWriterName;
+        private String commentWriterImagePath;
+    }
+
     public void setMatchingDetails(final MatchingDetails matchingDetails) {
         this.matchingDetails = matchingDetails;
     }
@@ -175,6 +196,10 @@ public class Notification {
 
     public void setVisitorDetails(final VisitorDetails visitorDetails) {
         this.visitorDetails = visitorDetails;
+    }
+
+    public void setCommentDetails(final CommentDetails commentDetails) {
+        this.commentDetails = commentDetails;
     }
 
     public void setNotificationReadStatus(final NotificationReadStatus notificationReadStatus) {

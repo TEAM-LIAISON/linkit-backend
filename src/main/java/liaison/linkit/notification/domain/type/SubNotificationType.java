@@ -37,6 +37,10 @@ public enum SubNotificationType {
     PROFILE_VISITOR,
     TEAM_VISITOR,
 
+    // COMMENT 관련
+    PARENT_COMMENT,
+    CHILD_COMMENT,
+
     // SYSTEM
     WELCOME_LINKIT
 }
