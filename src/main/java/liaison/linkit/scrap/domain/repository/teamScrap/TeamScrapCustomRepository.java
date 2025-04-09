@@ -1,6 +1,8 @@
 package liaison.linkit.scrap.domain.repository.teamScrap;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import liaison.linkit.scrap.domain.TeamScrap;
 
@@ -24,4 +26,8 @@ public interface TeamScrapCustomRepository {
     void deleteAllByTeamIds(final List<Long> teamIds);
 
     void deleteAllByTeamId(final Long teamId);
+
+    Set<Long> findScrappedTeamIdsByMember(Long memberId, List<Long> teamIds);
+
+    Map<Long, Integer> countScrapsGroupedByTeam(List<Long> teamIds);
 }

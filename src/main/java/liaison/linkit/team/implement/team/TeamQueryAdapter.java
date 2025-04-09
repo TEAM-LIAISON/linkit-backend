@@ -5,6 +5,7 @@ import java.util.List;
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.search.presentation.dto.team.FlatTeamDTO;
 import liaison.linkit.team.domain.repository.currentState.TeamCurrentStateRepository;
 import liaison.linkit.team.domain.repository.team.TeamRepository;
 import liaison.linkit.team.domain.state.TeamCurrentState;
@@ -72,7 +73,7 @@ public class TeamQueryAdapter {
         return teamRepository.findAllExcludingIds(excludeTeamIds, pageable);
     }
 
-    public List<Team> findHomeTopTeams(final int limit) {
+    public List<FlatTeamDTO> findHomeTopTeams(final int limit) {
         return teamRepository.findHomeTopTeams(limit);
     }
 

@@ -1,6 +1,10 @@
 package liaison.linkit.scrap.domain.repository.teamScrap;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.scrap.domain.QTeamScrap;
@@ -111,5 +115,41 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
 
         long deletedCount =
                 jpaQueryFactory.delete(qTeamScrap).where(qTeamScrap.team.id.eq(teamId)).execute();
+    }
+
+    @Override
+    public Set<Long> findScrappedTeamIdsByMember(Long memberId, List<Long> teamIds) {
+        QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
+
+        if (memberId == null || teamIds == null || teamIds.isEmpty()) {
+            return Set.of();
+        }
+
+        return new HashSet<>(
+                jpaQueryFactory
+                        .select(qTeamScrap.team.id)
+                        .from(qTeamScrap)
+                        .where(qTeamScrap.member.id.eq(memberId), qTeamScrap.team.id.in(teamIds))
+                        .fetch());
+    }
+
+    @Override
+    public Map<Long, Integer> countScrapsGroupedByTeam(List<Long> teamIds) {
+        QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
+        return jpaQueryFactory
+                .select(qTeamScrap.team.id, qTeamScrap.count())
+                .from(qTeamScrap)
+                .where(qTeamScrap.team.id.in(teamIds))
+                .groupBy(qTeamScrap.team.id)
+                .fetch()
+                .stream()
+                .filter(tuple -> tuple.get(qTeamScrap.team.id) != null)
+                .collect(
+                        Collectors.toMap(
+                                tuple -> tuple.get(qTeamScrap.team.id),
+                                tuple -> {
+                                    Long count = tuple.get(qTeamScrap.count());
+                                    return count != null ? count.intValue() : 0;
+                                }));
     }
 }
