@@ -107,7 +107,7 @@ public class TeamSearchService {
         // 일기 29L
         // 글들 3L
         // 마인더 19L
-        return List.of(44L, 10L, 36L, 4L, 37L, 29L, 3L, 19L);
+        return List.of(56L, 58L, 57L, 54L, 37L, 29L, 3L, 19L);
     }
 
     /** 기본 검색 여부를 판단합니다. */
