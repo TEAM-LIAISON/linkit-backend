@@ -380,7 +380,7 @@ public class ChatControllerTest extends ControllerTest {
                                         .build())
                         .messages(
                                 Arrays.asList(
-                                        ChatResponseDTO.ChatMessageResponse.builder()
+                                        ChatResponseDTO.ChatMessageListResponse.builder()
                                                 .messageId("메시지 ID")
                                                 .chatRoomId(1L)
                                                 .myParticipantType("A_TYPE")
@@ -391,9 +391,8 @@ public class ChatControllerTest extends ControllerTest {
                                                         "메시지 발신자의 프로필 로고 이미지 경로")
                                                 .content("첫 번째 메시지")
                                                 .timestamp(LocalDateTime.now())
-                                                .isRead(false)
                                                 .build(),
-                                        ChatResponseDTO.ChatMessageResponse.builder()
+                                        ChatResponseDTO.ChatMessageListResponse.builder()
                                                 .messageId("메시지 ID")
                                                 .chatRoomId(2L)
                                                 .myParticipantType("B_TYPE")
@@ -404,7 +403,6 @@ public class ChatControllerTest extends ControllerTest {
                                                         "메시지 발신자의 프로필 로고 이미지 경로")
                                                 .content("두 번째 메시지")
                                                 .timestamp(LocalDateTime.now())
-                                                .isRead(false)
                                                 .build()))
                         .isChatPartnerOnline(true)
                         .build();
@@ -494,9 +492,6 @@ public class ChatControllerTest extends ControllerTest {
                                                 fieldWithPath("result.messages[].timestamp")
                                                         .type(JsonFieldType.STRING)
                                                         .description("메시지 전송 시간"),
-                                                fieldWithPath("result.messages[].read")
-                                                        .type(JsonFieldType.BOOLEAN)
-                                                        .description("메시지 읽음 여부"),
 
                                                 // 최상위 result 내 채팅 파트너 관련 정보
                                                 fieldWithPath("result.chatPartnerInformation")

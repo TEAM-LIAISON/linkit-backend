@@ -4,6 +4,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import liaison.linkit.notification.business.NotificationMapper;
+import liaison.linkit.notification.domain.type.NotificationType;
+import liaison.linkit.notification.domain.type.SubNotificationType;
+import liaison.linkit.notification.presentation.dto.NotificationResponseDTO;
+import liaison.linkit.notification.service.NotificationService;
 import liaison.linkit.profile.business.mapper.ProfileLogCommentMapper;
 import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.domain.log.ProfileLogComment;
@@ -39,6 +44,8 @@ public class ProfileLogCommentService {
 
     // Mappers
     private final ProfileLogCommentMapper profileLogCommentMapper;
+    private final NotificationMapper notificationMapper;
+    private final NotificationService notificationService;
 
     /**
      * 프로필 로그에 댓글을 추가합니다.
@@ -93,6 +100,22 @@ public class ProfileLogCommentService {
 
         // 7. 댓글 수 증가
         targetProfileLog.increaseCommentCount();
+
+        if (parentComment != null) {
+            // 대댓글 알림 → 부모 댓글 작성자에게
+            notifyComment(
+                    parentComment.getProfile().getMember().getId(),
+                    targetProfileLog,
+                    authorProfile,
+                    true);
+        } else {
+            // 일반 댓글 알림 → 프로필 로그 작성자에게
+            notifyComment(
+                    targetProfileLog.getProfile().getMember().getId(),
+                    targetProfileLog,
+                    authorProfile,
+                    false);
+        }
 
         // 8. 응답 생성
         return profileLogCommentMapper.toAddProfileLogCommentResponse(
@@ -273,5 +296,41 @@ public class ProfileLogCommentService {
                 .nextCursor(nextCursor)
                 .hasNext(nextCursor != null)
                 .build();
+    }
+
+    private void notifyComment(
+            Long receiverMemberId,
+            ProfileLog targetProfileLog,
+            Profile authorProfile,
+            boolean isChildComment) {
+        NotificationResponseDTO.NotificationDetails notificationDetails =
+                isChildComment
+                        ? NotificationResponseDTO.NotificationDetails.childComment(
+                                "PROFILE",
+                                targetProfileLog.getProfile().getMember().getEmailId(),
+                                targetProfileLog.getId(),
+                                null,
+                                null,
+                                "CHILD_COMMENT",
+                                authorProfile.getMember().getMemberBasicInform().getMemberName(),
+                                authorProfile.getProfileImagePath())
+                        : NotificationResponseDTO.NotificationDetails.parentComment(
+                                "PROFILE",
+                                targetProfileLog.getProfile().getMember().getEmailId(),
+                                targetProfileLog.getId(),
+                                null,
+                                null,
+                                "PARENT_COMMENT",
+                                authorProfile.getMember().getMemberBasicInform().getMemberName(),
+                                authorProfile.getProfileImagePath());
+
+        notificationService.alertNewNotification(
+                notificationMapper.toNotification(
+                        receiverMemberId,
+                        NotificationType.COMMENT,
+                        isChildComment
+                                ? SubNotificationType.CHILD_COMMENT
+                                : SubNotificationType.PARENT_COMMENT,
+                        notificationDetails));
     }
 }

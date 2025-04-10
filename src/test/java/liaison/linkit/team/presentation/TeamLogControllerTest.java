@@ -336,11 +336,32 @@ public class TeamLogControllerTest extends ControllerTest {
     void getTeamLogItems() throws Exception {
         // given
         final TeamLogResponseDTO.TeamLogItem firstTeamLogItem =
-                new TeamLogItem(
-                        true, 1L, true, REPRESENTATIVE_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
+                TeamLogItem.builder()
+                        .isTeamManager(true)
+                        .teamLogId(1L)
+                        .isLogPublic(true)
+                        .logType(REPRESENTATIVE_LOG)
+                        .createdAt("1시간 전")
+                        .modifiedAt(LocalDateTime.now())
+                        .logTitle("로그 제목")
+                        .logContent("로그 내용")
+                        .logViewCount(10L)
+                        .commentCount(15L)
+                        .build();
 
         final TeamLogResponseDTO.TeamLogItem secondTeamLogItem =
-                new TeamLogItem(true, 2L, true, GENERAL_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
+                TeamLogItem.builder()
+                        .isTeamManager(true)
+                        .teamLogId(1L)
+                        .isLogPublic(true)
+                        .logType(REPRESENTATIVE_LOG)
+                        .createdAt("1시간 전")
+                        .modifiedAt(LocalDateTime.now())
+                        .logTitle("로그 제목")
+                        .logContent("로그 내용")
+                        .logViewCount(10L)
+                        .commentCount(15L)
+                        .build();
 
         final TeamLogResponseDTO.TeamLogItems teamLogItems =
                 new TeamLogItems(Arrays.asList(firstTeamLogItem, secondTeamLogItem));
@@ -416,8 +437,18 @@ public class TeamLogControllerTest extends ControllerTest {
     void getTeamLogItem() throws Exception {
         // given
         final TeamLogResponseDTO.TeamLogItem teamLogItem =
-                new TeamLogItem(
-                        true, 1L, true, REPRESENTATIVE_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
+                TeamLogItem.builder()
+                        .isTeamManager(true)
+                        .teamLogId(1L)
+                        .isLogPublic(true)
+                        .logType(REPRESENTATIVE_LOG)
+                        .createdAt("1시간 전")
+                        .modifiedAt(LocalDateTime.now())
+                        .logTitle("로그 제목")
+                        .logContent("로그 내용")
+                        .logViewCount(10L)
+                        .commentCount(15L)
+                        .build();
 
         // when
         when(teamLogService.getTeamLogItem(any(), any(), anyLong())).thenReturn(teamLogItem);
@@ -464,6 +495,9 @@ public class TeamLogControllerTest extends ControllerTest {
                                                 fieldWithPath("result.logType")
                                                         .type(JsonFieldType.STRING)
                                                         .description("로그 유형 (대표글 여부)"),
+                                                fieldWithPath("result.createdAt")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("로그 생성 시간 (동적)"),
                                                 fieldWithPath("result.modifiedAt")
                                                         .type(JsonFieldType.STRING)
                                                         .description("로그 수정 시간"),
@@ -472,7 +506,13 @@ public class TeamLogControllerTest extends ControllerTest {
                                                         .description("로그 제목"),
                                                 fieldWithPath("result.logContent")
                                                         .type(JsonFieldType.STRING)
-                                                        .description("로그 내용"))))
+                                                        .description("로그 내용"),
+                                                fieldWithPath("result.logViewCount")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("로그 조회수"),
+                                                fieldWithPath("result.commentCount")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("로그 댓글수"))))
                         .andReturn();
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<TeamLogResponseDTO.TeamLogItem> actual =

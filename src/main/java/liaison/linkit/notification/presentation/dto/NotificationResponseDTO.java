@@ -137,6 +137,15 @@ public class NotificationResponseDTO {
         private Long visitorCount;
         private String visitedType;
 
+        private String logType;
+
+        private Long profileLogId;
+        private Long teamLogId;
+
+        private String commentType;
+        private String commentWriterName;
+        private String commentWriterImagePath;
+
         @Builder
         private NotificationDetails(
                 final String emailId,
@@ -156,7 +165,13 @@ public class NotificationResponseDTO {
                 final Long itemId,
                 final String itemType,
                 final Long visitorCount,
-                final String visitedType) {
+                final String visitedType,
+                final String logType,
+                final Long profileLogId,
+                final Long teamLogId,
+                final String commentType,
+                final String commentWriterName,
+                final String commentWriterImagePath) {
             this.emailId = emailId;
 
             this.chatRoomId = chatRoomId;
@@ -182,6 +197,13 @@ public class NotificationResponseDTO {
 
             this.visitorCount = visitorCount;
             this.visitedType = visitedType;
+
+            this.logType = logType;
+            this.profileLogId = profileLogId;
+            this.teamLogId = teamLogId;
+            this.commentType = commentType;
+            this.commentWriterName = commentWriterName;
+            this.commentWriterImagePath = commentWriterImagePath;
         }
 
         // 팀 초대 요청 알림 생성 (팀 삭제 여부 포함)
@@ -382,6 +404,48 @@ public class NotificationResponseDTO {
                     .teamCode(teamCode)
                     .visitorCount(visitorCount)
                     .visitedType(visitedType)
+                    .build();
+        }
+
+        public static NotificationDetails parentComment(
+                final String logType,
+                final String emailId,
+                final Long profileLogId,
+                final String teamCode,
+                final Long teamLogId,
+                final String commentType,
+                final String commentWriterName,
+                final String commentWriterImagePath) {
+            return NotificationDetails.builder()
+                    .logType(logType)
+                    .emailId(emailId)
+                    .profileLogId(profileLogId)
+                    .teamCode(teamCode)
+                    .teamLogId(teamLogId)
+                    .commentType(commentType)
+                    .commentWriterName(commentWriterName)
+                    .commentWriterImagePath(commentWriterImagePath)
+                    .build();
+        }
+
+        public static NotificationDetails childComment(
+                final String logType,
+                final String emailId,
+                final Long profileLogId,
+                final String teamCode,
+                final Long teamLogId,
+                final String commentType,
+                final String commentWriterName,
+                final String commentWriterImagePath) {
+            return NotificationDetails.builder()
+                    .logType(logType)
+                    .emailId(emailId)
+                    .profileLogId(profileLogId)
+                    .teamCode(teamCode)
+                    .teamLogId(teamLogId)
+                    .commentType(commentType)
+                    .commentWriterName(commentWriterName)
+                    .commentWriterImagePath(commentWriterImagePath)
                     .build();
         }
     }

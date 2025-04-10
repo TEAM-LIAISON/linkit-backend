@@ -575,6 +575,37 @@ public class NotificationControllerTest extends ControllerTest {
                                                         .type(JsonFieldType.STRING)
                                                         .description(
                                                                 "프로필/팀 방문자 타입 (PROFILE_VISITOR, TEAM_VISITOR)")
+                                                        .optional(),
+                                                fieldWithPath(
+                                                                "result.notificationItems[].notificationDetails.logType")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("로그 타입 (PROFILE / TEAM)")
+                                                        .optional(),
+                                                fieldWithPath(
+                                                                "result.notificationItems[].notificationDetails.profileLogId")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("프로필 로그 ID (로그 주체가 프로필인 경우)")
+                                                        .optional(),
+                                                fieldWithPath(
+                                                                "result.notificationItems[].notificationDetails.teamLogId")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("팀 로그 ID (로그 주체가 팀인 경우)")
+                                                        .optional(),
+                                                fieldWithPath(
+                                                                "result.notificationItems[].notificationDetails.commentType")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description(
+                                                                "댓글 타입 (PARENT_COMMENT, CHILD_COMMENT)")
+                                                        .optional(),
+                                                fieldWithPath(
+                                                                "result.notificationItems[].notificationDetails.commentWriterName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("댓글 작성자 이름")
+                                                        .optional(),
+                                                fieldWithPath(
+                                                                "result.notificationItems[].notificationDetails.commentWriterImagePath")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("댓글 작성자 프로필 이미지 경로")
                                                         .optional())))
                         .andReturn();
 
