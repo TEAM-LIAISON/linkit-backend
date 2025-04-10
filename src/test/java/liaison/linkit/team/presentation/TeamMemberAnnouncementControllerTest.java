@@ -960,6 +960,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                 .isPermanentRecruitment(true)
                                 .isAnnouncementInProgress(false)
                                 .isRegionFlexible(false)
+                                .projectIntroduction("프로젝트 소개")
                                 .mainTasks("주요 업무")
                                 .workMethod("업무 방식")
                                 .idealCandidate("이런 분을 찾고 있어요")
@@ -1110,6 +1111,9 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                 fieldWithPath("result.isRegionFlexible")
                                                         .type(JsonFieldType.BOOLEAN)
                                                         .description("지역 무관 여부"),
+                                                fieldWithPath("result.projectIntroduction")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("프로젝트 소개"),
                                                 fieldWithPath("result.mainTasks")
                                                         .type(JsonFieldType.STRING)
                                                         .description("주요 업무"),
@@ -1396,6 +1400,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 .announcementEndDate("공고 종료 날짜")
                 .isPermanentRecruitment(true)
                 .isRegionFlexible(false)
+                .projectIntroduction("프로젝트 소개")
                 .mainTasks("주요 업무")
                 .workMethod("업무 방식")
                 .idealCandidate("이런 분을 찾고 있어요")
