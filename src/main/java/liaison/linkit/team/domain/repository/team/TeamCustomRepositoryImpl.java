@@ -383,7 +383,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                                         .then(1)
                                         .when(qTeam.id.eq(57L))
                                         .then(2)
-                                        .when(qTeam.id.eq(54L))
+                                        .when(qTeam.id.eq(36L))
                                         .then(3)
                                         .when(qTeam.id.eq(1L))
                                         .then(4)
