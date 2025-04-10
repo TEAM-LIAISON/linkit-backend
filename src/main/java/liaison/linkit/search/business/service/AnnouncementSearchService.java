@@ -107,7 +107,7 @@ public class AnnouncementSearchService {
      * @return 제외할 팀 ID 목록
      */
     public List<Long> getExcludeAnnouncementIds() {
-        return List.of(69L, 67L, 47L, 40L, 38L, 42L);
+        return List.of(79L, 82L, 80L, 71L, 70L, 69L);
     }
 
     private List<AnnouncementInformMenu> getTopHotAnnouncements(
