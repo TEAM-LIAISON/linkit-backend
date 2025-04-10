@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.search.presentation.dto.team.FlatTeamDTO;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.team.type.TeamStatus;
 import liaison.linkit.team.presentation.team.dto.TeamDynamicResponse;
@@ -25,7 +26,7 @@ public interface TeamCustomRepository {
 
     void deleteTeamByTeamCode(final String teamCode);
 
-    List<Team> findHomeTopTeams(final int limit);
+    List<FlatTeamDTO> findHomeTopTeams(final int size);
 
     Page<Team> findTopVentureTeams(final Pageable pageable);
 

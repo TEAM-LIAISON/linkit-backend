@@ -20,6 +20,7 @@ import liaison.linkit.global.type.StatusType;
 import liaison.linkit.profile.domain.region.QRegion;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.search.presentation.dto.team.FlatTeamDTO;
 import liaison.linkit.team.domain.region.QTeamRegion;
 import liaison.linkit.team.domain.scale.QScale;
 import liaison.linkit.team.domain.scale.QTeamScale;
@@ -214,14 +215,61 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     }
 
     @Override
-    public List<Team> findHomeTopTeams(final int limit) {
+    public List<FlatTeamDTO> findHomeTopTeams(final int limit) {
         QTeam qTeam = QTeam.team;
+        QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
+        QRegion qRegion = QRegion.region;
+        QTeamScale qTeamScale = QTeamScale.teamScale;
+        QScale qScale = QScale.scale;
+        QTeamCurrentState qTeamCurrentState = QTeamCurrentState.teamCurrentState;
+        QTeamState qTeamState = QTeamState.teamState;
+
+        List<Long> targetTeamIds =
+                jpaQueryFactory
+                        .select(qTeam.id)
+                        .from(qTeam)
+                        .where(
+                                qTeam.status
+                                        .eq(USABLE)
+                                        .and(qTeam.isTeamPublic.eq(true))
+                                        .and(qTeam.id.in(50L, 52L, 36L, 4L)))
+                        .orderBy(
+                                new CaseBuilder()
+                                        .when(qTeam.id.eq(50L))
+                                        .then(0)
+                                        .when(qTeam.id.eq(52L))
+                                        .then(1)
+                                        .when(qTeam.id.eq(36L))
+                                        .then(2)
+                                        .when(qTeam.id.eq(4L))
+                                        .then(3)
+                                        .otherwise(4)
+                                        .asc())
+                        .limit(limit)
+                        .fetch();
 
         return jpaQueryFactory
-                .selectFrom(qTeam)
-                .where(qTeam.isTeamPublic.eq(true), qTeam.status.eq(USABLE))
+                .select(
+                        Projections.fields(
+                                FlatTeamDTO.class,
+                                qTeam.id.as("teamId"),
+                                qTeam.teamName.as("teamName"),
+                                qTeam.teamCode.as("teamCode"),
+                                qTeam.teamShortDescription.as("teamShortDescription"),
+                                qTeam.teamLogoImagePath.as("teamLogoImagePath"),
+                                qScale.scaleName.as("teamScaleName"),
+                                qRegion.cityName.as("cityName"),
+                                qRegion.divisionName.as("divisionName"),
+                                qTeamState.teamStateName.as("teamCurrentStateName")))
+                .from(qTeam)
+                .leftJoin(qTeam.teamRegions, qTeamRegion)
+                .leftJoin(qTeamRegion.region, qRegion)
+                .leftJoin(qTeam.teamScales, qTeamScale)
+                .leftJoin(qTeamScale.scale, qScale)
+                .leftJoin(qTeam.teamCurrentStates, qTeamCurrentState)
+                .leftJoin(qTeamCurrentState.teamState, qTeamState)
+                .where(qTeam.id.in(targetTeamIds))
                 .orderBy(
-                        // CASE WHEN 구문으로 지정한 순서대로 정렬
                         new CaseBuilder()
                                 .when(qTeam.id.eq(50L))
                                 .then(0)
@@ -233,7 +281,6 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                                 .then(3)
                                 .otherwise(4)
                                 .asc())
-                .limit(limit)
                 .fetch();
     }
 

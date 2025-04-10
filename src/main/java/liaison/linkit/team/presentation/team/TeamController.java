@@ -5,6 +5,7 @@ import java.util.Optional;
 import jakarta.validation.Valid;
 
 import liaison.linkit.auth.Auth;
+import liaison.linkit.auth.CurrentMemberId;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
@@ -36,11 +37,8 @@ public class TeamController {
     @GetMapping("/home/team")
     @Logging(item = "Team", action = "GET_HOME_TEAM_INFORM_MENUS", includeResult = false)
     public CommonResponse<TeamResponseDTO.TeamInformMenus> getHomeTeamInformMenus(
-            @Auth final Accessor accessor) {
-        Optional<Long> optionalMemberId =
-                accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
-
-        return CommonResponse.onSuccess(teamService.getHomeTeamInformMenus(optionalMemberId));
+            @CurrentMemberId Optional<Long> memberId) {
+        return CommonResponse.onSuccess(teamService.getHomeTeamInformMenus(memberId));
     }
 
     // 팀 생성하기

@@ -3,8 +3,7 @@ package liaison.linkit.search.presentation;
 import java.util.List;
 import java.util.Optional;
 
-import liaison.linkit.auth.Auth;
-import liaison.linkit.auth.domain.Accessor;
+import liaison.linkit.auth.CurrentMemberId;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.search.business.service.AnnouncementSearchService;
@@ -39,13 +38,10 @@ public class AnnouncementSearchController {
             action = "GET_ANNOUNCEMENT_SEARCH_INFO",
             includeResult = false)
     public CommonResponse<AnnouncementListResponseDTO> getFeaturedAnnouncements(
-            @Auth final Accessor accessor) {
-
-        Optional<Long> optionalMemberId =
-                accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+            @CurrentMemberId Optional<Long> memberId) {
 
         AnnouncementListResponseDTO featuredAnnouncements =
-                announcementSearchService.getFeaturedAnnouncements(optionalMemberId);
+                announcementSearchService.getFeaturedAnnouncements(memberId);
 
         return CommonResponse.onSuccess(featuredAnnouncements);
     }
@@ -67,7 +63,7 @@ public class AnnouncementSearchController {
             includeResult = false)
     public CommonResponse<CursorResponse<TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu>>
             searchAnnouncements(
-                    @Auth final Accessor accessor,
+                    @CurrentMemberId Optional<Long> memberId,
                     @RequestParam(value = "cursor", required = false) String cursor,
                     @RequestParam(value = "size", defaultValue = "100") int size,
                     @RequestParam(value = "subPosition", required = false) List<String> subPosition,
@@ -78,8 +74,6 @@ public class AnnouncementSearchController {
                             List<String> workTypeName,
                     @RequestParam(value = "sortBy", defaultValue = "LATEST")
                             AnnouncementSortType sortType) {
-        Optional<Long> optionalMemberId =
-                accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
 
         // 공고에서 받는 cursor 값은 teamMemberAnnouncement id를 받는다.
         CursorRequest cursorRequest = new CursorRequest(cursor, size);
@@ -87,7 +81,7 @@ public class AnnouncementSearchController {
         CursorResponse<TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu>
                 announcementSearchResult =
                         announcementSearchService.searchAnnouncementsWithCursor(
-                                optionalMemberId,
+                                memberId,
                                 subPosition,
                                 cityName,
                                 projectTypeName,

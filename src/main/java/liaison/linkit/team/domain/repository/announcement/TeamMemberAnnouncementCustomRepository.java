@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import liaison.linkit.search.presentation.dto.announcement.FlatAnnouncementDTO;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import liaison.linkit.search.sortType.AnnouncementSortType;
@@ -74,4 +75,8 @@ public interface TeamMemberAnnouncementCustomRepository {
     List<TeamMemberAnnouncement> findAllByIsNotPermanentRecruitment();
 
     List<AnnouncementDynamicResponse> findAllDynamicVariablesWithTeamMemberAnnouncement();
+
+    List<FlatAnnouncementDTO> findHomeTopAnnouncements(int limit);
+
+    List<FlatAnnouncementDTO> findTopHotAnnouncements(int limit);
 }
