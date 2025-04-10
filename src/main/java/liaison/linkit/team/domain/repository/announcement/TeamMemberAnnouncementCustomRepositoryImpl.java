@@ -1063,4 +1063,119 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                 .asc())
                 .fetch();
     }
+
+    public List<FlatAnnouncementDTO> findTopHotAnnouncements(final int limit) {
+        QTeamMemberAnnouncement qTeamMemberAnnouncement =
+                QTeamMemberAnnouncement.teamMemberAnnouncement;
+        QTeam qTeam = QTeam.team;
+
+        QTeamScale qTeamScale = QTeamScale.teamScale;
+        QScale qScale = QScale.scale;
+
+        QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
+        QRegion qRegion = QRegion.region;
+
+        QAnnouncementPosition qAnnouncementPosition = QAnnouncementPosition.announcementPosition;
+        QPosition qPosition = QPosition.position;
+
+        QAnnouncementSkill qAnnouncementSkill = QAnnouncementSkill.announcementSkill;
+        QSkill qSkill = QSkill.skill;
+
+        List<Long> targetAnnouncementIds =
+                jpaQueryFactory
+                        .select(qTeamMemberAnnouncement.id)
+                        .from(qTeamMemberAnnouncement)
+                        .where(
+                                qTeamMemberAnnouncement
+                                        .status
+                                        .eq(USABLE)
+                                        .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
+                                        .and(
+                                                qTeamMemberAnnouncement.id.in(
+                                                        79L, 69L, 67L, 40L, 38L, 42L, 36L, 32L,
+                                                        22L)))
+                        .orderBy(
+                                // CASE WHEN 구문으로 지정한 순서대로 정렬
+                                new CaseBuilder()
+                                        .when(qTeamMemberAnnouncement.id.eq(79L))
+                                        .then(0)
+                                        .when(qTeamMemberAnnouncement.id.eq(69L))
+                                        .then(1)
+                                        .when(qTeamMemberAnnouncement.id.eq(67L))
+                                        .then(2)
+                                        .when(qTeamMemberAnnouncement.id.eq(40L))
+                                        .then(3)
+                                        .when(qTeamMemberAnnouncement.id.eq(38L))
+                                        .then(4)
+                                        .when(qTeamMemberAnnouncement.id.eq(42L))
+                                        .then(5)
+                                        .when(qTeamMemberAnnouncement.id.eq(36L))
+                                        .then(6)
+                                        .when(qTeamMemberAnnouncement.id.eq(32L))
+                                        .then(7)
+                                        .when(qTeamMemberAnnouncement.id.eq(22L))
+                                        .then(8)
+                                        .otherwise(9)
+                                        .asc())
+                        .limit(limit)
+                        .fetch();
+
+        return jpaQueryFactory
+                .select(
+                        Projections.fields(
+                                FlatAnnouncementDTO.class,
+                                qTeamMemberAnnouncement.id.as("teamMemberAnnouncementId"),
+                                qTeam.teamLogoImagePath.as("teamLogoImagePath"),
+                                qTeam.teamName.as("teamName"),
+                                qTeam.teamCode.as("teamCode"),
+                                qScale.scaleName.as("teamScaleName"),
+                                qRegion.cityName.as("cityName"),
+                                qRegion.divisionName.as("divisionName"),
+                                qTeamMemberAnnouncement.isAnnouncementInProgress.as(
+                                        "isAnnouncementInProgress"),
+                                qTeamMemberAnnouncement.announcementEndDate.as(
+                                        "announcementEndDate"),
+                                qTeamMemberAnnouncement.isPermanentRecruitment.as(
+                                        "isPermanentRecruitment"),
+                                qTeamMemberAnnouncement.announcementTitle.as("announcementTitle"),
+                                qTeamMemberAnnouncement.viewCount.as("viewCount"),
+                                qPosition.majorPosition.as("majorPosition"),
+                                qPosition.subPosition.as("subPosition"),
+                                qSkill.skillName.as("announcementSkillName"),
+                                qTeamMemberAnnouncement.createdAt.as("createdAt")))
+                .from(qTeamMemberAnnouncement)
+                .leftJoin(qTeamMemberAnnouncement.team, qTeam)
+                .leftJoin(qTeam.teamScales, qTeamScale)
+                .leftJoin(qTeamScale.scale, qScale)
+                .leftJoin(qTeam.teamRegions, qTeamRegion)
+                .leftJoin(qTeamRegion.region, qRegion)
+                .leftJoin(qTeamMemberAnnouncement.announcementPosition, qAnnouncementPosition)
+                .leftJoin(qAnnouncementPosition.position, qPosition)
+                .leftJoin(qTeamMemberAnnouncement.announcementSkills, qAnnouncementSkill)
+                .leftJoin(qAnnouncementSkill.skill, qSkill)
+                .where(qTeamMemberAnnouncement.id.in(targetAnnouncementIds))
+                .orderBy(
+                        new CaseBuilder()
+                                .when(qTeamMemberAnnouncement.id.eq(79L))
+                                .then(0)
+                                .when(qTeamMemberAnnouncement.id.eq(69L))
+                                .then(1)
+                                .when(qTeamMemberAnnouncement.id.eq(67L))
+                                .then(2)
+                                .when(qTeamMemberAnnouncement.id.eq(40L))
+                                .then(3)
+                                .when(qTeamMemberAnnouncement.id.eq(38L))
+                                .then(4)
+                                .when(qTeamMemberAnnouncement.id.eq(42L))
+                                .then(5)
+                                .when(qTeamMemberAnnouncement.id.eq(36L))
+                                .then(6)
+                                .when(qTeamMemberAnnouncement.id.eq(32L))
+                                .then(7)
+                                .when(qTeamMemberAnnouncement.id.eq(22L))
+                                .then(8)
+                                .otherwise(9)
+                                .asc())
+                .fetch();
+    }
 }

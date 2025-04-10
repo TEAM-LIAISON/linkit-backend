@@ -1,21 +1,25 @@
 package liaison.linkit.search.business.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
+import jakarta.validation.constraints.NotNull;
+
+import liaison.linkit.scrap.domain.repository.announcementScrap.AnnouncementScrapRepository;
 import liaison.linkit.search.presentation.dto.announcement.AnnouncementListResponseDTO;
+import liaison.linkit.search.presentation.dto.announcement.FlatAnnouncementDTO;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import liaison.linkit.search.sortType.AnnouncementSortType;
 import liaison.linkit.team.business.assembler.announcement.AnnouncementInformMenuAssembler;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,22 +31,14 @@ public class AnnouncementSearchService {
 
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
     private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
+    private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
+    private final AnnouncementScrapRepository announcementScrapRepository;
 
     public AnnouncementListResponseDTO getFeaturedAnnouncements(
             final Optional<Long> optionalMemberId) {
-        Pageable pageable = PageRequest.of(0, 6);
-        Page<TeamMemberAnnouncement> hotAnnouncements =
-                teamMemberAnnouncementQueryAdapter.findHotAnnouncements(pageable);
-
-        List<AnnouncementInformMenu> hotAnnouncementDTOs =
-                hotAnnouncements.stream()
-                        .map(
-                                teamMemberAnnouncement ->
-                                        announcementInformMenuAssembler.mapToAnnouncementInformMenu(
-                                                teamMemberAnnouncement, optionalMemberId))
-                        .toList();
-
-        return AnnouncementListResponseDTO.of(hotAnnouncementDTOs);
+        List<AnnouncementInformMenu> topAnnouncementDTOs =
+                getTopHotAnnouncements(6, optionalMemberId);
+        return AnnouncementListResponseDTO.of(topAnnouncementDTOs);
     }
 
     public CursorResponse<AnnouncementInformMenu> searchAnnouncementsWithCursor(
@@ -112,5 +108,40 @@ public class AnnouncementSearchService {
      */
     public List<Long> getExcludeAnnouncementIds() {
         return List.of(69L, 67L, 47L, 40L, 38L, 42L);
+    }
+
+    private List<AnnouncementInformMenu> getTopHotAnnouncements(
+            int limit, Optional<Long> optionalMemberId) {
+        List<FlatAnnouncementDTO> raw =
+                teamMemberAnnouncementRepository.findTopHotAnnouncements(limit);
+        return getAnnouncementInformMenus(limit, optionalMemberId, raw);
+    }
+
+    @NotNull
+    private List<AnnouncementInformMenu> getAnnouncementInformMenus(
+            int limit, Optional<Long> optionalMemberId, List<FlatAnnouncementDTO> raw) {
+
+        List<Long> announcementIds =
+                raw.stream()
+                        .map(FlatAnnouncementDTO::getTeamMemberAnnouncementId)
+                        .distinct()
+                        .toList();
+        Set<Long> scraps =
+                optionalMemberId
+                        .map(
+                                memberId ->
+                                        announcementScrapRepository
+                                                .findScrappedAnnouncementIdsByMember(
+                                                        memberId, announcementIds))
+                        .orElse(Set.of());
+
+        Map<Long, Integer> scrapCounts =
+                announcementScrapRepository.countScrapsGroupedByAnnouncement(announcementIds);
+
+        List<AnnouncementInformMenu> menus =
+                announcementInformMenuAssembler.assembleAnnouncementInformMenus(
+                        raw, scraps, scrapCounts);
+
+        return menus.size() > limit ? menus.subList(0, limit) : menus;
     }
 }

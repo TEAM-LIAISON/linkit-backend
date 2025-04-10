@@ -3,9 +3,7 @@ package liaison.linkit.search.presentation;
 import java.util.List;
 import java.util.Optional;
 
-import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.CurrentMemberId;
-import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.search.business.service.AnnouncementSearchService;
@@ -40,13 +38,10 @@ public class AnnouncementSearchController {
             action = "GET_ANNOUNCEMENT_SEARCH_INFO",
             includeResult = false)
     public CommonResponse<AnnouncementListResponseDTO> getFeaturedAnnouncements(
-            @Auth final Accessor accessor) {
-
-        Optional<Long> optionalMemberId =
-                accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+            @CurrentMemberId Optional<Long> memberId) {
 
         AnnouncementListResponseDTO featuredAnnouncements =
-                announcementSearchService.getFeaturedAnnouncements(optionalMemberId);
+                announcementSearchService.getFeaturedAnnouncements(memberId);
 
         return CommonResponse.onSuccess(featuredAnnouncements);
     }

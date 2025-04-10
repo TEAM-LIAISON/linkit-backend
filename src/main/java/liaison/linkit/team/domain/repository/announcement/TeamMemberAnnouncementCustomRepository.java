@@ -77,4 +77,6 @@ public interface TeamMemberAnnouncementCustomRepository {
     List<AnnouncementDynamicResponse> findAllDynamicVariablesWithTeamMemberAnnouncement();
 
     List<FlatAnnouncementDTO> findHomeTopAnnouncements(int limit);
+
+    List<FlatAnnouncementDTO> findTopHotAnnouncements(int limit);
 }
