@@ -4,15 +4,21 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import jakarta.validation.constraints.NotNull;
 
 import liaison.linkit.common.domain.Position;
 import liaison.linkit.global.util.DateUtils;
 import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.implement.position.PositionQueryAdapter;
 import liaison.linkit.profile.implement.skill.SkillQueryAdapter;
+import liaison.linkit.scrap.domain.repository.announcementScrap.AnnouncementScrapRepository;
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapCommandAdapter;
+import liaison.linkit.search.presentation.dto.announcement.FlatAnnouncementDTO;
 import liaison.linkit.team.business.assembler.announcement.AnnouncementDetailAssembler;
 import liaison.linkit.team.business.assembler.announcement.AnnouncementInformMenuAssembler;
 import liaison.linkit.team.business.assembler.announcement.AnnouncementViewItemsAssembler;
@@ -21,6 +27,7 @@ import liaison.linkit.team.business.mapper.announcement.AnnouncementProjectTypeM
 import liaison.linkit.team.business.mapper.announcement.AnnouncementSkillMapper;
 import liaison.linkit.team.business.mapper.announcement.AnnouncementWorkTypeMapper;
 import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
+import liaison.linkit.team.business.mapper.teamMember.TeamMemberMapper;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
 import liaison.linkit.team.domain.announcement.AnnouncementProjectType;
 import liaison.linkit.team.domain.announcement.AnnouncementSkill;
@@ -47,6 +54,7 @@ import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.implement.workType.WorkTypeQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenus;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems;
@@ -84,7 +92,6 @@ public class TeamMemberAnnouncementService {
     private final AnnouncementViewItemsAssembler announcementViewItemsAssembler;
     private final AnnouncementScrapCommandAdapter announcementScrapCommandAdapter;
 
-    private final ViewCountService viewCountService;
     private final ProjectTypeQueryAdapter projectTypeQueryAdapter;
     private final WorkTypeQueryAdapter workTypeQueryAdapter;
     private final AnnouncementProjectTypeCommandAdapter announcementProjectTypeCommandAdapter;
@@ -93,6 +100,9 @@ public class TeamMemberAnnouncementService {
     private final AnnouncementWorkTypeMapper announcementWorkTypeMapper;
     private final AnnouncementProjectTypeQueryAdapter announcementProjectTypeQueryAdapter;
     private final AnnouncementWorkTypeQueryAdapter announcementWorkTypeQueryAdapter;
+
+    private final AnnouncementScrapRepository announcementScrapRepository;
+    private final TeamMemberMapper teamMemberMapper;
 
     @Transactional(readOnly = true)
     public TeamMemberAnnouncementItems getTeamMemberAnnouncementViewItems(
@@ -398,8 +408,11 @@ public class TeamMemberAnnouncementService {
     @Transactional(readOnly = true)
     public AnnouncementInformMenus getHomeAnnouncementInformMenus(
             final Optional<Long> optionalMemberId) {
-        return announcementInformMenuAssembler.assembleHomeAnnouncementInformMenus(
-                optionalMemberId);
+        List<FlatAnnouncementDTO> raw =
+                teamMemberAnnouncementQueryAdapter.findHomeTopAnnouncements(9);
+        List<AnnouncementInformMenu> homeAnnouncementInformMenus =
+                getAnnouncementInformMenus(9, optionalMemberId, raw);
+        return teamMemberAnnouncementMapper.toAnnouncementInformMenus(homeAnnouncementInformMenus);
     }
 
     /**
@@ -456,5 +469,33 @@ public class TeamMemberAnnouncementService {
         }
 
         return false; // endDate가 null이거나 빈 문자열인 경우 기본적으로 false
+    }
+
+    @NotNull
+    private List<AnnouncementInformMenu> getAnnouncementInformMenus(
+            int limit, Optional<Long> optionalMemberId, List<FlatAnnouncementDTO> raw) {
+
+        List<Long> announcementIds =
+                raw.stream()
+                        .map(FlatAnnouncementDTO::getTeamMemberAnnouncementId)
+                        .distinct()
+                        .toList();
+        Set<Long> scraps =
+                optionalMemberId
+                        .map(
+                                memberId ->
+                                        announcementScrapRepository
+                                                .findScrappedAnnouncementIdsByMember(
+                                                        memberId, announcementIds))
+                        .orElse(Set.of());
+
+        Map<Long, Integer> scrapCounts =
+                announcementScrapRepository.countScrapsGroupedByAnnouncement(announcementIds);
+
+        List<AnnouncementInformMenu> menus =
+                announcementInformMenuAssembler.assembleAnnouncementInformMenus(
+                        raw, scraps, scrapCounts);
+
+        return menus.size() > limit ? menus.subList(0, limit) : menus;
     }
 }

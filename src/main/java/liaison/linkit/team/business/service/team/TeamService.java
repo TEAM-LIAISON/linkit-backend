@@ -371,9 +371,6 @@ public class TeamService {
                                 NotificationType.TEAM,
                                 SubNotificationType.REMOVE_TEAM_REQUESTED,
                                 removeTeamNotificationDetails));
-
-                //                headerNotificationService.publishNotificationCount(
-                //                        currentTeamMember.getMember().getId());
             }
         } else { // 오너만 해당 팀을 소유하고 있는 경우
             isTeamLastDeleteRequester = true;
