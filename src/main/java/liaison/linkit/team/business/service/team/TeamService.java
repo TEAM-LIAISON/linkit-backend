@@ -2,7 +2,11 @@ package liaison.linkit.team.business.service.team;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+
+import jakarta.validation.constraints.NotNull;
 
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
@@ -22,6 +26,8 @@ import liaison.linkit.notification.service.NotificationService;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.region.Region;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
+import liaison.linkit.scrap.domain.repository.teamScrap.TeamScrapRepository;
+import liaison.linkit.search.presentation.dto.team.FlatTeamDTO;
 import liaison.linkit.team.business.assembler.team.TeamDetailAssembler;
 import liaison.linkit.team.business.assembler.team.TeamInformMenuAssembler;
 import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
@@ -29,6 +35,7 @@ import liaison.linkit.team.business.mapper.state.TeamCurrentStateMapper;
 import liaison.linkit.team.business.mapper.team.TeamMapper;
 import liaison.linkit.team.business.mapper.teamMember.TeamMemberMapper;
 import liaison.linkit.team.domain.region.TeamRegion;
+import liaison.linkit.team.domain.repository.team.TeamRepository;
 import liaison.linkit.team.domain.scale.Scale;
 import liaison.linkit.team.domain.scale.TeamScale;
 import liaison.linkit.team.domain.state.TeamCurrentState;
@@ -111,6 +118,8 @@ public class TeamService {
     private final ProfileQueryAdapter profileQueryAdapter;
 
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final TeamRepository teamRepository;
+    private final TeamScrapRepository teamScrapRepository;
 
     // 초기 팀 생성
     public TeamResponseDTO.AddTeamResponse createTeam(
@@ -362,9 +371,6 @@ public class TeamService {
                                 NotificationType.TEAM,
                                 SubNotificationType.REMOVE_TEAM_REQUESTED,
                                 removeTeamNotificationDetails));
-
-                //                headerNotificationService.publishNotificationCount(
-                //                        currentTeamMember.getMember().getId());
             }
         } else { // 오너만 해당 팀을 소유하고 있는 경우
             isTeamLastDeleteRequester = true;
@@ -390,21 +396,30 @@ public class TeamService {
         return teamMapper.toDeleteTeam(teamCode, isTeamLastDeleteRequester);
     }
 
-    public TeamResponseDTO.TeamInformMenus getHomeTeamInformMenus(
-            final Optional<Long> optionalMemberId) {
-        List<Team> targetTopTeams = teamQueryAdapter.findHomeTopTeams(4);
+    public TeamResponseDTO.TeamInformMenus getHomeTeamInformMenus(Optional<Long> optionalMemberId) {
+        List<FlatTeamDTO> raw = teamRepository.findHomeTopTeams(4);
+        List<TeamInformMenu> homeTeamInformMenus = getTeamInformMenus(4, optionalMemberId, raw);
 
-        // Teams -> TeamInformMenus 변환
-        List<TeamResponseDTO.TeamInformMenu> teamInformMenus =
-                targetTopTeams.stream()
-                        .map(targetTeam -> buildTeamInformMenu(targetTeam, optionalMemberId))
-                        .toList();
-
-        return teamMapper.toTeamInformMenus(teamInformMenus);
+        return teamMapper.toTeamInformMenus(homeTeamInformMenus);
     }
 
-    private TeamResponseDTO.TeamInformMenu buildTeamInformMenu(
-            final Team targetTeam, final Optional<Long> optionalMemberId) {
-        return teamInformMenuAssembler.assembleTeamInformMenu(targetTeam, optionalMemberId);
+    @NotNull
+    private List<TeamInformMenu> getTeamInformMenus(
+            int size, Optional<Long> optionalMemberId, List<FlatTeamDTO> raw) {
+        List<Long> teamIds = raw.stream().map(FlatTeamDTO::getTeamId).distinct().toList();
+        Set<Long> scraps =
+                optionalMemberId
+                        .map(
+                                memberId ->
+                                        teamScrapRepository.findScrappedTeamIdsByMember(
+                                                memberId, teamIds))
+                        .orElse(Set.of());
+
+        Map<Long, Integer> scrapCounts = teamScrapRepository.countScrapsGroupedByTeam(teamIds);
+
+        List<TeamInformMenu> menus =
+                teamInformMenuAssembler.assembleTeamInformMenus(raw, scraps, scrapCounts);
+
+        return menus.size() > size ? menus.subList(0, size) : menus;
     }
 }

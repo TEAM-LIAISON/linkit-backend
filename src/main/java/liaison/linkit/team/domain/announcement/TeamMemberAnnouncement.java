@@ -4,6 +4,9 @@ import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -45,6 +49,10 @@ public class TeamMemberAnnouncement extends BaseEntity {
 
     @OneToOne(mappedBy = "teamMemberAnnouncement")
     private AnnouncementWorkType announcementWorkType;
+
+    @OneToMany(mappedBy = "teamMemberAnnouncement")
+    @Builder.Default
+    private List<AnnouncementSkill> announcementSkills = new ArrayList<>();
 
     @Column(nullable = false, length = 50)
     private String announcementTitle; // 공고 제목

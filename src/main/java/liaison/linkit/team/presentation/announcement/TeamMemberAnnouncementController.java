@@ -3,6 +3,7 @@ package liaison.linkit.team.presentation.announcement;
 import java.util.Optional;
 
 import liaison.linkit.auth.Auth;
+import liaison.linkit.auth.CurrentMemberId;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
@@ -33,17 +34,11 @@ public class TeamMemberAnnouncementController {
 
     // 홈화면 모집 공고 조회
     @GetMapping("/home/announcement")
-    @Logging(
-            item = "Team_Member_Announcement",
-            action = "GET_HOME_ANNOUNCEMENT_INFORM_MENUS",
-            includeResult = false)
+    @Logging(item = "Team_Member_Announcement", action = "GET_HOME_ANNOUNCEMENT_INFORM_MENUS")
     public CommonResponse<AnnouncementInformMenus> getHomeAnnouncementInformMenus(
-            @Auth final Accessor accessor) {
-        ;
-        Optional<Long> optionalMemberId =
-                accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+            @CurrentMemberId Optional<Long> memberId) {
         return CommonResponse.onSuccess(
-                teamMemberAnnouncementService.getHomeAnnouncementInformMenus(optionalMemberId));
+                teamMemberAnnouncementService.getHomeAnnouncementInformMenus(memberId));
     }
 
     // 팀원 공고 뷰어 전체 조회

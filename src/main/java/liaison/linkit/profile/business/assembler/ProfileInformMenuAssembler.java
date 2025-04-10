@@ -188,8 +188,8 @@ public class ProfileInformMenuAssembler {
             Set<Long> scrappedProfileIds,
             Map<Long, Integer> scrapCounts,
             Map<Long, List<ProfileTeamInform>> teamInformMap) {
-        Map<Long, ProfileInformMenu.ProfileInformMenuBuilder> builderMap = new LinkedHashMap<>();
 
+        // 1. profileId 기준 상태 항목 맵핑
         Map<Long, List<ProfileCurrentStateItem>> stateMap =
                 flatDtos.stream()
                         .filter(dto -> dto.getProfileStateName() != null)
@@ -201,6 +201,9 @@ public class ProfileInformMenuAssembler {
                                                         new ProfileCurrentStateItem(
                                                                 dto.getProfileStateName()),
                                                 Collectors.toList())));
+
+        // 2. 각 profileId마다 빌더 초기화 및 상태 리스트 설정
+        Map<Long, ProfileInformMenu.ProfileInformMenuBuilder> builderMap = new LinkedHashMap<>();
 
         for (FlatProfileDTO dto : flatDtos) {
             builderMap.computeIfAbsent(
@@ -216,7 +219,7 @@ public class ProfileInformMenuAssembler {
                                     .regionDetail(
                                             new RegionDetail(
                                                     dto.getCityName(), dto.getDivisionName()))
-                                    .profileCurrentStates(new ArrayList<>())
+                                    .profileCurrentStates(new ArrayList<>()) // 나중에 덮어씌움
                                     .isProfileScrap(scrappedProfileIds.contains(dto.getProfileId()))
                                     .profileScrapCount(
                                             scrapCounts.getOrDefault(dto.getProfileId(), 0))
@@ -224,19 +227,13 @@ public class ProfileInformMenuAssembler {
                                             teamInformMap.getOrDefault(
                                                     dto.getProfileId(), List.of())));
 
-            var builder = builderMap.get(dto.getProfileId());
-
-            if (dto.getSubPosition() != null && !builderMap.containsKey(dto.getProfileId())) {
-                builder.subPosition(dto.getSubPosition());
-            }
-
-            if (dto.getMajorPosition() != null && !builderMap.containsKey(dto.getProfileId())) {
-                builder.majorPosition(dto.getMajorPosition());
-            }
-
-            builder.profileCurrentStates(stateMap.getOrDefault(dto.getProfileId(), List.of()));
+            // 상태 정보만 별도 설정 (기존 builder에 덮어쓰기)
+            builderMap
+                    .get(dto.getProfileId())
+                    .profileCurrentStates(stateMap.getOrDefault(dto.getProfileId(), List.of()));
         }
 
+        // 3. 최종 빌드된 ProfileInformMenu 리스트 반환
         return builderMap.values().stream()
                 .map(ProfileInformMenu.ProfileInformMenuBuilder::build)
                 .toList();

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import liaison.linkit.common.annotation.Adapter;
+import liaison.linkit.search.presentation.dto.announcement.FlatAnnouncementDTO;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import liaison.linkit.search.sortType.AnnouncementSortType;
@@ -101,5 +102,9 @@ public class TeamMemberAnnouncementQueryAdapter {
 
     public List<TeamMemberAnnouncement> findAllByIsNotPermanentRecruitment() {
         return teamMemberAnnouncementRepository.findAllByIsNotPermanentRecruitment();
+    }
+
+    public List<FlatAnnouncementDTO> findHomeTopAnnouncements(final int limit) {
+        return teamMemberAnnouncementRepository.findHomeTopAnnouncements(limit);
     }
 }

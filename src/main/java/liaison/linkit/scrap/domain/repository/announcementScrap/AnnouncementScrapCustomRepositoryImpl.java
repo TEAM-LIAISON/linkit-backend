@@ -1,6 +1,10 @@
 package liaison.linkit.scrap.domain.repository.announcementScrap;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.scrap.domain.AnnouncementScrap;
@@ -105,5 +109,45 @@ public class AnnouncementScrapCustomRepositoryImpl implements AnnouncementScrapC
                                 qAnnouncementScrap.teamMemberAnnouncement.id.in(
                                         teamMemberAnnouncementIds))
                         .execute();
+    }
+
+    @Override
+    public Set<Long> findScrappedAnnouncementIdsByMember(
+            Long memberId, List<Long> announcementIds) {
+        QAnnouncementScrap qAnnouncementScrap = QAnnouncementScrap.announcementScrap;
+
+        if (memberId == null || announcementIds == null || announcementIds.isEmpty()) {
+            return Set.of();
+        }
+
+        return new HashSet<>(
+                jpaQueryFactory
+                        .select(qAnnouncementScrap.teamMemberAnnouncement.id)
+                        .from(qAnnouncementScrap)
+                        .where(
+                                qAnnouncementScrap.member.id.eq(memberId),
+                                qAnnouncementScrap.teamMemberAnnouncement.id.in(announcementIds))
+                        .fetch());
+    }
+
+    @Override
+    public Map<Long, Integer> countScrapsGroupedByAnnouncement(List<Long> announcementIds) {
+        QAnnouncementScrap qAnnouncementScrap = QAnnouncementScrap.announcementScrap;
+
+        return jpaQueryFactory
+                .select(qAnnouncementScrap.teamMemberAnnouncement.id, qAnnouncementScrap.count())
+                .from(qAnnouncementScrap)
+                .where(qAnnouncementScrap.teamMemberAnnouncement.id.in(announcementIds))
+                .groupBy(qAnnouncementScrap.teamMemberAnnouncement.id)
+                .fetch()
+                .stream()
+                .filter(tuple -> tuple.get(qAnnouncementScrap.teamMemberAnnouncement.id) != null)
+                .collect(
+                        Collectors.toMap(
+                                tuple -> tuple.get(qAnnouncementScrap.teamMemberAnnouncement.id),
+                                tuple -> {
+                                    Long count = tuple.get(qAnnouncementScrap.count());
+                                    return count != null ? count.intValue() : 0;
+                                }));
     }
 }

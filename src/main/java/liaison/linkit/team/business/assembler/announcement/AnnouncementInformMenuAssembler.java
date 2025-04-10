@@ -1,9 +1,16 @@
 package liaison.linkit.team.business.assembler.announcement;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.global.util.DateUtils;
+import liaison.linkit.search.presentation.dto.announcement.FlatAnnouncementDTO;
 import liaison.linkit.team.business.assembler.common.AnnouncementCommonAssembler;
 import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
@@ -112,5 +119,80 @@ public class AnnouncementInformMenuAssembler {
                 announcementScrapCount,
                 announcementPositionItem,
                 announcementSkillNames);
+    }
+
+    public List<AnnouncementInformMenu> assembleAnnouncementInformMenus(
+            List<FlatAnnouncementDTO> flatDtos,
+            Set<Long> scrappedAnnouncementIds,
+            Map<Long, Integer> scrapCounts) {
+        Map<Long, AnnouncementInformMenu.AnnouncementInformMenuBuilder> builderMap =
+                new LinkedHashMap<>();
+
+        Map<Long, List<AnnouncementSkillName>> stateMap =
+                flatDtos.stream()
+                        .filter(dto -> dto.getAnnouncementSkillName() != null)
+                        .collect(
+                                Collectors.groupingBy(
+                                        FlatAnnouncementDTO::getTeamMemberAnnouncementId,
+                                        Collectors.mapping(
+                                                dto ->
+                                                        new AnnouncementSkillName(
+                                                                dto.getAnnouncementSkillName()),
+                                                Collectors.toList())));
+
+        for (FlatAnnouncementDTO dto : flatDtos) {
+            builderMap.computeIfAbsent(
+                    dto.getTeamMemberAnnouncementId(),
+                    id ->
+                            AnnouncementInformMenu.builder()
+                                    .teamMemberAnnouncementId(dto.getTeamMemberAnnouncementId())
+                                    .teamLogoImagePath(dto.getTeamLogoImagePath())
+                                    .teamName(dto.getTeamName())
+                                    .teamCode(dto.getTeamCode())
+                                    .teamScaleItem(new TeamScaleItem(dto.getTeamScaleName()))
+                                    .regionDetail(
+                                            new RegionDetail(
+                                                    dto.getCityName(), dto.getDivisionName()))
+                                    .announcementDDay(
+                                            (Boolean.FALSE.equals(dto.getIsPermanentRecruitment())
+                                                            && dto.getAnnouncementEndDate() != null)
+                                                    ? DateUtils.calculateDDay(
+                                                            dto.getAnnouncementEndDate())
+                                                    : -1)
+                                    .isClosed(
+                                            Boolean.FALSE.equals(dto.getIsAnnouncementInProgress())
+                                                    || (Boolean.FALSE.equals(
+                                                                    dto.getIsPermanentRecruitment())
+                                                            && dto.getAnnouncementEndDate() != null
+                                                            && DateUtils
+                                                                    .calculateAnnouncementClosed(
+                                                                            dto
+                                                                                    .getAnnouncementEndDate())))
+                                    .isPermanentRecruitment(dto.getIsPermanentRecruitment())
+                                    .announcementTitle(dto.getAnnouncementTitle())
+                                    .isAnnouncementScrap(
+                                            scrappedAnnouncementIds.contains(
+                                                    dto.getTeamMemberAnnouncementId()))
+                                    .announcementScrapCount(
+                                            scrapCounts.getOrDefault(
+                                                    dto.getTeamMemberAnnouncementId(), 0))
+                                    .viewCount(dto.getViewCount())
+                                    .createdAt(DateUtils.formatRelativeTime(dto.getCreatedAt()))
+                                    .announcementPositionItem(
+                                            new AnnouncementPositionItem(
+                                                    dto.getMajorPosition(), dto.getSubPosition()))
+                                    .announcementSkillNames(new ArrayList<>())
+                                    .createdAt(DateUtils.formatRelativeTime(dto.getCreatedAt())));
+
+            builderMap
+                    .get(dto.getTeamMemberAnnouncementId())
+                    .announcementSkillNames(
+                            stateMap.getOrDefault(dto.getTeamMemberAnnouncementId(), List.of()));
+        }
+
+        // 3. 최종 빌드된 ProfileInformMenu 리스트 반환
+        return builderMap.values().stream()
+                .map(AnnouncementInformMenu.AnnouncementInformMenuBuilder::build)
+                .toList();
     }
 }

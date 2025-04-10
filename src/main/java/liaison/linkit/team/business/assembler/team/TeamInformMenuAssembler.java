@@ -1,13 +1,19 @@
 package liaison.linkit.team.business.assembler.team;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.scrap.implement.teamScrap.TeamScrapQueryAdapter;
+import liaison.linkit.search.presentation.dto.team.FlatTeamDTO;
 import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
 import liaison.linkit.team.business.mapper.state.TeamCurrentStateMapper;
 import liaison.linkit.team.business.mapper.team.TeamMapper;
@@ -142,5 +148,48 @@ public class TeamInformMenuAssembler {
                 teamCurrentStateItems,
                 teamScaleItem,
                 regionDetail);
+    }
+
+    public List<TeamInformMenu> assembleTeamInformMenus(
+            List<FlatTeamDTO> flatDtos, Set<Long> scrappedTeamIds, Map<Long, Integer> scrapCounts) {
+        Map<Long, TeamInformMenu.TeamInformMenuBuilder> builderMap = new LinkedHashMap<>();
+        Map<Long, List<TeamCurrentStateItem>> stateMap =
+                flatDtos.stream()
+                        .filter(dto -> dto.getTeamCurrentStateName() != null)
+                        .collect(
+                                Collectors.groupingBy(
+                                        FlatTeamDTO::getTeamId,
+                                        Collectors.mapping(
+                                                dto ->
+                                                        new TeamCurrentStateItem(
+                                                                dto.getTeamCurrentStateName()),
+                                                Collectors.toList())));
+
+        for (FlatTeamDTO dto : flatDtos) {
+            builderMap.computeIfAbsent(
+                    dto.getTeamId(),
+                    id ->
+                            TeamInformMenu.builder()
+                                    .isTeamScrap(scrappedTeamIds.contains(dto.getTeamId()))
+                                    .teamScrapCount(scrapCounts.getOrDefault(dto.getTeamId(), 0))
+                                    .teamName(dto.getTeamName())
+                                    .teamCode(dto.getTeamCode())
+                                    .teamShortDescription(dto.getTeamShortDescription())
+                                    .teamLogoImagePath(dto.getTeamLogoImagePath())
+                                    .teamScaleItem(new TeamScaleItem(dto.getTeamScaleName()))
+                                    .regionDetail(
+                                            new RegionDetail(
+                                                    dto.getCityName(), dto.getDivisionName()))
+                                    .teamCurrentStates(new ArrayList<>()));
+
+            builderMap
+                    .get(dto.getTeamId())
+                    .teamCurrentStates(stateMap.getOrDefault(dto.getTeamId(), List.of()));
+        }
+
+        // 3. 최종 빌드된 ProfileInformMenu 리스트 반환
+        return builderMap.values().stream()
+                .map(TeamInformMenu.TeamInformMenuBuilder::build)
+                .toList();
     }
 }
