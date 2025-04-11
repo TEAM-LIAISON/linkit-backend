@@ -1,22 +1,20 @@
 package liaison.linkit.search.presentation;
 
-import java.util.List;
 import java.util.Optional;
 
 import liaison.linkit.auth.CurrentMemberId;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.config.log.Logging;
+import liaison.linkit.search.business.model.AnnouncementSearchCondition;
 import liaison.linkit.search.business.service.AnnouncementSearchService;
 import liaison.linkit.search.presentation.dto.announcement.AnnouncementListResponseDTO;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
-import liaison.linkit.search.sortType.AnnouncementSortType;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -46,6 +44,8 @@ public class AnnouncementSearchController {
         return CommonResponse.onSuccess(featuredAnnouncements);
     }
 
+    /* 커서 기반 페이지네이션과 필터를 이용해 모집 공고 검색을 수행합니다. */
+
     /**
      * 공고 검색 엔드포인트
      *
@@ -64,30 +64,13 @@ public class AnnouncementSearchController {
     public CommonResponse<CursorResponse<TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu>>
             searchAnnouncements(
                     @CurrentMemberId Optional<Long> memberId,
-                    @RequestParam(value = "cursor", required = false) String cursor,
-                    @RequestParam(value = "size", defaultValue = "100") int size,
-                    @RequestParam(value = "subPosition", required = false) List<String> subPosition,
-                    @RequestParam(value = "cityName", required = false) List<String> cityName,
-                    @RequestParam(value = "projectTypeName", required = false)
-                            List<String> projectTypeName,
-                    @RequestParam(value = "workTypeName", required = false)
-                            List<String> workTypeName,
-                    @RequestParam(value = "sortBy", defaultValue = "LATEST")
-                            AnnouncementSortType sortType) {
-
-        // 공고에서 받는 cursor 값은 teamMemberAnnouncement id를 받는다.
-        CursorRequest cursorRequest = new CursorRequest(cursor, size);
+                    CursorRequest cursorRequest,
+                    AnnouncementSearchCondition condition) {
 
         CursorResponse<TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu>
                 announcementSearchResult =
                         announcementSearchService.searchAnnouncementsWithCursor(
-                                memberId,
-                                subPosition,
-                                cityName,
-                                projectTypeName,
-                                workTypeName,
-                                sortType,
-                                cursorRequest);
+                                memberId, condition, cursorRequest);
 
         return CommonResponse.onSuccess(announcementSearchResult);
     }

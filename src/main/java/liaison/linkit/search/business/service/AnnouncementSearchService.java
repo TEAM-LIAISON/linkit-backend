@@ -8,6 +8,7 @@ import java.util.Set;
 import jakarta.validation.constraints.NotNull;
 
 import liaison.linkit.scrap.domain.repository.announcementScrap.AnnouncementScrapRepository;
+import liaison.linkit.search.business.model.AnnouncementSearchCondition;
 import liaison.linkit.search.presentation.dto.announcement.AnnouncementListResponseDTO;
 import liaison.linkit.search.presentation.dto.announcement.FlatAnnouncementDTO;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
@@ -43,13 +44,9 @@ public class AnnouncementSearchService {
 
     public CursorResponse<AnnouncementInformMenu> searchAnnouncementsWithCursor(
             final Optional<Long> optionalMemberId,
-            List<String> subPosition,
-            List<String> cityName,
-            List<String> projectTypeName,
-            List<String> workTypeName,
-            AnnouncementSortType sortType,
+            final AnnouncementSearchCondition condition,
             CursorRequest cursorRequest) {
-        if (isDefaultSearch(subPosition, cityName, projectTypeName, workTypeName, sortType)) {
+        if (condition.isDefault()) {
             List<Long> excludeAnnouncementIds = getExcludeAnnouncementIds();
 
             CursorResponse<TeamMemberAnnouncement> teamMemberAnnouncements =
@@ -61,11 +58,11 @@ public class AnnouncementSearchService {
             // 필터링 검색
             CursorResponse<TeamMemberAnnouncement> teamMemberAnnouncements =
                     teamMemberAnnouncementQueryAdapter.findAllByFilteringWithCursor(
-                            subPosition,
-                            cityName,
-                            projectTypeName,
-                            workTypeName,
-                            sortType,
+                            condition.subPosition(),
+                            condition.cityName(),
+                            condition.projectTypeName(),
+                            condition.workTypeName(),
+                            condition.sortType(),
                             cursorRequest);
 
             return convertTeamMemberAnnouncementsToDTOs(teamMemberAnnouncements, optionalMemberId);

@@ -200,7 +200,7 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
 
         // when
         when(announcementSearchService.searchAnnouncementsWithCursor(
-                        any(), any(), any(), any(), any(), any(), any(CursorRequest.class)))
+                        any(), any(), any(CursorRequest.class)))
                 .thenReturn(cursorResponse);
 
         final ResultActions resultActions =
