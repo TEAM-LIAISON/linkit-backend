@@ -13,11 +13,8 @@ import liaison.linkit.search.presentation.dto.announcement.AnnouncementListRespo
 import liaison.linkit.search.presentation.dto.announcement.FlatAnnouncementDTO;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
-import liaison.linkit.search.sortType.AnnouncementSortType;
 import liaison.linkit.team.business.assembler.announcement.AnnouncementInformMenuAssembler;
-import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
-import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class AnnouncementSearchService {
 
-    private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
+    private static final List<Long> DEFAULT_EXCLUDE_ANNOUNCEMENT_IDS =
+            List.of(79L, 82L, 80L, 71L, 70L, 69L, 67L, 77L, 38L);
+
     private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
     private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
     private final AnnouncementScrapRepository announcementScrapRepository;
@@ -44,67 +43,40 @@ public class AnnouncementSearchService {
 
     public CursorResponse<AnnouncementInformMenu> searchAnnouncementsWithCursor(
             final Optional<Long> optionalMemberId,
-            final AnnouncementSearchCondition condition,
+            AnnouncementSearchCondition condition,
             CursorRequest cursorRequest) {
         if (condition.isDefault()) {
-            List<Long> excludeAnnouncementIds = getExcludeAnnouncementIds();
-
-            CursorResponse<TeamMemberAnnouncement> teamMemberAnnouncements =
-                    teamMemberAnnouncementQueryAdapter.findAllExcludingIdsWithCursor(
-                            excludeAnnouncementIds, cursorRequest);
-
-            return convertTeamMemberAnnouncementsToDTOs(teamMemberAnnouncements, optionalMemberId);
-        } else {
-            // 필터링 검색
-            CursorResponse<TeamMemberAnnouncement> teamMemberAnnouncements =
-                    teamMemberAnnouncementQueryAdapter.findAllByFilteringWithCursor(
-                            condition.subPosition(),
-                            condition.cityName(),
-                            condition.projectTypeName(),
-                            condition.workTypeName(),
-                            condition.sortType(),
-                            cursorRequest);
-
-            return convertTeamMemberAnnouncementsToDTOs(teamMemberAnnouncements, optionalMemberId);
+            // /api/v1/announcement/search?size=20
+            if (!cursorRequest.hasNext()) {
+                List<AnnouncementInformMenu> results =
+                        getFirstPageDefaultAnnouncements(cursorRequest.size(), optionalMemberId);
+                Long nextCursor =
+                        results.isEmpty()
+                                ? null
+                                : results.get(results.size() - 1).getTeamMemberAnnouncementId();
+                return CursorResponse.of(
+                        results, nextCursor != null ? nextCursor.toString() : null);
+            }
+            // /api/v1/profile/search?cursor={teamMemberAnnouncementId}&size=20
+            List<AnnouncementInformMenu> results =
+                    getAllAnnouncementsWithoutFilter(
+                            cursorRequest.size(), optionalMemberId, cursorRequest);
+            Long nextCursor =
+                    results.isEmpty()
+                            ? null
+                            : results.get(results.size() - 1).getTeamMemberAnnouncementId();
+            return CursorResponse.of(results, nextCursor != null ? nextCursor.toString() : null);
         }
-    }
 
-    /** 기본 검색 여부를 판단합니다. */
-    private boolean isDefaultSearch(
-            List<String> subPosition,
-            List<String> cityName,
-            List<String> projectTypeNames,
-            List<String> workTypeNames,
-            AnnouncementSortType sortType) {
-
-        return (subPosition == null || subPosition.isEmpty())
-                && (cityName == null || cityName.isEmpty())
-                && (projectTypeNames == null || projectTypeNames.isEmpty())
-                && (workTypeNames == null || workTypeNames.isEmpty())
-                && (sortType == null || sortType == AnnouncementSortType.LATEST);
-    }
-
-    private CursorResponse<AnnouncementInformMenu> convertTeamMemberAnnouncementsToDTOs(
-            CursorResponse<TeamMemberAnnouncement> teamMemberAnnouncements,
-            Optional<Long> optionalMemberId) {
-        List<AnnouncementInformMenu> announcementDTOs =
-                teamMemberAnnouncements.getContent().stream()
-                        .map(
-                                announcement ->
-                                        announcementInformMenuAssembler.mapToAnnouncementInformMenu(
-                                                announcement, optionalMemberId))
-                        .toList();
-
-        return CursorResponse.of(announcementDTOs, teamMemberAnnouncements.getNextCursor());
-    }
-
-    /**
-     * 제외할 팀 ID 목록 (강제 지정)
-     *
-     * @return 제외할 팀 ID 목록
-     */
-    public List<Long> getExcludeAnnouncementIds() {
-        return List.of(69L, 67L, 47L, 40L, 38L, 42L);
+        // 필터가 포함된 경우
+        List<AnnouncementInformMenu> results =
+                getAllAnnouncementsWithFilter(
+                        cursorRequest.size(), optionalMemberId, condition, cursorRequest);
+        Long nextCursor =
+                results.isEmpty()
+                        ? null
+                        : results.get(results.size() - 1).getTeamMemberAnnouncementId();
+        return CursorResponse.of(results, nextCursor != null ? nextCursor.toString() : null);
     }
 
     private List<AnnouncementInformMenu> getTopHotAnnouncements(
@@ -112,6 +84,38 @@ public class AnnouncementSearchService {
         List<FlatAnnouncementDTO> raw =
                 teamMemberAnnouncementRepository.findTopHotAnnouncements(limit);
         return getAnnouncementInformMenus(limit, optionalMemberId, raw);
+    }
+
+    private List<AnnouncementInformMenu> getAllAnnouncementsWithoutFilter(
+            int size, Optional<Long> optionalMemberId, CursorRequest cursorRequest) {
+        List<FlatAnnouncementDTO> raw =
+                teamMemberAnnouncementRepository.findAllAnnouncementsWithoutFilter(
+                        DEFAULT_EXCLUDE_ANNOUNCEMENT_IDS, cursorRequest);
+        return getAnnouncementInformMenus(size, optionalMemberId, raw);
+    }
+
+    private List<AnnouncementInformMenu> getFirstPageDefaultAnnouncements(
+            int limit, Optional<Long> memberId) {
+        List<FlatAnnouncementDTO> raw =
+                teamMemberAnnouncementRepository.findFlatAnnouncementsWithoutCursor(
+                        DEFAULT_EXCLUDE_ANNOUNCEMENT_IDS, limit);
+        return getAnnouncementInformMenus(limit, memberId, raw);
+    }
+
+    private List<AnnouncementInformMenu> getAllAnnouncementsWithFilter(
+            int size,
+            Optional<Long> optionalMemberId,
+            AnnouncementSearchCondition condition,
+            CursorRequest cursorRequest) {
+        List<FlatAnnouncementDTO> raw =
+                teamMemberAnnouncementRepository.findFilteredFlatAnnouncementsWithCursor(
+                        condition.subPosition(),
+                        condition.cityName(),
+                        condition.projectTypeName(),
+                        condition.workTypeName(),
+                        condition.sortType(),
+                        cursorRequest);
+        return getAnnouncementInformMenus(size, optionalMemberId, raw);
     }
 
     @NotNull
