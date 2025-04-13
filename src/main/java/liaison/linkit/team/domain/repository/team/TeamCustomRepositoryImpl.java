@@ -736,4 +736,204 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                                 .asc())
                 .fetch();
     }
+
+    public List<FlatTeamDTO> findFlatTeamsWithoutCursor(List<Long> excludeTeamIds, int size) {
+        QTeam qTeam = QTeam.team;
+        QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
+        QRegion qRegion = QRegion.region;
+        QTeamScale qTeamScale = QTeamScale.teamScale;
+        QScale qScale = QScale.scale;
+        QTeamCurrentState qTeamCurrentState = QTeamCurrentState.teamCurrentState;
+        QTeamState qTeamState = QTeamState.teamState;
+
+        return jpaQueryFactory
+                .select(
+                        Projections.fields(
+                                FlatTeamDTO.class,
+                                qTeam.id.as("teamId"),
+                                qTeam.teamName.as("teamName"),
+                                qTeam.teamCode.as("teamCode"),
+                                qTeam.teamShortDescription.as("teamShortDescription"),
+                                qTeam.teamLogoImagePath.as("teamLogoImagePath"),
+                                qScale.scaleName.as("teamScaleName"),
+                                qRegion.cityName.as("cityName"),
+                                qRegion.divisionName.as("divisionName"),
+                                qTeamState.teamStateName.as("teamCurrentStateName")))
+                .from(qTeam)
+                .leftJoin(qTeam.teamRegions, qTeamRegion)
+                .leftJoin(qTeamRegion.region, qRegion)
+                .leftJoin(qTeam.teamScales, qTeamScale)
+                .leftJoin(qTeamScale.scale, qScale)
+                .leftJoin(qTeam.teamCurrentStates, qTeamCurrentState)
+                .leftJoin(qTeamCurrentState.teamState, qTeamState)
+                .where(
+                        qTeam.status
+                                .eq(StatusType.USABLE)
+                                .and(qTeam.isTeamPublic.eq(true))
+                                .and(qTeam.id.notIn(excludeTeamIds)))
+                .orderBy(qTeam.id.desc())
+                .limit(size * 5)
+                .fetch();
+    }
+
+    public List<FlatTeamDTO> findAllTeamsWithoutFilter(
+            final List<Long> excludeTeamIds, final CursorRequest cursorRequest) {
+        QTeam qTeam = QTeam.team;
+        QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
+        QRegion qRegion = QRegion.region;
+        QTeamScale qTeamScale = QTeamScale.teamScale;
+        QScale qScale = QScale.scale;
+        QTeamCurrentState qTeamCurrentState = QTeamCurrentState.teamCurrentState;
+        QTeamState qTeamState = QTeamState.teamState;
+
+        try {
+            // Step 1. 커서 teamCode → teamId
+            Long cursorTeamId = null;
+            if (cursorRequest != null
+                    && cursorRequest.hasNext()
+                    && cursorRequest.cursor() != null) {
+                String teamCode = cursorRequest.cursor();
+                cursorTeamId =
+                        jpaQueryFactory
+                                .select(qTeam.id)
+                                .from(qTeam)
+                                .where(qTeam.teamCode.eq(teamCode))
+                                .fetchOne();
+            }
+
+            // Step 2. 조건 설정
+            BooleanExpression condition =
+                    qTeam.status.eq(StatusType.USABLE).and(qTeam.isTeamPublic.isTrue());
+
+            if (excludeTeamIds != null && !excludeTeamIds.isEmpty()) {
+                condition = condition.and(qTeam.id.notIn(excludeTeamIds));
+            }
+
+            if (cursorTeamId != null) {
+                condition = condition.and(qTeam.id.lt(cursorTeamId));
+            }
+
+            int requestedSize = Math.max(1, cursorRequest.size());
+            int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
+
+            // Step 3. 조회
+            return jpaQueryFactory
+                    .select(
+                            Projections.fields(
+                                    FlatTeamDTO.class,
+                                    qTeam.id.as("teamId"),
+                                    qTeam.teamName.as("teamName"),
+                                    qTeam.teamCode.as("teamCode"),
+                                    qTeam.teamShortDescription.as("teamShortDescription"),
+                                    qTeam.teamLogoImagePath.as("teamLogoImagePath"),
+                                    qScale.scaleName.as("teamScaleName"),
+                                    qRegion.cityName.as("cityName"),
+                                    qRegion.divisionName.as("divisionName"),
+                                    qTeamState.teamStateName.as("teamCurrentStateName")))
+                    .from(qTeam)
+                    .leftJoin(qTeam.teamRegions, qTeamRegion)
+                    .leftJoin(qTeamRegion.region, qRegion)
+                    .leftJoin(qTeam.teamScales, qTeamScale)
+                    .leftJoin(qTeamScale.scale, qScale)
+                    .leftJoin(qTeam.teamCurrentStates, qTeamCurrentState)
+                    .leftJoin(qTeamCurrentState.teamState, qTeamState)
+                    .where(condition)
+                    .orderBy(qTeam.id.desc())
+                    .limit(pageSize)
+                    .fetch();
+
+        } catch (Exception e) {
+            log.error("Error in findAllTeamsWithoutFilter: {}", e.getMessage(), e);
+            return List.of();
+        }
+    }
+
+    public List<FlatTeamDTO> findFilteredFlatTeamsWithCursor(
+            List<String> scaleName,
+            List<String> cityName,
+            List<String> teamStateName,
+            CursorRequest cursorRequest) {
+        QTeam qTeam = QTeam.team;
+        QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
+        QRegion qRegion = QRegion.region;
+        QTeamScale qTeamScale = QTeamScale.teamScale;
+        QScale qScale = QScale.scale;
+        QTeamCurrentState qTeamCurrentState = QTeamCurrentState.teamCurrentState;
+        QTeamState qTeamState = QTeamState.teamState;
+
+        try {
+            // Step 1. 커서 teamCode → teamId
+            Long cursorTeamId = null;
+            if (cursorRequest != null
+                    && cursorRequest.hasNext()
+                    && cursorRequest.cursor() != null) {
+                String teamCode = cursorRequest.cursor();
+                cursorTeamId =
+                        jpaQueryFactory
+                                .select(qTeam.id)
+                                .from(qTeam)
+                                .where(qTeam.teamCode.eq(teamCode))
+                                .fetchOne();
+            }
+
+            // Step 2. 조건 설정
+            BooleanExpression condition =
+                    qTeam.status.eq(StatusType.USABLE).and(qTeam.isTeamPublic.isTrue());
+
+            if (cursorTeamId != null) {
+                condition = condition.and(qTeam.id.lt(cursorTeamId));
+            }
+
+            int requestedSize = Math.max(1, cursorRequest.size());
+            int pageSize = (requestedSize % 6 == 0) ? requestedSize : ((requestedSize / 6) + 1) * 6;
+
+            // Step 3. 쿼리 구성
+            var query =
+                    jpaQueryFactory
+                            .select(
+                                    Projections.fields(
+                                            FlatTeamDTO.class,
+                                            qTeam.id.as("teamId"),
+                                            qTeam.teamName.as("teamName"),
+                                            qTeam.teamCode.as("teamCode"),
+                                            qTeam.teamShortDescription.as("teamShortDescription"),
+                                            qTeam.teamLogoImagePath.as("teamLogoImagePath"),
+                                            qScale.scaleName.as("teamScaleName"),
+                                            qRegion.cityName.as("cityName"),
+                                            qRegion.divisionName.as("divisionName"),
+                                            qTeamState.teamStateName.as("teamCurrentStateName")))
+                            .from(qTeam)
+                            .leftJoin(qTeam.teamRegions, qTeamRegion)
+                            .leftJoin(qTeamRegion.region, qRegion)
+                            .leftJoin(qTeam.teamScales, qTeamScale)
+                            .leftJoin(qTeamScale.scale, qScale)
+                            .leftJoin(qTeam.teamCurrentStates, qTeamCurrentState)
+                            .leftJoin(qTeamCurrentState.teamState, qTeamState)
+                            .where(condition)
+                            .orderBy(qTeam.id.desc());
+
+            // Step 4. 필터 적용
+            if (isNotEmpty(scaleName)) {
+                query = query.where(qScale.scaleName.in(scaleName));
+            }
+
+            if (isNotEmpty(cityName)) {
+                query = query.where(qRegion.cityName.in(cityName));
+            }
+
+            if (isNotEmpty(teamStateName)) {
+                query = query.where(qTeamState.teamStateName.in(teamStateName));
+            }
+
+            // Step 5. 페이징 처리
+            List<FlatTeamDTO> content = query.limit(pageSize + 1).fetch();
+
+            // 필요시 커서 처리 정보는 추후 CursorResponse<FlatProfileDTO>로 확장 가능
+            return content.size() > pageSize ? content.subList(0, pageSize) : content;
+
+        } catch (Exception e) {
+            log.error("Error in findFilteredFlatTeamsWithCursor: {}", e.getMessage(), e);
+            return List.of();
+        }
+    }
 }

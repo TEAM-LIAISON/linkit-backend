@@ -48,4 +48,15 @@ public interface TeamCustomRepository {
     List<FlatTeamDTO> findTopVentureTeams(int limit);
 
     List<FlatTeamDTO> findTopSupportTeams(int limit);
+
+    List<FlatTeamDTO> findFlatTeamsWithoutCursor(List<Long> excludeTeamIds, int size);
+
+    List<FlatTeamDTO> findAllTeamsWithoutFilter(
+            List<Long> excludeTeamIds, CursorRequest cursorRequest);
+
+    List<FlatTeamDTO> findFilteredFlatTeamsWithCursor(
+            List<String> scaleName,
+            List<String> cityName,
+            List<String> teamStateName,
+            CursorRequest cursorRequest);
 }

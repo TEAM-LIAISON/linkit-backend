@@ -8,13 +8,13 @@ import java.util.Set;
 import jakarta.validation.constraints.NotNull;
 
 import liaison.linkit.scrap.domain.repository.teamScrap.TeamScrapRepository;
+import liaison.linkit.search.business.model.TeamSearchCondition;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import liaison.linkit.search.presentation.dto.team.FlatTeamDTO;
 import liaison.linkit.search.presentation.dto.team.TeamListResponseDTO;
 import liaison.linkit.team.business.assembler.team.TeamInformMenuAssembler;
 import liaison.linkit.team.domain.repository.team.TeamRepository;
-import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Slf4j
 public class TeamSearchService {
+
+    private static final List<Long> DEFAULT_EXCLUDE_TEAM_IDS =
+            List.of(56L, 58L, 57L, 36L, 37L, 29L, 3L, 19L);
 
     private final TeamQueryAdapter teamQueryAdapter;
     private final TeamInformMenuAssembler teamInformMenuAssembler;
@@ -45,63 +48,33 @@ public class TeamSearchService {
     /** 커서 기반 팀 검색만 수행하는 메서드 */
     public CursorResponse<TeamInformMenu> searchTeamsWithCursor(
             final Optional<Long> optionalMemberId,
-            final List<String> scaleName,
-            final List<String> cityName,
-            final List<String> teamStateName,
+            final TeamSearchCondition condition,
             final CursorRequest cursorRequest) {
 
-        if (isDefaultSearch(scaleName, cityName, teamStateName)) {
-            // 벤처 팀과 지원 프로젝트 팀 ID를 제외하고 검색
-            List<Long> excludeTeamIds = getExcludeTeamIds();
-
-            CursorResponse<Team> teams =
-                    teamQueryAdapter.findAllExcludingIdsWithCursor(excludeTeamIds, cursorRequest);
-
-            return convertTeamsToDTOs(teams, optionalMemberId);
-        } else {
-            // 필터링 검색
-            CursorResponse<Team> teams =
-                    teamQueryAdapter.findAllByFilteringWithCursor(
-                            scaleName, cityName, teamStateName, cursorRequest);
-
-            return convertTeamsToDTOs(teams, optionalMemberId);
+        if (condition.isDefault()) {
+            // /api/v1/team/search?size=20
+            if (!cursorRequest.hasNext()) {
+                List<TeamInformMenu> results =
+                        getFirstPageDefaultTeams(cursorRequest.size(), optionalMemberId);
+                String nextCursor =
+                        results.isEmpty() ? null : results.get(results.size() - 1).getTeamCode();
+                return CursorResponse.of(results, nextCursor);
+            }
+            // /api/v1/team/search?cursor={emailId}&size=20
+            List<TeamInformMenu> results =
+                    getAllTeamsWithoutFilter(cursorRequest.size(), optionalMemberId, cursorRequest);
+            String nextCursor =
+                    results.isEmpty() ? null : results.get(results.size() - 1).getTeamCode();
+            return CursorResponse.of(results, nextCursor);
         }
-    }
 
-    /** 팀 엔티티를 DTO로 변환하고 커서 응답으로 래핑 */
-    private CursorResponse<TeamInformMenu> convertTeamsToDTOs(
-            CursorResponse<Team> teams, Optional<Long> optionalMemberId) {
-        List<TeamInformMenu> teamDTOs =
-                teams.getContent().stream()
-                        .map(
-                                team ->
-                                        teamInformMenuAssembler.assembleTeamInformMenu(
-                                                team, optionalMemberId))
-                        .toList();
-
-        return CursorResponse.of(teamDTOs, teams.getNextCursor());
-    }
-
-    /** 제외할 팀 ID 목록 가져오기 (강제 지정) */
-    public List<Long> getExcludeTeamIds() {
-        // 큐닷 44L
-        // 애프터액션 10L
-        // 코지메이커스 36L
-        // 독스헌트 AI 4L
-
-        // TFSolution 37L
-        // 일기 29L
-        // 글들 3L
-        // 마인더 19L
-        return List.of(56L, 58L, 57L, 36L, 37L, 29L, 3L, 19L);
-    }
-
-    /** 기본 검색 여부를 판단합니다. */
-    private boolean isDefaultSearch(
-            List<String> scaleName, List<String> cityName, List<String> teamStateName) {
-        return (scaleName == null || scaleName.isEmpty())
-                && (cityName == null || cityName.isEmpty())
-                && (teamStateName == null || teamStateName.isEmpty());
+        // 필터가 포함된 경우
+        List<TeamInformMenu> results =
+                getAllProfilesWithFilter(
+                        cursorRequest.size(), optionalMemberId, condition, cursorRequest);
+        String nextCursor =
+                results.isEmpty() ? null : results.get(results.size() - 1).getTeamCode();
+        return CursorResponse.of(results, nextCursor);
     }
 
     private List<TeamInformMenu> getTopVentureTeams(int limit, Optional<Long> memberId) {
@@ -112,6 +85,33 @@ public class TeamSearchService {
     private List<TeamInformMenu> getTopSupportTeams(int limit, Optional<Long> memberId) {
         List<FlatTeamDTO> raw = teamRepository.findTopSupportTeams(limit);
         return getTeamInformMenus(limit, memberId, raw);
+    }
+
+    private List<TeamInformMenu> getFirstPageDefaultTeams(int size, Optional<Long> memberId) {
+        List<FlatTeamDTO> raw =
+                teamRepository.findFlatTeamsWithoutCursor(DEFAULT_EXCLUDE_TEAM_IDS, size);
+        return getTeamInformMenus(size, memberId, raw);
+    }
+
+    private List<TeamInformMenu> getAllTeamsWithoutFilter(
+            int size, Optional<Long> memberId, CursorRequest cursorRequest) {
+        List<FlatTeamDTO> raw =
+                teamRepository.findAllTeamsWithoutFilter(DEFAULT_EXCLUDE_TEAM_IDS, cursorRequest);
+        return getTeamInformMenus(size, memberId, raw);
+    }
+
+    private List<TeamInformMenu> getAllProfilesWithFilter(
+            int size,
+            Optional<Long> optionalMemberId,
+            TeamSearchCondition condition,
+            CursorRequest cursorRequest) {
+        List<FlatTeamDTO> raw =
+                teamRepository.findFilteredFlatTeamsWithCursor(
+                        condition.scaleName(),
+                        condition.cityName(),
+                        condition.teamStateName(),
+                        cursorRequest);
+        return getTeamInformMenus(size, optionalMemberId, raw);
     }
 
     @NotNull
