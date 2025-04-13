@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 public record AnnouncementSearchCondition(
         @RequestParam(value = "subPosition", required = false) List<String> subPosition,
         @RequestParam(value = "cityName", required = false) List<String> cityName,
-        @RequestParam(value = "projectType", required = false) List<String> projectTypeName,
-        @RequestParam(value = "workType", required = false) List<String> workTypeName,
+        @RequestParam(value = "projectType", required = false) List<String> projectType,
+        @RequestParam(value = "workType", required = false) List<String> workType,
         @RequestParam(value = "sortBy", defaultValue = "LATEST") AnnouncementSortType sortType) {
     public boolean isDefault() {
         return (subPosition == null || subPosition.isEmpty())
                 && (cityName == null || cityName.isEmpty())
-                && (projectTypeName == null || projectTypeName.isEmpty())
-                && (workTypeName == null || workTypeName.isEmpty())
+                && (projectType == null || projectType.isEmpty())
+                && (workType == null || workType.isEmpty())
                 && (sortType == null || sortType == AnnouncementSortType.LATEST);
     }
 }
