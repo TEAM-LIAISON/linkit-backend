@@ -27,6 +27,7 @@ public class ProfileActivityCustomRepositoryImpl implements ProfileActivityCusto
         return queryFactory
                 .selectFrom(qProfileActivity)
                 .where(qProfileActivity.profile.member.id.eq(memberId))
+                .orderBy(qProfileActivity.activityStartDate.desc())
                 .fetch();
     }
 
