@@ -59,6 +59,9 @@ public class TeamMemberAnnouncementResponseDTO {
         @Builder.Default
         private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
                 announcementSkillNames = new ArrayList<>();
+
+        @Builder.Default private String projectTypeName = ""; // 프로젝트 유형
+        @Builder.Default private String workTypeName = ""; // 업무 형태
     }
 
     @Builder

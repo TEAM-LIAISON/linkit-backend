@@ -16,6 +16,7 @@ import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMa
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenus;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
@@ -105,6 +106,13 @@ public class AnnouncementInformMenuAssembler {
         AnnouncementPositionItem announcementPositionItem =
                 announcementCommonAssembler.fetchAnnouncementPositionItem(teamMemberAnnouncement);
 
+        TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem announcementProjectTypeItem =
+                announcementCommonAssembler.fetchAnnouncementProjectTypeItem(
+                        teamMemberAnnouncement);
+
+        TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem announcementWorkTypeItem =
+                announcementCommonAssembler.fetchAnnouncementWorkTypeItem(teamMemberAnnouncement);
+
         // 7. 최종 DTO 변환 및 반환
         return teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
                 team.getTeamLogoImagePath(),
@@ -118,7 +126,9 @@ public class AnnouncementInformMenuAssembler {
                 isAnnouncementScrap,
                 announcementScrapCount,
                 announcementPositionItem,
-                announcementSkillNames);
+                announcementSkillNames,
+                announcementProjectTypeItem,
+                announcementWorkTypeItem);
     }
 
     public List<AnnouncementInformMenu> assembleAnnouncementInformMenus(
