@@ -317,10 +317,10 @@ class ProfileControllerTest extends ControllerTest {
                 Arrays.asList(firstProfileEducationItem, secondProfileEducationItem);
 
         final ProfileAwardsResponseDTO.ProfileAwardsItem firstProfileAwardsItem =
-                new ProfileAwardsItem(1L, "수상 이름 1", "훈격 1", "수상 날짜 1", true, "수상 설명 1");
+                new ProfileAwardsItem(1L, "수상 이름 1", "훈격 1", "주최자 1", "수상 날짜 1", true, "수상 설명 1");
 
         final ProfileAwardsResponseDTO.ProfileAwardsItem secondProfileAwardsItem =
-                new ProfileAwardsItem(2L, "수상 이름 2", "훈격 2", "수상 날짜 2", true, "수상 설명 2");
+                new ProfileAwardsItem(2L, "수상 이름 2", "훈격 2", "주최자 2", "수상 날짜 2", true, "수상 설명 2");
 
         final List<ProfileAwardsItem> profileAwardsItems =
                 Arrays.asList(firstProfileAwardsItem, secondProfileAwardsItem);
@@ -643,6 +643,10 @@ class ProfileControllerTest extends ControllerTest {
                                                                 "result.profileAwardsItems[].awardsDate")
                                                         .type(JsonFieldType.STRING)
                                                         .description("수상 날짜"),
+                                                fieldWithPath(
+                                                                "result.profileAwardsItems[].awardsOrganizer")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("수상 주최자"),
                                                 fieldWithPath(
                                                                 "result.profileAwardsItems[].isAwardsVerified")
                                                         .type(JsonFieldType.BOOLEAN)
