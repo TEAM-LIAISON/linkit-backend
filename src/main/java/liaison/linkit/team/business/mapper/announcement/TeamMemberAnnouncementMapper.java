@@ -15,7 +15,9 @@ import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementR
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenus;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse;
@@ -36,7 +38,9 @@ public class TeamMemberAnnouncementMapper {
             final boolean isAnnouncementScrap,
             final int announcementScrapCount,
             final AnnouncementPositionItem announcementPositionItem,
-            final List<AnnouncementSkillName> announcementSkillNames) {
+            final List<AnnouncementSkillName> announcementSkillNames,
+            final AnnouncementProjectTypeItem announcementProjectTypeItem,
+            final AnnouncementWorkTypeItem announcementWorkTypeItem) {
         return AnnouncementInformMenu.builder()
                 .teamMemberAnnouncementId(
                         teamMemberAnnouncement != null ? teamMemberAnnouncement.getId() : 0L)
@@ -69,6 +73,14 @@ public class TeamMemberAnnouncementMapper {
                                 : new AnnouncementPositionItem())
                 .announcementSkillNames(
                         announcementSkillNames != null ? announcementSkillNames : new ArrayList<>())
+                .projectTypeName(
+                        announcementProjectTypeItem != null
+                                ? announcementProjectTypeItem.getAnnouncementProjectTypeName()
+                                : "")
+                .workTypeName(
+                        announcementWorkTypeItem != null
+                                ? announcementWorkTypeItem.getAnnouncementWorkTypeName()
+                                : "")
                 .build();
     }
 
@@ -87,10 +99,8 @@ public class TeamMemberAnnouncementMapper {
                     final int announcementScrapCount,
                     final AnnouncementPositionItem announcementPositionItem,
                     final List<AnnouncementSkillName> announcementSkillNames,
-                    final TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem
-                            announcementProjectTypeItem,
-                    final TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem
-                            announcementWorkTypeItem) {
+                    final AnnouncementProjectTypeItem announcementProjectTypeItem,
+                    final AnnouncementWorkTypeItem announcementWorkTypeItem) {
         // D-Day 계산 (isPermanentRecruitment가 true이면 -1, 아니면 정상 계산)
         int announcementDDay = -1;
         boolean isClosed = false;
@@ -189,10 +199,8 @@ public class TeamMemberAnnouncementMapper {
                     final TeamMemberAnnouncement teamMemberAnnouncement,
                     final AnnouncementPositionItem announcementPositionItem,
                     final List<AnnouncementSkillName> announcementSkillNames,
-                    final TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem
-                            announcementProjectTypeItem,
-                    final TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem
-                            announcementWorkTypeItem) {
+                    final AnnouncementProjectTypeItem announcementProjectTypeItem,
+                    final AnnouncementWorkTypeItem announcementWorkTypeItem) {
         return AddTeamMemberAnnouncementResponse.builder()
                 .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
@@ -218,10 +226,8 @@ public class TeamMemberAnnouncementMapper {
                     final TeamMemberAnnouncement teamMemberAnnouncement,
                     final AnnouncementPositionItem announcementPositionItem,
                     final List<AnnouncementSkillName> announcementSkillNames,
-                    final TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem
-                            announcementProjectTypeItem,
-                    final TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem
-                            announcementWorkTypeItem) {
+                    final AnnouncementProjectTypeItem announcementProjectTypeItem,
+                    final AnnouncementWorkTypeItem announcementWorkTypeItem) {
         return UpdateTeamMemberAnnouncementResponse.builder()
                 .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
