@@ -33,6 +33,7 @@ public class TeamProductCustomRepositoryImpl implements TeamProductCustomReposit
         return jpaQueryFactory
                 .selectFrom(qTeamProduct)
                 .where(qTeamProduct.team.id.eq(teamId))
+                .orderBy(qTeamProduct.productStartDate.desc())
                 .fetch();
     }
 
