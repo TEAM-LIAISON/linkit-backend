@@ -180,6 +180,23 @@ public class NotificationMapper {
                                     .build());
                 }
             }
+
+            case COMMENT -> {
+                switch (subNotificationType) {
+                    case PARENT_COMMENT, CHILD_COMMENT -> notification.setCommentDetails(
+                            Notification.CommentDetails.builder()
+                                    .logType(notificationDetails.getLogType())
+                                    .emailId(notificationDetails.getEmailId())
+                                    .profileLogId(notificationDetails.getProfileLogId())
+                                    .teamCode(notificationDetails.getTeamCode())
+                                    .teamLogId(notificationDetails.getTeamLogId())
+                                    .commentType(notificationDetails.getCommentType())
+                                    .commentWriterName(notificationDetails.getCommentWriterName())
+                                    .commentWriterImagePath(
+                                            notificationDetails.getCommentWriterImagePath())
+                                    .build());
+                }
+            }
         }
 
         return notification;
@@ -371,6 +388,31 @@ public class NotificationMapper {
                                     notification.getVisitorDetails().getTeamCode(),
                                     notification.getVisitorDetails().getVisitorCount(),
                                     notification.getVisitorDetails().getVisitedType());
+                }
+            }
+
+            case COMMENT -> {
+                switch (subType) {
+                    case PARENT_COMMENT -> notificationDetails =
+                            NotificationDetails.parentComment(
+                                    notification.getCommentDetails().getLogType(),
+                                    notification.getCommentDetails().getEmailId(),
+                                    notification.getCommentDetails().getProfileLogId(),
+                                    notification.getCommentDetails().getTeamCode(),
+                                    notification.getCommentDetails().getTeamLogId(),
+                                    notification.getCommentDetails().getCommentType(),
+                                    notification.getCommentDetails().getCommentWriterName(),
+                                    notification.getCommentDetails().getCommentWriterImagePath());
+                    case CHILD_COMMENT -> notificationDetails =
+                            NotificationDetails.childComment(
+                                    notification.getCommentDetails().getLogType(),
+                                    notification.getCommentDetails().getEmailId(),
+                                    notification.getCommentDetails().getProfileLogId(),
+                                    notification.getCommentDetails().getTeamCode(),
+                                    notification.getCommentDetails().getTeamLogId(),
+                                    notification.getCommentDetails().getCommentType(),
+                                    notification.getCommentDetails().getCommentWriterName(),
+                                    notification.getCommentDetails().getCommentWriterImagePath());
                 }
             }
         }

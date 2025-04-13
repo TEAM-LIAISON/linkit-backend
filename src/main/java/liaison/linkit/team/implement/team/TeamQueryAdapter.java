@@ -77,10 +77,6 @@ public class TeamQueryAdapter {
         return teamRepository.findHomeTopTeams(limit);
     }
 
-    public Page<Team> findTopVentureTeams(final Pageable pageable) {
-        return teamRepository.findTopVentureTeams(pageable);
-    }
-
     public Page<Team> findSupportProjectTeams(final Pageable pageable) {
         return teamRepository.findSupportProjectTeams(pageable);
     }

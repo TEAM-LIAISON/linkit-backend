@@ -70,11 +70,11 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
         // 커서 페이징 요청이 있을 경우
         if (cursorRequest != null) {
             // size 설정
-            requestBuilder.param("size", String.valueOf(cursorRequest.getSize()));
+            requestBuilder.param("size", String.valueOf(cursorRequest.size()));
 
             // cursor가 존재한다면 cursor 파라미터 추가
-            if (cursorRequest.getCursor() != null) {
-                requestBuilder.param("cursor", cursorRequest.getCursor());
+            if (cursorRequest.cursor() != null) {
+                requestBuilder.param("cursor", cursorRequest.cursor());
             }
         }
 
@@ -200,7 +200,7 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
 
         // when
         when(announcementSearchService.searchAnnouncementsWithCursor(
-                        any(), any(), any(), any(), any(), any(), any(CursorRequest.class)))
+                        any(), any(), any(CursorRequest.class)))
                 .thenReturn(cursorResponse);
 
         final ResultActions resultActions =

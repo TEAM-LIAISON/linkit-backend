@@ -19,7 +19,9 @@ import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAda
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenus;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -105,6 +107,14 @@ public class AnnouncementInformMenuAssembler {
         AnnouncementPositionItem announcementPositionItem =
                 announcementCommonAssembler.fetchAnnouncementPositionItem(teamMemberAnnouncement);
 
+        // 7. 공고 프로젝트 유형 및 업무 형태 정보 조회
+        AnnouncementProjectTypeItem announcementProjectTypeItem =
+                announcementCommonAssembler.fetchAnnouncementProjectTypeItem(
+                        teamMemberAnnouncement);
+
+        AnnouncementWorkTypeItem announcementWorkTypeItem =
+                announcementCommonAssembler.fetchAnnouncementWorkTypeItem(teamMemberAnnouncement);
+
         // 7. 최종 DTO 변환 및 반환
         return teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
                 team.getTeamLogoImagePath(),
@@ -118,7 +128,9 @@ public class AnnouncementInformMenuAssembler {
                 isAnnouncementScrap,
                 announcementScrapCount,
                 announcementPositionItem,
-                announcementSkillNames);
+                announcementSkillNames,
+                announcementProjectTypeItem,
+                announcementWorkTypeItem);
     }
 
     public List<AnnouncementInformMenu> assembleAnnouncementInformMenus(
@@ -141,48 +153,64 @@ public class AnnouncementInformMenuAssembler {
                                                 Collectors.toList())));
 
         for (FlatAnnouncementDTO dto : flatDtos) {
-            builderMap.computeIfAbsent(
-                    dto.getTeamMemberAnnouncementId(),
-                    id ->
-                            AnnouncementInformMenu.builder()
-                                    .teamMemberAnnouncementId(dto.getTeamMemberAnnouncementId())
-                                    .teamLogoImagePath(dto.getTeamLogoImagePath())
-                                    .teamName(dto.getTeamName())
-                                    .teamCode(dto.getTeamCode())
-                                    .teamScaleItem(new TeamScaleItem(dto.getTeamScaleName()))
-                                    .regionDetail(
-                                            new RegionDetail(
-                                                    dto.getCityName(), dto.getDivisionName()))
-                                    .announcementDDay(
-                                            (Boolean.FALSE.equals(dto.getIsPermanentRecruitment())
-                                                            && dto.getAnnouncementEndDate() != null)
-                                                    ? DateUtils.calculateDDay(
-                                                            dto.getAnnouncementEndDate())
-                                                    : -1)
-                                    .isClosed(
-                                            Boolean.FALSE.equals(dto.getIsAnnouncementInProgress())
-                                                    || (Boolean.FALSE.equals(
-                                                                    dto.getIsPermanentRecruitment())
-                                                            && dto.getAnnouncementEndDate() != null
-                                                            && DateUtils
-                                                                    .calculateAnnouncementClosed(
+            builderMap
+                    .computeIfAbsent(
+                            dto.getTeamMemberAnnouncementId(),
+                            id ->
+                                    AnnouncementInformMenu.builder()
+                                            .teamMemberAnnouncementId(
+                                                    dto.getTeamMemberAnnouncementId())
+                                            .teamLogoImagePath(dto.getTeamLogoImagePath())
+                                            .teamName(dto.getTeamName())
+                                            .teamCode(dto.getTeamCode())
+                                            .teamScaleItem(
+                                                    new TeamScaleItem(dto.getTeamScaleName()))
+                                            .regionDetail(
+                                                    new RegionDetail(
+                                                            dto.getCityName(),
+                                                            dto.getDivisionName()))
+                                            .announcementDDay(
+                                                    (Boolean.FALSE.equals(
                                                                             dto
-                                                                                    .getAnnouncementEndDate())))
-                                    .isPermanentRecruitment(dto.getIsPermanentRecruitment())
-                                    .announcementTitle(dto.getAnnouncementTitle())
-                                    .isAnnouncementScrap(
-                                            scrappedAnnouncementIds.contains(
-                                                    dto.getTeamMemberAnnouncementId()))
-                                    .announcementScrapCount(
-                                            scrapCounts.getOrDefault(
-                                                    dto.getTeamMemberAnnouncementId(), 0))
-                                    .viewCount(dto.getViewCount())
-                                    .createdAt(DateUtils.formatRelativeTime(dto.getCreatedAt()))
-                                    .announcementPositionItem(
-                                            new AnnouncementPositionItem(
-                                                    dto.getMajorPosition(), dto.getSubPosition()))
-                                    .announcementSkillNames(new ArrayList<>())
-                                    .createdAt(DateUtils.formatRelativeTime(dto.getCreatedAt())));
+                                                                                    .getIsPermanentRecruitment())
+                                                                    && dto.getAnnouncementEndDate()
+                                                                            != null)
+                                                            ? DateUtils.calculateDDay(
+                                                                    dto.getAnnouncementEndDate())
+                                                            : -1)
+                                            .isClosed(
+                                                    Boolean.FALSE.equals(
+                                                                    dto
+                                                                            .getIsAnnouncementInProgress())
+                                                            || (Boolean.FALSE.equals(
+                                                                            dto
+                                                                                    .getIsPermanentRecruitment())
+                                                                    && dto.getAnnouncementEndDate()
+                                                                            != null
+                                                                    && DateUtils
+                                                                            .calculateAnnouncementClosed(
+                                                                                    dto
+                                                                                            .getAnnouncementEndDate())))
+                                            .isPermanentRecruitment(dto.getIsPermanentRecruitment())
+                                            .announcementTitle(dto.getAnnouncementTitle())
+                                            .isAnnouncementScrap(
+                                                    scrappedAnnouncementIds.contains(
+                                                            dto.getTeamMemberAnnouncementId()))
+                                            .announcementScrapCount(
+                                                    scrapCounts.getOrDefault(
+                                                            dto.getTeamMemberAnnouncementId(), 0))
+                                            .viewCount(dto.getViewCount())
+                                            .createdAt(
+                                                    DateUtils.formatRelativeTime(
+                                                            dto.getCreatedAt()))
+                                            .announcementPositionItem(
+                                                    new AnnouncementPositionItem(
+                                                            dto.getMajorPosition(),
+                                                            dto.getSubPosition()))
+                                            .announcementSkillNames(new ArrayList<>())
+                                            .projectTypeName(dto.getProjectTypeName())
+                                            .workTypeName(dto.getWorkTypeName()))
+                    .createdAt(DateUtils.formatRelativeTime(dto.getCreatedAt()));
 
             builderMap
                     .get(dto.getTeamMemberAnnouncementId())

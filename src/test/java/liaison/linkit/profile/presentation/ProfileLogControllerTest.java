@@ -223,11 +223,30 @@ public class ProfileLogControllerTest extends ControllerTest {
     void getProfileLogItems() throws Exception {
         // given
         final ProfileLogResponseDTO.ProfileLogItem firstProfileLogItem =
-                new ProfileLogItem(
-                        1L, true, REPRESENTATIVE_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
+                ProfileLogItem.builder()
+                        .profileLogId(1L)
+                        .isLogPublic(true)
+                        .logType(REPRESENTATIVE_LOG)
+                        .createdAt("1시간 전")
+                        .modifiedAt(LocalDateTime.now())
+                        .logTitle("로그 제목")
+                        .logContent("로그 내용")
+                        .logViewCount(10L)
+                        .commentCount(15L)
+                        .build();
 
         final ProfileLogResponseDTO.ProfileLogItem secondProfileLogItem =
-                new ProfileLogItem(2L, true, GENERAL_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
+                ProfileLogItem.builder()
+                        .profileLogId(1L)
+                        .isLogPublic(true)
+                        .logType(REPRESENTATIVE_LOG)
+                        .createdAt("1시간 전")
+                        .modifiedAt(LocalDateTime.now())
+                        .logTitle("로그 제목")
+                        .logContent("로그 내용")
+                        .logViewCount(10L)
+                        .commentCount(15L)
+                        .build();
 
         final ProfileLogResponseDTO.ProfileLogItems profileLogItems =
                 new ProfileLogItems(Arrays.asList(firstProfileLogItem, secondProfileLogItem));
@@ -302,8 +321,17 @@ public class ProfileLogControllerTest extends ControllerTest {
     void getProfileLogItem() throws Exception {
         // given
         final ProfileLogResponseDTO.ProfileLogItem profileLogItem =
-                new ProfileLogItem(
-                        1L, true, REPRESENTATIVE_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
+                ProfileLogItem.builder()
+                        .profileLogId(1L)
+                        .isLogPublic(true)
+                        .logType(REPRESENTATIVE_LOG)
+                        .createdAt("1시간 전")
+                        .modifiedAt(LocalDateTime.now())
+                        .logTitle("로그 제목")
+                        .logContent("로그 내용")
+                        .logViewCount(10L)
+                        .commentCount(15L)
+                        .build();
 
         // when
         when(profileLogService.getProfileLogItem(anyLong(), anyLong())).thenReturn(profileLogItem);
@@ -345,6 +373,9 @@ public class ProfileLogControllerTest extends ControllerTest {
                                                 fieldWithPath("result.logType")
                                                         .type(JsonFieldType.STRING)
                                                         .description("로그 유형 (대표글 여부)"),
+                                                fieldWithPath("result.createdAt")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("로그 생성 시간 (동적)"),
                                                 fieldWithPath("result.modifiedAt")
                                                         .type(JsonFieldType.STRING)
                                                         .description("로그 수정 시간"),
@@ -353,7 +384,13 @@ public class ProfileLogControllerTest extends ControllerTest {
                                                         .description("로그 제목"),
                                                 fieldWithPath("result.logContent")
                                                         .type(JsonFieldType.STRING)
-                                                        .description("로그 내용"))))
+                                                        .description("로그 내용"),
+                                                fieldWithPath("result.logViewCount")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("로그 조회수"),
+                                                fieldWithPath("result.commentCount")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("로그 댓글수"))))
                         .andReturn();
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<ProfileLogResponseDTO.ProfileLogItem> actual =

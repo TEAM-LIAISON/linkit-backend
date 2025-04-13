@@ -4,6 +4,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import liaison.linkit.notification.business.NotificationMapper;
+import liaison.linkit.notification.domain.type.NotificationType;
+import liaison.linkit.notification.domain.type.SubNotificationType;
+import liaison.linkit.notification.presentation.dto.NotificationResponseDTO;
+import liaison.linkit.notification.service.NotificationService;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
@@ -40,6 +45,8 @@ public class TeamLogCommentService {
 
     // Mappers
     private final TeamLogCommentMapper teamLogCommentMapper;
+    private final NotificationMapper notificationMapper;
+    private final NotificationService notificationService;
 
     /**
      * 프로필 로그에 댓글을 추가합니다.
@@ -93,6 +100,27 @@ public class TeamLogCommentService {
 
         // 7. 댓글 수 증가
         targetTeamLog.increaseCommentCount();
+
+        Long teamOwnerMemberId =
+                teamMemberQueryAdapter.getTeamOwnerMemberId(targetTeamLog.getTeam());
+        if (parentComment != null) {
+            Long parentAuthorId = parentComment.getProfile().getMember().getId();
+
+            // 자신에게 알림 보내지 않도록 예외 처리
+            if (!parentAuthorId.equals(authorProfile.getMember().getId())) {
+                notifyComment(
+                        parentAuthorId, targetTeamLog, authorProfile, true // 대댓글 알림
+                        );
+            }
+
+        } else {
+            // 팀 소유자 알림 (자기 자신이면 제외)
+            if (!teamOwnerMemberId.equals(authorProfile.getMember().getId())) {
+                notifyComment(
+                        teamOwnerMemberId, targetTeamLog, authorProfile, false // 일반 댓글 알림
+                        );
+            }
+        }
 
         // 8. 응답 생성
         return teamLogCommentMapper.toAddTeamLogCommentResponse(
@@ -261,5 +289,41 @@ public class TeamLogCommentService {
                 .nextCursor(nextCursor)
                 .hasNext(nextCursor != null)
                 .build();
+    }
+
+    private void notifyComment(
+            Long receiverMemberId,
+            TeamLog targetTeamLog,
+            Profile authorProfile,
+            boolean isChildComment) {
+        NotificationResponseDTO.NotificationDetails notificationDetails =
+                isChildComment
+                        ? NotificationResponseDTO.NotificationDetails.childComment(
+                                "TEAM",
+                                null,
+                                null,
+                                targetTeamLog.getTeam().getTeamCode(),
+                                targetTeamLog.getId(),
+                                "CHILD_COMMENT",
+                                authorProfile.getMember().getMemberBasicInform().getMemberName(),
+                                authorProfile.getProfileImagePath())
+                        : NotificationResponseDTO.NotificationDetails.parentComment(
+                                "TEAM",
+                                null,
+                                null,
+                                targetTeamLog.getTeam().getTeamCode(),
+                                targetTeamLog.getId(),
+                                "PARENT_COMMENT",
+                                authorProfile.getMember().getMemberBasicInform().getMemberName(),
+                                authorProfile.getProfileImagePath());
+
+        notificationService.alertNewNotification(
+                notificationMapper.toNotification(
+                        receiverMemberId,
+                        NotificationType.COMMENT,
+                        isChildComment
+                                ? SubNotificationType.CHILD_COMMENT
+                                : SubNotificationType.PARENT_COMMENT,
+                        notificationDetails));
     }
 }

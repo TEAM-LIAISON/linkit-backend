@@ -248,8 +248,17 @@ class ProfileControllerTest extends ControllerTest {
                         .build();
 
         final ProfileLogResponseDTO.ProfileLogItem profileLogItem =
-                new ProfileLogItem(
-                        1L, true, REPRESENTATIVE_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
+                ProfileLogItem.builder()
+                        .profileLogId(1L)
+                        .isLogPublic(true)
+                        .logType(REPRESENTATIVE_LOG)
+                        .createdAt("1시간 전")
+                        .modifiedAt(LocalDateTime.now())
+                        .logTitle("로그 제목")
+                        .logContent("로그 내용")
+                        .logViewCount(10L)
+                        .commentCount(15L)
+                        .build();
 
         final ProfileSkillResponseDTO.ProfileSkillItem firstProfileSkillItem =
                 new ProfileSkillItem(1L, "Figma", "상");
@@ -473,6 +482,9 @@ class ProfileControllerTest extends ControllerTest {
                                                 fieldWithPath("result.profileLogItem.logType")
                                                         .type(JsonFieldType.STRING)
                                                         .description("프로필 로그 타입"),
+                                                fieldWithPath("result.profileLogItem.createdAt")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("로그 생성 시간"),
                                                 fieldWithPath("result.profileLogItem.modifiedAt")
                                                         .type(JsonFieldType.STRING)
                                                         .description("로그 수정 시간"),
@@ -482,6 +494,12 @@ class ProfileControllerTest extends ControllerTest {
                                                 fieldWithPath("result.profileLogItem.logContent")
                                                         .type(JsonFieldType.STRING)
                                                         .description("로그 내용"),
+                                                fieldWithPath("result.profileLogItem.logViewCount")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("로그 조회수"),
+                                                fieldWithPath("result.profileLogItem.commentCount")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("로그 댓글수"),
                                                 fieldWithPath("result.profileSkillItems")
                                                         .type(JsonFieldType.ARRAY)
                                                         .description("프로필 스킬 항목 배열"),
@@ -772,8 +790,7 @@ class ProfileControllerTest extends ControllerTest {
                         .build();
 
         // when
-        when(profileService.getHomeProfileInformMenusInLogoutState())
-                .thenReturn(profileInformMenus);
+        when(profileService.getHomeProfileInformMenus(any())).thenReturn(profileInformMenus);
 
         final ResultActions resultActions = performGetHomeProfileInformMenus();
 
