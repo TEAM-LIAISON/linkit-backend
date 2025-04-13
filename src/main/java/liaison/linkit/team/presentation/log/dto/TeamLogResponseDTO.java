@@ -31,6 +31,8 @@ public class TeamLogResponseDTO {
     public static class TeamLogRepresentItem {
         private Boolean isTeamManager;
 
+        private Boolean isMyTeam;
+
         @Builder.Default
         private List<TeamLogResponseDTO.TeamLogItem> teamLogItems = new ArrayList<>();
     }

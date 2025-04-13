@@ -26,6 +26,7 @@ public class ProfileAwardsCustomRepositoryImpl implements ProfileAwardsCustomRep
         return jpaQueryFactory
                 .selectFrom(qProfileAwards)
                 .where(qProfileAwards.profile.member.id.eq(memberId))
+                .orderBy(qProfileAwards.awardsDate.desc())
                 .fetch();
     }
 

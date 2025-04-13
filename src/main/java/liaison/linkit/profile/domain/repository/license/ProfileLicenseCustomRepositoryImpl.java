@@ -27,6 +27,7 @@ public class ProfileLicenseCustomRepositoryImpl implements ProfileLicenseCustomR
         return jpaQueryFactory
                 .selectFrom(qProfileLicense)
                 .where(qProfileLicense.profile.member.id.eq(memberId))
+                .orderBy(qProfileLicense.licenseAcquisitionDate.desc())
                 .fetch();
     }
 
