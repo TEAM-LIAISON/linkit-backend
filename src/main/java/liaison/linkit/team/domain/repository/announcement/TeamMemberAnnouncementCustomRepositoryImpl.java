@@ -966,6 +966,13 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
         QAnnouncementSkill qAnnouncementSkill = QAnnouncementSkill.announcementSkill;
         QSkill qSkill = QSkill.skill;
 
+        QAnnouncementProjectType qAnnouncementProjectType =
+                QAnnouncementProjectType.announcementProjectType;
+        QProjectType qProjectType = QProjectType.projectType;
+
+        QAnnouncementWorkType qAnnouncementWorkType = QAnnouncementWorkType.announcementWorkType;
+        QWorkType qWorkType = QWorkType.workType;
+
         List<Long> targetAnnouncementIds =
                 jpaQueryFactory
                         .select(qTeamMemberAnnouncement.id)
@@ -1082,6 +1089,13 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
         QAnnouncementSkill qAnnouncementSkill = QAnnouncementSkill.announcementSkill;
         QSkill qSkill = QSkill.skill;
 
+        QAnnouncementProjectType qAnnouncementProjectType =
+                QAnnouncementProjectType.announcementProjectType;
+        QProjectType qProjectType = QProjectType.projectType;
+
+        QAnnouncementWorkType qAnnouncementWorkType = QAnnouncementWorkType.announcementWorkType;
+        QWorkType qWorkType = QWorkType.workType;
+
         List<Long> targetAnnouncementIds =
                 jpaQueryFactory
                         .select(qTeamMemberAnnouncement.id)
@@ -1143,7 +1157,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                 qPosition.majorPosition.as("majorPosition"),
                                 qPosition.subPosition.as("subPosition"),
                                 qSkill.skillName.as("announcementSkillName"),
-                                qTeamMemberAnnouncement.createdAt.as("createdAt")))
+                                qTeamMemberAnnouncement.createdAt.as("createdAt"),
+                                qProjectType.projectTypeName.as("projectTypeName"),
+                                qWorkType.workTypeName.as("workTypeName")))
                 .from(qTeamMemberAnnouncement)
                 .leftJoin(qTeamMemberAnnouncement.team, qTeam)
                 .leftJoin(qTeam.teamScales, qTeamScale)
@@ -1154,6 +1170,10 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                 .leftJoin(qAnnouncementPosition.position, qPosition)
                 .leftJoin(qTeamMemberAnnouncement.announcementSkills, qAnnouncementSkill)
                 .leftJoin(qAnnouncementSkill.skill, qSkill)
+                .leftJoin(qTeamMemberAnnouncement.announcementProjectType, qAnnouncementProjectType)
+                .leftJoin(qAnnouncementProjectType.projectType, qProjectType)
+                .leftJoin(qTeamMemberAnnouncement.announcementWorkType, qAnnouncementWorkType)
+                .leftJoin(qAnnouncementWorkType.workType, qWorkType)
                 .where(qTeamMemberAnnouncement.id.in(targetAnnouncementIds))
                 .orderBy(
                         // CASE WHEN 구문으로 지정한 순서대로 정렬
@@ -1219,7 +1239,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                 qPosition.majorPosition.as("majorPosition"),
                                 qPosition.subPosition.as("subPosition"),
                                 qSkill.skillName.as("announcementSkillName"),
-                                qAnnouncement.createdAt.as("createdAt")))
+                                qAnnouncement.createdAt.as("createdAt"),
+                                qProjectType.projectTypeName.as("projectTypeName"),
+                                qWorkType.workTypeName.as("workTypeName")))
                 .from(qAnnouncement)
                 .leftJoin(qAnnouncement.team, qTeam)
                 .leftJoin(qTeam.teamScales, qTeamScale)
@@ -1313,7 +1335,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                     qPosition.majorPosition.as("majorPosition"),
                                     qPosition.subPosition.as("subPosition"),
                                     qSkill.skillName.as("announcementSkillName"),
-                                    qAnnouncement.createdAt.as("createdAt")))
+                                    qAnnouncement.createdAt.as("createdAt"),
+                                    qProjectType.projectTypeName.as("projectTypeName"),
+                                    qWorkType.workTypeName.as("workTypeName")))
                     .from(qAnnouncement)
                     .leftJoin(qAnnouncement.team, qTeam)
                     .leftJoin(qTeam.teamScales, qTeamScale)
@@ -1470,7 +1494,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                             qPosition.majorPosition.as("majorPosition"),
                                             qPosition.subPosition.as("subPosition"),
                                             qSkill.skillName.as("announcementSkillName"),
-                                            qAnnouncement.createdAt.as("createdAt")))
+                                            qAnnouncement.createdAt.as("createdAt"),
+                                            qProjectType.projectTypeName.as("projectTypeName"),
+                                            qWorkType.workTypeName.as("workTypeName")))
                             .from(qAnnouncement)
                             .leftJoin(qAnnouncement.team, qTeam)
                             .leftJoin(qTeam.teamScales, qTeamScale)
