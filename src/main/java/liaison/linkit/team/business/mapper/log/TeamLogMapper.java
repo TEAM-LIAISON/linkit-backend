@@ -39,7 +39,7 @@ public class TeamLogMapper {
     }
 
     public TeamLogResponseDTO.TeamLogRepresentItem toTeamLogRepresentItem(
-            final boolean isTeamManager, final List<TeamLog> teamLogs) {
+            final boolean isTeamManager, final boolean isMyTeam, final List<TeamLog> teamLogs) {
         List<TeamLogResponseDTO.TeamLogItem> items =
                 teamLogs.stream()
                         .map(teamLog -> toTeamLogItem(isTeamManager, teamLog))
@@ -47,6 +47,7 @@ public class TeamLogMapper {
 
         return TeamLogResponseDTO.TeamLogRepresentItem.builder()
                 .isTeamManager(isTeamManager)
+                .isMyTeam(isMyTeam)
                 .teamLogItems(items)
                 .build();
     }

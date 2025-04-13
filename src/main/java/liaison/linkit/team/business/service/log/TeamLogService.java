@@ -16,6 +16,7 @@ import liaison.linkit.image.domain.Image;
 import liaison.linkit.image.implement.ImageCommandAdapter;
 import liaison.linkit.image.implement.ImageQueryAdapter;
 import liaison.linkit.image.util.ImageUtils;
+import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.profile.domain.type.LogType;
 import liaison.linkit.team.business.mapper.log.TeamLogMapper;
 import liaison.linkit.team.domain.log.TeamLog;
@@ -67,6 +68,7 @@ public class TeamLogService {
 
     private final S3Uploader s3Uploader;
     private final TeamMemberQueryAdapter teamMemberQueryAdapter;
+    private final MemberQueryAdapter memberQueryAdapter;
 
     @Transactional(readOnly = true)
     public TeamLogResponseDTO.TeamLogItems getTeamLogItems(
@@ -132,7 +134,16 @@ public class TeamLogService {
             teamLogs = List.of(teamLog);
         }
 
-        return teamLogMapper.toTeamLogRepresentItem(isTeamManager, teamLogs);
+        boolean isMyTeam =
+                optionalMemberId
+                        .map(
+                                memberId ->
+                                        teamMemberQueryAdapter.isMemberOfTeam(
+                                                targetTeam.getTeamCode(),
+                                                memberQueryAdapter.findEmailIdById(memberId)))
+                        .orElse(false);
+
+        return teamLogMapper.toTeamLogRepresentItem(isTeamManager, isMyTeam, teamLogs);
     }
 
     // 팀 로그 본문 이미지 추가

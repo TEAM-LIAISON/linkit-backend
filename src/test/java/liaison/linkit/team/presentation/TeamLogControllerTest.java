@@ -544,6 +544,7 @@ public class TeamLogControllerTest extends ControllerTest {
         final TeamLogResponseDTO.TeamLogRepresentItem teamLogRepresentItem =
                 TeamLogResponseDTO.TeamLogRepresentItem.builder()
                         .isTeamManager(true) // isTeamManger가 아닌 isTeamManager로 수정
+                        .isMyTeam(true)
                         .teamLogItems(List.of(teamLogItem)) // Arrays.asList 대신 List.of 사용
                         .build();
 
@@ -582,6 +583,9 @@ public class TeamLogControllerTest extends ControllerTest {
                                                 fieldWithPath("result.isTeamManager")
                                                         .type(JsonFieldType.BOOLEAN)
                                                         .description("팀 오너/관리자 여부"),
+                                                fieldWithPath("result.isMyTeam")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("팀원 여부"),
                                                 fieldWithPath("result.teamLogItems")
                                                         .type(JsonFieldType.ARRAY)
                                                         .description("팀 로그 목록"),

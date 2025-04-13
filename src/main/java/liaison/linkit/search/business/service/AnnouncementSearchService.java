@@ -48,6 +48,7 @@ public class AnnouncementSearchService {
         if (condition.isDefault()) {
             // /api/v1/announcement/search?size=20
             if (!cursorRequest.hasNext()) {
+                log.info("Default condition");
                 List<AnnouncementInformMenu> results =
                         getFirstPageDefaultAnnouncements(cursorRequest.size(), optionalMemberId);
                 Long nextCursor =
@@ -58,6 +59,7 @@ public class AnnouncementSearchService {
                         results, nextCursor != null ? nextCursor.toString() : null);
             }
             // /api/v1/profile/search?cursor={teamMemberAnnouncementId}&size=20
+            log.info("Cursor condition");
             List<AnnouncementInformMenu> results =
                     getAllAnnouncementsWithoutFilter(
                             cursorRequest.size(), optionalMemberId, cursorRequest);
@@ -69,6 +71,7 @@ public class AnnouncementSearchService {
         }
 
         // 필터가 포함된 경우
+        log.info("Filtered condition");
         List<AnnouncementInformMenu> results =
                 getAllAnnouncementsWithFilter(
                         cursorRequest.size(), optionalMemberId, condition, cursorRequest);
@@ -111,8 +114,8 @@ public class AnnouncementSearchService {
                 teamMemberAnnouncementRepository.findFilteredFlatAnnouncementsWithCursor(
                         condition.subPosition(),
                         condition.cityName(),
-                        condition.projectTypeName(),
-                        condition.workTypeName(),
+                        condition.projectType(),
+                        condition.workType(),
                         condition.sortType(),
                         cursorRequest);
         return getAnnouncementInformMenus(size, optionalMemberId, raw);

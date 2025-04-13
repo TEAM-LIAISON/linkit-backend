@@ -14,21 +14,17 @@ public class ProfilePortfolioQueryAdapter {
 
     private final ProfilePortfolioRepository profilePortfolioRepository;
 
+    public List<ProfilePortfolio> getProfilePortfolios(final Long profileId) {
+        return profilePortfolioRepository.getProfilePortfolios(profileId);
+    }
+
     public ProfilePortfolio getProfilePortfolio(final Long profilePortfolioId) {
         return profilePortfolioRepository
                 .getProfilePortfolio(profilePortfolioId)
                 .orElseThrow(() -> PortfolioNotFoundException.EXCEPTION);
     }
 
-    public List<ProfilePortfolio> getProfilePortfolios(final Long profileId) {
-        return profilePortfolioRepository.getProfilePortfolios(profileId);
-    }
-
     public boolean existsByProfileId(final Long profileId) {
         return profilePortfolioRepository.existsByProfileId(profileId);
-    }
-
-    public void removeProfilePortfoliosByProfileId(final Long profileId) {
-        profilePortfolioRepository.removeProfilePortfoliosByProfileId(profileId);
     }
 }
