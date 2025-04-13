@@ -73,14 +73,8 @@ public class TeamMemberAnnouncementMapper {
                                 : new AnnouncementPositionItem())
                 .announcementSkillNames(
                         announcementSkillNames != null ? announcementSkillNames : new ArrayList<>())
-                .projectTypeName(
-                        announcementProjectTypeItem != null
-                                ? announcementProjectTypeItem.getAnnouncementProjectTypeName()
-                                : "")
-                .workTypeName(
-                        announcementWorkTypeItem != null
-                                ? announcementWorkTypeItem.getAnnouncementWorkTypeName()
-                                : "")
+                .projectTypeName(announcementProjectTypeItem.getAnnouncementProjectTypeName())
+                .workTypeName(announcementWorkTypeItem.getAnnouncementWorkTypeName())
                 .build();
     }
 

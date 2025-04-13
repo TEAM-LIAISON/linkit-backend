@@ -16,11 +16,12 @@ import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMa
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenus;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -106,11 +107,12 @@ public class AnnouncementInformMenuAssembler {
         AnnouncementPositionItem announcementPositionItem =
                 announcementCommonAssembler.fetchAnnouncementPositionItem(teamMemberAnnouncement);
 
-        TeamMemberAnnouncementResponseDTO.AnnouncementProjectTypeItem announcementProjectTypeItem =
+        // 7. 공고 프로젝트 유형 및 업무 형태 정보 조회
+        AnnouncementProjectTypeItem announcementProjectTypeItem =
                 announcementCommonAssembler.fetchAnnouncementProjectTypeItem(
                         teamMemberAnnouncement);
 
-        TeamMemberAnnouncementResponseDTO.AnnouncementWorkTypeItem announcementWorkTypeItem =
+        AnnouncementWorkTypeItem announcementWorkTypeItem =
                 announcementCommonAssembler.fetchAnnouncementWorkTypeItem(teamMemberAnnouncement);
 
         // 7. 최종 DTO 변환 및 반환
@@ -192,6 +194,9 @@ public class AnnouncementInformMenuAssembler {
                                             new AnnouncementPositionItem(
                                                     dto.getMajorPosition(), dto.getSubPosition()))
                                     .announcementSkillNames(new ArrayList<>())
+                                    .projectTypeName(
+                                            new AnnouncementProjectTypeItem(
+                                                    dto.getProjectTypeName()))
                                     .createdAt(DateUtils.formatRelativeTime(dto.getCreatedAt())));
 
             builderMap
