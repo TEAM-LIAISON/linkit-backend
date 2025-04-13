@@ -28,6 +28,7 @@ public class ProfileEducationCustomRepositoryImpl implements ProfileEducationCus
         return jpaQueryFactory
                 .selectFrom(qProfileEducation)
                 .where(qProfileEducation.profile.id.eq(profileId))
+                .orderBy(qProfileEducation.admissionYear.desc())
                 .fetch();
     }
 
