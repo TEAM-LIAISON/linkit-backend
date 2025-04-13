@@ -18,17 +18,9 @@ public interface TeamCustomRepository {
 
     boolean existsByTeamCode(final String teamCode);
 
-    //    Page<Team> findAllByFiltering(
-    //            final List<String> scaleName,
-    //            final List<String> cityName,
-    //            final List<String> teamStateName,
-    //            final CursorRequest cursorRequest);
-
     void deleteTeamByTeamCode(final String teamCode);
 
     List<FlatTeamDTO> findHomeTopTeams(final int size);
-
-    Page<Team> findTopVentureTeams(final Pageable pageable);
 
     Page<Team> findSupportProjectTeams(final Pageable pageable);
 
@@ -52,4 +44,8 @@ public interface TeamCustomRepository {
             CursorRequest cursorRequest);
 
     List<TeamDynamicResponse> findAllDynamicVariablesWithTeam();
+
+    List<FlatTeamDTO> findTopVentureTeams(int limit);
+
+    List<FlatTeamDTO> findTopSupportTeams(int limit);
 }
