@@ -1507,11 +1507,11 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                             .leftJoin(qAnnouncementPosition.position, qPosition)
                             .leftJoin(qAnnouncement.announcementSkills, qAnnouncementSkill)
                             .leftJoin(qAnnouncementSkill.skill, qSkill)
-                            .leftJoin(
+                            .innerJoin(
                                     qAnnouncement.announcementProjectType, qAnnouncementProjectType)
-                            .leftJoin(qAnnouncementProjectType.projectType, qProjectType)
-                            .leftJoin(qAnnouncement.announcementWorkType, qAnnouncementWorkType)
-                            .leftJoin(qAnnouncementWorkType.workType, qWorkType)
+                            .innerJoin(qAnnouncementProjectType.projectType, qProjectType)
+                            .innerJoin(qAnnouncement.announcementWorkType, qAnnouncementWorkType)
+                            .innerJoin(qAnnouncementWorkType.workType, qWorkType)
                             .where(condition)
                             .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
                             .limit(pageSize + 1)
