@@ -33,11 +33,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 @RequiredArgsConstructor
 public class AnnouncementProgressBatchConfig {
 
-    // 스프링 배치 의존성
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
 
-    // Adapters
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
     private final TeamMemberAnnouncementCommandAdapter teamMemberAnnouncementCommandAdapter;
 
@@ -61,45 +59,43 @@ public class AnnouncementProgressBatchConfig {
                 .build();
     }
 
-    /** 모집 마감 상태로 변경이 필요한 모든 모집 공고를 조회하는 Reader */
+    /** 마감일이 지나고 아직 진행 중인 공고만 필터링하는 Reader */
     @Bean
     @StepScope
     public ItemReader<TeamMemberAnnouncement> announcementProgressReader(
             @Value("#{jobParameters['time']}") Long time) {
 
-        // 실행 시간을 기준으로 전날 날짜의 시작과 끝 시간 계산
         LocalDateTime executionDateTime =
                 LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.of("Asia/Seoul"));
+        LocalDate today = executionDateTime.toLocalDate(); // 실행일 기준
 
-        // 전날 날짜 구하기
-        LocalDate previousDay = executionDateTime.toLocalDate().minusDays(1);
+        log.info("배치 실행일 기준 날짜 (today): {}", today);
 
-        // 전날 날짜를 문자열로 변환 (YYYY-MM-DD 형식)
-        String previousDayString = previousDay.toString(); // 예: "2025-03-10"
-
-        log.info("배치 처리 기준 날짜: {}", previousDayString);
-
-        // 상시 모집이 아닌 모든 공고 조회
         List<TeamMemberAnnouncement> allNonPermanentAnnouncements =
                 teamMemberAnnouncementQueryAdapter.findAllByIsNotPermanentRecruitment();
 
-        // 전날이 마감일인 공고만 필터링
         List<TeamMemberAnnouncement> announcementsToProcess =
                 allNonPermanentAnnouncements.stream()
                         .filter(
                                 announcement -> {
-                                    // 마감일자가 전날과 일치하는지 확인
-                                    String endDate = announcement.getAnnouncementEndDate();
+                                    String endDateStr = announcement.getAnnouncementEndDate();
 
-                                    // null 체크 및 공고가 아직 진행 중인지 확인
-                                    return endDate != null
-                                            && endDate.equals(previousDayString)
-                                            && announcement.isAnnouncementInProgress();
+                                    try {
+                                        return endDateStr != null
+                                                && LocalDate.parse(endDateStr).isBefore(today)
+                                                && announcement.isAnnouncementInProgress();
+                                    } catch (Exception e) {
+                                        log.warn(
+                                                "공고 ID {}: 날짜 파싱 실패 - {}",
+                                                announcement.getId(),
+                                                endDateStr);
+                                        return false;
+                                    }
                                 })
                         .collect(Collectors.toList());
 
         log.info("전체 상시 모집이 아닌 공고 수: {}", allNonPermanentAnnouncements.size());
-        log.info("처리할 전날({}) 마감 공고 수: {}", previousDayString, announcementsToProcess.size());
+        log.info("처리 대상 (마감일이 지난) 공고 수: {}", announcementsToProcess.size());
 
         return new ListItemReader<>(announcementsToProcess);
     }
@@ -112,24 +108,20 @@ public class AnnouncementProgressBatchConfig {
             try {
                 log.debug("공고 ID {} 처리 중", announcement.getId());
 
-                // 공고의 현재 상태 체크 필요 시 여기서 수행
+                AnnouncementProgressDTO dto = new AnnouncementProgressDTO();
+                dto.setTeamMemberAnnouncement(announcement);
+                dto.setTeamMemberAnnouncementInProgress(false); // 마감 처리
 
-                // DTO로 변환 - 마감 처리 필요한 것으로 표시
-                AnnouncementProgressDTO progressDTO = new AnnouncementProgressDTO();
-                progressDTO.setTeamMemberAnnouncement(announcement);
-                progressDTO.setTeamMemberAnnouncementInProgress(false); // 마감 처리
-
-                return progressDTO;
+                return dto;
             } catch (Exception e) {
                 log.error("공고 ID {}: 처리 중 오류 발생: {}", announcement.getId(), e.getMessage(), e);
-                return null; // 오류 발생 시 해당 항목 건너뛰기
+                return null;
             }
         };
     }
 
     /** 마감 처리된 공고 정보를 저장하는 Writer */
     @Bean
-    @StepScope
     public ItemWriter<AnnouncementProgressDTO> announcementProgressWriter() {
         return items -> {
             log.info("총 {} 개의 공고 마감 처리 시작", items.size());
