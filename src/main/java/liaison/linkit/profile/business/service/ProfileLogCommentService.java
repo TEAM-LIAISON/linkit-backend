@@ -102,6 +102,22 @@ public class ProfileLogCommentService {
         targetProfileLog.increaseCommentCount();
 
         if (parentComment != null) {
+            // 대댓글 알림 → 부모 댓글 작성자에게
+            notifyComment(
+                    parentComment.getProfile().getMember().getId(),
+                    targetProfileLog,
+                    authorProfile,
+                    true);
+        } else {
+            // 일반 댓글 알림 → 프로필 로그 작성자에게
+            notifyComment(
+                    targetProfileLog.getProfile().getMember().getId(),
+                    targetProfileLog,
+                    authorProfile,
+                    false);
+        }
+
+        if (parentComment != null) {
             Long parentAuthorId = parentComment.getProfile().getMember().getId();
 
             // 자기 자신에게 알림 보내지 않도록

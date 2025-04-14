@@ -56,6 +56,8 @@ public class TeamMemberAnnouncementRequestDTO {
         @NotNull(message = "지역 무관 여부는 필수입니다")
         private Boolean isRegionFlexible;
 
+        private String projectIntroduction;
+
         @NotBlank(message = "주요 업무는 필수입니다")
         @Size(min = 1, message = "주요 업무는 1자 이상이어야 합니다")
         private String mainTasks;
@@ -114,6 +116,8 @@ public class TeamMemberAnnouncementRequestDTO {
 
         @NotNull(message = "지역 무관 여부는 필수입니다")
         private Boolean isRegionFlexible;
+
+        private String projectIntroduction;
 
         @NotBlank(message = "주요 업무는 필수입니다")
         @Size(min = 1, message = "주요 업무는 1자 이상이어야 합니다")

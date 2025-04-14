@@ -114,6 +114,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                         .set(
                                 qTeamMemberAnnouncement.isRegionFlexible,
                                 request.getIsRegionFlexible())
+                        .set(
+                                qTeamMemberAnnouncement.projectIntroduction,
+                                request.getProjectIntroduction())
                         .set(qTeamMemberAnnouncement.mainTasks, request.getMainTasks())
                         .set(qTeamMemberAnnouncement.workMethod, request.getWorkMethod())
                         .set(qTeamMemberAnnouncement.idealCandidate, request.getIdealCandidate())
