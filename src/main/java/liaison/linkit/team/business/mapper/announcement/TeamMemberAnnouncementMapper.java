@@ -125,6 +125,7 @@ public class TeamMemberAnnouncementMapper {
                 .workTypeName(announcementWorkTypeItem.getAnnouncementWorkTypeName())
                 .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
                 .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
+                .projectIntroduction(teamMemberAnnouncement.getProjectIntroduction())
                 .mainTasks(teamMemberAnnouncement.getMainTasks())
                 .workMethod(teamMemberAnnouncement.getWorkMethod())
                 .idealCandidate(teamMemberAnnouncement.getIdealCandidate())
