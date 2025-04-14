@@ -96,6 +96,8 @@ public class TeamMemberAnnouncementResponseDTO {
         private String workTypeName;
 
         private Boolean isRegionFlexible; // 지역 무관
+
+        private String projectIntroduction; // 프로젝트 소개
         private String mainTasks; // 주요 업무
         private String workMethod; // 업무 방식
         private String idealCandidate; // 이런 분을 찾고 있어요
@@ -167,6 +169,8 @@ public class TeamMemberAnnouncementResponseDTO {
 
         private Boolean isRegionFlexible; // 지역 무관
 
+        private String projectIntroduction; // 프로젝트 소개
+
         private String mainTasks; // 주요 업무
         private String workMethod; // 업무 방식
         private String idealCandidate; // 이런 분을 찾고 있어요
@@ -201,6 +205,8 @@ public class TeamMemberAnnouncementResponseDTO {
         private Boolean isPermanentRecruitment;
 
         private Boolean isRegionFlexible; // 지역 무관
+
+        private String projectIntroduction; // 프로젝트 소개
 
         private String mainTasks; // 주요 업무
         private String workMethod; // 업무 방식

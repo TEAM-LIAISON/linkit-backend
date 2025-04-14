@@ -10,6 +10,7 @@ import jakarta.persistence.PersistenceContext;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.profile.domain.type.LogType;
 import liaison.linkit.team.domain.log.QTeamLog;
@@ -288,5 +289,16 @@ public class TeamLogCustomRepositoryImpl implements TeamLogCustomRepository {
                 .where(qTeam.status.eq(USABLE).and(qTeam.isTeamPublic.eq(true)))
                 .orderBy(qTeam.id.desc())
                 .fetch();
+    }
+
+    @Override
+    public TeamLog getRandomTeamLog() {
+        QTeamLog qTeamLog = QTeamLog.teamLog;
+
+        return queryFactory
+                .selectFrom(qTeamLog)
+                .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
+                .limit(1)
+                .fetchOne();
     }
 }

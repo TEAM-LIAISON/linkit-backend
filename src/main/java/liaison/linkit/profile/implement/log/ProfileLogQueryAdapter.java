@@ -55,4 +55,8 @@ public class ProfileLogQueryAdapter {
     public List<ProfileLog> findTopView(final int limit) {
         return profileLogRepository.findTopView(limit);
     }
+
+    public ProfileLog getRandomProfileLog() {
+        return profileLogRepository.findRandomProfileLog();
+    }
 }

@@ -1,5 +1,6 @@
 package liaison.linkit.profile.business.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +37,9 @@ import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.RemoveP
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.UpdateProfileLogPublicStateResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.UpdateProfileLogResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.UpdateProfileLogTypeResponse;
+import liaison.linkit.visit.dailyviewcount.domain.LogDailyViewCount;
+import liaison.linkit.visit.dailyviewcount.domain.LogViewType;
+import liaison.linkit.visit.dailyviewcount.repository.LogDailyViewCountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -65,6 +69,7 @@ public class ProfileLogService {
 
     private final S3Uploader s3Uploader;
     private final MemberQueryAdapter memberQueryAdapter;
+    private final LogDailyViewCountRepository logDailyViewCountRepository;
 
     // 로그 전체 조회
     @Transactional(readOnly = true)
@@ -90,6 +95,28 @@ public class ProfileLogService {
         final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
 
         profileLog.increaseViewCount();
+
+        LocalDate today = LocalDate.now();
+        LogDailyViewCount dailyViewCount =
+                logDailyViewCountRepository
+                        .findByLogViewTypeAndLogIdAndDate(
+                                LogViewType.PROFILE_LOG, profileLogId, today)
+                        .orElseGet(
+                                () -> {
+                                    // 해당 일자의 기록이 없으면 새로 생성
+                                    LogDailyViewCount newCount =
+                                            LogDailyViewCount.builder()
+                                                    .logViewType(LogViewType.PROFILE_LOG)
+                                                    .logId(profileLogId)
+                                                    .date(today)
+                                                    .dailyViewCount(
+                                                            0L) // 초기값은 0, increase() 메서드에서 증가시킬 것
+                                                    .build();
+                                    return logDailyViewCountRepository.save(newCount);
+                                });
+
+        // 일별 조회수 증가
+        dailyViewCount.increase();
 
         return profileLogMapper.toProfileLogItem(profileLog);
     }

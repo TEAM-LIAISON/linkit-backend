@@ -27,7 +27,6 @@ import liaison.linkit.team.business.mapper.announcement.AnnouncementProjectTypeM
 import liaison.linkit.team.business.mapper.announcement.AnnouncementSkillMapper;
 import liaison.linkit.team.business.mapper.announcement.AnnouncementWorkTypeMapper;
 import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
-import liaison.linkit.team.business.mapper.teamMember.TeamMemberMapper;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
 import liaison.linkit.team.domain.announcement.AnnouncementProjectType;
 import liaison.linkit.team.domain.announcement.AnnouncementSkill;
@@ -102,7 +101,6 @@ public class TeamMemberAnnouncementService {
     private final AnnouncementWorkTypeQueryAdapter announcementWorkTypeQueryAdapter;
 
     private final AnnouncementScrapRepository announcementScrapRepository;
-    private final TeamMemberMapper teamMemberMapper;
 
     @Transactional(readOnly = true)
     public TeamMemberAnnouncementItems getTeamMemberAnnouncementViewItems(

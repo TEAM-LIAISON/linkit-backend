@@ -2,6 +2,7 @@ package liaison.linkit.team.business.service.log;
 
 import static liaison.linkit.profile.domain.type.LogType.GENERAL_LOG;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -39,6 +40,9 @@ import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.RemoveTeamLog
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.TeamLogItem;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.UpdateTeamLogPublicStateResponse;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.UpdateTeamLogTypeResponse;
+import liaison.linkit.visit.dailyviewcount.domain.LogDailyViewCount;
+import liaison.linkit.visit.dailyviewcount.domain.LogViewType;
+import liaison.linkit.visit.dailyviewcount.repository.LogDailyViewCountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -69,6 +73,7 @@ public class TeamLogService {
     private final S3Uploader s3Uploader;
     private final TeamMemberQueryAdapter teamMemberQueryAdapter;
     private final MemberQueryAdapter memberQueryAdapter;
+    private final LogDailyViewCountRepository logDailyViewCountRepository;
 
     @Transactional(readOnly = true)
     public TeamLogResponseDTO.TeamLogItems getTeamLogItems(
@@ -97,10 +102,32 @@ public class TeamLogService {
     public TeamLogItem getTeamLogItem(
             final Optional<Long> optionalMemberId, final String teamCode, final Long teamLogId) {
         final TeamLog teamLog = teamLogQueryAdapter.getTeamLog(teamLogId);
+
+        // 총 조회수 증가
         teamLog.increaseViewCount();
 
-        Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
+        LocalDate today = LocalDate.now();
+        LogDailyViewCount dailyViewCount =
+                logDailyViewCountRepository
+                        .findByLogViewTypeAndLogIdAndDate(LogViewType.TEAM_LOG, teamLogId, today)
+                        .orElseGet(
+                                () -> {
+                                    // 해당 일자의 기록이 없으면 새로 생성
+                                    LogDailyViewCount newCount =
+                                            LogDailyViewCount.builder()
+                                                    .logViewType(LogViewType.TEAM_LOG)
+                                                    .logId(teamLogId)
+                                                    .date(today)
+                                                    .dailyViewCount(
+                                                            0L) // 초기값은 0, increase() 메서드에서 증가시킬 것
+                                                    .build();
+                                    return logDailyViewCountRepository.save(newCount);
+                                });
 
+        // 일별 조회수 증가
+        dailyViewCount.increase();
+
+        Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
         boolean isTeamManager =
                 optionalMemberId
                         .map(

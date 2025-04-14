@@ -63,6 +63,10 @@ public class TeamMemberAnnouncement extends BaseEntity {
     private boolean isRegionFlexible; // 지역 무관
 
     @Lob
+    @Column(columnDefinition = "TEXT")
+    private String projectIntroduction;
+
+    @Lob
     @Column(nullable = false, columnDefinition = "TEXT")
     private String mainTasks;
 
