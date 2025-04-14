@@ -38,4 +38,6 @@ public interface ProfileLogCustomRepository {
     void deleteAllProfileLogs(final Long profileId);
 
     List<ProfileLogDynamicResponse> findAllDynamicVariablesWithProfileLog();
+
+    ProfileLog findRandomProfileLog();
 }

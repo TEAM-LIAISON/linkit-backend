@@ -53,6 +53,19 @@ public class LogSearchService {
             }
         }
 
+        // 빈 배열일 경우, 랜덤으로 각 1개씩 조회
+        if (result.isEmpty()) {
+            ProfileLog randomProfileLog = profileLogQueryAdapter.getRandomProfileLog();
+            TeamLog randomTeamLog = teamLogQueryAdapter.getRandomTeamLog();
+
+            if (randomProfileLog != null) {
+                result.add(mapProfileLogToMenu(randomProfileLog));
+            }
+            if (randomTeamLog != null) {
+                result.add(mapTeamLogToMenu(randomTeamLog));
+            }
+        }
+
         return logMapper.toLogInformMenus(result);
     }
 
