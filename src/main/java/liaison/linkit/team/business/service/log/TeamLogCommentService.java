@@ -104,20 +104,6 @@ public class TeamLogCommentService {
         Long teamOwnerMemberId =
                 teamMemberQueryAdapter.getTeamOwnerMemberId(targetTeamLog.getTeam());
         if (parentComment != null) {
-            // 대댓글 알림 → 부모 댓글 작성자에게
-            notifyComment(
-                    parentComment.getProfile().getMember().getId(),
-                    targetTeamLog,
-                    authorProfile,
-                    true);
-        } else {
-            // 일반 댓글 알림 → 팀 소유자에게
-            notifyComment(teamOwnerMemberId, targetTeamLog, authorProfile, false);
-        }
-
-        Long teamOwnerMemberId =
-                teamMemberQueryAdapter.getTeamOwnerMemberId(targetTeamLog.getTeam());
-        if (parentComment != null) {
             Long parentAuthorId = parentComment.getProfile().getMember().getId();
 
             // 자신에게 알림 보내지 않도록 예외 처리
