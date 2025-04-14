@@ -76,7 +76,26 @@ public interface TeamMemberAnnouncementCustomRepository {
 
     List<AnnouncementDynamicResponse> findAllDynamicVariablesWithTeamMemberAnnouncement();
 
+    // 홈화면
     List<FlatAnnouncementDTO> findHomeTopAnnouncements(int limit);
 
+    // 지금 핫한 공고에요
     List<FlatAnnouncementDTO> findTopHotAnnouncements(int limit);
+
+    // cursor 없는 초기 조회
+    List<FlatAnnouncementDTO> findFlatAnnouncementsWithoutCursor(
+            List<Long> excludeProfileIds, int size);
+
+    // cursor 값만 있는 스크롤 조회
+    List<FlatAnnouncementDTO> findAllAnnouncementsWithoutFilter(
+            List<Long> excludeProfileIds, CursorRequest cursorRequest);
+
+    // cursor 값을 포함하는 필터 있는 스크롤 조회
+    List<FlatAnnouncementDTO> findFilteredFlatAnnouncementsWithCursor(
+            List<String> subPosition,
+            List<String> cityName,
+            List<String> projectTypeName,
+            List<String> workTypeName,
+            AnnouncementSortType sortType,
+            CursorRequest cursorRequest);
 }

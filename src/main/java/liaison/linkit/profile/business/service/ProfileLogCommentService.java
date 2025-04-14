@@ -117,6 +117,27 @@ public class ProfileLogCommentService {
                     false);
         }
 
+        if (parentComment != null) {
+            Long parentAuthorId = parentComment.getProfile().getMember().getId();
+
+            // 자기 자신에게 알림 보내지 않도록
+            if (!parentAuthorId.equals(authorProfile.getMember().getId())) {
+                notifyComment(
+                        parentAuthorId, targetProfileLog, authorProfile, true // 대댓글 알림
+                        );
+            }
+
+        } else {
+            Long logAuthorId = targetProfileLog.getProfile().getMember().getId();
+
+            // 자기 자신에게 알림 보내지 않도록
+            if (!logAuthorId.equals(authorProfile.getMember().getId())) {
+                notifyComment(
+                        logAuthorId, targetProfileLog, authorProfile, false // 일반 댓글 알림
+                        );
+            }
+        }
+
         // 8. 응답 생성
         return profileLogCommentMapper.toAddProfileLogCommentResponse(
                 savedComment, authorProfile, profileLogId);

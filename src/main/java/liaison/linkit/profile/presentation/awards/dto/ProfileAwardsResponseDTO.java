@@ -40,6 +40,7 @@ public class ProfileAwardsResponseDTO {
         private Long profileAwardsId;
         private String awardsName;
         private String awardsRanking;
+        private String awardsOrganizer;
         private String awardsDate;
         private Boolean isAwardsVerified;
         private String awardsDescription;

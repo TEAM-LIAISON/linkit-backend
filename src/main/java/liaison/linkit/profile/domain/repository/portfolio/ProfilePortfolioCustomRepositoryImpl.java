@@ -9,9 +9,6 @@ import jakarta.persistence.PersistenceContext;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.profile.domain.portfolio.ProfilePortfolio;
 import liaison.linkit.profile.domain.portfolio.QProfilePortfolio;
-import liaison.linkit.profile.domain.portfolio.QProjectRoleContribution;
-import liaison.linkit.profile.domain.portfolio.QProjectSkill;
-import liaison.linkit.profile.domain.portfolio.QProjectSubImage;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRequestDTO.UpdateProfilePortfolioRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +31,7 @@ public class ProfilePortfolioCustomRepositoryImpl implements ProfilePortfolioCus
         return jpaQueryFactory
                 .selectFrom(qProfilePortfolio)
                 .where(qProfilePortfolio.profile.id.eq(profileId))
+                .orderBy(qProfilePortfolio.projectStartDate.desc())
                 .fetch();
     }
 
@@ -114,57 +112,5 @@ public class ProfilePortfolioCustomRepositoryImpl implements ProfilePortfolioCus
                         .where(qProfilePortfolio.profile.id.eq(profileId))
                         .fetchFirst()
                 != null;
-    }
-
-    @Override
-    public void removeProfilePortfoliosByProfileId(final Long profileId) {
-        QProfilePortfolio qProfilePortfolio = QProfilePortfolio.profilePortfolio;
-        QProjectRoleContribution qRoleContribution =
-                QProjectRoleContribution.projectRoleContribution;
-        QProjectSkill qProjectSkill = QProjectSkill.projectSkill;
-        QProjectSubImage qProjectSubImage = QProjectSubImage.projectSubImage;
-
-        // 1) profileId로 해당 ProfilePortfolio 목록의 ID를 조회
-        List<Long> portfolioIds =
-                jpaQueryFactory
-                        .select(qProfilePortfolio.id)
-                        .from(qProfilePortfolio)
-                        .where(qProfilePortfolio.profile.id.eq(profileId))
-                        .fetch();
-
-        if (portfolioIds.isEmpty()) {
-            return;
-        }
-
-        // 2) ProjectRoleContribution 삭제 (자식)
-        long deletedRoleCount =
-                jpaQueryFactory
-                        .delete(qRoleContribution)
-                        .where(qRoleContribution.profilePortfolio.id.in(portfolioIds))
-                        .execute();
-
-        // 3) ProjectSkill 삭제 (자식)
-        long deletedSkillCount =
-                jpaQueryFactory
-                        .delete(qProjectSkill)
-                        .where(qProjectSkill.portfolio.id.in(portfolioIds))
-                        .execute();
-
-        // 4) ProjectSubImage 삭제 (자식)
-        long deletedSubImageCount =
-                jpaQueryFactory
-                        .delete(qProjectSubImage)
-                        .where(qProjectSubImage.profilePortfolio.id.in(portfolioIds))
-                        .execute();
-
-        // 5) ProfilePortfolio 삭제 (부모)
-        long deletedPortfolioCount =
-                jpaQueryFactory
-                        .delete(qProfilePortfolio)
-                        .where(qProfilePortfolio.profile.id.eq(profileId))
-                        .execute();
-
-        entityManager.flush();
-        entityManager.clear();
     }
 }

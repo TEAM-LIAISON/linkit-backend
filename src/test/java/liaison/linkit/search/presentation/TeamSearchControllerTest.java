@@ -163,8 +163,7 @@ public class TeamSearchControllerTest extends ControllerTest {
         CursorResponse<TeamInformMenu> cursorResponse =
                 CursorResponse.of(teams, "nextTeamId"); // CursorResponse로 변경
 
-        when(teamSearchService.searchTeamsWithCursor(
-                        any(), any(), any(), any(), any(CursorRequest.class)))
+        when(teamSearchService.searchTeamsWithCursor(any(), any(), any(CursorRequest.class)))
                 .thenReturn(cursorResponse);
 
         // when

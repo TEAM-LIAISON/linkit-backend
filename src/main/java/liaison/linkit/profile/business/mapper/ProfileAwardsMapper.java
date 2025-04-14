@@ -61,6 +61,7 @@ public class ProfileAwardsMapper {
                 .profileAwardsId(profileAwards.getId())
                 .awardsName(profileAwards.getAwardsName())
                 .awardsRanking(profileAwards.getAwardsRanking())
+                .awardsOrganizer(profileAwards.getAwardsOrganizer())
                 .awardsDate(profileAwards.getAwardsDate())
                 .isAwardsVerified(profileAwards.isAwardsVerified())
                 .awardsDescription(profileAwards.getAwardsDescription())

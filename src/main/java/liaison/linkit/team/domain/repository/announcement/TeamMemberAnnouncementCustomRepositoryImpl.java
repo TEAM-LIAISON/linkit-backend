@@ -969,6 +969,13 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
         QAnnouncementSkill qAnnouncementSkill = QAnnouncementSkill.announcementSkill;
         QSkill qSkill = QSkill.skill;
 
+        QAnnouncementProjectType qAnnouncementProjectType =
+                QAnnouncementProjectType.announcementProjectType;
+        QProjectType qProjectType = QProjectType.projectType;
+
+        QAnnouncementWorkType qAnnouncementWorkType = QAnnouncementWorkType.announcementWorkType;
+        QWorkType qWorkType = QWorkType.workType;
+
         List<Long> targetAnnouncementIds =
                 jpaQueryFactory
                         .select(qTeamMemberAnnouncement.id)
@@ -980,28 +987,28 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                         .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
                                         .and(
                                                 qTeamMemberAnnouncement.id.in(
-                                                        79L, 69L, 67L, 40L, 38L, 42L, 36L, 32L,
-                                                        22L)))
+                                                        79L, 82L, 80L, 71L, 70L, 69L, 67L, 76L,
+                                                        38L)))
                         .orderBy(
                                 // CASE WHEN 구문으로 지정한 순서대로 정렬
                                 new CaseBuilder()
                                         .when(qTeamMemberAnnouncement.id.eq(79L))
                                         .then(0)
-                                        .when(qTeamMemberAnnouncement.id.eq(69L))
+                                        .when(qTeamMemberAnnouncement.id.eq(82L))
                                         .then(1)
-                                        .when(qTeamMemberAnnouncement.id.eq(67L))
+                                        .when(qTeamMemberAnnouncement.id.eq(80L))
                                         .then(2)
-                                        .when(qTeamMemberAnnouncement.id.eq(40L))
+                                        .when(qTeamMemberAnnouncement.id.eq(71L))
                                         .then(3)
-                                        .when(qTeamMemberAnnouncement.id.eq(38L))
+                                        .when(qTeamMemberAnnouncement.id.eq(70L))
                                         .then(4)
-                                        .when(qTeamMemberAnnouncement.id.eq(42L))
+                                        .when(qTeamMemberAnnouncement.id.eq(69L))
                                         .then(5)
-                                        .when(qTeamMemberAnnouncement.id.eq(36L))
+                                        .when(qTeamMemberAnnouncement.id.eq(67L))
                                         .then(6)
-                                        .when(qTeamMemberAnnouncement.id.eq(32L))
+                                        .when(qTeamMemberAnnouncement.id.eq(76L))
                                         .then(7)
-                                        .when(qTeamMemberAnnouncement.id.eq(22L))
+                                        .when(qTeamMemberAnnouncement.id.eq(38L))
                                         .then(8)
                                         .otherwise(9)
                                         .asc())
@@ -1043,24 +1050,25 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                 .leftJoin(qAnnouncementSkill.skill, qSkill)
                 .where(qTeamMemberAnnouncement.id.in(targetAnnouncementIds))
                 .orderBy(
+                        // CASE WHEN 구문으로 지정한 순서대로 정렬
                         new CaseBuilder()
                                 .when(qTeamMemberAnnouncement.id.eq(79L))
                                 .then(0)
-                                .when(qTeamMemberAnnouncement.id.eq(69L))
+                                .when(qTeamMemberAnnouncement.id.eq(82L))
                                 .then(1)
-                                .when(qTeamMemberAnnouncement.id.eq(67L))
+                                .when(qTeamMemberAnnouncement.id.eq(80L))
                                 .then(2)
-                                .when(qTeamMemberAnnouncement.id.eq(40L))
+                                .when(qTeamMemberAnnouncement.id.eq(71L))
                                 .then(3)
-                                .when(qTeamMemberAnnouncement.id.eq(38L))
+                                .when(qTeamMemberAnnouncement.id.eq(70L))
                                 .then(4)
-                                .when(qTeamMemberAnnouncement.id.eq(42L))
+                                .when(qTeamMemberAnnouncement.id.eq(69L))
                                 .then(5)
-                                .when(qTeamMemberAnnouncement.id.eq(36L))
+                                .when(qTeamMemberAnnouncement.id.eq(67L))
                                 .then(6)
-                                .when(qTeamMemberAnnouncement.id.eq(32L))
+                                .when(qTeamMemberAnnouncement.id.eq(76L))
                                 .then(7)
-                                .when(qTeamMemberAnnouncement.id.eq(22L))
+                                .when(qTeamMemberAnnouncement.id.eq(38L))
                                 .then(8)
                                 .otherwise(9)
                                 .asc())
@@ -1084,6 +1092,13 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
         QAnnouncementSkill qAnnouncementSkill = QAnnouncementSkill.announcementSkill;
         QSkill qSkill = QSkill.skill;
 
+        QAnnouncementProjectType qAnnouncementProjectType =
+                QAnnouncementProjectType.announcementProjectType;
+        QProjectType qProjectType = QProjectType.projectType;
+
+        QAnnouncementWorkType qAnnouncementWorkType = QAnnouncementWorkType.announcementWorkType;
+        QWorkType qWorkType = QWorkType.workType;
+
         List<Long> targetAnnouncementIds =
                 jpaQueryFactory
                         .select(qTeamMemberAnnouncement.id)
@@ -1095,28 +1110,28 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                         .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
                                         .and(
                                                 qTeamMemberAnnouncement.id.in(
-                                                        79L, 69L, 67L, 40L, 38L, 42L, 36L, 32L,
-                                                        22L)))
+                                                        79L, 82L, 80L, 71L, 70L, 69L, 67L, 76L,
+                                                        38L)))
                         .orderBy(
                                 // CASE WHEN 구문으로 지정한 순서대로 정렬
                                 new CaseBuilder()
                                         .when(qTeamMemberAnnouncement.id.eq(79L))
                                         .then(0)
-                                        .when(qTeamMemberAnnouncement.id.eq(69L))
+                                        .when(qTeamMemberAnnouncement.id.eq(82L))
                                         .then(1)
-                                        .when(qTeamMemberAnnouncement.id.eq(67L))
+                                        .when(qTeamMemberAnnouncement.id.eq(80L))
                                         .then(2)
-                                        .when(qTeamMemberAnnouncement.id.eq(40L))
+                                        .when(qTeamMemberAnnouncement.id.eq(71L))
                                         .then(3)
-                                        .when(qTeamMemberAnnouncement.id.eq(38L))
+                                        .when(qTeamMemberAnnouncement.id.eq(70L))
                                         .then(4)
-                                        .when(qTeamMemberAnnouncement.id.eq(42L))
+                                        .when(qTeamMemberAnnouncement.id.eq(69L))
                                         .then(5)
-                                        .when(qTeamMemberAnnouncement.id.eq(36L))
+                                        .when(qTeamMemberAnnouncement.id.eq(67L))
                                         .then(6)
-                                        .when(qTeamMemberAnnouncement.id.eq(32L))
+                                        .when(qTeamMemberAnnouncement.id.eq(76L))
                                         .then(7)
-                                        .when(qTeamMemberAnnouncement.id.eq(22L))
+                                        .when(qTeamMemberAnnouncement.id.eq(38L))
                                         .then(8)
                                         .otherwise(9)
                                         .asc())
@@ -1145,7 +1160,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                 qPosition.majorPosition.as("majorPosition"),
                                 qPosition.subPosition.as("subPosition"),
                                 qSkill.skillName.as("announcementSkillName"),
-                                qTeamMemberAnnouncement.createdAt.as("createdAt")))
+                                qTeamMemberAnnouncement.createdAt.as("createdAt"),
+                                qProjectType.projectTypeName.as("projectTypeName"),
+                                qWorkType.workTypeName.as("workTypeName")))
                 .from(qTeamMemberAnnouncement)
                 .leftJoin(qTeamMemberAnnouncement.team, qTeam)
                 .leftJoin(qTeam.teamScales, qTeamScale)
@@ -1156,29 +1173,358 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                 .leftJoin(qAnnouncementPosition.position, qPosition)
                 .leftJoin(qTeamMemberAnnouncement.announcementSkills, qAnnouncementSkill)
                 .leftJoin(qAnnouncementSkill.skill, qSkill)
+                .leftJoin(qTeamMemberAnnouncement.announcementProjectType, qAnnouncementProjectType)
+                .leftJoin(qAnnouncementProjectType.projectType, qProjectType)
+                .leftJoin(qTeamMemberAnnouncement.announcementWorkType, qAnnouncementWorkType)
+                .leftJoin(qAnnouncementWorkType.workType, qWorkType)
                 .where(qTeamMemberAnnouncement.id.in(targetAnnouncementIds))
                 .orderBy(
+                        // CASE WHEN 구문으로 지정한 순서대로 정렬
                         new CaseBuilder()
                                 .when(qTeamMemberAnnouncement.id.eq(79L))
                                 .then(0)
-                                .when(qTeamMemberAnnouncement.id.eq(69L))
+                                .when(qTeamMemberAnnouncement.id.eq(82L))
                                 .then(1)
-                                .when(qTeamMemberAnnouncement.id.eq(67L))
+                                .when(qTeamMemberAnnouncement.id.eq(80L))
                                 .then(2)
-                                .when(qTeamMemberAnnouncement.id.eq(40L))
+                                .when(qTeamMemberAnnouncement.id.eq(71L))
                                 .then(3)
-                                .when(qTeamMemberAnnouncement.id.eq(38L))
+                                .when(qTeamMemberAnnouncement.id.eq(70L))
                                 .then(4)
-                                .when(qTeamMemberAnnouncement.id.eq(42L))
+                                .when(qTeamMemberAnnouncement.id.eq(69L))
                                 .then(5)
-                                .when(qTeamMemberAnnouncement.id.eq(36L))
+                                .when(qTeamMemberAnnouncement.id.eq(67L))
                                 .then(6)
-                                .when(qTeamMemberAnnouncement.id.eq(32L))
+                                .when(qTeamMemberAnnouncement.id.eq(76L))
                                 .then(7)
-                                .when(qTeamMemberAnnouncement.id.eq(22L))
+                                .when(qTeamMemberAnnouncement.id.eq(38L))
                                 .then(8)
                                 .otherwise(9)
                                 .asc())
                 .fetch();
+    }
+
+    public List<FlatAnnouncementDTO> findFlatAnnouncementsWithoutCursor(
+            List<Long> excludeAnnouncementIds, int size) {
+        QTeamMemberAnnouncement qAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
+        QTeam qTeam = QTeam.team;
+        QTeamScale qTeamScale = QTeamScale.teamScale;
+        QScale qScale = QScale.scale;
+        QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
+        QRegion qRegion = QRegion.region;
+        QAnnouncementPosition qAnnouncementPosition = QAnnouncementPosition.announcementPosition;
+        QPosition qPosition = QPosition.position;
+        QAnnouncementSkill qAnnouncementSkill = QAnnouncementSkill.announcementSkill;
+        QSkill qSkill = QSkill.skill;
+        QAnnouncementProjectType qAnnouncementProjectType =
+                QAnnouncementProjectType.announcementProjectType;
+        QProjectType qProjectType = QProjectType.projectType;
+        QAnnouncementWorkType qAnnouncementWorkType = QAnnouncementWorkType.announcementWorkType;
+        QWorkType qWorkType = QWorkType.workType;
+
+        return jpaQueryFactory
+                .select(
+                        Projections.fields(
+                                FlatAnnouncementDTO.class,
+                                qAnnouncement.id.as("teamMemberAnnouncementId"),
+                                qTeam.teamLogoImagePath.as("teamLogoImagePath"),
+                                qTeam.teamName.as("teamName"),
+                                qTeam.teamCode.as("teamCode"),
+                                qScale.scaleName.as("teamScaleName"),
+                                qRegion.cityName.as("cityName"),
+                                qRegion.divisionName.as("divisionName"),
+                                qAnnouncement.isAnnouncementInProgress.as(
+                                        "isAnnouncementInProgress"),
+                                qAnnouncement.announcementEndDate.as("announcementEndDate"),
+                                qAnnouncement.isPermanentRecruitment.as("isPermanentRecruitment"),
+                                qAnnouncement.announcementTitle.as("announcementTitle"),
+                                qAnnouncement.viewCount.as("viewCount"),
+                                qPosition.majorPosition.as("majorPosition"),
+                                qPosition.subPosition.as("subPosition"),
+                                qSkill.skillName.as("announcementSkillName"),
+                                qAnnouncement.createdAt.as("createdAt"),
+                                qProjectType.projectTypeName.as("projectTypeName"),
+                                qWorkType.workTypeName.as("workTypeName")))
+                .from(qAnnouncement)
+                .leftJoin(qAnnouncement.team, qTeam)
+                .leftJoin(qTeam.teamScales, qTeamScale)
+                .leftJoin(qTeamScale.scale, qScale)
+                .leftJoin(qTeam.teamRegions, qTeamRegion)
+                .leftJoin(qTeamRegion.region, qRegion)
+                .leftJoin(qAnnouncement.announcementPosition, qAnnouncementPosition)
+                .leftJoin(qAnnouncementPosition.position, qPosition)
+                .leftJoin(qAnnouncement.announcementSkills, qAnnouncementSkill)
+                .leftJoin(qAnnouncementSkill.skill, qSkill)
+                .leftJoin(qAnnouncement.announcementProjectType, qAnnouncementProjectType)
+                .leftJoin(qAnnouncementProjectType.projectType, qProjectType)
+                .leftJoin(qAnnouncement.announcementWorkType, qAnnouncementWorkType)
+                .leftJoin(qAnnouncementWorkType.workType, qWorkType)
+                .where(
+                        qAnnouncement
+                                .status
+                                .eq(StatusType.USABLE)
+                                .and(qAnnouncement.isAnnouncementPublic.eq(true))
+                                .and(qAnnouncement.id.notIn(excludeAnnouncementIds)))
+                .orderBy(qAnnouncement.id.desc())
+                .limit(size * 5)
+                .fetch();
+    }
+
+    public List<FlatAnnouncementDTO> findAllAnnouncementsWithoutFilter(
+            List<Long> excludeProfileIds, CursorRequest cursorRequest) {
+        QTeamMemberAnnouncement qAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
+        QTeam qTeam = QTeam.team;
+        QTeamScale qTeamScale = QTeamScale.teamScale;
+        QScale qScale = QScale.scale;
+        QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
+        QRegion qRegion = QRegion.region;
+        QAnnouncementPosition qAnnouncementPosition = QAnnouncementPosition.announcementPosition;
+        QPosition qPosition = QPosition.position;
+        QAnnouncementSkill qAnnouncementSkill = QAnnouncementSkill.announcementSkill;
+        QSkill qSkill = QSkill.skill;
+        QAnnouncementProjectType qAnnouncementProjectType =
+                QAnnouncementProjectType.announcementProjectType;
+        QProjectType qProjectType = QProjectType.projectType;
+        QAnnouncementWorkType qAnnouncementWorkType = QAnnouncementWorkType.announcementWorkType;
+        QWorkType qWorkType = QWorkType.workType;
+
+        try {
+            // 1. 커서 파싱
+            Long cursorId = null;
+            if (cursorRequest != null
+                    && cursorRequest.hasNext()
+                    && cursorRequest.cursor() != null) {
+                try {
+                    cursorId = Long.parseLong(cursorRequest.cursor());
+                } catch (NumberFormatException e) {
+                    log.warn("Invalid cursor: {}", cursorRequest.cursor());
+                }
+            }
+
+            // 2. 기본 조건
+            BooleanExpression condition =
+                    qAnnouncement
+                            .status
+                            .eq(USABLE)
+                            .and(qAnnouncement.isAnnouncementPublic.isTrue());
+
+            // 커서 조건 추가
+            if (cursorId != null) {
+                condition = condition.and(qAnnouncement.id.lt(cursorId));
+            }
+            // 4. 페이지 사이즈 계산
+            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.size()) : 10;
+            int pageSize = (requestedSize % 6 == 0) ? requestedSize : ((requestedSize / 6) + 1) * 6;
+
+            // 5. 쿼리 구성
+            return jpaQueryFactory
+                    .select(
+                            Projections.fields(
+                                    FlatAnnouncementDTO.class,
+                                    qAnnouncement.id.as("teamMemberAnnouncementId"),
+                                    qTeam.teamLogoImagePath.as("teamLogoImagePath"),
+                                    qTeam.teamName.as("teamName"),
+                                    qTeam.teamCode.as("teamCode"),
+                                    qScale.scaleName.as("teamScaleName"),
+                                    qRegion.cityName.as("cityName"),
+                                    qRegion.divisionName.as("divisionName"),
+                                    qAnnouncement.isAnnouncementInProgress.as(
+                                            "isAnnouncementInProgress"),
+                                    qAnnouncement.announcementEndDate.as("announcementEndDate"),
+                                    qAnnouncement.isPermanentRecruitment.as(
+                                            "isPermanentRecruitment"),
+                                    qAnnouncement.announcementTitle.as("announcementTitle"),
+                                    qAnnouncement.viewCount.as("viewCount"),
+                                    qPosition.majorPosition.as("majorPosition"),
+                                    qPosition.subPosition.as("subPosition"),
+                                    qSkill.skillName.as("announcementSkillName"),
+                                    qAnnouncement.createdAt.as("createdAt"),
+                                    qProjectType.projectTypeName.as("projectTypeName"),
+                                    qWorkType.workTypeName.as("workTypeName")))
+                    .from(qAnnouncement)
+                    .leftJoin(qAnnouncement.team, qTeam)
+                    .leftJoin(qTeam.teamScales, qTeamScale)
+                    .leftJoin(qTeamScale.scale, qScale)
+                    .leftJoin(qTeam.teamRegions, qTeamRegion)
+                    .leftJoin(qTeamRegion.region, qRegion)
+                    .leftJoin(qAnnouncement.announcementPosition, qAnnouncementPosition)
+                    .leftJoin(qAnnouncementPosition.position, qPosition)
+                    .leftJoin(qAnnouncement.announcementSkills, qAnnouncementSkill)
+                    .leftJoin(qAnnouncementSkill.skill, qSkill)
+                    .leftJoin(qAnnouncement.announcementProjectType, qAnnouncementProjectType)
+                    .leftJoin(qAnnouncementProjectType.projectType, qProjectType)
+                    .leftJoin(qAnnouncement.announcementWorkType, qAnnouncementWorkType)
+                    .leftJoin(qAnnouncementWorkType.workType, qWorkType)
+                    .where(condition)
+                    .orderBy(qAnnouncement.id.desc())
+                    .limit(pageSize)
+                    .fetch();
+        } catch (Exception e) {
+            log.error("Error in findAllProfilesWithoutFilter: {}", e.getMessage(), e);
+            return List.of();
+        }
+    }
+
+    @Override
+    public List<FlatAnnouncementDTO> findFilteredFlatAnnouncementsWithCursor(
+            List<String> subPosition,
+            List<String> cityName,
+            List<String> projectTypeName,
+            List<String> workTypeName,
+            AnnouncementSortType sortType,
+            CursorRequest cursorRequest) {
+
+        QTeamMemberAnnouncement qAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
+        QTeam qTeam = QTeam.team;
+        QTeamScale qTeamScale = QTeamScale.teamScale;
+        QScale qScale = QScale.scale;
+        QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
+        QRegion qRegion = QRegion.region;
+        QAnnouncementPosition qAnnouncementPosition = QAnnouncementPosition.announcementPosition;
+        QPosition qPosition = QPosition.position;
+        QAnnouncementSkill qAnnouncementSkill = QAnnouncementSkill.announcementSkill;
+        QSkill qSkill = QSkill.skill;
+        QAnnouncementProjectType qAnnouncementProjectType =
+                QAnnouncementProjectType.announcementProjectType;
+        QProjectType qProjectType = QProjectType.projectType;
+        QAnnouncementWorkType qAnnouncementWorkType = QAnnouncementWorkType.announcementWorkType;
+        QWorkType qWorkType = QWorkType.workType;
+
+        try {
+            // 1. 커서 파싱
+            Long cursorId = null;
+            if (cursorRequest != null
+                    && cursorRequest.hasNext()
+                    && cursorRequest.cursor() != null) {
+                try {
+                    cursorId = Long.parseLong(cursorRequest.cursor());
+                } catch (NumberFormatException e) {
+                    log.warn("Invalid cursor: {}", cursorRequest.cursor());
+                }
+            }
+
+            // 2. 기본 조건
+            BooleanExpression condition =
+                    qAnnouncement
+                            .status
+                            .eq(USABLE)
+                            .and(qAnnouncement.isAnnouncementPublic.isTrue());
+
+            // 커서 조건 추가
+            if (cursorId != null) {
+                condition = condition.and(qAnnouncement.id.lt(cursorId));
+            }
+
+            // 필터 조건 추가
+            if (isNotEmpty(subPosition)) {
+                condition = condition.and(qPosition.subPosition.in(subPosition));
+            }
+            if (isNotEmpty(cityName)) {
+                condition = condition.and(qRegion.cityName.in(cityName));
+            }
+            if (isNotEmpty(projectTypeName)) {
+                condition = condition.and(qProjectType.projectTypeName.in(projectTypeName));
+            }
+            if (isNotEmpty(workTypeName)) {
+                condition = condition.and(qWorkType.workTypeName.in(workTypeName));
+            }
+
+            // 3. 정렬 조건 구성
+            List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
+            AnnouncementSortType effectiveSort =
+                    (sortType != null) ? sortType : AnnouncementSortType.LATEST;
+
+            switch (effectiveSort) {
+                case LATEST:
+                    orderSpecifiers.add(qAnnouncement.createdAt.desc());
+                    break;
+                case POPULAR:
+                    orderSpecifiers.add(qAnnouncement.viewCount.desc());
+                    break;
+                case DEADLINE:
+                    // [마감임박순 정렬]
+                    // 1. 상시 모집 공고는 나중에 보여주기 위해 false인 공고를 우선 배치 (0: 일반, 1: 상시)
+                    orderSpecifiers.add(
+                            new CaseBuilder()
+                                    .when(qAnnouncement.isPermanentRecruitment.eq(true))
+                                    .then(1)
+                                    .otherwise(0)
+                                    .asc());
+                    // 2. 일반 공고는 마감일(announcementEndDate) 오름차순, 상시 공고는 기본값("9999-12-31") 사용하여 뒤로 배치
+                    orderSpecifiers.add(
+                            new CaseBuilder()
+                                    .when(qAnnouncement.isPermanentRecruitment.eq(false))
+                                    .then(qAnnouncement.announcementEndDate)
+                                    .otherwise("9999-12-31")
+                                    .asc());
+                    // 3. 상시 모집 공고는 최신순(생성일 내림차순) 정렬
+                    orderSpecifiers.add(
+                            new CaseBuilder()
+                                    .when(qAnnouncement.isPermanentRecruitment.eq(true))
+                                    .then(qAnnouncement.createdAt)
+                                    .otherwise((LocalDateTime) null)
+                                    .desc());
+                    break;
+                default:
+                    orderSpecifiers.add(qAnnouncement.createdAt.desc());
+            }
+
+            // 4. 페이지 사이즈 계산
+            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.size()) : 10;
+            int pageSize = (requestedSize % 6 == 0) ? requestedSize : ((requestedSize / 6) + 1) * 6;
+
+            // 5. 쿼리 구성
+            List<FlatAnnouncementDTO> results =
+                    jpaQueryFactory
+                            .select(
+                                    Projections.fields(
+                                            FlatAnnouncementDTO.class,
+                                            qAnnouncement.id.as("teamMemberAnnouncementId"),
+                                            qTeam.teamLogoImagePath.as("teamLogoImagePath"),
+                                            qTeam.teamName.as("teamName"),
+                                            qTeam.teamCode.as("teamCode"),
+                                            qScale.scaleName.as("teamScaleName"),
+                                            qRegion.cityName.as("cityName"),
+                                            qRegion.divisionName.as("divisionName"),
+                                            qAnnouncement.isAnnouncementInProgress.as(
+                                                    "isAnnouncementInProgress"),
+                                            qAnnouncement.announcementEndDate.as(
+                                                    "announcementEndDate"),
+                                            qAnnouncement.isPermanentRecruitment.as(
+                                                    "isPermanentRecruitment"),
+                                            qAnnouncement.announcementTitle.as("announcementTitle"),
+                                            qAnnouncement.viewCount.as("viewCount"),
+                                            qPosition.majorPosition.as("majorPosition"),
+                                            qPosition.subPosition.as("subPosition"),
+                                            qSkill.skillName.as("announcementSkillName"),
+                                            qAnnouncement.createdAt.as("createdAt"),
+                                            qProjectType.projectTypeName.as("projectTypeName"),
+                                            qWorkType.workTypeName.as("workTypeName")))
+                            .from(qAnnouncement)
+                            .leftJoin(qAnnouncement.team, qTeam)
+                            .leftJoin(qTeam.teamScales, qTeamScale)
+                            .leftJoin(qTeamScale.scale, qScale)
+                            .leftJoin(qTeam.teamRegions, qTeamRegion)
+                            .leftJoin(qTeamRegion.region, qRegion)
+                            .leftJoin(qAnnouncement.announcementPosition, qAnnouncementPosition)
+                            .leftJoin(qAnnouncementPosition.position, qPosition)
+                            .leftJoin(qAnnouncement.announcementSkills, qAnnouncementSkill)
+                            .leftJoin(qAnnouncementSkill.skill, qSkill)
+                            .innerJoin(
+                                    qAnnouncement.announcementProjectType, qAnnouncementProjectType)
+                            .innerJoin(qAnnouncementProjectType.projectType, qProjectType)
+                            .innerJoin(qAnnouncement.announcementWorkType, qAnnouncementWorkType)
+                            .innerJoin(qAnnouncementWorkType.workType, qWorkType)
+                            .where(condition)
+                            .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
+                            .limit(pageSize + 1)
+                            .fetch();
+
+            return results;
+
+        } catch (Exception e) {
+            log.error("Error in findFilteredFlatAnnouncementsWithCursor", e);
+            return List.of();
+        }
     }
 }

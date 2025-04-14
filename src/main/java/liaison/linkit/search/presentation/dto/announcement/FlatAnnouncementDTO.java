@@ -34,4 +34,7 @@ public class FlatAnnouncementDTO {
     private String announcementSkillName;
 
     private LocalDateTime createdAt;
+
+    private String projectTypeName;
+    private String workTypeName;
 }

@@ -115,6 +115,27 @@ public class TeamLogCommentService {
             notifyComment(teamOwnerMemberId, targetTeamLog, authorProfile, false);
         }
 
+        Long teamOwnerMemberId =
+                teamMemberQueryAdapter.getTeamOwnerMemberId(targetTeamLog.getTeam());
+        if (parentComment != null) {
+            Long parentAuthorId = parentComment.getProfile().getMember().getId();
+
+            // 자신에게 알림 보내지 않도록 예외 처리
+            if (!parentAuthorId.equals(authorProfile.getMember().getId())) {
+                notifyComment(
+                        parentAuthorId, targetTeamLog, authorProfile, true // 대댓글 알림
+                        );
+            }
+
+        } else {
+            // 팀 소유자 알림 (자기 자신이면 제외)
+            if (!teamOwnerMemberId.equals(authorProfile.getMember().getId())) {
+                notifyComment(
+                        teamOwnerMemberId, targetTeamLog, authorProfile, false // 일반 댓글 알림
+                        );
+            }
+        }
+
         // 8. 응답 생성
         return teamLogCommentMapper.toAddTeamLogCommentResponse(
                 savedComment, authorProfile, teamLogId);

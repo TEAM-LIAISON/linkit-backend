@@ -147,6 +147,8 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                         AnnouncementSkillName.builder()
                                                 .announcementSkillName("공고 요구 스킬 2")
                                                 .build()))
+                        .projectTypeName("프로젝트 유형 이름")
+                        .workTypeName("업무 방식 이름")
                         .build();
 
         AnnouncementInformMenu announcementInformMenu2 =
@@ -183,24 +185,19 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                         AnnouncementSkillName.builder()
                                                 .announcementSkillName("공고 요구 스킬 2")
                                                 .build()))
+                        .projectTypeName("프로젝트 유형 이름")
+                        .workTypeName("업무 방식 이름")
                         .build();
 
         List<AnnouncementInformMenu> announcementInformMenus =
                 Arrays.asList(announcementInformMenu1, announcementInformMenu2);
-
-        CursorResponse<AnnouncementInformMenu> announcementInformMenuCursorResponse =
-                CursorResponse.<AnnouncementInformMenu>builder()
-                        .content(announcementInformMenus)
-                        .nextCursor("nextAnnouncementId")
-                        .hasNext(true)
-                        .build();
 
         CursorResponse<AnnouncementInformMenu> cursorResponse =
                 CursorResponse.of(announcementInformMenus, "nextAnnouncementId");
 
         // when
         when(announcementSearchService.searchAnnouncementsWithCursor(
-                        any(), any(), any(), any(), any(), any(), any(CursorRequest.class)))
+                        any(), any(), any(CursorRequest.class)))
                 .thenReturn(cursorResponse);
 
         final ResultActions resultActions =
@@ -332,7 +329,12 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                                                 "result.content[].announcementSkillNames[].announcementSkillName")
                                                         .type(JsonFieldType.STRING)
                                                         .description("요구 스킬 이름"),
-
+                                                fieldWithPath("result.content[].projectTypeName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("공고의 업무 방식 이름"),
+                                                fieldWithPath("result.content[].workTypeName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("공고의 업무 방식 이름"),
                                                 // 페이지네이션 대신, Cursor 로직에 따른 필드
                                                 fieldWithPath("result.nextCursor")
                                                         .type(JsonFieldType.STRING)
@@ -388,6 +390,8 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                                                         .announcementSkillName(
                                                                                 "공고 요구 스킬 2")
                                                                         .build()))
+                                                .projectTypeName("프로젝트 유형 이름")
+                                                .workTypeName("업무 방식 이름")
                                                 .build(),
                                         AnnouncementInformMenu.builder()
                                                 .teamMemberAnnouncementId(2L)
@@ -426,6 +430,8 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                                                         .announcementSkillName(
                                                                                 "공고 요구 스킬 2")
                                                                         .build()))
+                                                .projectTypeName("프로젝트 유형 이름")
+                                                .workTypeName("업무 방식 이름")
                                                 .build()))
                         .build();
 
@@ -531,7 +537,15 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                                 fieldWithPath(
                                                                 "result.hotAnnouncements[].announcementSkillNames[].announcementSkillName")
                                                         .type(JsonFieldType.STRING)
-                                                        .description("요구 스킬 이름"))))
+                                                        .description("요구 스킬 이름"),
+                                                fieldWithPath(
+                                                                "result.hotAnnouncements[].projectTypeName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("공고의 프로젝트 유형 이름"),
+                                                fieldWithPath(
+                                                                "result.hotAnnouncements[].workTypeName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("공고의 업무 방식 이름"))))
                         .andReturn();
     }
 }
