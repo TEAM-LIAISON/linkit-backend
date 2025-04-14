@@ -1,5 +1,6 @@
 package liaison.linkit.search.business.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,9 @@ import liaison.linkit.search.presentation.dto.LogResponseDTO.LogInformMenu;
 import liaison.linkit.search.presentation.dto.LogResponseDTO.LogInformMenus;
 import liaison.linkit.team.domain.log.TeamLog;
 import liaison.linkit.team.implement.log.TeamLogQueryAdapter;
+import liaison.linkit.visit.dailyviewcount.domain.LogDailyViewCount;
+import liaison.linkit.visit.dailyviewcount.domain.LogViewType;
+import liaison.linkit.visit.dailyviewcount.repository.LogDailyViewCountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,52 +32,28 @@ public class LogSearchService {
 
     private final LogMapper logMapper;
 
+    private final LogDailyViewCountRepository logDailyViewCountRepository;
+
     public LogInformMenus getHomeLogInformMenus() {
 
-        // 1) ProfileLog 전부(or 조건) 조회
-        List<ProfileLog> profileLogs = profileLogQueryAdapter.findTopView(2);
-        // 2) TeamLog 전부(or 조건) 조회
-        List<TeamLog> teamLogs = teamLogQueryAdapter.findTopView(2);
+        List<LogDailyViewCount> topViews =
+                logDailyViewCountRepository.findTop2ByLogViewTypeAndDateOrderByDailyViewCountDesc(
+                        LocalDate.now());
 
-        // 3) 두 엔티티를 하나의 리스트로 합침 (최대 4개)
-        List<Object> combined = new ArrayList<>();
-        combined.addAll(profileLogs);
-        combined.addAll(teamLogs);
+        List<LogInformMenu> result = new ArrayList<>();
 
-        // 4) combined를 viewCount로 내림차순 정렬
-        //    (ProfileLog, TeamLog에 getViewCount()가 있다고 가정)
-        combined.sort(
-                (a, b) -> {
-                    long av =
-                            (a instanceof ProfileLog)
-                                    ? ((ProfileLog) a).getViewCount()
-                                    : ((TeamLog) a).getViewCount();
-                    long bv =
-                            (b instanceof ProfileLog)
-                                    ? ((ProfileLog) b).getViewCount()
-                                    : ((TeamLog) b).getViewCount();
-                    return Long.compare(bv, av); // 내림차순
-                });
+        for (LogDailyViewCount viewCount : topViews) {
+            Long logId = viewCount.getLogId();
+            LogViewType type = viewCount.getLogViewType();
 
-        // 5) 상위 2개만 추출
-        List<Object> top4 = combined.stream().limit(2).toList();
+            if (type == LogViewType.PROFILE_LOG) {
+                result.add(mapProfileLogToMenu(profileLogQueryAdapter.getProfileLog(logId)));
+            } else if (type == LogViewType.TEAM_LOG) {
+                result.add(mapTeamLogToMenu(teamLogQueryAdapter.getTeamLog(logId)));
+            }
+        }
 
-        // 6) 각 엔티티를 LogInformMenu DTO로 변환
-        List<LogInformMenu> mergedDTOs =
-                top4.stream()
-                        .map(
-                                obj -> {
-                                    if (obj instanceof ProfileLog pl) {
-                                        return mapProfileLogToMenu(pl);
-                                    } else {
-                                        TeamLog tl = (TeamLog) obj;
-                                        return mapTeamLogToMenu(tl);
-                                    }
-                                })
-                        .toList();
-
-        // 7) 필요한 형태로 감싸서 반환 (LogInformMenus)
-        return logMapper.toLogInformMenus(mergedDTOs);
+        return logMapper.toLogInformMenus(result);
     }
 
     // == ProfileLog -> LogInformMenu 변환 ==
