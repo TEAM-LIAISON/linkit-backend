@@ -34,4 +34,6 @@ public interface TeamLogCustomRepository {
     void deleteAllTeamLogs(final Long teamId);
 
     List<TeamLogDynamicResponse> findAllDynamicVariablesWithTeamLog();
+
+    TeamLog getRandomTeamLog();
 }

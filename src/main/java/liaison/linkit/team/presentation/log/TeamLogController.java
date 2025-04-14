@@ -5,6 +5,7 @@ import java.util.Optional;
 import jakarta.validation.Valid;
 
 import liaison.linkit.auth.Auth;
+import liaison.linkit.auth.CurrentMemberId;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
@@ -49,37 +50,30 @@ public class TeamLogController {
     @GetMapping
     @Logging(item = "Team_Log", action = "GET_TEAM_LOG_ITEMS", includeResult = true)
     public CommonResponse<TeamLogResponseDTO.TeamLogItems> getTeamLogItems(
-            @Auth final Accessor accessor, @PathVariable final String teamCode) {
-        Optional<Long> optionalMemberId =
-                accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+            @CurrentMemberId Optional<Long> memberId, @PathVariable final String teamCode) {
 
-        return CommonResponse.onSuccess(teamLogService.getTeamLogItems(optionalMemberId, teamCode));
+        return CommonResponse.onSuccess(teamLogService.getTeamLogItems(memberId, teamCode));
     }
 
     // 로그 상세 조회 (댓글 정보 추가)
     @GetMapping("/{teamLogId}")
     @Logging(item = "Team_Log", action = "GET_TEAM_LOG_ITEM", includeResult = true)
     public CommonResponse<TeamLogResponseDTO.TeamLogItem> getTeamLogItem(
-            @Auth final Accessor accessor,
+            @CurrentMemberId Optional<Long> memberId,
             @PathVariable final String teamCode,
             @PathVariable final Long teamLogId) {
-        Optional<Long> optionalMemberId =
-                accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
 
         return CommonResponse.onSuccess(
-                teamLogService.getTeamLogItem(optionalMemberId, teamCode, teamLogId));
+                teamLogService.getTeamLogItem(memberId, teamCode, teamLogId));
     }
 
     // 대표글 조회
     @GetMapping("/represent")
     @Logging(item = "Team_Log", action = "GET_REPRESENT_TEAM_LOG_ITEM", includeResult = true)
     public CommonResponse<TeamLogResponseDTO.TeamLogRepresentItem> getRepresentTeamLogItem(
-            @Auth final Accessor accessor, @PathVariable final String teamCode) {
-        Optional<Long> optionalMemberId =
-                accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+            @CurrentMemberId Optional<Long> memberId, @PathVariable final String teamCode) {
 
-        return CommonResponse.onSuccess(
-                teamLogService.getRepresentTeamLogItem(optionalMemberId, teamCode));
+        return CommonResponse.onSuccess(teamLogService.getRepresentTeamLogItem(memberId, teamCode));
     }
 
     // 로그 추가

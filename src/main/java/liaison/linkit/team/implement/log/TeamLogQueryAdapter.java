@@ -50,4 +50,8 @@ public class TeamLogQueryAdapter {
     public List<TeamLog> findTopView(final int limit) {
         return teamLogRepository.findTopView(limit);
     }
+
+    public TeamLog getRandomTeamLog() {
+        return teamLogRepository.getRandomTeamLog();
+    }
 }

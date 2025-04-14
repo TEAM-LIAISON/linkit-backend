@@ -8,6 +8,7 @@ import jakarta.persistence.PersistenceContext;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.member.domain.QMember;
 import liaison.linkit.member.domain.type.MemberState;
@@ -322,5 +323,16 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
                                 .and(qProfile.isProfilePublic.eq(true)))
                 .orderBy(qMember.id.desc())
                 .fetch();
+    }
+
+    @Override
+    public ProfileLog findRandomProfileLog() {
+        QProfileLog qProfileLog = QProfileLog.profileLog;
+
+        return queryFactory
+                .selectFrom(qProfileLog)
+                .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
+                .limit(1)
+                .fetchOne();
     }
 }
