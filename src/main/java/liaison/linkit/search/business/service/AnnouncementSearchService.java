@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AnnouncementSearchService {
 
     private static final List<Long> DEFAULT_EXCLUDE_ANNOUNCEMENT_IDS =
-            List.of(79L, 82L, 80L, 71L, 70L, 69L, 67L, 77L, 38L);
+            List.of(84L, 79L, 82L, 80L, 71L, 70L);
 
     private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
     private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;

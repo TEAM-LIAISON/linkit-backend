@@ -15,7 +15,6 @@ import liaison.linkit.search.presentation.dto.team.FlatTeamDTO;
 import liaison.linkit.search.presentation.dto.team.TeamListResponseDTO;
 import liaison.linkit.team.business.assembler.team.TeamInformMenuAssembler;
 import liaison.linkit.team.domain.repository.team.TeamRepository;
-import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,9 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class TeamSearchService {
 
     private static final List<Long> DEFAULT_EXCLUDE_TEAM_IDS =
-            List.of(56L, 58L, 57L, 36L, 37L, 29L, 3L, 19L);
+            List.of(59L, 56L, 58L, 57L, 37L, 29L, 3L, 19L);
 
-    private final TeamQueryAdapter teamQueryAdapter;
     private final TeamInformMenuAssembler teamInformMenuAssembler;
     private final TeamRepository teamRepository;
     private final TeamScrapRepository teamScrapRepository;
