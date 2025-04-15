@@ -297,6 +297,7 @@ public class TeamLogCustomRepositoryImpl implements TeamLogCustomRepository {
 
         return queryFactory
                 .selectFrom(qTeamLog)
+                .where(qTeamLog.isLogPublic.eq(true)) // 공개 여부가 true인 것만
                 .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
                 .limit(1)
                 .fetchOne();
