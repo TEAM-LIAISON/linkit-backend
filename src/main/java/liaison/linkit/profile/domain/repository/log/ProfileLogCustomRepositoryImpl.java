@@ -331,6 +331,7 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
 
         return queryFactory
                 .selectFrom(qProfileLog)
+                .where(qProfileLog.isLogPublic.isTrue()) // 공개된 로그만 대상으로
                 .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
                 .limit(1)
                 .fetchOne();
