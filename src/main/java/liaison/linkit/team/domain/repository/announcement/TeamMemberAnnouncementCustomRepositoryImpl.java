@@ -2,7 +2,9 @@ package liaison.linkit.team.domain.repository.announcement;
 
 import static liaison.linkit.global.type.StatusType.USABLE;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -806,13 +808,49 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
 
     @Override
     public List<TeamMemberAnnouncement> findAllAnnouncementsByTeamId(final Long teamId) {
-        QTeamMemberAnnouncement qTeamMemberAnnouncement =
-                QTeamMemberAnnouncement.teamMemberAnnouncement;
+        QTeamMemberAnnouncement q = QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        // 오늘 날짜를 "yyyy-MM" 문자열로 변환
+        String todayYearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
 
         return jpaQueryFactory
-                .selectFrom(qTeamMemberAnnouncement)
-                .where(qTeamMemberAnnouncement.team.id.eq(teamId))
-                .orderBy(qTeamMemberAnnouncement.modifiedAt.desc())
+                .selectFrom(q)
+                .where(q.team.id.eq(teamId))
+                .orderBy(
+                        // 1. 모집 상태에 따라 그룹 우선순위
+                        new CaseBuilder()
+                                .when(q.isPermanentRecruitment.eq(true))
+                                .then(0) // 상시
+                                .when(q.announcementEndDate.gt(todayYearMonth))
+                                .then(1) // 모집 중
+                                .when(q.isAnnouncementInProgress.eq(false))
+                                .then(2) // 마감
+                                .otherwise(3)
+                                .asc(),
+
+                        // 2. 상시 모집은 등록일 오름차순
+                        new CaseBuilder()
+                                .when(q.isPermanentRecruitment.eq(true))
+                                .then(q.createdAt)
+                                .otherwise((LocalDateTime) null)
+                                .asc()
+                                .nullsLast(),
+
+                        // 3. 모집 중은 마감일 오름차순
+                        new CaseBuilder()
+                                .when(q.announcementEndDate.gt(todayYearMonth))
+                                .then(q.announcementEndDate)
+                                .otherwise((String) null)
+                                .asc()
+                                .nullsLast(),
+
+                        // 4. 마감 공고는 등록일 오름차순
+                        new CaseBuilder()
+                                .when(q.announcementEndDate.loe(todayYearMonth))
+                                .then(q.createdAt)
+                                .otherwise((LocalDateTime) null)
+                                .asc()
+                                .nullsLast())
                 .fetch();
     }
 
@@ -820,6 +858,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
     public List<TeamMemberAnnouncement> findPublicAnnouncementsByTeamId(final Long teamId) {
         QTeamMemberAnnouncement qTeamMemberAnnouncement =
                 QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        // 오늘 날짜를 "yyyy-MM" 문자열로 변환
+        String todayYearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
 
         return jpaQueryFactory
                 .selectFrom(qTeamMemberAnnouncement)
@@ -829,7 +870,47 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                 .id
                                 .eq(teamId)
                                 .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true)))
-                .orderBy(qTeamMemberAnnouncement.modifiedAt.desc())
+                .orderBy(
+                        // 1. 모집 상태에 따라 그룹 우선순위
+                        new CaseBuilder()
+                                .when(qTeamMemberAnnouncement.isPermanentRecruitment.eq(true))
+                                .then(0) // 상시
+                                .when(
+                                        qTeamMemberAnnouncement.announcementEndDate.gt(
+                                                todayYearMonth))
+                                .then(1) // 모집 중
+                                .when(qTeamMemberAnnouncement.isAnnouncementInProgress.eq(false))
+                                .then(2) // 마감
+                                .otherwise(3)
+                                .asc(),
+
+                        // 2. 상시 모집은 등록일 오름차순
+                        new CaseBuilder()
+                                .when(qTeamMemberAnnouncement.isPermanentRecruitment.eq(true))
+                                .then(qTeamMemberAnnouncement.createdAt)
+                                .otherwise((LocalDateTime) null)
+                                .asc()
+                                .nullsLast(),
+
+                        // 3. 모집 중은 마감일 오름차순
+                        new CaseBuilder()
+                                .when(
+                                        qTeamMemberAnnouncement.announcementEndDate.gt(
+                                                todayYearMonth))
+                                .then(qTeamMemberAnnouncement.announcementEndDate)
+                                .otherwise((String) null)
+                                .asc()
+                                .nullsLast(),
+
+                        // 4. 마감 공고는 등록일 오름차순
+                        new CaseBuilder()
+                                .when(
+                                        qTeamMemberAnnouncement.announcementEndDate.loe(
+                                                todayYearMonth))
+                                .then(qTeamMemberAnnouncement.createdAt)
+                                .otherwise((LocalDateTime) null)
+                                .asc()
+                                .nullsLast())
                 .fetch();
     }
 
