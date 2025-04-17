@@ -415,7 +415,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                                 .eq(StatusType.USABLE)
                                 .and(qProfile.isProfilePublic.eq(true))
                                 .and(qProfile.id.notIn(excludeProfileIds)))
-                .orderBy(qProfile.id.desc())
+                .orderBy(qProfile.createdAt.desc())
                 .limit(size * 5)
                 .fetch();
     }
@@ -486,7 +486,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                     .leftJoin(qProfile.profileCurrentStates, qProfileCurrentState)
                     .leftJoin(qProfileCurrentState.profileState, qProfileState)
                     .where(condition)
-                    .orderBy(qProfile.id.desc())
+                    .orderBy(qProfile.createdAt.desc())
                     .limit(pageSize)
                     .fetch();
 
@@ -562,7 +562,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                             .leftJoin(qProfile.profileCurrentStates, qProfileCurrentState)
                             .leftJoin(qProfileCurrentState.profileState, qProfileState)
                             .where(baseCondition)
-                            .orderBy(qProfile.id.desc());
+                            .orderBy(qProfile.createdAt.desc());
 
             // Step 4. 필터 적용
             if (isNotEmpty(subPosition)) {
