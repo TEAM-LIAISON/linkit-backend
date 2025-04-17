@@ -2,6 +2,7 @@ package liaison.linkit.profile.domain.repository.profile;
 
 import static liaison.linkit.global.type.StatusType.USABLE;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -433,15 +434,15 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         QProfileState qProfileState = QProfileState.profileState;
 
         try {
-            // Step 1. 커서 emailId → profileId
-            Long cursorProfileId = null;
+            // Step 1. 커서 emailId → profileId + createdAt
+            LocalDateTime cursorCreatedAt = null;
             if (cursorRequest != null
                     && cursorRequest.hasNext()
                     && cursorRequest.cursor() != null) {
                 String emailId = cursorRequest.cursor();
-                cursorProfileId =
+                cursorCreatedAt =
                         jpaQueryFactory
-                                .select(qProfile.id)
+                                .select(qProfile.createdAt)
                                 .from(qProfile)
                                 .where(qProfile.member.emailId.eq(emailId))
                                 .fetchOne();
@@ -455,8 +456,8 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 condition = condition.and(qProfile.id.notIn(excludeProfileIds));
             }
 
-            if (cursorProfileId != null) {
-                condition = condition.and(qProfile.id.lt(cursorProfileId));
+            if (cursorCreatedAt != null) {
+                condition = condition.and(qProfile.createdAt.lt(cursorCreatedAt));
             }
 
             int requestedSize = Math.max(1, cursorRequest.size());
@@ -513,14 +514,14 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
 
         try {
             // Step 1. emailId → profileId 커서 변환
-            Long cursorProfileId = null;
+            LocalDateTime cursorCreatedAt = null;
             if (cursorRequest != null
                     && cursorRequest.hasNext()
                     && cursorRequest.cursor() != null) {
                 String emailId = cursorRequest.cursor();
-                cursorProfileId =
+                cursorCreatedAt =
                         jpaQueryFactory
-                                .select(qProfile.id)
+                                .select(qProfile.createdAt)
                                 .from(qProfile)
                                 .where(qProfile.member.emailId.eq(emailId))
                                 .fetchOne();
@@ -530,8 +531,8 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             BooleanExpression baseCondition =
                     qProfile.status.eq(USABLE).and(qProfile.isProfilePublic.isTrue());
 
-            if (cursorProfileId != null) {
-                baseCondition = baseCondition.and(qProfile.id.lt(cursorProfileId));
+            if (cursorCreatedAt != null) {
+                baseCondition = baseCondition.and(qProfile.createdAt.lt(cursorCreatedAt));
             }
 
             int requestedSize = Math.max(1, cursorRequest.size());
