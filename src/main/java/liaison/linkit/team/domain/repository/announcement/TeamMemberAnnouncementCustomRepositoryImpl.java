@@ -1053,13 +1053,6 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
         QAnnouncementSkill qAnnouncementSkill = QAnnouncementSkill.announcementSkill;
         QSkill qSkill = QSkill.skill;
 
-        QAnnouncementProjectType qAnnouncementProjectType =
-                QAnnouncementProjectType.announcementProjectType;
-        QProjectType qProjectType = QProjectType.projectType;
-
-        QAnnouncementWorkType qAnnouncementWorkType = QAnnouncementWorkType.announcementWorkType;
-        QWorkType qWorkType = QWorkType.workType;
-
         List<Long> targetAnnouncementIds =
                 jpaQueryFactory
                         .select(qTeamMemberAnnouncement.id)
@@ -1071,26 +1064,26 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                         .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
                                         .and(
                                                 qTeamMemberAnnouncement.id.in(
-                                                        84L, 79L, 82L, 80L, 71L, 70L, 69L, 67L,
+                                                        86L, 85L, 84L, 79L, 80L, 82L, 72L, 70L,
                                                         76L)))
                         .orderBy(
                                 // CASE WHEN 구문으로 지정한 순서대로 정렬
                                 new CaseBuilder()
-                                        .when(qTeamMemberAnnouncement.id.eq(84L))
+                                        .when(qTeamMemberAnnouncement.id.eq(86L))
                                         .then(0)
-                                        .when(qTeamMemberAnnouncement.id.eq(79L))
+                                        .when(qTeamMemberAnnouncement.id.eq(85L))
                                         .then(1)
-                                        .when(qTeamMemberAnnouncement.id.eq(82L))
+                                        .when(qTeamMemberAnnouncement.id.eq(84L))
                                         .then(2)
-                                        .when(qTeamMemberAnnouncement.id.eq(80L))
+                                        .when(qTeamMemberAnnouncement.id.eq(79L))
                                         .then(3)
-                                        .when(qTeamMemberAnnouncement.id.eq(71L))
+                                        .when(qTeamMemberAnnouncement.id.eq(80L))
                                         .then(4)
-                                        .when(qTeamMemberAnnouncement.id.eq(70L))
+                                        .when(qTeamMemberAnnouncement.id.eq(82L))
                                         .then(5)
-                                        .when(qTeamMemberAnnouncement.id.eq(69L))
+                                        .when(qTeamMemberAnnouncement.id.eq(72L))
                                         .then(6)
-                                        .when(qTeamMemberAnnouncement.id.eq(67L))
+                                        .when(qTeamMemberAnnouncement.id.eq(70L))
                                         .then(7)
                                         .when(qTeamMemberAnnouncement.id.eq(76L))
                                         .then(8)
@@ -1136,21 +1129,21 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                 .orderBy(
                         // CASE WHEN 구문으로 지정한 순서대로 정렬
                         new CaseBuilder()
-                                .when(qTeamMemberAnnouncement.id.eq(84L))
+                                .when(qTeamMemberAnnouncement.id.eq(86L))
                                 .then(0)
-                                .when(qTeamMemberAnnouncement.id.eq(79L))
+                                .when(qTeamMemberAnnouncement.id.eq(85L))
                                 .then(1)
-                                .when(qTeamMemberAnnouncement.id.eq(82L))
+                                .when(qTeamMemberAnnouncement.id.eq(84L))
                                 .then(2)
-                                .when(qTeamMemberAnnouncement.id.eq(80L))
+                                .when(qTeamMemberAnnouncement.id.eq(79L))
                                 .then(3)
-                                .when(qTeamMemberAnnouncement.id.eq(71L))
+                                .when(qTeamMemberAnnouncement.id.eq(80L))
                                 .then(4)
-                                .when(qTeamMemberAnnouncement.id.eq(70L))
+                                .when(qTeamMemberAnnouncement.id.eq(82L))
                                 .then(5)
-                                .when(qTeamMemberAnnouncement.id.eq(69L))
+                                .when(qTeamMemberAnnouncement.id.eq(72L))
                                 .then(6)
-                                .when(qTeamMemberAnnouncement.id.eq(67L))
+                                .when(qTeamMemberAnnouncement.id.eq(70L))
                                 .then(7)
                                 .when(qTeamMemberAnnouncement.id.eq(76L))
                                 .then(8)
@@ -1194,26 +1187,26 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                         .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
                                         .and(
                                                 qTeamMemberAnnouncement.id.in(
-                                                        84L, 79L, 82L, 80L, 71L, 70L, 69L, 67L,
+                                                        86L, 85L, 84L, 79L, 80L, 82L, 72L, 70L,
                                                         76L)))
                         .orderBy(
                                 // CASE WHEN 구문으로 지정한 순서대로 정렬
                                 new CaseBuilder()
-                                        .when(qTeamMemberAnnouncement.id.eq(84L))
+                                        .when(qTeamMemberAnnouncement.id.eq(86L))
                                         .then(0)
-                                        .when(qTeamMemberAnnouncement.id.eq(79L))
+                                        .when(qTeamMemberAnnouncement.id.eq(85L))
                                         .then(1)
-                                        .when(qTeamMemberAnnouncement.id.eq(82L))
+                                        .when(qTeamMemberAnnouncement.id.eq(84L))
                                         .then(2)
-                                        .when(qTeamMemberAnnouncement.id.eq(80L))
+                                        .when(qTeamMemberAnnouncement.id.eq(79L))
                                         .then(3)
-                                        .when(qTeamMemberAnnouncement.id.eq(71L))
+                                        .when(qTeamMemberAnnouncement.id.eq(80L))
                                         .then(4)
-                                        .when(qTeamMemberAnnouncement.id.eq(70L))
+                                        .when(qTeamMemberAnnouncement.id.eq(82L))
                                         .then(5)
-                                        .when(qTeamMemberAnnouncement.id.eq(69L))
+                                        .when(qTeamMemberAnnouncement.id.eq(72L))
                                         .then(6)
-                                        .when(qTeamMemberAnnouncement.id.eq(67L))
+                                        .when(qTeamMemberAnnouncement.id.eq(70L))
                                         .then(7)
                                         .when(qTeamMemberAnnouncement.id.eq(76L))
                                         .then(8)
@@ -1265,21 +1258,21 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                 .orderBy(
                         // CASE WHEN 구문으로 지정한 순서대로 정렬
                         new CaseBuilder()
-                                .when(qTeamMemberAnnouncement.id.eq(84L))
+                                .when(qTeamMemberAnnouncement.id.eq(86L))
                                 .then(0)
-                                .when(qTeamMemberAnnouncement.id.eq(79L))
+                                .when(qTeamMemberAnnouncement.id.eq(85L))
                                 .then(1)
-                                .when(qTeamMemberAnnouncement.id.eq(82L))
+                                .when(qTeamMemberAnnouncement.id.eq(84L))
                                 .then(2)
-                                .when(qTeamMemberAnnouncement.id.eq(80L))
+                                .when(qTeamMemberAnnouncement.id.eq(79L))
                                 .then(3)
-                                .when(qTeamMemberAnnouncement.id.eq(71L))
+                                .when(qTeamMemberAnnouncement.id.eq(80L))
                                 .then(4)
-                                .when(qTeamMemberAnnouncement.id.eq(70L))
+                                .when(qTeamMemberAnnouncement.id.eq(82L))
                                 .then(5)
-                                .when(qTeamMemberAnnouncement.id.eq(69L))
+                                .when(qTeamMemberAnnouncement.id.eq(72L))
                                 .then(6)
-                                .when(qTeamMemberAnnouncement.id.eq(67L))
+                                .when(qTeamMemberAnnouncement.id.eq(70L))
                                 .then(7)
                                 .when(qTeamMemberAnnouncement.id.eq(76L))
                                 .then(8)
