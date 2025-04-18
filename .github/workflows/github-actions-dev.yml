@@ -107,7 +107,6 @@ jobs:
           username: ubuntu
           host: ${{ secrets.LINKIT_IP_DEV }}
           key: ${{ secrets.EC2_SSH_KEY_DEV }}
-          script_stop: true
           script: |
             sudo docker exec -i nginxserver bash -c 'echo "set \$service_url ${{env.TARGET_UPSTREAM}};" > etc/nginx/conf.d/service-env.inc && nginx -s reload'
 
