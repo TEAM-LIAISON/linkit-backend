@@ -31,6 +31,7 @@ import liaison.linkit.team.domain.announcement.AnnouncementSkill;
 import liaison.linkit.team.domain.announcement.AnnouncementWorkType;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.projectType.ProjectType;
+import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.workType.WorkType;
 import liaison.linkit.team.exception.announcement.TeamMemberAnnouncementClosedBadRequestException;
@@ -99,6 +100,7 @@ public class TeamMemberAnnouncementService {
     private final AnnouncementWorkTypeQueryAdapter announcementWorkTypeQueryAdapter;
 
     private final AnnouncementScrapRepository announcementScrapRepository;
+    private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
 
     @Transactional(readOnly = true)
     public TeamMemberAnnouncementItems getTeamMemberAnnouncementViewItems(
@@ -394,7 +396,7 @@ public class TeamMemberAnnouncementService {
     public AnnouncementInformMenus getHomeAnnouncementInformMenus(
             final Optional<Long> optionalMemberId) {
         List<FlatAnnouncementDTO> raw =
-                teamMemberAnnouncementQueryAdapter.findHomeTopAnnouncements(9);
+                teamMemberAnnouncementRepository.findHomeTopAnnouncements(9);
         List<AnnouncementInformMenu> homeAnnouncementInformMenus =
                 getAnnouncementInformMenus(9, optionalMemberId, raw);
         return teamMemberAnnouncementMapper.toAnnouncementInformMenus(homeAnnouncementInformMenus);
