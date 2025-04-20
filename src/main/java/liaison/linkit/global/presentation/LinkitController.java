@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.business.service.LinkitService;
 import liaison.linkit.global.config.log.Logging;
+import liaison.linkit.global.presentation.dto.HomeResponseDTO;
 import liaison.linkit.global.presentation.dto.LinkitDynamicResponseDTO.AnnouncementDynamicListResponse;
 import liaison.linkit.global.presentation.dto.LinkitDynamicResponseDTO.MemberDynamicListResponse;
 import liaison.linkit.global.presentation.dto.LinkitDynamicResponseDTO.ProfileLogDynamicListResponse;
@@ -28,6 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class LinkitController {
 
     private final LinkitService linkitService;
+
+    @GetMapping("/home")
+    public CommonResponse<HomeResponseDTO.HomeResponse> getHome() {
+        return CommonResponse.onSuccess(linkitService.getHome());
+    }
 
     @Operation(summary = "회원 동적 데이터", description = "회원 동적 데이터 조회")
     @ApiResponses({
