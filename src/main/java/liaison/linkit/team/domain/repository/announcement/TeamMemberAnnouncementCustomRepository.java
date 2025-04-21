@@ -96,6 +96,6 @@ public interface TeamMemberAnnouncementCustomRepository {
             List<String> cityName,
             List<String> projectTypeName,
             List<String> workTypeName,
-            AnnouncementSortType sortType,
+            AnnouncementSortType sortBy,
             CursorRequest cursorRequest);
 }

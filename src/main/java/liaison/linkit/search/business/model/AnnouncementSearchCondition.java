@@ -10,12 +10,12 @@ public record AnnouncementSearchCondition(
         @RequestParam(value = "cityName", required = false) List<String> cityName,
         @RequestParam(value = "projectType", required = false) List<String> projectType,
         @RequestParam(value = "workType", required = false) List<String> workType,
-        @RequestParam(value = "sortBy", defaultValue = "LATEST") AnnouncementSortType sortType) {
+        @RequestParam(value = "sortBy", defaultValue = "LATEST") AnnouncementSortType sortBy) {
     public boolean isDefault() {
         return (subPosition == null || subPosition.isEmpty())
                 && (cityName == null || cityName.isEmpty())
                 && (projectType == null || projectType.isEmpty())
                 && (workType == null || workType.isEmpty())
-                && (sortType == null || sortType == AnnouncementSortType.LATEST);
+                && (sortBy == null || sortBy == AnnouncementSortType.LATEST);
     }
 }
