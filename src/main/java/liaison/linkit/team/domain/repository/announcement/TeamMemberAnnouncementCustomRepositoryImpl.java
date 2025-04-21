@@ -636,28 +636,60 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                     orderSpecifiers.add(qTeamMemberAnnouncement.viewCount.desc());
                     break;
                 case DEADLINE:
-                    // [마감임박순 정렬]
-                    // 1. 상시 모집 공고는 나중에 보여주기 위해 false인 공고를 우선 배치 (0: 일반, 1: 상시)
+                    // Define common conditions first for better readability
+                    String todayYearMonth =
+                            LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+
+                    BooleanExpression isInProgress =
+                            qTeamMemberAnnouncement
+                                    .isAnnouncementInProgress
+                                    .eq(true)
+                                    .and(
+                                            qTeamMemberAnnouncement.announcementEndDate.gt(
+                                                    todayYearMonth));
+
+                    BooleanExpression isClosed =
+                            qTeamMemberAnnouncement.isAnnouncementInProgress.eq(false);
+
+                    // 1. 그룹 우선순위 정렬
+                    // 0: 상시모집 → 1: 모집중 → 2: 모집마감 → 3: 기타
                     orderSpecifiers.add(
                             new CaseBuilder()
                                     .when(qTeamMemberAnnouncement.isPermanentRecruitment.eq(true))
+                                    .then(0)
+                                    .when(isInProgress)
                                     .then(1)
-                                    .otherwise(0)
+                                    .when(isClosed)
+                                    .then(2)
+                                    .otherwise(3)
                                     .asc());
-                    // 2. 일반 공고는 마감일(announcementEndDate) 오름차순, 상시 공고는 기본값("9999-12-31") 사용하여 뒤로 배치
-                    orderSpecifiers.add(
-                            new CaseBuilder()
-                                    .when(qTeamMemberAnnouncement.isPermanentRecruitment.eq(false))
-                                    .then(qTeamMemberAnnouncement.announcementEndDate)
-                                    .otherwise("9999-12-31")
-                                    .asc());
-                    // 3. 상시 모집 공고는 최신순(생성일 내림차순) 정렬
+
+                    // 2. 상시 모집: 생성일 오름차순
                     orderSpecifiers.add(
                             new CaseBuilder()
                                     .when(qTeamMemberAnnouncement.isPermanentRecruitment.eq(true))
                                     .then(qTeamMemberAnnouncement.createdAt)
                                     .otherwise((LocalDateTime) null)
-                                    .desc());
+                                    .asc()
+                                    .nullsLast());
+
+                    // 3. 모집 중: 마감일 오름차순
+                    orderSpecifiers.add(
+                            new CaseBuilder()
+                                    .when(isInProgress)
+                                    .then(qTeamMemberAnnouncement.announcementEndDate)
+                                    .otherwise((String) null)
+                                    .asc()
+                                    .nullsLast());
+
+                    // 4. 모집 마감: 생성일 오름차순
+                    orderSpecifiers.add(
+                            new CaseBuilder()
+                                    .when(isClosed)
+                                    .then(qTeamMemberAnnouncement.createdAt)
+                                    .otherwise((LocalDateTime) null)
+                                    .asc()
+                                    .nullsLast());
                     break;
                 default:
                     orderSpecifiers.add(qTeamMemberAnnouncement.createdAt.desc());
@@ -1519,31 +1551,32 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                     orderSpecifiers.add(qAnnouncement.viewCount.desc());
                     break;
                 case DEADLINE:
-                    // [그룹 우선순위 정렬]
+                    // Define common conditions first for better readability
+                    String todayYearMonth =
+                            LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+
+                    BooleanExpression isInProgress =
+                            qAnnouncement
+                                    .isAnnouncementInProgress
+                                    .eq(true)
+                                    .and(qAnnouncement.announcementEndDate.gt(todayYearMonth));
+
+                    BooleanExpression isClosed = qAnnouncement.isAnnouncementInProgress.eq(false);
+
+                    // 1. 그룹 우선순위 정렬
                     // 0: 상시모집 → 1: 모집중 → 2: 모집마감 → 3: 기타
                     orderSpecifiers.add(
                             new CaseBuilder()
                                     .when(qAnnouncement.isPermanentRecruitment.eq(true))
                                     .then(0)
-                                    .when(
-                                            qAnnouncement
-                                                    .isAnnouncementInProgress
-                                                    .eq(true)
-                                                    .and(
-                                                            qAnnouncement.announcementEndDate.gt(
-                                                                    LocalDate.now()
-                                                                            .format(
-                                                                                    DateTimeFormatter
-                                                                                            .ofPattern(
-                                                                                                    "yyyy-MM")))))
+                                    .when(isInProgress)
                                     .then(1)
-                                    .when(qAnnouncement.isAnnouncementInProgress.eq(false))
+                                    .when(isClosed)
                                     .then(2)
                                     .otherwise(3)
                                     .asc());
 
-                    // [세부 정렬]
-                    // 1) 상시 모집: 생성일 오름차순
+                    // 2. 상시 모집: 생성일 오름차순
                     orderSpecifiers.add(
                             new CaseBuilder()
                                     .when(qAnnouncement.isPermanentRecruitment.eq(true))
@@ -1552,29 +1585,19 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                     .asc()
                                     .nullsLast());
 
-                    // 2) 모집 중: 마감일 오름차순
+                    // 3. 모집 중: 마감일 오름차순
                     orderSpecifiers.add(
                             new CaseBuilder()
-                                    .when(
-                                            qAnnouncement
-                                                    .isAnnouncementInProgress
-                                                    .eq(true)
-                                                    .and(
-                                                            qAnnouncement.announcementEndDate.gt(
-                                                                    LocalDate.now()
-                                                                            .format(
-                                                                                    DateTimeFormatter
-                                                                                            .ofPattern(
-                                                                                                    "yyyy-MM")))))
+                                    .when(isInProgress)
                                     .then(qAnnouncement.announcementEndDate)
                                     .otherwise((String) null)
                                     .asc()
                                     .nullsLast());
 
-                    // 3) 모집 마감: 생성일 오름차순
+                    // 4. 모집 마감: 생성일 오름차순
                     orderSpecifiers.add(
                             new CaseBuilder()
-                                    .when(qAnnouncement.isAnnouncementInProgress.eq(false))
+                                    .when(isClosed)
                                     .then(qAnnouncement.createdAt)
                                     .otherwise((LocalDateTime) null)
                                     .asc()
