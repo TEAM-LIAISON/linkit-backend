@@ -1480,7 +1480,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
             List<String> cityName,
             List<String> projectTypeName,
             List<String> workTypeName,
-            AnnouncementSortType sortType,
+            AnnouncementSortType sortBy,
             CursorRequest cursorRequest) {
 
         QTeamMemberAnnouncement qAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
@@ -1541,17 +1541,13 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
             // 3. 정렬 조건 구성
             List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
             AnnouncementSortType effectiveSort =
-                    (sortType != null) ? sortType : AnnouncementSortType.LATEST;
+                    (sortBy != null) ? sortBy : AnnouncementSortType.LATEST;
 
             switch (effectiveSort) {
-                case LATEST:
-                    orderSpecifiers.add(qAnnouncement.createdAt.desc());
-                    break;
                 case POPULAR:
                     orderSpecifiers.add(qAnnouncement.viewCount.desc());
                     break;
                 case DEADLINE:
-                    // Define common conditions first for better readability
                     String todayYearMonth =
                             LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
 
@@ -1618,6 +1614,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                     .asc()
                                     .nullsLast());
                     break;
+                case LATEST:
                 default:
                     orderSpecifiers.add(qAnnouncement.createdAt.desc());
             }
