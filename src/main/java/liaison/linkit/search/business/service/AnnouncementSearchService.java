@@ -116,7 +116,7 @@ public class AnnouncementSearchService {
                         condition.cityName(),
                         condition.projectType(),
                         condition.workType(),
-                        condition.sortType(),
+                        condition.sortBy(),
                         cursorRequest);
         return getAnnouncementInformMenus(size, optionalMemberId, raw);
     }
