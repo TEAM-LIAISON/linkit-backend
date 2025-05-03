@@ -96,10 +96,10 @@ decorator:
 logging:
   level:
     root: INFO
-    liaison.swagger_test: INFO
-    #    org.springframework.web: INFO
-    org.springframework.batch: INFO
-    # 기타 로그 레벨 설정...
+    org.springframework.web.servlet: INFO
+    org.springframework.web.socket: INFO
+    org.hibernate.SQL: INFO  # Hibernate SQL 로그 출력 비활성화
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO  # SQL 파라미터 바인딩 로그 출력 비활성화
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [request_id=%X{request_id}] [client_ip=%X{client_ip}] [user_id=%X{user_id}] [env=${server.env}] %-5level %logger{36} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [request_id=%X{request_id}] [client_ip=%X{client_ip}] [user_id=%X{user_id}] [env=${server.env}] %-5level %logger{36} - %msg%n"
