@@ -53,7 +53,7 @@ spring:
         format_sql: false
         show_sql: false
         default_batch_fetch_size: 100
-        generate_statistics: true   # 성능 모니터링 설정
+        generate_statistics: false   # 성능 모니터링 설정
         jdbc:
           batch_size: 50
         order_inserts: true
