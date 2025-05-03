@@ -1068,6 +1068,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                 .fetch();
     }
 
+    // 홈화면 모집 공고 리스트
     public List<FlatAnnouncementDTO> findHomeTopAnnouncements(final int limit) {
         QTeamMemberAnnouncement qTeamMemberAnnouncement =
                 QTeamMemberAnnouncement.teamMemberAnnouncement;
@@ -1096,28 +1097,28 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                         .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
                                         .and(
                                                 qTeamMemberAnnouncement.id.in(
-                                                        86L, 85L, 84L, 79L, 80L, 82L, 72L, 70L,
-                                                        76L)))
+                                                        90L, 89L, 91L, 86L, 84L, 85L, 82L, 80L,
+                                                        72L)))
                         .orderBy(
                                 // CASE WHEN 구문으로 지정한 순서대로 정렬
                                 new CaseBuilder()
-                                        .when(qTeamMemberAnnouncement.id.eq(86L))
+                                        .when(qTeamMemberAnnouncement.id.eq(90L))
                                         .then(0)
-                                        .when(qTeamMemberAnnouncement.id.eq(85L))
+                                        .when(qTeamMemberAnnouncement.id.eq(89L))
                                         .then(1)
-                                        .when(qTeamMemberAnnouncement.id.eq(84L))
+                                        .when(qTeamMemberAnnouncement.id.eq(91L))
                                         .then(2)
-                                        .when(qTeamMemberAnnouncement.id.eq(79L))
+                                        .when(qTeamMemberAnnouncement.id.eq(86L))
                                         .then(3)
-                                        .when(qTeamMemberAnnouncement.id.eq(80L))
+                                        .when(qTeamMemberAnnouncement.id.eq(84L))
                                         .then(4)
-                                        .when(qTeamMemberAnnouncement.id.eq(82L))
+                                        .when(qTeamMemberAnnouncement.id.eq(85L))
                                         .then(5)
-                                        .when(qTeamMemberAnnouncement.id.eq(72L))
+                                        .when(qTeamMemberAnnouncement.id.eq(82L))
                                         .then(6)
-                                        .when(qTeamMemberAnnouncement.id.eq(70L))
+                                        .when(qTeamMemberAnnouncement.id.eq(80L))
                                         .then(7)
-                                        .when(qTeamMemberAnnouncement.id.eq(76L))
+                                        .when(qTeamMemberAnnouncement.id.eq(72L))
                                         .then(8)
                                         .otherwise(9)
                                         .asc())
@@ -1161,29 +1162,30 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                 .orderBy(
                         // CASE WHEN 구문으로 지정한 순서대로 정렬
                         new CaseBuilder()
-                                .when(qTeamMemberAnnouncement.id.eq(86L))
+                                .when(qTeamMemberAnnouncement.id.eq(90L))
                                 .then(0)
-                                .when(qTeamMemberAnnouncement.id.eq(85L))
+                                .when(qTeamMemberAnnouncement.id.eq(89L))
                                 .then(1)
-                                .when(qTeamMemberAnnouncement.id.eq(84L))
+                                .when(qTeamMemberAnnouncement.id.eq(91L))
                                 .then(2)
-                                .when(qTeamMemberAnnouncement.id.eq(79L))
+                                .when(qTeamMemberAnnouncement.id.eq(86L))
                                 .then(3)
-                                .when(qTeamMemberAnnouncement.id.eq(80L))
+                                .when(qTeamMemberAnnouncement.id.eq(84L))
                                 .then(4)
-                                .when(qTeamMemberAnnouncement.id.eq(82L))
+                                .when(qTeamMemberAnnouncement.id.eq(85L))
                                 .then(5)
-                                .when(qTeamMemberAnnouncement.id.eq(72L))
+                                .when(qTeamMemberAnnouncement.id.eq(82L))
                                 .then(6)
-                                .when(qTeamMemberAnnouncement.id.eq(70L))
+                                .when(qTeamMemberAnnouncement.id.eq(80L))
                                 .then(7)
-                                .when(qTeamMemberAnnouncement.id.eq(76L))
+                                .when(qTeamMemberAnnouncement.id.eq(72L))
                                 .then(8)
                                 .otherwise(9)
                                 .asc())
                 .fetch();
     }
 
+    // 지금 핫한 공고예요!
     public List<FlatAnnouncementDTO> findTopHotAnnouncements(final int limit) {
         QTeamMemberAnnouncement qTeamMemberAnnouncement =
                 QTeamMemberAnnouncement.teamMemberAnnouncement;
@@ -1219,28 +1221,28 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                         .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
                                         .and(
                                                 qTeamMemberAnnouncement.id.in(
-                                                        86L, 85L, 84L, 79L, 80L, 82L, 72L, 70L,
-                                                        76L)))
+                                                        90L, 89L, 91L, 86L, 84L, 85L, 82L, 80L,
+                                                        72L)))
                         .orderBy(
                                 // CASE WHEN 구문으로 지정한 순서대로 정렬
                                 new CaseBuilder()
-                                        .when(qTeamMemberAnnouncement.id.eq(86L))
+                                        .when(qTeamMemberAnnouncement.id.eq(90L))
                                         .then(0)
-                                        .when(qTeamMemberAnnouncement.id.eq(85L))
+                                        .when(qTeamMemberAnnouncement.id.eq(89L))
                                         .then(1)
-                                        .when(qTeamMemberAnnouncement.id.eq(84L))
+                                        .when(qTeamMemberAnnouncement.id.eq(91L))
                                         .then(2)
-                                        .when(qTeamMemberAnnouncement.id.eq(79L))
+                                        .when(qTeamMemberAnnouncement.id.eq(86L))
                                         .then(3)
-                                        .when(qTeamMemberAnnouncement.id.eq(80L))
+                                        .when(qTeamMemberAnnouncement.id.eq(84L))
                                         .then(4)
-                                        .when(qTeamMemberAnnouncement.id.eq(82L))
+                                        .when(qTeamMemberAnnouncement.id.eq(85L))
                                         .then(5)
-                                        .when(qTeamMemberAnnouncement.id.eq(72L))
+                                        .when(qTeamMemberAnnouncement.id.eq(82L))
                                         .then(6)
-                                        .when(qTeamMemberAnnouncement.id.eq(70L))
+                                        .when(qTeamMemberAnnouncement.id.eq(80L))
                                         .then(7)
-                                        .when(qTeamMemberAnnouncement.id.eq(76L))
+                                        .when(qTeamMemberAnnouncement.id.eq(72L))
                                         .then(8)
                                         .otherwise(9)
                                         .asc())
@@ -1290,23 +1292,23 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                 .orderBy(
                         // CASE WHEN 구문으로 지정한 순서대로 정렬
                         new CaseBuilder()
-                                .when(qTeamMemberAnnouncement.id.eq(86L))
+                                .when(qTeamMemberAnnouncement.id.eq(90L))
                                 .then(0)
-                                .when(qTeamMemberAnnouncement.id.eq(85L))
+                                .when(qTeamMemberAnnouncement.id.eq(89L))
                                 .then(1)
-                                .when(qTeamMemberAnnouncement.id.eq(84L))
+                                .when(qTeamMemberAnnouncement.id.eq(91L))
                                 .then(2)
-                                .when(qTeamMemberAnnouncement.id.eq(79L))
+                                .when(qTeamMemberAnnouncement.id.eq(86L))
                                 .then(3)
-                                .when(qTeamMemberAnnouncement.id.eq(80L))
+                                .when(qTeamMemberAnnouncement.id.eq(84L))
                                 .then(4)
-                                .when(qTeamMemberAnnouncement.id.eq(82L))
+                                .when(qTeamMemberAnnouncement.id.eq(85L))
                                 .then(5)
-                                .when(qTeamMemberAnnouncement.id.eq(72L))
+                                .when(qTeamMemberAnnouncement.id.eq(82L))
                                 .then(6)
-                                .when(qTeamMemberAnnouncement.id.eq(70L))
+                                .when(qTeamMemberAnnouncement.id.eq(80L))
                                 .then(7)
-                                .when(qTeamMemberAnnouncement.id.eq(76L))
+                                .when(qTeamMemberAnnouncement.id.eq(72L))
                                 .then(8)
                                 .otherwise(9)
                                 .asc())
