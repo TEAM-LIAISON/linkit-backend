@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class ViewCountService {
-    // 재요청 간격 제한 (3초)
-    private static final long MIN_VIEW_INTERVAL_MS = 3000;
+    // 재요청 간격 제한 (6초)
+    private static final long MIN_VIEW_INTERVAL_MS = 6000;
 
     // 로컬 캐시에 타임스탬프 저장 (5분 후 만료)
     private final Cache<String, Long> localCache =
