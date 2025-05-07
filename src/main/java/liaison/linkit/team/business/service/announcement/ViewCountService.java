@@ -22,8 +22,11 @@ public class ViewCountService {
     // 조회수 중복 방지 만료 시간 (24시간)
     private static final int VIEW_EXPIRATION_HOURS = 24;
 
-    // 로컬 캐시 추가 (짧은 시간 동안 동일 요청 방지)
-    private final Cache<String, Boolean> localCache =
+    // 재요청 간격 제한 (3초)
+    private static final long MIN_VIEW_INTERVAL_MS = 3000;
+
+    // 로컬 캐시를 타임스탬프를 저장하도록 수정
+    private final Cache<String, Long> localCache =
             Caffeine.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).maximumSize(10000).build();
 
     @Transactional
@@ -31,23 +34,33 @@ public class ViewCountService {
         String identifier = generateIdentifier(optionalMemberId);
         String cacheKey = entityType + ":" + entityId + ":" + identifier;
 
-        // 로컬 캐시 확인 (짧은 시간 내 동일 요청 최적화)
-        Boolean cachedResult = localCache.getIfPresent(cacheKey);
-        if (cachedResult != null && !cachedResult) {
-            return false; // 이미 확인한 중복 요청
+        // 현재 시간 가져오기
+        long currentTime = System.currentTimeMillis();
+
+        // 로컬 캐시에서 마지막 조회 시간 확인
+        Long lastViewTime = localCache.getIfPresent(cacheKey);
+
+        // 3초 이내 재요청 체크
+        if (lastViewTime != null && (currentTime - lastViewTime < MIN_VIEW_INTERVAL_MS)) {
+            // 로컬 캐시 시간 업데이트
+            localCache.put(cacheKey, currentTime);
+            return false; // 3초 내 재요청으로 조회수 증가하지 않음
         }
 
+        // 로컬 캐시에 현재 시간 저장
+        localCache.put(cacheKey, currentTime);
+
+        // Redis 기반 24시간 중복 체크 (기존 로직 유지)
         boolean isFirstView =
                 viewCountRedisUtil.checkAndSetView(
                         entityType, entityId, identifier, VIEW_EXPIRATION_HOURS);
 
-        // 결과 로컬 캐싱
-        localCache.put(cacheKey, isFirstView);
-
         return isFirstView;
     }
 
+    // 기존 메서드들은 그대로 유지
     private String generateIdentifier(Optional<Long> optionalMemberId) {
+        // 기존 코드 유지
         if (optionalMemberId.isPresent()) {
             return "m" + optionalMemberId.get();
         } else {
@@ -61,6 +74,7 @@ public class ViewCountService {
 
     /** 클라이언트 IP 주소 가져오기 */
     private String getClientIp() {
+        // 기존 코드 유지
         String headerIp = httpServletRequest.getHeader("X-Forwarded-For");
 
         if (headerIp != null && !headerIp.isEmpty() && !headerIp.equalsIgnoreCase("unknown")) {

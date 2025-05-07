@@ -5,6 +5,7 @@ import java.util.Optional;
 import liaison.linkit.team.business.assembler.common.AnnouncementCommonAssembler;
 import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.event.AnnouncementViewedEvent;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementCommandAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail;
@@ -42,11 +43,12 @@ public class AnnouncementDetailAssembler {
                 teamMemberAnnouncementQueryAdapter.findById(teamMemberAnnouncementId);
 
         // 조회수 증가 실행
-        //        applicationEventPublisher.publishEvent(
-        //                new AnnouncementViewedEvent(
-        //                        teamMemberAnnouncementId, optionalMemberId, "team_announcement"));
+        applicationEventPublisher.publishEvent(
+                new AnnouncementViewedEvent(
+                        teamMemberAnnouncementId, optionalMemberId, "team_announcement"));
 
-        teamMemberAnnouncementCommandAdapter.incrementViewCount(teamMemberAnnouncement.getId());
+        //
+        // teamMemberAnnouncementCommandAdapter.incrementViewCount(teamMemberAnnouncement.getId());
 
         return teamMemberAnnouncementMapper.toTeamMemberAnnouncementDetail(
                 teamMemberAnnouncement,
