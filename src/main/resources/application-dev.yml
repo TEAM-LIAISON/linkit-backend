@@ -129,3 +129,9 @@ springdoc:
 
 app:
   backend-url: https://dev.liaison-dev.site
+
+server:
+  compression:
+    enabled: true
+    min-response-size: 1024
+    mime-types: application/json,application/xml,text/html,text/plain,text/css,application/javascript
