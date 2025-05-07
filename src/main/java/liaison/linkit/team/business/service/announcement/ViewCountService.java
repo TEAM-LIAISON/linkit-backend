@@ -1,72 +1,65 @@
 package liaison.linkit.team.business.service.announcement;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import liaison.linkit.team.infrastructure.ViewCountRedisUtil;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.codec.digest.DigestUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ViewCountService {
-    private final ViewCountRedisUtil viewCountRedisUtil;
-    private final HttpServletRequest httpServletRequest;
+    // 재요청 간격 제한 (3초)
+    private static final long MIN_VIEW_INTERVAL_MS = 3000;
 
-    // 조회수 중복 방지 만료 시간 (24시간)
-    private static final int VIEW_EXPIRATION_HOURS = 24;
-
-    // 로컬 캐시 추가 (짧은 시간 동안 동일 요청 방지)
-    private final Cache<String, Boolean> localCache =
+    // 로컬 캐시에 타임스탬프 저장 (5분 후 만료)
+    private final Cache<String, Long> localCache =
             Caffeine.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).maximumSize(10000).build();
 
     @Transactional
     public boolean processView(String entityType, Long entityId, Optional<Long> optionalMemberId) {
+        // 식별자 생성 - HttpServletRequest 사용하지 않음
         String identifier = generateIdentifier(optionalMemberId);
         String cacheKey = entityType + ":" + entityId + ":" + identifier;
 
-        // 로컬 캐시 확인 (짧은 시간 내 동일 요청 최적화)
-        Boolean cachedResult = localCache.getIfPresent(cacheKey);
-        if (cachedResult != null && !cachedResult) {
-            return false; // 이미 확인한 중복 요청
+        log.debug("Processing view with key: {}", cacheKey);
+
+        // 현재 시간 가져오기
+        long currentTime = System.currentTimeMillis();
+
+        // 로컬 캐시에서 마지막 조회 시간 확인
+        Long lastViewTime = localCache.getIfPresent(cacheKey);
+
+        // 3초 이내 재요청 체크
+        if (lastViewTime != null && (currentTime - lastViewTime < MIN_VIEW_INTERVAL_MS)) {
+            // 로컬 캐시 시간 업데이트
+            localCache.put(cacheKey, currentTime);
+            log.debug("Ignored view within 3 seconds: {}", cacheKey);
+            return false; // 3초 내 재요청으로 조회수 증가하지 않음
         }
 
-        boolean isFirstView =
-                viewCountRedisUtil.checkAndSetView(
-                        entityType, entityId, identifier, VIEW_EXPIRATION_HOURS);
+        // 로컬 캐시에 현재 시간 저장
+        localCache.put(cacheKey, currentTime);
+        log.debug("New view recorded: {}", cacheKey);
 
-        // 결과 로컬 캐싱
-        localCache.put(cacheKey, isFirstView);
-
-        return isFirstView;
+        return true;
     }
 
     private String generateIdentifier(Optional<Long> optionalMemberId) {
         if (optionalMemberId.isPresent()) {
+            // 로그인 사용자는 멤버 ID 기반 식별
             return "m" + optionalMemberId.get();
         } else {
-            String ip = getClientIp();
-
-            // 보안 향상: IP 주소 해싱으로 개인정보 보호
-            String hashedIp = DigestUtils.sha256Hex(ip);
-            return "g" + hashedIp.substring(0, 10); // 해시 일부만 사용
+            // 비로그인 사용자는 랜덤 ID 생성
+            // 각 이벤트마다 새로운 ID를 생성하므로
+            // 동일 비로그인 사용자의 짧은 시간 내 중복 조회는 무시됨
+            return "g" + UUID.randomUUID().toString().substring(0, 10);
         }
-    }
-
-    /** 클라이언트 IP 주소 가져오기 */
-    private String getClientIp() {
-        String headerIp = httpServletRequest.getHeader("X-Forwarded-For");
-
-        if (headerIp != null && !headerIp.isEmpty() && !headerIp.equalsIgnoreCase("unknown")) {
-            return headerIp.split(",")[0].trim();
-        }
-
-        return httpServletRequest.getRemoteAddr();
     }
 }

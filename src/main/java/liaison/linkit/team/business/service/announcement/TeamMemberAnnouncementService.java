@@ -410,7 +410,7 @@ public class TeamMemberAnnouncementService {
      * @param teamMemberAnnouncementId 조회할 팀원 공고의 ID.
      * @return 조립된 TeamDetail DTO.
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail
             getTeamMemberAnnouncementDetail(
                     final Optional<Long> optionalMemberId,
