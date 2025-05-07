@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import liaison.linkit.team.infrastructure.ViewCountRedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
@@ -16,16 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class ViewCountService {
-    private final ViewCountRedisUtil viewCountRedisUtil;
     private final HttpServletRequest httpServletRequest;
-
-    // 조회수 중복 방지 만료 시간 (24시간)
-    private static final int VIEW_EXPIRATION_HOURS = 24;
 
     // 재요청 간격 제한 (3초)
     private static final long MIN_VIEW_INTERVAL_MS = 3000;
 
-    // 로컬 캐시를 타임스탬프를 저장하도록 수정
+    // 로컬 캐시에 타임스탬프 저장 (5분 후 만료)
     private final Cache<String, Long> localCache =
             Caffeine.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).maximumSize(10000).build();
 
@@ -50,17 +45,11 @@ public class ViewCountService {
         // 로컬 캐시에 현재 시간 저장
         localCache.put(cacheKey, currentTime);
 
-        // Redis 기반 24시간 중복 체크 (기존 로직 유지)
-        boolean isFirstView =
-                viewCountRedisUtil.checkAndSetView(
-                        entityType, entityId, identifier, VIEW_EXPIRATION_HOURS);
-
-        return isFirstView;
+        // 24시간 Redis 로직은 제거하고 항상 true 반환 (새로운 조회로 인정)
+        return true;
     }
 
-    // 기존 메서드들은 그대로 유지
     private String generateIdentifier(Optional<Long> optionalMemberId) {
-        // 기존 코드 유지
         if (optionalMemberId.isPresent()) {
             return "m" + optionalMemberId.get();
         } else {
@@ -74,7 +63,6 @@ public class ViewCountService {
 
     /** 클라이언트 IP 주소 가져오기 */
     private String getClientIp() {
-        // 기존 코드 유지
         String headerIp = httpServletRequest.getHeader("X-Forwarded-For");
 
         if (headerIp != null && !headerIp.isEmpty() && !headerIp.equalsIgnoreCase("unknown")) {
