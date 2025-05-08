@@ -1097,7 +1097,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                         .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
                                         .and(
                                                 qTeamMemberAnnouncement.id.in(
-                                                        90L, 89L, 91L, 86L, 84L, 85L, 82L, 80L,
+                                                        90L, 89L, 91L, 86L, 84L, 99L, 82L, 80L,
                                                         72L)))
                         .orderBy(
                                 // CASE WHEN 구문으로 지정한 순서대로 정렬
@@ -1112,7 +1112,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                         .then(3)
                                         .when(qTeamMemberAnnouncement.id.eq(84L))
                                         .then(4)
-                                        .when(qTeamMemberAnnouncement.id.eq(85L))
+                                        .when(qTeamMemberAnnouncement.id.eq(99L))
                                         .then(5)
                                         .when(qTeamMemberAnnouncement.id.eq(82L))
                                         .then(6)
@@ -1172,7 +1172,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                 .then(3)
                                 .when(qTeamMemberAnnouncement.id.eq(84L))
                                 .then(4)
-                                .when(qTeamMemberAnnouncement.id.eq(85L))
+                                .when(qTeamMemberAnnouncement.id.eq(99L))
                                 .then(5)
                                 .when(qTeamMemberAnnouncement.id.eq(82L))
                                 .then(6)
@@ -1221,7 +1221,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                         .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
                                         .and(
                                                 qTeamMemberAnnouncement.id.in(
-                                                        90L, 89L, 91L, 86L, 84L, 85L, 82L, 80L,
+                                                        90L, 89L, 91L, 86L, 84L, 99L, 82L, 80L,
                                                         72L)))
                         .orderBy(
                                 // CASE WHEN 구문으로 지정한 순서대로 정렬
@@ -1236,7 +1236,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                         .then(3)
                                         .when(qTeamMemberAnnouncement.id.eq(84L))
                                         .then(4)
-                                        .when(qTeamMemberAnnouncement.id.eq(85L))
+                                        .when(qTeamMemberAnnouncement.id.eq(99L))
                                         .then(5)
                                         .when(qTeamMemberAnnouncement.id.eq(82L))
                                         .then(6)
@@ -1302,7 +1302,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                                 .then(3)
                                 .when(qTeamMemberAnnouncement.id.eq(84L))
                                 .then(4)
-                                .when(qTeamMemberAnnouncement.id.eq(85L))
+                                .when(qTeamMemberAnnouncement.id.eq(99L))
                                 .then(5)
                                 .when(qTeamMemberAnnouncement.id.eq(82L))
                                 .then(6)
