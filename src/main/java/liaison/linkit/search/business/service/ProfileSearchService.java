@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProfileSearchService {
 
     private static final List<Long> DEFAULT_EXCLUDE_PROFILE_IDS =
-            List.of(58L, 57L, 55L, 73L, 63L, 74L);
+            List.of(171L, 160L, 168L, 154L, 167L, 108L);
 
     private final ProfileRepository profileRepository;
     private final ProfileScrapRepository profileScrapRepository;
