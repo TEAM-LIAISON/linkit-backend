@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TeamSearchService {
 
     private static final List<Long> DEFAULT_EXCLUDE_TEAM_IDS =
-            List.of(61L, 59L, 58L, 57L, 37L, 29L, 3L, 19L);
+            List.of(69L, 67L, 63L, 66L, 37L, 29L, 3L, 19L);
 
     private final TeamInformMenuAssembler teamInformMenuAssembler;
     private final TeamRepository teamRepository;
