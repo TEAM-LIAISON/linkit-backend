@@ -31,7 +31,6 @@ public class NotificationService {
     private final NotificationCommandAdapter notificationCommandAdapter;
     private final NotificationMapper notificationMapper;
     private final MemberQueryAdapter memberQueryAdapter;
-    private final HeaderNotificationService headerNotificationService;
     private final ChatRoomQueryAdapter chatRoomQueryAdapter;
     private final ChatMessageQueryAdapter chatMessageQueryAdapter;
 
