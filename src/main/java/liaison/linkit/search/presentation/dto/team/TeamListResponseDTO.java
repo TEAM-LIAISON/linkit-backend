@@ -17,15 +17,8 @@ public class TeamListResponseDTO {
     // 벤처 팀 목록
     private List<TeamInformMenu> ventureTeams;
 
-    // 지원 프로젝트 팀 목록
-    private List<TeamInformMenu> supportProjectTeams;
-
     /** 벤처 팀과 지원 프로젝트 팀을 포함한 DTO 생성 */
-    public static TeamListResponseDTO of(
-            List<TeamInformMenu> ventureTeams, List<TeamInformMenu> supportProjectTeams) {
-        return TeamListResponseDTO.builder()
-                .ventureTeams(ventureTeams)
-                .supportProjectTeams(supportProjectTeams)
-                .build();
+    public static TeamListResponseDTO of(List<TeamInformMenu> ventureTeams) {
+        return TeamListResponseDTO.builder().ventureTeams(ventureTeams).build();
     }
 }

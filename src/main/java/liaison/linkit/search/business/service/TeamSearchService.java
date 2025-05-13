@@ -27,8 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class TeamSearchService {
 
-    private static final List<Long> DEFAULT_EXCLUDE_TEAM_IDS =
-            List.of(69L, 67L, 63L, 66L, 37L, 29L, 3L, 19L);
+    private static final List<Long> DEFAULT_EXCLUDE_TEAM_IDS = List.of(69L, 67L, 63L, 66L);
 
     private final TeamInformMenuAssembler teamInformMenuAssembler;
     private final TeamRepository teamRepository;
@@ -38,9 +37,7 @@ public class TeamSearchService {
     public TeamListResponseDTO getFeaturedTeams(final Optional<Long> optionalMemberId) {
         // 벤처 팀 조회 (최대 4팀)
         List<TeamInformMenu> topVentureTeamDTOs = getTopVentureTeams(4, optionalMemberId);
-        List<TeamInformMenu> topSupportTeamDTOs = getTopSupportTeams(4, optionalMemberId);
-
-        return TeamListResponseDTO.of(topVentureTeamDTOs, topSupportTeamDTOs);
+        return TeamListResponseDTO.of(topVentureTeamDTOs);
     }
 
     /** 커서 기반 팀 검색만 수행하는 메서드 */
