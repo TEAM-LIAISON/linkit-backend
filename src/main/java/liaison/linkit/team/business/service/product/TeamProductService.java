@@ -31,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -168,12 +169,22 @@ public class TeamProductService {
                 teamProductMapper.toTeamProductImages(
                         productRepresentImagePath, productSubImagePaths);
 
-        // 역할 및 기여도 저장
+        // 기존 요청에서 유효한 링크만 필터링
+        List<TeamProductRequestDTO.TeamProductLinkRequest> validLinkRequests =
+                addTeamProductRequest.getTeamProductLinks().stream()
+                        .filter(
+                                link ->
+                                        StringUtils.hasText(link.getProductLinkName())
+                                                && StringUtils.hasText(link.getProductLinkPath()))
+                        .toList();
+
+        // 유효한 링크만 매핑
         final List<ProductLink> productLinks =
-                teamProductMapper.toAddProductLinks(
-                        savedTeamProduct, addTeamProductRequest.getTeamProductLinks());
+                teamProductMapper.toAddProductLinks(savedTeamProduct, validLinkRequests);
+
         final List<ProductLink> savedProductLinks =
                 productLinkCommandAdapter.addProductLinks(productLinks);
+
         final List<TeamProductResponseDTO.TeamProductLinkResponse> productLinkResponses =
                 teamProductMapper.toTeamProductLinks(savedProductLinks);
 
