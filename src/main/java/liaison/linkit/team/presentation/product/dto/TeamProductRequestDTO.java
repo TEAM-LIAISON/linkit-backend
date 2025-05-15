@@ -47,7 +47,7 @@ public class TeamProductRequestDTO {
         private Boolean isProductInProgress;
 
         @Valid @Builder.Default
-        private List<TeamProductLinkRequest> teamProductLinks = new ArrayList<>();
+        private List<@Valid TeamProductLinkRequest> teamProductLinks = new ArrayList<>();
 
         private String productDescription;
     }
@@ -76,7 +76,7 @@ public class TeamProductRequestDTO {
         private Boolean isProductInProgress;
 
         @Valid @Builder.Default
-        private List<TeamProductLinkRequest> teamProductLinks = new ArrayList<>();
+        private List<@Valid TeamProductLinkRequest> teamProductLinks = new ArrayList<>();
 
         private String productDescription;
 
@@ -89,10 +89,8 @@ public class TeamProductRequestDTO {
     @AllArgsConstructor
     public static class TeamProductLinkRequest {
 
-        @NotBlank(message = "링크 이름을 입력해주세요.")
         private String productLinkName;
 
-        @NotBlank(message = "링크 주소를 입력해주세요.")
         private String productLinkPath;
     }
 

@@ -329,58 +329,84 @@ public class TeamSearchControllerTest extends ControllerTest {
                                                                 .divisionName("활동지역 시/군/구")
                                                                 .build())
                                                 .build()))
-                        .supportProjectTeams(
-                                Arrays.asList(
-                                        TeamInformMenu.builder()
-                                                .teamCurrentStates(
-                                                        Arrays.asList(
-                                                                TeamCurrentStateItem.builder()
-                                                                        .teamStateName("대회 준비 중")
-                                                                        .build(),
-                                                                TeamCurrentStateItem.builder()
-                                                                        .teamStateName("투자 유치 중")
-                                                                        .build()))
-                                                .isTeamScrap(true)
-                                                .teamScrapCount(100)
-                                                .teamName("팀 이름 1")
-                                                .teamCode("팀 아이디 (팀 코드)")
-                                                .teamShortDescription("팀 한 줄 소개 1")
-                                                .teamLogoImagePath("팀 로고 이미지 경로 1")
-                                                .teamScaleItem(
-                                                        TeamScaleItem.builder()
-                                                                .teamScaleName("1인")
-                                                                .build())
-                                                .regionDetail(
-                                                        RegionDetail.builder()
-                                                                .cityName("활동지역 시/도")
-                                                                .divisionName("활동지역 시/군/구")
-                                                                .build())
-                                                .build(),
-                                        TeamInformMenu.builder()
-                                                .teamCurrentStates(
-                                                        Arrays.asList(
-                                                                TeamCurrentStateItem.builder()
-                                                                        .teamStateName("대회 준비 중")
-                                                                        .build(),
-                                                                TeamCurrentStateItem.builder()
-                                                                        .teamStateName("투자 유치 중")
-                                                                        .build()))
-                                                .isTeamScrap(false)
-                                                .teamScrapCount(200)
-                                                .teamName("팀 이름 2")
-                                                .teamCode("팀 아이디 2(팀 코드)")
-                                                .teamShortDescription("팀 한 줄 소개 2")
-                                                .teamLogoImagePath("팀 로고 이미지 경로 2")
-                                                .teamScaleItem(
-                                                        TeamScaleItem.builder()
-                                                                .teamScaleName("2~5인")
-                                                                .build())
-                                                .regionDetail(
-                                                        RegionDetail.builder()
-                                                                .cityName("활동지역 시/도")
-                                                                .divisionName("활동지역 시/군/구")
-                                                                .build())
-                                                .build()))
+                        //                        .supportProjectTeams(
+                        //                                Arrays.asList(
+                        //                                        TeamInformMenu.builder()
+                        //                                                .teamCurrentStates(
+                        //                                                        Arrays.asList(
+                        //
+                        // TeamCurrentStateItem.builder()
+                        //
+                        // .teamStateName("대회 준비 중")
+                        //
+                        // .build(),
+                        //
+                        // TeamCurrentStateItem.builder()
+                        //
+                        // .teamStateName("투자 유치 중")
+                        //
+                        // .build()))
+                        //                                                .isTeamScrap(true)
+                        //                                                .teamScrapCount(100)
+                        //                                                .teamName("팀 이름 1")
+                        //                                                .teamCode("팀 아이디 (팀 코드)")
+                        //                                                .teamShortDescription("팀 한
+                        // 줄 소개 1")
+                        //                                                .teamLogoImagePath("팀 로고
+                        // 이미지 경로 1")
+                        //                                                .teamScaleItem(
+                        //
+                        // TeamScaleItem.builder()
+                        //
+                        // .teamScaleName("1인")
+                        //                                                                .build())
+                        //                                                .regionDetail(
+                        //
+                        // RegionDetail.builder()
+                        //
+                        // .cityName("활동지역 시/도")
+                        //
+                        // .divisionName("활동지역 시/군/구")
+                        //                                                                .build())
+                        //                                                .build(),
+                        //                                        TeamInformMenu.builder()
+                        //                                                .teamCurrentStates(
+                        //                                                        Arrays.asList(
+                        //
+                        // TeamCurrentStateItem.builder()
+                        //
+                        // .teamStateName("대회 준비 중")
+                        //
+                        // .build(),
+                        //
+                        // TeamCurrentStateItem.builder()
+                        //
+                        // .teamStateName("투자 유치 중")
+                        //
+                        // .build()))
+                        //                                                .isTeamScrap(false)
+                        //                                                .teamScrapCount(200)
+                        //                                                .teamName("팀 이름 2")
+                        //                                                .teamCode("팀 아이디 2(팀 코드)")
+                        //                                                .teamShortDescription("팀 한
+                        // 줄 소개 2")
+                        //                                                .teamLogoImagePath("팀 로고
+                        // 이미지 경로 2")
+                        //                                                .teamScaleItem(
+                        //
+                        // TeamScaleItem.builder()
+                        //
+                        // .teamScaleName("2~5인")
+                        //                                                                .build())
+                        //                                                .regionDetail(
+                        //
+                        // RegionDetail.builder()
+                        //
+                        // .cityName("활동지역 시/도")
+                        //
+                        // .divisionName("활동지역 시/군/구")
+                        //                                                                .build())
+                        //                                                .build()))
                         .build();
 
         when(teamSearchService.getFeaturedTeams(any())).thenReturn(teamListResponseDTO);
