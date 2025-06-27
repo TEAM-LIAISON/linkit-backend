@@ -26,7 +26,7 @@ public class TeamMemberAnnouncementCommandAdapter {
     }
 
     public void removeTeamMemberAnnouncement(final TeamMemberAnnouncement teamMemberAnnouncement) {
-        teamMemberAnnouncementRepository.delete(teamMemberAnnouncement);
+        teamMemberAnnouncementRepository.delqete(teamMemberAnnouncement);
     }
 
     public TeamMemberAnnouncement updateTeamMemberAnnouncementPublicState(
