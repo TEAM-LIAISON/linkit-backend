@@ -15,11 +15,12 @@ public class TeamScaleCustomRepositoryImpl implements TeamScaleCustomRepository 
     public boolean existsTeamScaleByTeamId(final Long teamId) {
         QTeamScale qTeamScale = QTeamScale.teamScale;
 
-        Integer count = jpaQueryFactory
-                .selectOne()
-                .from(qTeamScale)
-                .where(qTeamScale.team.id.eq(teamId))
-                .fetchFirst();
+        Integer count =
+                jpaQueryFactory
+                        .selectOne()
+                        .from(qTeamScale)
+                        .where(qTeamScale.team.id.eq(teamId))
+                        .fetchFirst();
 
         return count != null;
     }
@@ -38,9 +39,6 @@ public class TeamScaleCustomRepositoryImpl implements TeamScaleCustomRepository 
     public void deleteAllByTeamId(final Long teamId) {
         QTeamScale qTeamScale = QTeamScale.teamScale;
 
-        jpaQueryFactory
-                .delete(qTeamScale)
-                .where(qTeamScale.team.id.eq(teamId))
-                .execute();
+        jpaQueryFactory.delete(qTeamScale).where(qTeamScale.team.id.eq(teamId)).execute();
     }
 }

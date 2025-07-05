@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import liaison.linkit.global.BaseEntity;
 import liaison.linkit.team.domain.team.Team;
 import lombok.AccessLevel;
@@ -35,7 +36,7 @@ public class TeamMemberInvitation extends BaseEntity {
     private String teamMemberInvitationEmail;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "team_id")
+    @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
     @Column(nullable = false)

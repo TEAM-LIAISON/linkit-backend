@@ -1,9 +1,11 @@
 package liaison.linkit.profile.domain.repository.license;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import java.util.List;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.profile.domain.license.ProfileLicense;
 import liaison.linkit.profile.domain.license.QProfileLicense;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseRequestDTO.UpdateProfileLicenseRequest;
@@ -16,8 +18,7 @@ public class ProfileLicenseCustomRepositoryImpl implements ProfileLicenseCustomR
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    @PersistenceContext
-    private EntityManager entityManager; // EntityManager 주입
+    @PersistenceContext private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public List<ProfileLicense> getProfileLicenses(final Long memberId) {
@@ -26,22 +27,45 @@ public class ProfileLicenseCustomRepositoryImpl implements ProfileLicenseCustomR
         return jpaQueryFactory
                 .selectFrom(qProfileLicense)
                 .where(qProfileLicense.profile.member.id.eq(memberId))
+                .orderBy(qProfileLicense.licenseAcquisitionDate.desc())
                 .fetch();
     }
 
     @Override
-    public ProfileLicense updateProfileLicense(final Long profileLicenseId, final UpdateProfileLicenseRequest updateProfileLicense) {
+    public List<ProfileLicense> getByIsLicenseVerifiedTrue() {
+        QProfileLicense qProfileLicense = QProfileLicense.profileLicense;
+
+        return jpaQueryFactory
+                .selectFrom(qProfileLicense)
+                .where(
+                        qProfileLicense
+                                .isLicenseVerified
+                                .isTrue()
+                                .and(qProfileLicense.isLicenseCertified.isTrue()))
+                .fetch();
+    }
+
+    @Override
+    public ProfileLicense updateProfileLicense(
+            final Long profileLicenseId, final UpdateProfileLicenseRequest updateProfileLicense) {
         QProfileLicense qProfileLicense = QProfileLicense.profileLicense;
 
         // 프로필 활동 업데이트
-        long updatedCount = jpaQueryFactory
-                .update(qProfileLicense)
-                .set(qProfileLicense.licenseName, updateProfileLicense.getLicenseName())
-                .set(qProfileLicense.licenseInstitution, updateProfileLicense.getLicenseInstitution())
-                .set(qProfileLicense.licenseAcquisitionDate, updateProfileLicense.getLicenseAcquisitionDate())
-                .set(qProfileLicense.licenseDescription, updateProfileLicense.getLicenseDescription())
-                .where(qProfileLicense.id.eq(profileLicenseId))
-                .execute();
+        long updatedCount =
+                jpaQueryFactory
+                        .update(qProfileLicense)
+                        .set(qProfileLicense.licenseName, updateProfileLicense.getLicenseName())
+                        .set(
+                                qProfileLicense.licenseInstitution,
+                                updateProfileLicense.getLicenseInstitution())
+                        .set(
+                                qProfileLicense.licenseAcquisitionDate,
+                                updateProfileLicense.getLicenseAcquisitionDate())
+                        .set(
+                                qProfileLicense.licenseDescription,
+                                updateProfileLicense.getLicenseDescription())
+                        .where(qProfileLicense.id.eq(profileLicenseId))
+                        .execute();
 
         entityManager.flush();
         entityManager.clear();
@@ -63,9 +87,23 @@ public class ProfileLicenseCustomRepositoryImpl implements ProfileLicenseCustomR
         QProfileLicense qProfileLicense = QProfileLicense.profileLicense;
 
         return jpaQueryFactory
-                .selectOne()
-                .from(qProfileLicense)
+                        .selectOne()
+                        .from(qProfileLicense)
+                        .where(qProfileLicense.profile.id.eq(profileId))
+                        .fetchFirst()
+                != null;
+    }
+
+    @Override
+    public void removeProfileLicensesByProfileId(final Long profileId) {
+        QProfileLicense qProfileLicense = QProfileLicense.profileLicense;
+
+        jpaQueryFactory
+                .delete(qProfileLicense)
                 .where(qProfileLicense.profile.id.eq(profileId))
-                .fetchFirst() != null;
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
     }
 }

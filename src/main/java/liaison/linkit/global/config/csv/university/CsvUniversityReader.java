@@ -39,7 +39,8 @@ public class CsvUniversityReader {
         defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
 
         // 매칭할 class 타입 지정(필드 지정)
-        BeanWrapperFieldSetMapper<UniversityCsvData> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        BeanWrapperFieldSetMapper<UniversityCsvData> beanWrapperFieldSetMapper =
+                new BeanWrapperFieldSetMapper<>();
         beanWrapperFieldSetMapper.setTargetType(UniversityCsvData.class);
 
         defaultLineMapper.setFieldSetMapper(beanWrapperFieldSetMapper);

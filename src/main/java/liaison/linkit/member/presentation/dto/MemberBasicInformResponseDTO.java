@@ -1,6 +1,7 @@
 package liaison.linkit.member.presentation.dto;
 
 import java.time.LocalDateTime;
+
 import liaison.linkit.member.domain.type.Platform;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -50,6 +51,9 @@ public class MemberBasicInformResponseDTO {
         private Boolean isPrivateInformAgree;
         private Boolean isAgeCheck;
         private Boolean isMarketingAgree;
+
+        private String emailId;
+        private String memberName;
     }
 
     @Builder
@@ -60,7 +64,6 @@ public class MemberBasicInformResponseDTO {
         private String memberName;
     }
 
-
     @Builder
     @Getter
     @NoArgsConstructor
@@ -68,7 +71,6 @@ public class MemberBasicInformResponseDTO {
     public static class UpdateMemberContactResponse {
         private String contact;
     }
-
 
     @Builder
     @Getter

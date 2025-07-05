@@ -2,6 +2,7 @@ package liaison.linkit.team.business.mapper.state;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.team.domain.state.TeamCurrentState;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStateItem;
@@ -11,9 +12,12 @@ public class TeamCurrentStateMapper {
     public List<TeamCurrentStateItem> toTeamCurrentStateItems(
             final List<TeamCurrentState> teamCurrentStates) {
         return teamCurrentStates.stream()
-                .map(currentState -> TeamCurrentStateItem.builder()
-                        .teamStateName(currentState.getTeamState().getTeamStateName())
-                        .build())
+                .map(
+                        currentState ->
+                                TeamCurrentStateItem.builder()
+                                        .teamStateName(
+                                                currentState.getTeamState().getTeamStateName())
+                                        .build())
                 .collect(Collectors.toList());
     }
 }

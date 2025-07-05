@@ -1,8 +1,5 @@
 package liaison.linkit.global.config.csv;
 
-import liaison.linkit.global.config.csv.jobRole.CsvJobRoleReader;
-import liaison.linkit.global.config.csv.jobRole.CsvJobRoleWriter;
-import liaison.linkit.global.config.csv.jobRole.JobRoleCsvData;
 import liaison.linkit.global.config.csv.position.CsvPositionReader;
 import liaison.linkit.global.config.csv.position.CsvPositionWriter;
 import liaison.linkit.global.config.csv.position.PositionCsvData;
@@ -44,9 +41,6 @@ public class JobConfiguration {
     private final CsvRegionReader csvRegionReader;
     private final CsvRegionWriter csvRegionWriter;
 
-    private final CsvJobRoleReader csvJobRoleReader;
-    private final CsvJobRoleWriter csvJobRoleWriter;
-
     private final CsvSkillReader csvSkillReader;
     private final CsvSkillWriter csvSkillWriter;
 
@@ -64,19 +58,18 @@ public class JobConfiguration {
 
     // Step & Job upload
     @Bean
-    public Job simpleDataLoadJob(JobRepository jobRepository,
-                                 Step teamScaleDataLoadStep,
-                                 Step regionDataLoadStep,
-                                 Step jobRoleDataLoadStep,
-                                 Step positionDataLoadStep,
-                                 Step profileStateDataLoadStep,
-                                 Step teamStateDataLoadStep,
-                                 Step skillDataLoadStep,
-                                 Step universityDataLoadStep) {
+    public Job simpleDataLoadJob(
+            JobRepository jobRepository,
+            Step teamScaleDataLoadStep,
+            Step regionDataLoadStep,
+            Step positionDataLoadStep,
+            Step profileStateDataLoadStep,
+            Step teamStateDataLoadStep,
+            Step skillDataLoadStep,
+            Step universityDataLoadStep) {
         return new JobBuilder("linkitInformationLoadJob", jobRepository)
                 .start(teamScaleDataLoadStep)
                 .next(regionDataLoadStep)
-                .next(jobRoleDataLoadStep)
                 .next(positionDataLoadStep)
                 .next(profileStateDataLoadStep)
                 .next(teamStateDataLoadStep)
@@ -87,9 +80,7 @@ public class JobConfiguration {
 
     @Bean
     public Step teamScaleDataLoadStep(
-            JobRepository jobRepository,
-            PlatformTransactionManager platformTransactionManager
-    ) {
+            JobRepository jobRepository, PlatformTransactionManager platformTransactionManager) {
         return new StepBuilder("teamScaleDataLoadStep", jobRepository)
                 .<ScaleCsvData, ScaleCsvData>chunk(5, platformTransactionManager)
                 .reader(csvScaleReader.csvScaleReader())
@@ -100,9 +91,7 @@ public class JobConfiguration {
 
     @Bean
     public Step regionDataLoadStep(
-            JobRepository jobRepository,
-            PlatformTransactionManager platformTransactionManager
-    ) {
+            JobRepository jobRepository, PlatformTransactionManager platformTransactionManager) {
         return new StepBuilder("regionDataLoadStep", jobRepository)
                 .<RegionCsvData, RegionCsvData>chunk(1000, platformTransactionManager)
                 .reader(csvRegionReader.csvRegionReader())
@@ -112,23 +101,8 @@ public class JobConfiguration {
     }
 
     @Bean
-    public Step jobRoleDataLoadStep(
-            JobRepository jobRepository,
-            PlatformTransactionManager platformTransactionManager
-    ) {
-        return new StepBuilder("jobRoleDataLoadStep", jobRepository)
-                .<JobRoleCsvData, JobRoleCsvData>chunk(10, platformTransactionManager)
-                .reader(csvJobRoleReader.csvJobRoleReader())
-                .writer(csvJobRoleWriter)
-                .allowStartIfComplete(true)
-                .build();
-    }
-
-    @Bean
     public Step positionDataLoadStep(
-            JobRepository jobRepository,
-            PlatformTransactionManager platformTransactionManager
-    ) {
+            JobRepository jobRepository, PlatformTransactionManager platformTransactionManager) {
         return new StepBuilder("positionDataLoadStep", jobRepository)
                 .<PositionCsvData, PositionCsvData>chunk(10, platformTransactionManager)
                 .reader(csvPositionReader.csvPositionReader())
@@ -139,9 +113,7 @@ public class JobConfiguration {
 
     @Bean
     public Step profileStateDataLoadStep(
-            JobRepository jobRepository,
-            PlatformTransactionManager platformTransactionManager
-    ) {
+            JobRepository jobRepository, PlatformTransactionManager platformTransactionManager) {
         return new StepBuilder("profileStateDataLoadStep", jobRepository)
                 .<ProfileStateCsvData, ProfileStateCsvData>chunk(10, platformTransactionManager)
                 .reader(csvProfileStateReader.csvProfileStateReader())
@@ -152,9 +124,7 @@ public class JobConfiguration {
 
     @Bean
     public Step teamStateDataLoadStep(
-            JobRepository jobRepository,
-            PlatformTransactionManager platformTransactionManager
-    ) {
+            JobRepository jobRepository, PlatformTransactionManager platformTransactionManager) {
         return new StepBuilder("teamStateDataLoadStep", jobRepository)
                 .<TeamStateCsvData, TeamStateCsvData>chunk(10, platformTransactionManager)
                 .reader(csvTeamStateReader.csvTeamStateReader())
@@ -165,9 +135,7 @@ public class JobConfiguration {
 
     @Bean
     public Step skillDataLoadStep(
-            JobRepository jobRepository,
-            PlatformTransactionManager platformTransactionManager
-    ) {
+            JobRepository jobRepository, PlatformTransactionManager platformTransactionManager) {
         return new StepBuilder("skillDataLoadStep", jobRepository)
                 .<SkillCsvData, SkillCsvData>chunk(10, platformTransactionManager)
                 .reader(csvSkillReader.csvRegionReader())
@@ -178,9 +146,7 @@ public class JobConfiguration {
 
     @Bean
     public Step universityDataLoadStep(
-            JobRepository jobRepository,
-            PlatformTransactionManager platformTransactionManager
-    ) {
+            JobRepository jobRepository, PlatformTransactionManager platformTransactionManager) {
         return new StepBuilder("universityDataLoadStep", jobRepository)
                 .<UniversityCsvData, UniversityCsvData>chunk(10, platformTransactionManager)
                 .reader(csvUniversityReader.csvUniversityFieldReader())
@@ -188,5 +154,4 @@ public class JobConfiguration {
                 .allowStartIfComplete(true)
                 .build();
     }
-
 }

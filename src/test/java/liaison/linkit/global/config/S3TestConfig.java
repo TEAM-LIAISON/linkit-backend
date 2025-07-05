@@ -1,10 +1,10 @@
-//package liaison.linkit.global.config;
+// package liaison.linkit.global.config;
 //
-//import org.springframework.boot.test.context.TestConfiguration;
+// import org.springframework.boot.test.context.TestConfiguration;
 //
-//@TestConfiguration
-//public class S3TestConfig {
+// @TestConfiguration
+// public class S3TestConfig {
 //    static {
 //        System.setProperty("")
 //    }
-//}
+// }

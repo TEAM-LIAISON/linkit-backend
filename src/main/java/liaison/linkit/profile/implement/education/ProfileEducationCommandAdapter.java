@@ -20,7 +20,15 @@ public class ProfileEducationCommandAdapter {
         profileEducationRepository.delete(profileEducation);
     }
 
-    public ProfileEducation updateProfileEducation(final Long profileEducationId, final University university, final UpdateProfileEducationRequest updateProfileEducationRequest) {
-        return profileEducationRepository.updateProfileEducation(profileEducationId, university, updateProfileEducationRequest);
+    public ProfileEducation updateProfileEducation(
+            final Long profileEducationId,
+            final University university,
+            final UpdateProfileEducationRequest updateProfileEducationRequest) {
+        return profileEducationRepository.updateProfileEducation(
+                profileEducationId, university, updateProfileEducationRequest);
+    }
+
+    public void removeProfileEducationsByProfileId(final Long profileId) {
+        profileEducationRepository.removeProfileEducationsByProfileId(profileId);
     }
 }

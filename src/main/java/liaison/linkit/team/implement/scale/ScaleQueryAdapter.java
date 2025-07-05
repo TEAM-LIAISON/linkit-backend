@@ -12,7 +12,8 @@ public class ScaleQueryAdapter {
     private final ScaleRepository scaleRepository;
 
     public Scale findByScaleName(final String scaleName) {
-        return scaleRepository.findByScaleName(scaleName)
+        return scaleRepository
+                .findByScaleName(scaleName)
                 .orElseThrow(() -> ScaleNotFoundException.EXCEPTION);
     }
 }

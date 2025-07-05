@@ -1,7 +1,8 @@
 package liaison.linkit.profile.domain.repository.portfolio;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.profile.domain.portfolio.ProjectSkill;
 import liaison.linkit.profile.domain.portfolio.QProfilePortfolio;
 import liaison.linkit.profile.domain.portfolio.QProjectSkill;

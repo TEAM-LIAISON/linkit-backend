@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
-
 @Configuration
 @RequiredArgsConstructor
 public class CsvPositionReader {
@@ -38,7 +37,8 @@ public class CsvPositionReader {
         defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
 
         // 매칭할 class 타입 지정(필드 지정)
-        BeanWrapperFieldSetMapper<PositionCsvData> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        BeanWrapperFieldSetMapper<PositionCsvData> beanWrapperFieldSetMapper =
+                new BeanWrapperFieldSetMapper<>();
         beanWrapperFieldSetMapper.setTargetType(PositionCsvData.class);
 
         defaultLineMapper.setFieldSetMapper(beanWrapperFieldSetMapper);

@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +26,6 @@ public class MemberBasicInform extends BaseDateTimeEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "member_basic_inform_id")
     private Long id;
 
     @OneToOne
@@ -33,7 +33,7 @@ public class MemberBasicInform extends BaseDateTimeEntity {
     private Member member;
 
     // 성함
-    @Column(length = 30)
+    @Column(length = 50)
     private String memberName;
 
     // 연락처

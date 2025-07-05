@@ -29,4 +29,3 @@ public class ProfileLogRequestDTO {
         private Boolean isLogPublic;
     }
 }
-

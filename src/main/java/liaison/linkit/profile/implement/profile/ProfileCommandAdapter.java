@@ -14,4 +14,8 @@ public class ProfileCommandAdapter {
     public Profile create(final Profile profile) {
         return profileRepository.save(profile);
     }
+
+    public void deleteByMemberId(final Long memberId) {
+        profileRepository.deleteByMemberId(memberId);
+    }
 }

@@ -1,10 +1,13 @@
 package liaison.linkit.team.presentation.team.dto;
 
+import java.util.List;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import java.util.List;
+import jakarta.validation.constraints.Size;
+
 import liaison.linkit.team.domain.teamMember.type.TeamMemberManagingTeamState;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,13 +25,10 @@ public class TeamRequestDTO {
     public static class AddTeamRequest {
 
         @NotBlank(message = "팀 이름을 입력해주세요.")
+        @Size(min = 1, max = 10, message = "팀 이름은 1자 이상 10자 이하여야 합니다")
         private String teamName;
 
         @NotBlank(message = "팀 아이디를 입력해주세요.")
-        @Pattern(
-                regexp = "^[A-Za-z][A-Za-z0-9]*$",
-                message = "팀 아이디는 영어로 시작해야 하며, 영어 대소문자와 숫자만 사용할 수 있습니다."
-        )
         private String teamCode;
 
         @NotBlank(message = "팀 한 줄 소개를 입력해주세요.")
@@ -55,14 +55,15 @@ public class TeamRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateTeamRequest {
+
         @NotBlank(message = "팀 이름을 입력해주세요.")
+        @Size(min = 1, max = 10, message = "팀 이름은 1자 이상 10자 이하여야 합니다")
         private String teamName;
 
         @NotBlank(message = "팀 아이디를 입력해주세요.")
         @Pattern(
                 regexp = "^[A-Za-z][A-Za-z0-9]*$",
-                message = "팀 아이디는 영어로 시작해야 하며, 영어 대소문자와 숫자만 사용할 수 있습니다."
-        )
+                message = "팀 아이디는 영어로 시작해야 하며, 영어 대소문자와 숫자만 사용할 수 있습니다.")
         private String teamCode;
 
         @NotBlank(message = "팀 한 줄 소개를 입력해주세요.")
@@ -89,6 +90,7 @@ public class TeamRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateManagingTeamStateRequest {
+
         private TeamMemberManagingTeamState teamMemberManagingTeamState;
     }
 }

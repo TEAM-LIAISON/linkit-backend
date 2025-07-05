@@ -19,7 +19,14 @@ public class ProfileLicenseCommandAdapter {
         profileLicenseRepository.delete(profileLicense);
     }
 
-    public ProfileLicense updateProfileLicense(final Long profileLicenseId, final UpdateProfileLicenseRequest updateProfileLicenseRequest) {
-        return profileLicenseRepository.updateProfileLicense(profileLicenseId, updateProfileLicenseRequest);
+    public ProfileLicense updateProfileLicense(
+            final Long profileLicenseId,
+            final UpdateProfileLicenseRequest updateProfileLicenseRequest) {
+        return profileLicenseRepository.updateProfileLicense(
+                profileLicenseId, updateProfileLicenseRequest);
+    }
+
+    public void removeProfileLicensesByProfileId(final Long profileId) {
+        profileLicenseRepository.removeProfileLicensesByProfileId(profileId);
     }
 }

@@ -1,6 +1,5 @@
 package liaison.linkit.global.config.csv.scale;
 
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -40,7 +39,8 @@ public class CsvScaleReader {
         defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
 
         // 매칭할 class 타입 지정(필드 지정)
-        BeanWrapperFieldSetMapper<ScaleCsvData> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        BeanWrapperFieldSetMapper<ScaleCsvData> beanWrapperFieldSetMapper =
+                new BeanWrapperFieldSetMapper<>();
         beanWrapperFieldSetMapper.setTargetType(ScaleCsvData.class);
 
         defaultLineMapper.setFieldSetMapper(beanWrapperFieldSetMapper);

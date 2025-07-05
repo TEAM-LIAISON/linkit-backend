@@ -1,0 +1,2 @@
+ALTER TABLE team
+    MODIFY COLUMN team_name VARCHAR(10) NOT NULL;

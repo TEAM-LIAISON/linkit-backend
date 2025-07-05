@@ -43,8 +43,14 @@ spring:
         show_sql: false
         use_sql_comments: false
         default_batch_fetch_size: 100
+        generate_statistics: false   # 성능 모니터링 설정
+        jdbc:
+          batch_size: 50
+          time_zone: Asia/Seoul
+        order_inserts: true
+        order_updates: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
 
   mvc:
     path match:
@@ -52,18 +58,18 @@ spring:
 
   batch:
     job:
-      enabled: true
+      enabled: false
     jdbc:
-      initialize-schema: always
+      initialize-schema: never
 
-    #  flyway:
-    #    enabled: true
-    #    baseline-on-migrate: true
-    #    baseline-version: 0
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
 
   sql:
     init:
-      mode: always
+      mode: never
 
   servlet:
     multipart:
@@ -71,7 +77,56 @@ spring:
       file-size-threshold: 0B # 파일을 디스크에 저장하지 않고 메모리에 저장하는 최소 크기 (default: 0B)
       max-file-size: 10MB # 한 개 파일의 최대 사이즈
       max-request-size: 10MB # 한 개 요청의 최대 사이즈
-#
-#logging:
-#  level:
-#    root: debug
+
+# 로컬 환경 로깅 설정
+logging:
+  level:
+    root: INFO                        # 기본 로그 레벨
+    liaison.swagger_test: DEBUG       # 애플리케이션 패키지는 DEBUG로 설정
+    #    org.springframework.web: INFO     # 웹 요청 로그
+    org.springframework.batch: DEBUG  # 배치 작업 로그 (상세히)
+    org.springframework.scheduling: DEBUG # 스케줄링 작업 로그 (상세히)
+    org.hibernate.SQL: DEBUG          # SQL 쿼리 로그
+    org.hibernate.type.descriptor.sql: TRACE # SQL 바인딩 파라미터 출력
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [request_id=%X{request_id}] [client_ip=%X{client_ip}] [user_id=%X{user_id}] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [request_id=%X{request_id}] [client_ip=%X{client_ip}] [user_id=%X{user_id}] %-5level %logger{36} - %msg%n"
+  file:
+    name: ./logs/application-local.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB          # 로그 파일 최대 크기
+      max-history: 7               # 로컬에서는 적은 기간만 보관
+      total-size-cap: 1GB          # 로컬에서는 적은 용량만 사용
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+      multiline: true
+      logging: slf4j
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+    doc-expansion: none
+    disable-swagger-default-url: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  paths-to-match:
+    - /api/**
+  packages-to-scan:
+    - liaison.linkit
+
+app:
+  backend-url: http://localhost:8080
+
+server:
+  compression:
+    enabled: true
+    min-response-size: 1024
+    mime-types: application/json,application/xml,text/html,text/plain,text/css,application/javascript

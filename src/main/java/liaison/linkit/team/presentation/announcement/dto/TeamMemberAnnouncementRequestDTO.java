@@ -1,11 +1,13 @@
 package liaison.linkit.team.presentation.announcement.dto;
 
-import jakarta.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,14 +38,25 @@ public class TeamMemberAnnouncementRequestDTO {
         @Builder.Default
         private List<AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
 
-        @NotBlank(message = "공고 시작일은 필수입니다")
-        private String announcementStartDate;
+        @NotBlank(message = "프로젝트 유형은 필수입니다")
+        @Pattern(
+                regexp = "창업·스타트업|사이드 프로젝트|스터디",
+                message = "프로젝트 유형은 '창업·스타트업', '사이드 프로젝트', '스터디' 중 하나여야 합니다")
+        private String projectTypeName;
 
-        @NotBlank(message = "공고 종료일은 필수입니다")
+        @NotBlank(message = "업무 형태는 필수입니다")
+        @Pattern(
+                regexp = "대면|비대면|대면·비대면 혼합",
+                message = "업무 형태는 '대면', '비대면', '대면·비대면 혼합' 중 하나여야 합니다")
+        private String workTypeName;
+
         private String announcementEndDate;
+        private Boolean isPermanentRecruitment;
 
         @NotNull(message = "지역 무관 여부는 필수입니다")
         private Boolean isRegionFlexible;
+
+        private String projectIntroduction;
 
         @NotBlank(message = "주요 업무는 필수입니다")
         @Size(min = 1, message = "주요 업무는 1자 이상이어야 합니다")
@@ -67,6 +80,7 @@ public class TeamMemberAnnouncementRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateTeamMemberAnnouncementRequest {
+
         @NotBlank(message = "공고 제목은 필수입니다")
         @Size(min = 1, message = "공고 제목은 1자 이상이어야 합니다")
         private String announcementTitle;
@@ -82,18 +96,28 @@ public class TeamMemberAnnouncementRequestDTO {
         @Builder.Default
         private List<AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
 
-        @NotBlank(message = "공고 시작일은 필수입니다")
-        @Pattern(regexp = "^\\d{4}\\.(0[1-9]|1[0-2])$",
-                message = "날짜 형식이 올바르지 않습니다. (YYYY.MM)")
-        private String announcementStartDate;
+        @NotBlank(message = "프로젝트 유형은 필수입니다")
+        @Pattern(
+                regexp = "창업·스타트업|사이드 프로젝트|스터디",
+                message = "프로젝트 유형은 '창업·스타트업', '사이드 프로젝트', '스터디' 중 하나여야 합니다")
+        private String projectTypeName;
 
-        @NotBlank(message = "공고 종료일은 필수입니다")
-        @Pattern(regexp = "^\\d{4}\\.(0[1-9]|1[0-2])$",
-                message = "날짜 형식이 올바르지 않습니다. (YYYY.MM)")
+        @NotBlank(message = "업무 형태는 필수입니다")
+        @Pattern(
+                regexp = "대면|비대면|대면·비대면 혼합",
+                message = "업무 형태는 '대면', '비대면', '대면·비대면 혼합' 중 하나여야 합니다")
+        private String workTypeName;
+
         private String announcementEndDate;
+
+        private Boolean isPermanentRecruitment;
+
+        private Boolean isAnnouncementInProgress;
 
         @NotNull(message = "지역 무관 여부는 필수입니다")
         private Boolean isRegionFlexible;
+
+        private String projectIntroduction;
 
         @NotBlank(message = "주요 업무는 필수입니다")
         @Size(min = 1, message = "주요 업무는 1자 이상이어야 합니다")
@@ -106,10 +130,15 @@ public class TeamMemberAnnouncementRequestDTO {
         @NotBlank(message = "이런 분을 찾고 있어요는 필수입니다")
         @Size(min = 1, message = "이런 분을 찾고 있어요는 1자 이상이어야 합니다")
         private String idealCandidate;
-        
+
         private String preferredQualifications;
         private String joiningProcess;
         private String benefits;
+
+        // 개별 setter 메서드 추가
+        public void setIsAnnouncementInProgress(final Boolean isAnnouncementInProgress) {
+            this.isAnnouncementInProgress = isAnnouncementInProgress;
+        }
     }
 
     @Builder
@@ -117,8 +146,7 @@ public class TeamMemberAnnouncementRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AnnouncementSkillName {
-        @NotBlank(message = "기술 스택 이름은 필수입니다")
-        @Size(min = 1, message = "기술 스택 이름은 1자 이상이어야 합니다")
+
         private String announcementSkillName;
     }
 }

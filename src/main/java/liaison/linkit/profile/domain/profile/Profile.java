@@ -5,14 +5,23 @@ import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+
 import liaison.linkit.common.consts.ProfileStatic;
 import liaison.linkit.global.BaseEntity;
 import liaison.linkit.member.domain.Member;
+import liaison.linkit.profile.domain.position.ProfilePosition;
+import liaison.linkit.profile.domain.region.ProfileRegion;
+import liaison.linkit.profile.domain.skill.ProfileSkill;
+import liaison.linkit.profile.domain.state.ProfileCurrentState;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,8 +46,23 @@ public class Profile extends BaseEntity {
     private Long id;
 
     @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
-    @JoinColumn(name = "member_id", unique = true)
+    @JoinColumn(name = "member_id", unique = true, nullable = false)
     private Member member;
+
+    @OneToMany(mappedBy = "profile")
+    @Builder.Default
+    private List<ProfilePosition> profilePositions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "profile")
+    @Builder.Default
+    private List<ProfileSkill> profileSkills = new ArrayList<>();
+
+    @OneToOne(mappedBy = "profile")
+    private ProfileRegion profileRegion;
+
+    @OneToMany(mappedBy = "profile")
+    @Builder.Default
+    private List<ProfileCurrentState> profileCurrentStates = new ArrayList<>();
 
     // 프로필 이미지 경로
     private String profileImagePath;

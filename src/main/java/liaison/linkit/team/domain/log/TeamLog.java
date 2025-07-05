@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.profile.domain.type.LogType;
 import liaison.linkit.team.domain.team.Team;
@@ -32,13 +33,13 @@ public class TeamLog extends BaseDateTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "team_id")
+    @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String logTitle;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 5000)
     private String logContent;
 
     private boolean isLogPublic;
@@ -47,11 +48,42 @@ public class TeamLog extends BaseDateTimeEntity {
     @Enumerated(value = STRING)
     private LogType logType;
 
+    // == 1) 조회수 필드 추가 ==
+    // 기본값 0
+    @Column(nullable = false)
+    private Long viewCount;
+
+    // 댓글 수 필드 추가
+    @Column(nullable = false)
+    private Long commentCount;
+
     public void setLogType(final LogType logType) {
         this.logType = logType;
     }
 
     public void setIsLogPublic(final boolean isLogPublic) {
         this.isLogPublic = isLogPublic;
+    }
+
+    // == 조회수 증가 메서드 ==
+    public void increaseViewCount() {
+        this.viewCount++;
+    }
+
+    // == 2) 배치에서 주기적으로 호출할 메서드 (조회수 초기화) ==
+    public void resetViewCount() {
+        this.viewCount = 0L;
+    }
+
+    // 댓글 수 증가 메서드
+    public void increaseCommentCount() {
+        this.commentCount++;
+    }
+
+    // 댓글 수 감소 메서드
+    public void decreaseCommentCount() {
+        if (this.commentCount > 0) {
+            this.commentCount--;
+        }
     }
 }

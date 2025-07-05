@@ -1,23 +1,23 @@
 package liaison.linkit.global.config;
 
 import java.util.concurrent.Executor;
+
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-/**
- * 비동기 작업을 위한 Spring 설정 클래스
- * @EnableAsync 어노테이션을 통해 비동기 기능 활성화
- */
+/** 비동기 작업을 위한 Spring 설정 클래스 @EnableAsync 어노테이션을 통해 비동기 기능 활성화 */
 @Configuration
 @EnableAsync
 public class AsyncConfig implements AsyncConfigurer {
 
     /**
      * 비동기 작업을 실행할 ThreadPool 설정
+     *
      * @return ThreadPoolTaskExecutor 인스턴스
      */
     @Override
@@ -36,7 +36,24 @@ public class AsyncConfig implements AsyncConfigurer {
     }
 
     /**
+     * 공고 알림 등 특정 비동기 작업에 사용할 전용 ThreadPool 설정 Bean 이름을 지정해두고, @Async(\"announcementTaskExecutor\")로
+     * 사용 가능
+     */
+    @Bean(name = "announcementTaskExecutor")
+    public Executor announcementTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        // 공고 알림의 특성에 맞게 풀 사이즈 등을 설정
+        executor.setCorePoolSize(3);
+        executor.setMaxPoolSize(6);
+        executor.setQueueCapacity(50);
+        executor.setThreadNamePrefix("AnnouncementAsync-");
+        executor.initialize();
+        return executor;
+    }
+
+    /**
      * 비동기 작업 중 발생한 예외를 처리하는 핸들러 설정
+     *
      * @return SimpleAsyncUncaughtExceptionHandler 인스턴스
      */
     @Override

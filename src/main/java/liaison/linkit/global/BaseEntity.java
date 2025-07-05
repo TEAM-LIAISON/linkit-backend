@@ -4,11 +4,13 @@ import static jakarta.persistence.EnumType.STRING;
 import static liaison.linkit.global.type.StatusType.DELETED;
 import static liaison.linkit.global.type.StatusType.USABLE;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.MappedSuperclass;
-import java.time.LocalDateTime;
+
 import liaison.linkit.global.type.StatusType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,5 +46,9 @@ public abstract class BaseEntity {
 
     public void changeStatusToDeleted() {
         this.status = DELETED;
+    }
+
+    public void changeStatusToUsable() {
+        this.status = USABLE;
     }
 }

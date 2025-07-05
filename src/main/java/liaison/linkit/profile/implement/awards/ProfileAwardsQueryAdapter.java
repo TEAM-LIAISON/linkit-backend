@@ -1,6 +1,7 @@
 package liaison.linkit.profile.implement.awards;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.profile.domain.awards.ProfileAwards;
 import liaison.linkit.profile.domain.repository.awards.ProfileAwardsRepository;
@@ -17,8 +18,13 @@ public class ProfileAwardsQueryAdapter {
         return profileAwardsRepository.getProfileAwardsGroup(memberId);
     }
 
+    public List<ProfileAwards> getByIsAwardsVerifiedTrue() {
+        return profileAwardsRepository.getByIsAwardsVerifiedTrue();
+    }
+
     public ProfileAwards getProfileAwards(final Long profileAwardsId) {
-        return profileAwardsRepository.findById(profileAwardsId)
+        return profileAwardsRepository
+                .findById(profileAwardsId)
                 .orElseThrow(() -> ProfileAwardsNotFoundException.EXCEPTION);
     }
 

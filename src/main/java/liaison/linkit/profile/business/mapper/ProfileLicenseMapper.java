@@ -2,21 +2,22 @@ package liaison.linkit.profile.business.mapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import liaison.linkit.common.annotation.Mapper;
-import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.license.ProfileLicense;
+import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseRequestDTO;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.AddProfileLicenseResponse;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.ProfileLicenseItem;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.UpdateProfileLicenseResponse;
 
-
 @Mapper
 public class ProfileLicenseMapper {
-    public ProfileLicense toAddProfileLicense(final Profile profile, final ProfileLicenseRequestDTO.AddProfileLicenseRequest request) {
-        return ProfileLicense
-                .builder()
+    public ProfileLicense toAddProfileLicense(
+            final Profile profile,
+            final ProfileLicenseRequestDTO.AddProfileLicenseRequest request) {
+        return ProfileLicense.builder()
                 .id(null)
                 .profile(profile)
                 .licenseName(request.getLicenseName())
@@ -30,9 +31,9 @@ public class ProfileLicenseMapper {
                 .build();
     }
 
-    public AddProfileLicenseResponse toAddProfileLicenseResponse(final ProfileLicense profileLicense) {
-        return AddProfileLicenseResponse
-                .builder()
+    public AddProfileLicenseResponse toAddProfileLicenseResponse(
+            final ProfileLicense profileLicense) {
+        return AddProfileLicenseResponse.builder()
                 .profileLicenseId(profileLicense.getId())
                 .licenseName(profileLicense.getLicenseName())
                 .licenseInstitution(profileLicense.getLicenseInstitution())
@@ -41,9 +42,9 @@ public class ProfileLicenseMapper {
                 .build();
     }
 
-    public UpdateProfileLicenseResponse toUpdateProfileLicenseResponse(final ProfileLicense profileLicense) {
-        return UpdateProfileLicenseResponse
-                .builder()
+    public UpdateProfileLicenseResponse toUpdateProfileLicenseResponse(
+            final ProfileLicense profileLicense) {
+        return UpdateProfileLicenseResponse.builder()
                 .profileLicenseId(profileLicense.getId())
                 .licenseName(profileLicense.getLicenseName())
                 .licenseInstitution(profileLicense.getLicenseInstitution())
@@ -52,7 +53,8 @@ public class ProfileLicenseMapper {
                 .build();
     }
 
-    public ProfileLicenseResponseDTO.ProfileLicenseItem toProfileLicenseItem(final ProfileLicense profileLicense) {
+    public ProfileLicenseResponseDTO.ProfileLicenseItem toProfileLicenseItem(
+            final ProfileLicense profileLicense) {
         return ProfileLicenseResponseDTO.ProfileLicenseItem.builder()
                 .profileLicenseId(profileLicense.getId())
                 .licenseName(profileLicense.getLicenseName())
@@ -63,20 +65,21 @@ public class ProfileLicenseMapper {
                 .build();
     }
 
-
-    public ProfileLicenseResponseDTO.ProfileLicenseItems toProfileLicenseItems(final List<ProfileLicense> profilelicenses) {
-        List<ProfileLicenseItem> items = profilelicenses.stream()
-                .map(this::toProfileLicenseItem)
-                .collect(Collectors.toList());
+    public ProfileLicenseResponseDTO.ProfileLicenseItems toProfileLicenseItems(
+            final List<ProfileLicense> profilelicenses) {
+        List<ProfileLicenseItem> items =
+                profilelicenses.stream()
+                        .map(this::toProfileLicenseItem)
+                        .collect(Collectors.toList());
 
         return ProfileLicenseResponseDTO.ProfileLicenseItems.builder()
                 .profileLicenseItems(items)
                 .build();
     }
 
-    public ProfileLicenseResponseDTO.ProfileLicenseDetail toProfileLicenseDetail(final ProfileLicense profileLicense) {
-        return ProfileLicenseResponseDTO.ProfileLicenseDetail
-                .builder()
+    public ProfileLicenseResponseDTO.ProfileLicenseDetail toProfileLicenseDetail(
+            final ProfileLicense profileLicense) {
+        return ProfileLicenseResponseDTO.ProfileLicenseDetail.builder()
                 .profileLicenseId(profileLicense.getId())
                 .licenseName(profileLicense.getLicenseName())
                 .licenseInstitution(profileLicense.getLicenseInstitution())
@@ -84,38 +87,41 @@ public class ProfileLicenseMapper {
                 .licenseDescription(profileLicense.getLicenseDescription())
                 .isLicenseCertified(profileLicense.isLicenseCertified())
                 .isLicenseVerified(profileLicense.isLicenseVerified())
-                .licenseCertificationAttachFileName(profileLicense.getLicenseCertificationAttachFileName())
-                .licenseCertificationAttachFilePath(profileLicense.getLicenseCertificationAttachFilePath())
+                .licenseCertificationAttachFileName(
+                        profileLicense.getLicenseCertificationAttachFileName())
+                .licenseCertificationAttachFilePath(
+                        profileLicense.getLicenseCertificationAttachFilePath())
                 .build();
     }
 
-    public ProfileLicenseResponseDTO.ProfileLicenseCertificationResponse toAddProfileLicenseCertification(final ProfileLicense profileLicense) {
-        return ProfileLicenseResponseDTO.ProfileLicenseCertificationResponse
-                .builder()
+    public ProfileLicenseResponseDTO.ProfileLicenseCertificationResponse
+            toAddProfileLicenseCertification(final ProfileLicense profileLicense) {
+        return ProfileLicenseResponseDTO.ProfileLicenseCertificationResponse.builder()
                 .isLicenseCertified(profileLicense.isLicenseCertified())
                 .isLicenseVerified(profileLicense.isLicenseVerified())
-                .licenseCertificationAttachFileName(profileLicense.getLicenseCertificationAttachFileName())
-                .licenseCertificationAttachFilePath(profileLicense.getLicenseCertificationAttachFilePath())
+                .licenseCertificationAttachFileName(
+                        profileLicense.getLicenseCertificationAttachFileName())
+                .licenseCertificationAttachFilePath(
+                        profileLicense.getLicenseCertificationAttachFilePath())
                 .build();
     }
 
-
-    public ProfileLicenseResponseDTO.RemoveProfileLicenseCertificationResponse toRemoveProfileLicenseCertification(final Long profileLicenseId) {
-        return ProfileLicenseResponseDTO.RemoveProfileLicenseCertificationResponse
-                .builder()
+    public ProfileLicenseResponseDTO.RemoveProfileLicenseCertificationResponse
+            toRemoveProfileLicenseCertification(final Long profileLicenseId) {
+        return ProfileLicenseResponseDTO.RemoveProfileLicenseCertificationResponse.builder()
                 .profileLicenseId(profileLicenseId)
                 .build();
     }
 
-
-    public ProfileLicenseResponseDTO.RemoveProfileLicenseResponse toRemoveProfileLicense(final Long profileLicenseId) {
-        return ProfileLicenseResponseDTO.RemoveProfileLicenseResponse
-                .builder()
+    public ProfileLicenseResponseDTO.RemoveProfileLicenseResponse toRemoveProfileLicense(
+            final Long profileLicenseId) {
+        return ProfileLicenseResponseDTO.RemoveProfileLicenseResponse.builder()
                 .profileLicenseId(profileLicenseId)
                 .build();
     }
 
-    public List<ProfileLicenseResponseDTO.ProfileLicenseItem> profileLicensesToProfileLicenseItems(final List<ProfileLicense> profileLicenses) {
+    public List<ProfileLicenseResponseDTO.ProfileLicenseItem> profileLicensesToProfileLicenseItems(
+            final List<ProfileLicense> profileLicenses) {
         return profileLicenses.stream()
                 .map(this::toProfileLicenseItem)
                 .collect(Collectors.toList());

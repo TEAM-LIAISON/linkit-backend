@@ -4,6 +4,7 @@ import static liaison.linkit.common.consts.LinkitStatic.NOT_FOUND;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
+
 import liaison.linkit.common.annotation.ExplainError;
 import liaison.linkit.common.exception.BaseErrorCode;
 import liaison.linkit.common.exception.ErrorReason;
@@ -30,5 +31,4 @@ public enum ScaleErrorCode implements BaseErrorCode {
         ExplainError annotation = field.getAnnotation(ExplainError.class);
         return Objects.nonNull(annotation) ? annotation.value() : this.getReason();
     }
-
 }

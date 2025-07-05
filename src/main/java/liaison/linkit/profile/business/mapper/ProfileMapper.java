@@ -1,6 +1,8 @@
 package liaison.linkit.profile.business.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.profile.domain.profile.Profile;
@@ -13,13 +15,13 @@ import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.Profile
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItem;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
-import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenus;
-import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileScrapMenu;
-import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileBooleanMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileCompletionMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenus;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileScrapMenu;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO.ProfileSkillItem;
 
 @Mapper
@@ -27,43 +29,28 @@ public class ProfileMapper {
 
     public ProfileResponseDTO.ProfileLeftMenu toProfileLeftMenu(
             final ProfileCompletionMenu profileCompletionMenu,
-            final ProfileInformMenu profileInformMenu,
-            final ProfileBooleanMenu profileBooleanMenu,
-            final ProfileScrapMenu profileScrapMenu
-    ) {
-        return ProfileResponseDTO.ProfileLeftMenu
-                .builder()
+            final ProfileBooleanMenu profileBooleanMenu) {
+        return ProfileResponseDTO.ProfileLeftMenu.builder()
                 .profileCompletionMenu(profileCompletionMenu)
-                .profileInformMenu(profileInformMenu)
                 .profileBooleanMenu(profileBooleanMenu)
-                .profileScrapMenu(profileScrapMenu)
                 .build();
     }
 
-    public ProfileResponseDTO.ProfileScrapMenu toProfileScrapMenu(
-            final Profile profile
-    ) {
-        return ProfileScrapMenu
-                .builder()
+    public ProfileResponseDTO.ProfileScrapMenu toProfileScrapMenu(final Profile profile) {
+        return ProfileScrapMenu.builder()
                 .profileScrapCount(profile.getMember().getProfileScrapCount())
                 .build();
     }
 
-    public ProfileResponseDTO.ProfileCompletionMenu toProfileCompletionMenu(
-            final Profile profile
-    ) {
-        return ProfileResponseDTO.ProfileCompletionMenu
-                .builder()
+    public ProfileResponseDTO.ProfileCompletionMenu toProfileCompletionMenu(final Profile profile) {
+        return ProfileResponseDTO.ProfileCompletionMenu.builder()
                 .profileCompletion(profile.getProfileCompletion())
                 .build();
     }
 
     public ProfileResponseDTO.ProfileInformMenus toProfileInformMenus(
-            final List<ProfileInformMenu> profileInformMenus
-    ) {
-        return ProfileInformMenus.builder()
-                .profileInformMenus(profileInformMenus)
-                .build();
+            final List<ProfileInformMenu> profileInformMenus) {
+        return ProfileInformMenus.builder().profileInformMenus(profileInformMenus).build();
     }
 
     public ProfileResponseDTO.ProfileInformMenu toProfileInformMenu(
@@ -73,29 +60,53 @@ public class ProfileMapper {
             final Profile profile,
             final ProfilePositionDetail profilePositionDetail,
             final RegionDetail regionDetail,
-            final List<ProfileTeamInform> profileTeamInforms
-    ) {
-        return ProfileResponseDTO.ProfileInformMenu
-                .builder()
-                .profileCurrentStates(profileCurrentStateItems)
+            final List<ProfileTeamInform> profileTeamInforms) {
+        return ProfileResponseDTO.ProfileInformMenu.builder()
+                .profileCurrentStates(
+                        profileCurrentStateItems != null
+                                ? profileCurrentStateItems
+                                : new ArrayList<>())
                 .isProfileScrap(isProfileScrap)
                 .profileScrapCount(profileScrapCount)
-                .profileImagePath(profile.getProfileImagePath())
-                .memberName(profile.getMember().getMemberBasicInform().getMemberName())
-                .emailId(profile.getMember().getEmailId())
-                .isProfilePublic(profile.isProfilePublic())
-                .majorPosition(profilePositionDetail.getMajorPosition())
-                .regionDetail(regionDetail)
-                .profileTeamInforms(profileTeamInforms)
+                .profileImagePath(profile != null ? profile.getProfileImagePath() : "")
+                .memberName(
+                        profile != null
+                                        && profile.getMember() != null
+                                        && profile.getMember().getMemberBasicInform() != null
+                                ? profile.getMember().getMemberBasicInform().getMemberName()
+                                : "")
+                .emailId(
+                        profile != null && profile.getMember() != null
+                                ? profile.getMember().getEmailId()
+                                : "")
+                .isProfilePublic(profile != null && profile.isProfilePublic())
+                .majorPosition(
+                        profilePositionDetail != null
+                                ? profilePositionDetail.getMajorPosition()
+                                : "")
+                .subPosition(
+                        profilePositionDetail != null ? profilePositionDetail.getSubPosition() : "")
+                .regionDetail(regionDetail != null ? regionDetail : new RegionDetail())
+                .profileTeamInforms(
+                        profileTeamInforms != null ? profileTeamInforms : new ArrayList<>())
                 .build();
     }
 
+    public ProfileResponseDTO.ProfileSummaryInform toProfileSummaryInform(
+            final Profile targetProfile,
+            final ProfilePositionDetail profilePositionDetail,
+            final RegionDetail regionDetail) {
+        return ProfileResponseDTO.ProfileSummaryInform.builder()
+                .profileImagePath(targetProfile.getProfileImagePath())
+                .memberName(targetProfile.getMember().getMemberBasicInform().getMemberName())
+                .emailId(targetProfile.getMember().getEmailId())
+                .profilePositionDetail(profilePositionDetail)
+                .regionDetail(regionDetail)
+                .build();
+    }
 
-    public ProfileResponseDTO.ProfileBooleanMenu toProfileBooleanMenu(
-            final Profile profile
-    ) {
-        return ProfileResponseDTO.ProfileBooleanMenu
-                .builder()
+    public ProfileResponseDTO.ProfileBooleanMenu toProfileBooleanMenu(final Profile profile) {
+        return ProfileResponseDTO.ProfileBooleanMenu.builder()
                 .isMiniProfile(profile.isProfileMiniProfile())
                 .isProfileSkill(profile.isProfileSkill())
                 .isProfileActivity(profile.isProfileActivity())
@@ -111,7 +122,6 @@ public class ProfileMapper {
             final boolean isMyProfile,
             final ProfileCompletionMenu profileCompletionMenu,
             final ProfileInformMenu profileInformMenu,
-            final int profileScrapCount,
             final ProfileLogItem profileLogItem,
             final List<ProfileSkillItem> profileSkillItems,
             final List<ProfileActivityItem> profileActivityItems,
@@ -120,13 +130,11 @@ public class ProfileMapper {
             final List<ProfileAwardsItem> profileAwardsItems,
             final List<ProfileLicenseItem> profileLicenseItems,
             final List<ProfileLinkItem> profileLinkItems // 타입 변경
-    ) {
-        return ProfileResponseDTO.ProfileDetail
-                .builder()
+            ) {
+        return ProfileResponseDTO.ProfileDetail.builder()
                 .isMyProfile(isMyProfile)
                 .profileCompletionMenu(profileCompletionMenu)
                 .profileInformMenu(profileInformMenu)
-                .profileScrapCount(profileScrapCount)
                 .profileLogItem(profileLogItem)
                 .profileSkillItems(profileSkillItems)
                 .profileActivityItems(profileActivityItems)
@@ -134,9 +142,7 @@ public class ProfileMapper {
                 .profileEducationItems(profileEducationItems)
                 .profileAwardsItems(profileAwardsItems)
                 .profileLicenseItems(profileLicenseItems)
-                .profileLinkItems(profileLinkItems)  // 수정된 필드 사용
+                .profileLinkItems(profileLinkItems) // 수정된 필드 사용
                 .build();
     }
-
-
 }

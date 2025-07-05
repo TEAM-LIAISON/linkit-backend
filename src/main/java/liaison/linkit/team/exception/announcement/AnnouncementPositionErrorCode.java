@@ -4,6 +4,7 @@ import static liaison.linkit.common.consts.LinkitStatic.NOT_FOUND;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
+
 import liaison.linkit.common.annotation.ExplainError;
 import liaison.linkit.common.exception.BaseErrorCode;
 import liaison.linkit.common.exception.ErrorReason;
@@ -13,7 +14,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum AnnouncementPositionErrorCode implements BaseErrorCode {
-    ANNOUNCEMENT_POSITION_NOT_FOUND(NOT_FOUND, "ANNOUNCEMENT_POSITION_404_1", "해당하는 팀원 공고의 포지션을 찾을 수 없습니다.");
+    ANNOUNCEMENT_POSITION_NOT_FOUND(
+            NOT_FOUND, "ANNOUNCEMENT_POSITION_404_1", "해당하는 팀원 공고의 포지션을 찾을 수 없습니다.");
 
     private final Integer status;
     private final String code;

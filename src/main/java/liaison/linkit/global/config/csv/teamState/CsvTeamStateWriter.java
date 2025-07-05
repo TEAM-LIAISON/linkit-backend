@@ -1,7 +1,7 @@
 package liaison.linkit.global.config.csv.teamState;
 
-import liaison.linkit.team.domain.state.TeamState;
 import liaison.linkit.team.domain.repository.currentState.TeamStateRepository;
+import liaison.linkit.team.domain.state.TeamState;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
@@ -20,10 +20,11 @@ public class CsvTeamStateWriter implements ItemWriter<TeamStateCsvData> {
 
         Chunk<TeamState> teamStates = new Chunk<>();
 
-        chunk.forEach(teamStateCsvData -> {
-            TeamState teamState = TeamState.of(teamStateCsvData.getTeamStateName());
-            teamStates.add(teamState);
-        });
+        chunk.forEach(
+                teamStateCsvData -> {
+                    TeamState teamState = TeamState.of(teamStateCsvData.getTeamStateName());
+                    teamStates.add(teamState);
+                });
 
         teamStateRepository.saveAll(teamStates);
     }

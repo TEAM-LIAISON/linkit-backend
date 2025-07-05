@@ -2,9 +2,11 @@ package liaison.linkit.login;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+import java.util.Arrays;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.Arrays;
+
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.exception.RefreshTokenExpiredException;
@@ -33,8 +35,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
-        return parameter.withContainingClass(Long.class)
-                .hasParameterAnnotation(Auth.class);
+        return parameter.withContainingClass(Long.class).hasParameterAnnotation(Auth.class);
     }
 
     @Override
@@ -42,10 +43,10 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
             final MethodParameter parameter,
             final ModelAndViewContainer mavContainer,
             final NativeWebRequest webRequest,
-            final WebDataBinderFactory binderFactory
-    ) {
+            final WebDataBinderFactory binderFactory) {
         final HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         try {
+
             final String authorizationHeader = webRequest.getHeader(AUTHORIZATION);
             if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
                 log.info("Authorization 헤더가 없거나 형식이 올바르지 않습니다. 게스트로 처리됩니다.");
@@ -53,6 +54,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
             }
 
             final String accessToken = extractor.extractAccessToken(authorizationHeader);
+
             final String refreshToken = extractRefreshToken(request.getCookies());
 
             jwtProvider.validateTokens(new MemberTokens(accessToken, refreshToken));
@@ -77,7 +79,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     private boolean isValidRefreshToken(final Cookie cookie) {
-        return REFRESH_TOKEN.equals(cookie.getName()) &&
-                refreshTokenRepository.existsById(cookie.getValue());
+        return REFRESH_TOKEN.equals(cookie.getName())
+                && refreshTokenRepository.existsById(cookie.getValue());
     }
 }

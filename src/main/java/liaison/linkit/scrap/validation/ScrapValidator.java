@@ -55,43 +55,51 @@ public class ScrapValidator {
         if (memberTeamScrapCount >= 8) {
             throw TeamScrapManyRequestException.EXCEPTION;
         }
-
     }
 
     // 팀원 공고 스크랩 최대 개수 판단 메서드
     public void validateMemberMaxTeamMemberAnnouncementScrap(final Long memberId) {
 
         final Member member = memberQueryAdapter.findById(memberId);
-        final int memberTeamMemberAnnouncementScrapCount = member.getTeamMemberAnnouncementScrapCount();
+        final int memberTeamMemberAnnouncementScrapCount =
+                member.getTeamMemberAnnouncementScrapCount();
 
         // 팀원 공고 스크랩 최대 개수 에러코드 반환
         if (memberTeamMemberAnnouncementScrapCount >= 8) {
             throw AnnouncementScrapManyRequestException.EXCEPTION;
         }
-
     }
 
     // 자신의 프로필에 대한 스크랩을 하지 못한다.
     public void validateSelfProfileScrap(final Long memberId, final String emailId) {
-        if (memberQueryAdapter.findById(memberId).equals(memberQueryAdapter.findByEmailId(emailId))) {
+        if (memberQueryAdapter
+                .findById(memberId)
+                .equals(memberQueryAdapter.findByEmailId(emailId))) {
             throw MyProfileBadRequestException.EXCEPTION;
         }
     }
 
     // 자신이 속한 팀이라면 스크랩을 하지 못한다.
     public void validateSelfTeamScrap(final Long memberId, final String teamCode) {
-        if (teamMemberQueryAdapter.findMembersByTeamCode(teamCode).contains(memberQueryAdapter.findById(memberId))) {
+        if (teamMemberQueryAdapter
+                .findMembersByTeamCode(teamCode)
+                .contains(memberQueryAdapter.findById(memberId))) {
             throw MyTeamBadRequestException.EXCEPTION;
         }
     }
 
     // 자신이 속한 팀에서 올린 공고라면 스크랩을 하지 못한다.
-    public void validateSelfTeamMemberAnnouncementScrap(final Long memberId, final Long teamMemberAnnouncementId) {
-        final Team team = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(teamMemberAnnouncementId).getTeam();
+    public void validateSelfTeamMemberAnnouncementScrap(
+            final Long memberId, final Long teamMemberAnnouncementId) {
+        final Team team =
+                teamMemberAnnouncementQueryAdapter
+                        .getTeamMemberAnnouncement(teamMemberAnnouncementId)
+                        .getTeam();
 
-        if (teamMemberQueryAdapter.findMembersByTeamCode(team.getTeamCode()).contains(memberQueryAdapter.findById(memberId))) {
+        if (teamMemberQueryAdapter
+                .findMembersByTeamCode(team.getTeamCode())
+                .contains(memberQueryAdapter.findById(memberId))) {
             throw MyAnnouncementBadRequestException.EXCEPTION;
         }
     }
-
 }

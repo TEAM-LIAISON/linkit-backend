@@ -11,7 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import liaison.linkit.common.domain.BaseDateTimeEntity;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,16 +23,17 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ProjectRoleContribution extends BaseDateTimeEntity {
+public class ProjectRoleContribution {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "profile_portfolio_id")
+    @JoinColumn(name = "profile_portfolio_id", nullable = false)
     private ProfilePortfolio profilePortfolio;
 
+    @Column(nullable = false, length = 50) // 제목 길이 제한 추가 (50자)
     private String projectRole;
 
     @Column(nullable = false)

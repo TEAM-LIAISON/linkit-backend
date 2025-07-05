@@ -1,6 +1,7 @@
 package liaison.linkit.profile.implement.skill;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.profile.domain.repository.skill.SkillRepository;
 import liaison.linkit.profile.domain.skill.Skill;
@@ -17,7 +18,8 @@ public class SkillQueryAdapter {
     }
 
     public Skill getSkillBySkillName(final String skillName) {
-        return skillRepository.getSkillBySkillName(skillName)
+        return skillRepository
+                .getSkillBySkillName(skillName)
                 .orElseThrow(() -> SkillNotFoundException.EXCEPTION);
     }
 }

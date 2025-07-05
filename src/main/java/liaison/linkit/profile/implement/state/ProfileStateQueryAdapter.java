@@ -12,6 +12,8 @@ public class ProfileStateQueryAdapter {
     private final ProfileStateRepository profileStateRepository;
 
     public ProfileState findByStateName(final String stateName) {
-        return profileStateRepository.findByStateName(stateName).orElseThrow(() -> ProfileStateNotFoundException.EXCEPTION);
+        return profileStateRepository
+                .findByStateName(stateName)
+                .orElseThrow(() -> ProfileStateNotFoundException.EXCEPTION);
     }
 }

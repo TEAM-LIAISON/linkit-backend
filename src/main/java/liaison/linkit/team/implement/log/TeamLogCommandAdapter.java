@@ -23,11 +23,21 @@ public class TeamLogCommandAdapter {
         teamLogRepository.updateTeamLogTypeRepresent(teamLog);
     }
 
-    public TeamLog updateTeamLogPublicState(final TeamLog teamLog, final boolean isTeamLogCurrentPublicState) {
+    public void updateTeamLogTypeGeneral(final TeamLog teamLog) {
+        teamLogRepository.updateTeamLogTypeGeneral(teamLog);
+    }
+
+    public TeamLog updateTeamLogPublicState(
+            final TeamLog teamLog, final boolean isTeamLogCurrentPublicState) {
         return teamLogRepository.updateTeamLogPublicState(teamLog, isTeamLogCurrentPublicState);
     }
 
-    public TeamLog updateTeamLog(final TeamLog teamLog, final UpdateTeamLogRequest updateTeamLogRequest) {
+    public TeamLog updateTeamLog(
+            final TeamLog teamLog, final UpdateTeamLogRequest updateTeamLogRequest) {
         return teamLogRepository.updateTeamLog(teamLog, updateTeamLogRequest);
+    }
+
+    public void deleteAllTeamLogs(final Long teamId) {
+        teamLogRepository.deleteAllTeamLogs(teamId);
     }
 }

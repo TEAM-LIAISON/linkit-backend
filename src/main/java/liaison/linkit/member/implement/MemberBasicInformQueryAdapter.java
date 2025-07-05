@@ -22,7 +22,8 @@ public class MemberBasicInformQueryAdapter {
     }
 
     public MemberBasicInform findByMemberId(final Long memberId) {
-        return memberBasicInformRepository.findByMemberId(memberId)
+        return memberBasicInformRepository
+                .findByMemberId(memberId)
                 .orElseThrow(() -> MemberBasicInformNotFoundException.NOT_FOUND_EXCEPTION);
     }
 }

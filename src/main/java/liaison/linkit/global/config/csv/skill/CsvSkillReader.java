@@ -38,7 +38,8 @@ public class CsvSkillReader {
         defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
 
         // 매칭할 class 타입 지정(필드 지정)
-        BeanWrapperFieldSetMapper<SkillCsvData> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        BeanWrapperFieldSetMapper<SkillCsvData> beanWrapperFieldSetMapper =
+                new BeanWrapperFieldSetMapper<>();
         beanWrapperFieldSetMapper.setTargetType(SkillCsvData.class);
 
         defaultLineMapper.setFieldSetMapper(beanWrapperFieldSetMapper);

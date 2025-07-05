@@ -2,9 +2,10 @@ package liaison.linkit.profile.business.mapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import liaison.linkit.common.annotation.Mapper;
-import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.activity.ProfileActivity;
+import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.AddProfileActivityResponse;
@@ -14,9 +15,10 @@ import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseD
 @Mapper
 public class ProfileActivityMapper {
 
-    public ProfileActivity toAddProfileActivity(final Profile profile, final ProfileActivityRequestDTO.AddProfileActivityRequest request) {
-        return ProfileActivity
-                .builder()
+    public ProfileActivity toAddProfileActivity(
+            final Profile profile,
+            final ProfileActivityRequestDTO.AddProfileActivityRequest request) {
+        return ProfileActivity.builder()
                 .id(null)
                 .profile(profile)
                 .activityName(request.getActivityName())
@@ -32,9 +34,9 @@ public class ProfileActivityMapper {
                 .build();
     }
 
-    public AddProfileActivityResponse toAddProfileActivityResponse(final ProfileActivity profileActivity) {
-        return AddProfileActivityResponse
-                .builder()
+    public AddProfileActivityResponse toAddProfileActivityResponse(
+            final ProfileActivity profileActivity) {
+        return AddProfileActivityResponse.builder()
                 .profileActivityId(profileActivity.getId())
                 .activityName(profileActivity.getActivityName())
                 .activityRole(profileActivity.getActivityRole())
@@ -45,9 +47,9 @@ public class ProfileActivityMapper {
                 .build();
     }
 
-    public UpdateProfileActivityResponse toUpdateProfileActivityResponse(final ProfileActivity profileActivity) {
-        return UpdateProfileActivityResponse
-                .builder()
+    public UpdateProfileActivityResponse toUpdateProfileActivityResponse(
+            final ProfileActivity profileActivity) {
+        return UpdateProfileActivityResponse.builder()
                 .profileActivityId(profileActivity.getId())
                 .activityName(profileActivity.getActivityName())
                 .activityRole(profileActivity.getActivityRole())
@@ -58,7 +60,8 @@ public class ProfileActivityMapper {
                 .build();
     }
 
-    public ProfileActivityResponseDTO.ProfileActivityItem toProfileActivityItem(final ProfileActivity profileActivity) {
+    public ProfileActivityResponseDTO.ProfileActivityItem toProfileActivityItem(
+            final ProfileActivity profileActivity) {
         return ProfileActivityResponseDTO.ProfileActivityItem.builder()
                 .profileActivityId(profileActivity.getId())
                 .activityName(profileActivity.getActivityName())
@@ -70,20 +73,21 @@ public class ProfileActivityMapper {
                 .build();
     }
 
-
-    public ProfileActivityResponseDTO.ProfileActivityItems toProfileActivityItems(final List<ProfileActivity> profileActivities) {
-        List<ProfileActivityItem> items = profileActivities.stream()
-                .map(this::toProfileActivityItem)
-                .collect(Collectors.toList());
+    public ProfileActivityResponseDTO.ProfileActivityItems toProfileActivityItems(
+            final List<ProfileActivity> profileActivities) {
+        List<ProfileActivityItem> items =
+                profileActivities.stream()
+                        .map(this::toProfileActivityItem)
+                        .collect(Collectors.toList());
 
         return ProfileActivityResponseDTO.ProfileActivityItems.builder()
                 .profileActivityItems(items)
                 .build();
     }
 
-    public ProfileActivityResponseDTO.ProfileActivityDetail toProfileActivityDetail(final ProfileActivity profileActivity) {
-        return ProfileActivityResponseDTO.ProfileActivityDetail
-                .builder()
+    public ProfileActivityResponseDTO.ProfileActivityDetail toProfileActivityDetail(
+            final ProfileActivity profileActivity) {
+        return ProfileActivityResponseDTO.ProfileActivityDetail.builder()
                 .profileActivityId(profileActivity.getId())
                 .activityName(profileActivity.getActivityName())
                 .activityRole(profileActivity.getActivityRole())
@@ -93,38 +97,41 @@ public class ProfileActivityMapper {
                 .activityDescription(profileActivity.getActivityDescription())
                 .isActivityCertified(profileActivity.isActivityCertified())
                 .isActivityVerified(profileActivity.isActivityVerified())
-                .activityCertificationAttachFileName(profileActivity.getActivityCertificationAttachFileName())
-                .activityCertificationAttachFilePath(profileActivity.getActivityCertificationAttachFilePath())
+                .activityCertificationAttachFileName(
+                        profileActivity.getActivityCertificationAttachFileName())
+                .activityCertificationAttachFilePath(
+                        profileActivity.getActivityCertificationAttachFilePath())
                 .build();
     }
 
-    public ProfileActivityResponseDTO.ProfileActivityCertificationResponse toAddProfileActivityCertification(final ProfileActivity profileActivity) {
-        return ProfileActivityResponseDTO.ProfileActivityCertificationResponse
-                .builder()
+    public ProfileActivityResponseDTO.ProfileActivityCertificationResponse
+            toAddProfileActivityCertification(final ProfileActivity profileActivity) {
+        return ProfileActivityResponseDTO.ProfileActivityCertificationResponse.builder()
                 .isActivityCertified(profileActivity.isActivityCertified())
                 .isActivityVerified(profileActivity.isActivityVerified())
-                .activityCertificationAttachFileName(profileActivity.getActivityCertificationAttachFileName())
-                .activityCertificationAttachFilePath(profileActivity.getActivityCertificationAttachFilePath())
+                .activityCertificationAttachFileName(
+                        profileActivity.getActivityCertificationAttachFileName())
+                .activityCertificationAttachFilePath(
+                        profileActivity.getActivityCertificationAttachFilePath())
                 .build();
     }
 
-
-    public ProfileActivityResponseDTO.RemoveProfileActivityCertificationResponse toRemoveProfileActivityCertification(final Long profileActivityId) {
-        return ProfileActivityResponseDTO.RemoveProfileActivityCertificationResponse
-                .builder()
+    public ProfileActivityResponseDTO.RemoveProfileActivityCertificationResponse
+            toRemoveProfileActivityCertification(final Long profileActivityId) {
+        return ProfileActivityResponseDTO.RemoveProfileActivityCertificationResponse.builder()
                 .profileActivityId(profileActivityId)
                 .build();
     }
 
-
-    public ProfileActivityResponseDTO.RemoveProfileActivityResponse toRemoveProfileActivity(final Long profileActivityId) {
-        return ProfileActivityResponseDTO.RemoveProfileActivityResponse
-                .builder()
+    public ProfileActivityResponseDTO.RemoveProfileActivityResponse toRemoveProfileActivity(
+            final Long profileActivityId) {
+        return ProfileActivityResponseDTO.RemoveProfileActivityResponse.builder()
                 .profileActivityId(profileActivityId)
                 .build();
     }
 
-    public List<ProfileActivityResponseDTO.ProfileActivityItem> profileActivitiesToProfileActivityItems(final List<ProfileActivity> profileActivities) {
+    public List<ProfileActivityResponseDTO.ProfileActivityItem>
+            profileActivitiesToProfileActivityItems(final List<ProfileActivity> profileActivities) {
         return profileActivities.stream()
                 .map(this::toProfileActivityItem)
                 .collect(Collectors.toList());

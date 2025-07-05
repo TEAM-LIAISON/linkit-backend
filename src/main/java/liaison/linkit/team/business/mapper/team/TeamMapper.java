@@ -1,7 +1,9 @@
 package liaison.linkit.team.business.mapper.team;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.team.domain.team.Team;
@@ -18,9 +20,7 @@ import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 @Mapper
 public class TeamMapper {
 
-    public Team toTeam(
-            final AddTeamRequest addTeamRequest
-    ) {
+    public Team toTeam(final AddTeamRequest addTeamRequest) {
         return Team.builder()
                 .teamName(addTeamRequest.getTeamName())
                 .teamCode(addTeamRequest.getTeamCode())
@@ -34,8 +34,7 @@ public class TeamMapper {
             final Team team,
             final TeamScaleItem teamScaleItem,
             final RegionDetail regionDetail,
-            final List<TeamCurrentStateItem> teamCurrentStateItems
-    ) {
+            final List<TeamCurrentStateItem> teamCurrentStateItems) {
         return TeamResponseDTO.AddTeamResponse.builder()
                 .teamId(team.getId())
                 .teamName(team.getTeamName())
@@ -51,8 +50,7 @@ public class TeamMapper {
             final Team team,
             final TeamScaleItem teamScaleItem,
             final RegionDetail regionDetail,
-            final List<TeamCurrentStateItem> teamCurrentStateItems
-    ) {
+            final List<TeamCurrentStateItem> teamCurrentStateItems) {
         return TeamResponseDTO.UpdateTeamResponse.builder()
                 .teamId(team.getId())
                 .teamName(team.getTeamName())
@@ -66,11 +64,8 @@ public class TeamMapper {
     }
 
     public TeamResponseDTO.TeamInformMenus toTeamInformMenus(
-            final List<TeamInformMenu> teamInformMenus
-    ) {
-        return TeamInformMenus.builder()
-                .teamInformMenus(teamInformMenus)
-                .build();
+            final List<TeamInformMenu> teamInformMenus) {
+        return TeamInformMenus.builder().teamInformMenus(teamInformMenus).build();
     }
 
     public TeamResponseDTO.TeamInformMenu toTeamInformMenu(
@@ -79,48 +74,56 @@ public class TeamMapper {
             final int teamScrapCount,
             final List<TeamCurrentStateItem> teamCurrentStateItems,
             final TeamScaleItem teamScaleItem,
-            final RegionDetail regionDetail
-    ) {
-        return TeamResponseDTO.TeamInformMenu
-                .builder()
-                .teamCurrentStates(teamCurrentStateItems)
+            final RegionDetail regionDetail) {
+        return TeamResponseDTO.TeamInformMenu.builder()
+                .teamCurrentStates(
+                        teamCurrentStateItems != null ? teamCurrentStateItems : new ArrayList<>())
                 .isTeamScrap(isTeamScrap)
                 .teamScrapCount(teamScrapCount)
-                .teamName(team.getTeamName())
-                .teamCode(team.getTeamCode())
-                .teamShortDescription(team.getTeamShortDescription())
-                .teamLogoImagePath(team.getTeamLogoImagePath())
-                .teamScaleItem(teamScaleItem)
-                .regionDetail(regionDetail)
+                .teamName(team != null && team.getTeamName() != null ? team.getTeamName() : "")
+                .teamCode(team != null && team.getTeamCode() != null ? team.getTeamCode() : "")
+                .teamShortDescription(
+                        team != null && team.getTeamShortDescription() != null
+                                ? team.getTeamShortDescription()
+                                : "")
+                .teamLogoImagePath(
+                        team != null && team.getTeamLogoImagePath() != null
+                                ? team.getTeamLogoImagePath()
+                                : "")
+                .teamScaleItem(teamScaleItem != null ? teamScaleItem : new TeamScaleItem())
+                .regionDetail(regionDetail != null ? regionDetail : new RegionDetail())
                 .build();
     }
 
     public TeamResponseDTO.TeamDetail toTeamDetail(
             final boolean isMyTeam,
+            final boolean isTeamManager,
             final boolean isTeamInvitationInProgress,
             final boolean isTeamDeleteInProgress,
-            final TeamInformMenu teamInformMenu
-    ) {
-        return TeamResponseDTO.TeamDetail
-                .builder()
+            final boolean isTeamDeleteRequester,
+            final TeamInformMenu teamInformMenu,
+            final boolean isTeamPublic) {
+        return TeamResponseDTO.TeamDetail.builder()
                 .isMyTeam(isMyTeam)
+                .isTeamManager(isTeamManager)
                 .isTeamInvitationInProgress(isTeamInvitationInProgress)
                 .isTeamDeleteInProgress(isTeamDeleteInProgress)
+                .isTeamDeleteRequester(isTeamDeleteRequester)
                 .teamInformMenu(teamInformMenu)
+                .isTeamPublic(isTeamPublic)
                 .build();
     }
-
 
     public TeamResponseDTO.TeamItems toTeamItems(final List<TeamInformMenu> teamInformMenus) {
-        return TeamItems.builder()
-                .teamInformMenus(teamInformMenus)
-                .build();
+        return TeamItems.builder().teamInformMenus(teamInformMenus).build();
     }
 
-    public TeamResponseDTO.DeleteTeamResponse toDeleteTeam(final String teamCode) {
+    public TeamResponseDTO.DeleteTeamResponse toDeleteTeam(
+            final String teamCode, final Boolean isTeamLastDeleteRequester) {
         return DeleteTeamResponse.builder()
                 .teamCode(teamCode)
                 .deletedRequestedAt(LocalDateTime.now())
+                .isTeamLastDeleteRequester(isTeamLastDeleteRequester)
                 .build();
     }
 }

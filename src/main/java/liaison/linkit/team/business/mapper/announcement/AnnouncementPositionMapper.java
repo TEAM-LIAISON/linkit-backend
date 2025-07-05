@@ -6,14 +6,12 @@ import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementR
 
 @Mapper
 public class AnnouncementPositionMapper {
+
     public AnnouncementPositionItem toAnnouncementPositionItem(
-            final AnnouncementPosition announcementPosition
-    ) {
-        return AnnouncementPositionItem
-                .builder()
+            final AnnouncementPosition announcementPosition) {
+        return AnnouncementPositionItem.builder()
                 .majorPosition(announcementPosition.getPosition().getMajorPosition())
                 .subPosition(announcementPosition.getPosition().getSubPosition())
                 .build();
     }
-
 }

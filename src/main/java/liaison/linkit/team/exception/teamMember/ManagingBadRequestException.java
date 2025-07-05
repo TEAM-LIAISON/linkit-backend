@@ -8,5 +8,4 @@ public class ManagingBadRequestException extends BaseCodeException {
     private ManagingBadRequestException() {
         super(TeamMemberErrorCode.MANAGING_BAD_REQUEST);
     }
-
 }

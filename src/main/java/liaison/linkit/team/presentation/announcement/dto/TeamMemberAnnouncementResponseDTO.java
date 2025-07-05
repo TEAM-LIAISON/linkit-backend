@@ -1,7 +1,9 @@
 package liaison.linkit.team.presentation.announcement.dto;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.AccessLevel;
@@ -19,7 +21,8 @@ public class TeamMemberAnnouncementResponseDTO {
     @AllArgsConstructor
     public static class AnnouncementInformMenus {
         @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu> announcementInformMenus = new ArrayList<>();
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu>
+                announcementInformMenus = new ArrayList<>();
     }
 
     @Builder
@@ -27,30 +30,38 @@ public class TeamMemberAnnouncementResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AnnouncementInformMenu {
-        private Long teamMemberAnnouncementId;
 
-        private String teamLogoImagePath;
-        private String teamName;
-        private String teamCode;
+        @Builder.Default private Long teamMemberAnnouncementId = 0L;
 
-        @Builder.Default
-        private TeamScaleItem teamScaleItem = new TeamScaleItem();
+        @Builder.Default private String teamLogoImagePath = "";
+        @Builder.Default private String teamName = "";
+        @Builder.Default private String teamCode = "";
 
-        @Builder.Default
-        private RegionDetail regionDetail = new RegionDetail();
+        @Builder.Default private TeamScaleItem teamScaleItem = new TeamScaleItem();
 
-        private int announcementDDay;           // 디데이
-        private String announcementTitle;       // 공고 제목
+        @Builder.Default private RegionDetail regionDetail = new RegionDetail();
 
-        private Boolean isAnnouncementScrap;    // 공고 스크랩 여부
-        private int announcementScrapCount;     // 공고 스크랩 수
+        @Builder.Default private int announcementDDay = 0; // 디데이
+        @Builder.Default private Boolean isClosed = false;
+        @Builder.Default private Boolean isPermanentRecruitment = false; // 상시 모집 여부
+        @Builder.Default private String announcementTitle = ""; // 공고 제목
+
+        @Builder.Default private Boolean isAnnouncementScrap = false; // 공고 스크랩 여부
+        @Builder.Default private int announcementScrapCount = 0; // 공고 스크랩 수
+
+        @Builder.Default private Long viewCount = 0L; // 조회수
+
+        @Builder.Default private String createdAt = ""; // 공고 생성일
 
         @Builder.Default
         private AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
 
         @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
+                announcementSkillNames = new ArrayList<>();
 
+        @Builder.Default private String projectTypeName = ""; // 프로젝트 유형
+        @Builder.Default private String workTypeName = ""; // 업무 형태
     }
 
     @Builder
@@ -60,21 +71,33 @@ public class TeamMemberAnnouncementResponseDTO {
     public static class TeamMemberAnnouncementDetail {
         private Long teamMemberAnnouncementId;
 
+        private Boolean isMyTeamAnnouncement;
+
         private Boolean isAnnouncementScrap;
         private int announcementScrapCount;
 
+        private int announcementDDay; // 디데이
+        private Boolean isClosed;
+        private String announcementEndDate; // 공고 마감일
+        private Boolean isPermanentRecruitment; // 상시 모집 여부
         private String announcementTitle;
+
+        private Long viewCount; // 조회수 정보
+        private LocalDateTime createdAt; // 공고 생성일
 
         @Builder.Default
         private AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
 
         @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
+                announcementSkillNames = new ArrayList<>();
 
-        private String announcementStartDate;
-        private String announcementEndDate;
+        private String projectTypeName;
+        private String workTypeName;
 
         private Boolean isRegionFlexible; // 지역 무관
+
+        private String projectIntroduction; // 프로젝트 소개
         private String mainTasks; // 주요 업무
         private String workMethod; // 업무 방식
         private String idealCandidate; // 이런 분을 찾고 있어요
@@ -83,37 +106,19 @@ public class TeamMemberAnnouncementResponseDTO {
         private String preferredQualifications; // 이런 분이면 더 좋아요
         private String joiningProcess; // 이런 과정으로 합류해요
         private String benefits; // 합류하면 이런 것들을 얻어 갈 수 있어요
+
+        private Boolean isLegacyAnnouncement;
     }
 
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class TeamMemberAnnouncementViewItems {
-        @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItem> teamMemberAnnouncementViewItems = new ArrayList<>();
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class TeamMemberAnnouncementViewItem {
-        private Long teamMemberAnnouncementId;
-
-        private int announcementDDay;
-
-        private String announcementTitle;
-        private String majorPosition;
+    public static class TeamMemberAnnouncementItems {
+        private Boolean isTeamManager;
 
         @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
-
-        private Boolean isAnnouncementPublic;       // 공고 공개/비공개 여부
-        private Boolean isAnnouncementInProgress;   // 공고 현재 진행 여부
-
-        private Boolean isAnnouncementScrap;        // 공고 스크랩 여부
-        private int announcementScrapCount;         // 공고의 전체 스크랩 개수
+        private List<TeamMemberAnnouncementItem> teamMemberAnnouncementItems = new ArrayList<>();
     }
 
     @Builder
@@ -122,23 +127,22 @@ public class TeamMemberAnnouncementResponseDTO {
     @AllArgsConstructor
     public static class TeamMemberAnnouncementItem {
         private Long teamMemberAnnouncementId;
+
+        private int announcementDDay;
+        private Boolean isClosed;
+        private Boolean isPermanentRecruitment; // 상시 모집 여부
         private String announcementTitle;
         private String majorPosition;
 
         @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
+                announcementSkillNames = new ArrayList<>();
 
-        private Boolean isAnnouncementPublic;       // 공고 공개/비공개 여부
-        private Boolean isAnnouncementInProgress;   // 공고 현재 진행 여부
-    }
+        private Boolean isAnnouncementPublic; // 공고 공개/비공개 여부
+        private Boolean isAnnouncementInProgress; // 공고 현재 진행 여부
 
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class TeamMemberAnnouncementItems {
-        @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItem> teamMemberAnnouncementItems = new ArrayList<>();
+        private Boolean isAnnouncementScrap; // 공고 스크랩 여부
+        private int announcementScrapCount; // 공고의 전체 스크랩 개수
     }
 
     @Builder
@@ -153,12 +157,19 @@ public class TeamMemberAnnouncementResponseDTO {
         private AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
 
         @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
+                announcementSkillNames = new ArrayList<>();
 
-        private String announcementStartDate;
+        private String projectTypeName;
+        private String workTypeName;
+
         private String announcementEndDate;
 
+        private Boolean isPermanentRecruitment;
+
         private Boolean isRegionFlexible; // 지역 무관
+
+        private String projectIntroduction; // 프로젝트 소개
 
         private String mainTasks; // 주요 업무
         private String workMethod; // 업무 방식
@@ -168,6 +179,8 @@ public class TeamMemberAnnouncementResponseDTO {
         private String preferredQualifications; // 이런 분이면 더 좋아요
         private String joiningProcess; // 이런 과정으로 합류해요
         private String benefits; // 합류하면 이런 것들을 얻어 갈 수 있어요
+
+        private Boolean isLegacyAnnouncement;
     }
 
     @Builder
@@ -182,12 +195,18 @@ public class TeamMemberAnnouncementResponseDTO {
         private AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
 
         @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
+                announcementSkillNames = new ArrayList<>();
 
-        private String announcementStartDate;
+        private String projectTypeName;
+        private String workTypeName;
+
         private String announcementEndDate;
+        private Boolean isPermanentRecruitment;
 
         private Boolean isRegionFlexible; // 지역 무관
+
+        private String projectIntroduction; // 프로젝트 소개
 
         private String mainTasks; // 주요 업무
         private String workMethod; // 업무 방식
@@ -197,6 +216,8 @@ public class TeamMemberAnnouncementResponseDTO {
         private String preferredQualifications; // 이런 분이면 더 좋아요
         private String joiningProcess; // 이런 과정으로 합류해요
         private String benefits; // 합류하면 이런 것들을 얻어 갈 수 있어요
+
+        private Boolean isLegacyAnnouncement;
     }
 
     @Builder
@@ -212,8 +233,9 @@ public class TeamMemberAnnouncementResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AnnouncementPositionItem {
-        private String majorPosition;
-        private String subPosition;
+
+        @Builder.Default private String majorPosition = "";
+        @Builder.Default private String subPosition = "";
     }
 
     @Builder
@@ -221,7 +243,23 @@ public class TeamMemberAnnouncementResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AnnouncementSkillName {
-        private String announcementSkillName;
+        @Builder.Default private String announcementSkillName = "";
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AnnouncementProjectTypeItem {
+        @Builder.Default private String announcementProjectTypeName = "";
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AnnouncementWorkTypeItem {
+        @Builder.Default private String announcementWorkTypeName = "";
     }
 
     @Builder
@@ -233,4 +271,12 @@ public class TeamMemberAnnouncementResponseDTO {
         private Boolean isAnnouncementPublic;
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CloseTeamMemberAnnouncementResponse {
+        private Long teamMemberAnnouncementId;
+        private Boolean isAnnouncementInProgress;
+    }
 }

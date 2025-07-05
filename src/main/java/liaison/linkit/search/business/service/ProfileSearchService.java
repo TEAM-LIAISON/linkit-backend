@@ -1,31 +1,24 @@
 package liaison.linkit.search.business.service;
 
-import java.util.ArrayList;
 import java.util.List;
-import liaison.linkit.common.business.RegionMapper;
-import liaison.linkit.common.implement.RegionQueryAdapter;
-import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
-import liaison.linkit.profile.business.mapper.ProfileCurrentStateMapper;
-import liaison.linkit.profile.business.mapper.ProfileMapper;
-import liaison.linkit.profile.business.mapper.ProfilePositionMapper;
-import liaison.linkit.profile.domain.position.ProfilePosition;
-import liaison.linkit.profile.domain.profile.Profile;
-import liaison.linkit.profile.domain.region.ProfileRegion;
-import liaison.linkit.profile.domain.state.ProfileCurrentState;
-import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
-import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
-import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+import jakarta.validation.constraints.NotNull;
+
+import liaison.linkit.profile.business.assembler.ProfileInformMenuAssembler;
+import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
-import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
-import liaison.linkit.scrap.implement.profileScrap.ProfileScrapQueryAdapter;
-import liaison.linkit.team.business.mapper.teamMember.TeamMemberMapper;
-import liaison.linkit.team.domain.team.Team;
-import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
+import liaison.linkit.scrap.domain.repository.profileScrap.ProfileScrapRepository;
+import liaison.linkit.search.business.model.ProfileSearchCondition;
+import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.search.presentation.dto.profile.FlatProfileDTO;
+import liaison.linkit.search.presentation.dto.profile.ProfileListResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,116 +28,107 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class ProfileSearchService {
 
-    private final ProfileQueryAdapter profileQueryAdapter;
-    private final RegionQueryAdapter regionQueryAdapter;
-    private final ProfilePositionQueryAdapter profilePositionQueryAdapter;
-    private final TeamMemberQueryAdapter teamMemberQueryAdapter;
+    private static final List<Long> DEFAULT_EXCLUDE_PROFILE_IDS =
+            List.of(171L, 160L, 168L, 154L, 167L, 108L);
 
-    private final ProfileMapper profileMapper;
-    private final ProfileCurrentStateMapper profileCurrentStateMapper;
-    private final ProfilePositionMapper profilePositionMapper;
-    private final TeamMemberMapper teamMemberMapper;
-    private final RegionMapper regionMapper;
-    private final ProfileScrapQueryAdapter profileScrapQueryAdapter;
+    private final ProfileRepository profileRepository;
+    private final ProfileScrapRepository profileScrapRepository;
+    private final ProfileInformMenuAssembler profileInformMenuAssembler;
 
-
-    public Page<ProfileInformMenu> searchProfilesInLoginState(
-            final Long memberId,
-            List<String> majorPosition,
-            List<String> skillName,
-            List<String> cityName,
-            List<String> profileStateName,
-            Pageable pageable
-    ) {
-        Page<Profile> profiles = profileQueryAdapter.findAll(majorPosition, skillName, cityName, profileStateName, pageable);
-        return profiles.map(
-                profile -> toSearchProfileInformMenuInLoginState(memberId, profile)
-        );
+    public ProfileListResponseDTO getFeaturedProfiles(final Optional<Long> optionalMemberId) {
+        List<ProfileInformMenu> topProfileDTOs = getTopCompletionProfiles(6, optionalMemberId);
+        return ProfileListResponseDTO.of(topProfileDTOs);
     }
 
-    public Page<ProfileInformMenu> searchProfilesInLogoutState(
-            List<String> majorPosition,
-            List<String> skillName,
-            List<String> cityName,
-            List<String> profileStateName,
-            Pageable pageable
-    ) {
-        Page<Profile> profiles = profileQueryAdapter.findAll(majorPosition, skillName, cityName, profileStateName, pageable);
-        return profiles.map(this::toSearchProfileInformMenuInLogoutState);
+    public CursorResponse<ProfileInformMenu> searchProfilesWithCursor(
+            final Optional<Long> optionalMemberId,
+            ProfileSearchCondition condition,
+            CursorRequest cursorRequest) {
+
+        if (condition.isDefault()) {
+            // /api/v1/profile/search?size=20
+            if (!cursorRequest.hasNext()) {
+                List<ProfileInformMenu> results =
+                        getFirstPageDefaultProfiles(cursorRequest.size(), optionalMemberId);
+                String nextCursor =
+                        results.isEmpty() ? null : results.get(results.size() - 1).getEmailId();
+                return CursorResponse.of(results, nextCursor);
+            }
+
+            // /api/v1/profile/search?cursor={emailId}&size=20
+            List<ProfileInformMenu> results =
+                    getAllProfilesWithoutFilter(
+                            cursorRequest.size(), optionalMemberId, cursorRequest);
+            String nextCursor =
+                    results.isEmpty() ? null : results.get(results.size() - 1).getEmailId();
+            return CursorResponse.of(results, nextCursor);
+        }
+
+        // 필터가 포함된 경우
+        List<ProfileInformMenu> results =
+                getAllProfilesWithFilter(
+                        cursorRequest.size(), optionalMemberId, condition, cursorRequest);
+        String nextCursor = results.isEmpty() ? null : results.get(results.size() - 1).getEmailId();
+        return CursorResponse.of(results, nextCursor);
     }
 
-    private ProfileInformMenu toSearchProfileInformMenuInLoginState(
-            final Long memberId,
-            final Profile profile
-    ) {
-        RegionDetail regionDetail = new RegionDetail();
-
-        if (regionQueryAdapter.existsProfileRegionByProfileId((profile.getId()))) {
-            final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
-            regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
-        }
-        log.info("지역 정보 조회 성공");
-
-        final List<ProfileCurrentState> profileCurrentStates = profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
-        final List<ProfileCurrentStateItem> profileCurrentStateItems = profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
-        log.info("상태 정보 조회 성공");
-
-        final boolean isProfileScrap = profileScrapQueryAdapter.existsByMemberIdAndEmailId(memberId, profile.getMember().getEmailId());
-
-        ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
-
-        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
-            final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
-            profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
-        }
-
-        log.info("대분류 포지션 정보 조회 성공");
-
-        List<ProfileTeamInform> profileTeamInforms = new ArrayList<>();
-        if (teamMemberQueryAdapter.existsTeamByMemberId(profile.getMember().getId())) {
-            final List<Team> myTeams = teamMemberQueryAdapter.getAllTeamsByMemberId(profile.getMember().getId());
-            profileTeamInforms = teamMemberMapper.toProfileTeamInforms(myTeams);
-            log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
-        }
-
-        final int profileScrapCount = profileScrapQueryAdapter.countTotalProfileScrapByEmailId(profile.getMember().getEmailId());
-
-        return profileMapper.toProfileInformMenu(profileCurrentStateItems, isProfileScrap, profileScrapCount, profile, profilePositionDetail, regionDetail, profileTeamInforms);
+    private List<ProfileInformMenu> getFirstPageDefaultProfiles(
+            int size, Optional<Long> optionalMemberId) {
+        List<FlatProfileDTO> raw =
+                profileRepository.findFlatProfilesWithoutCursor(DEFAULT_EXCLUDE_PROFILE_IDS, size);
+        return getProfileInformMenus(size, optionalMemberId, raw);
     }
 
-    private ProfileInformMenu toSearchProfileInformMenuInLogoutState(
-            final Profile profile
-    ) {
-        RegionDetail regionDetail = new RegionDetail();
+    private List<ProfileInformMenu> getTopCompletionProfiles(
+            int size, Optional<Long> optionalMemberId) {
+        List<FlatProfileDTO> raw = profileRepository.findTopCompletionProfiles(size);
+        return getProfileInformMenus(size, optionalMemberId, raw);
+    }
 
-        if (regionQueryAdapter.existsProfileRegionByProfileId((profile.getId()))) {
-            final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
-            regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
-        }
-        log.info("지역 정보 조회 성공");
+    private List<ProfileInformMenu> getAllProfilesWithoutFilter(
+            int size, Optional<Long> optionalMemberId, CursorRequest cursorRequest) {
+        List<FlatProfileDTO> raw =
+                profileRepository.findAllProfilesWithoutFilter(
+                        DEFAULT_EXCLUDE_PROFILE_IDS, cursorRequest);
+        return getProfileInformMenus(size, optionalMemberId, raw);
+    }
 
-        final List<ProfileCurrentState> profileCurrentStates = profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
-        final List<ProfileCurrentStateItem> profileCurrentStateItems = profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
-        log.info("상태 정보 조회 성공");
+    private List<ProfileInformMenu> getAllProfilesWithFilter(
+            int size,
+            Optional<Long> optionalMemberId,
+            ProfileSearchCondition condition,
+            CursorRequest cursorRequest) {
+        List<FlatProfileDTO> raw =
+                profileRepository.findFilteredFlatProfilesWithCursor(
+                        condition.subPosition(),
+                        condition.cityName(),
+                        condition.profileStateName(),
+                        cursorRequest);
+        return getProfileInformMenus(size, optionalMemberId, raw);
+    }
 
-        ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
+    @NotNull
+    private List<ProfileInformMenu> getProfileInformMenus(
+            int size, Optional<Long> optionalMemberId, List<FlatProfileDTO> raw) {
+        List<Long> profileIds = raw.stream().map(FlatProfileDTO::getProfileId).distinct().toList();
 
-        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
-            final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
-            profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
-        }
+        Set<Long> scraps =
+                optionalMemberId
+                        .map(
+                                memberId ->
+                                        profileScrapRepository.findScrappedProfileIdsByMember(
+                                                memberId, profileIds))
+                        .orElse(Set.of());
 
-        log.info("대분류 포지션 정보 조회 성공");
+        Map<Long, Integer> scrapCounts =
+                profileScrapRepository.countScrapsGroupedByProfile(profileIds);
 
-        List<ProfileTeamInform> profileTeamInforms = new ArrayList<>();
-        if (teamMemberQueryAdapter.existsTeamByMemberId(profile.getMember().getId())) {
-            final List<Team> myTeams = teamMemberQueryAdapter.getAllTeamsByMemberId(profile.getMember().getId());
-            profileTeamInforms = teamMemberMapper.toProfileTeamInforms(myTeams);
-            log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
-        }
+        Map<Long, List<ProfileTeamInform>> teamMap = Map.of();
 
-        final int profileScrapCount = profileScrapQueryAdapter.countTotalProfileScrapByEmailId(profile.getMember().getEmailId());
-        
-        return profileMapper.toProfileInformMenu(profileCurrentStateItems, false, profileScrapCount, profile, profilePositionDetail, regionDetail, profileTeamInforms);
+        List<ProfileInformMenu> menus =
+                profileInformMenuAssembler.assembleProfileInformMenus(
+                        raw, scraps, scrapCounts, teamMap);
+
+        return menus.size() > size ? menus.subList(0, size) : menus;
     }
 }

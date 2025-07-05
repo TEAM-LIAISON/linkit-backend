@@ -1,8 +1,12 @@
 package liaison.linkit.global.util;
 
+import java.security.Principal;
 import java.util.List;
+
 import liaison.linkit.chat.event.ChatEvent.UserConnectedEvent;
 import liaison.linkit.chat.event.ChatEvent.UserDisconnectedEvent;
+import liaison.linkit.global.presentation.dto.ChatListConnectedEvent;
+import liaison.linkit.global.presentation.dto.ChatRoomConnectedEvent;
 import liaison.linkit.login.infrastructure.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,42 +35,51 @@ public class StompHandler implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
 
-        log.info("StompHandler - Command: {}", headerAccessor.getCommand());
-        log.info("StompHandler - Destination: {}", headerAccessor.getDestination());
-
+        // CONNECT 요청 시
         if (StompCommand.CONNECT.equals(headerAccessor.getCommand())) {
-            log.info("STOMP CONNECT 요청 수신");
 
             String accessToken = validateAndExtractToken(headerAccessor);
             try {
                 // 토큰 검증
                 jwtProvider.validateAccessToken(accessToken);
 
-                // 사용자 ID 추출
                 Long memberId = Long.valueOf(jwtProvider.getSubject(accessToken));
-                log.info("인증된 사용자 ID: {}", memberId);
-
                 String sessionId = headerAccessor.getSessionId();
-                log.info("sessionId: {}", sessionId);
 
-                // 세션 등록
                 sessionRegistry.registerSession(sessionId, memberId);
-                log.info("세션 등록: sessionId={}, memberId={}", sessionId, memberId);
+
+                UserPrincipal principal = new UserPrincipal(memberId.toString());
+                headerAccessor.setUser(principal); // Principal 설정
             } catch (Exception e) {
                 throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
             }
         }
 
+        // SUBSCRIBE 요청 시
         if (StompCommand.SUBSCRIBE.equals(headerAccessor.getCommand())) {
-            String destination = headerAccessor.getDestination(); // 구독 경로
-            String sessionId = headerAccessor.getSessionId();     // 세션 ID
-            String user = headerAccessor.getUser() != null ? headerAccessor.getUser().getName() : "Anonymous"; // 사용자 이름 (인증된 경우)
+            String destination = headerAccessor.getDestination();
+            String sessionId = headerAccessor.getSessionId();
+            Long memberId = sessionRegistry.getMemberIdBySession(sessionId);
 
-            log.info("SUBSCRIBE: User [{}] subscribed to [{}] with session ID [{}]", user, destination, sessionId);
+            // 채팅 목록 구독
+            if (destination != null) {
+                if (destination.startsWith("/user/sub/chat/list/")) {
+                    eventPublisher.publishEvent(new ChatListConnectedEvent(memberId));
+                }
+            }
+
+            // 채팅방 입장 (구독)
+            if (destination != null) {
+                if (destination.startsWith("/user/sub/chat/")) {
+                    Long chatRoomId = extractChatRoomId(destination);
+                    sessionRegistry.subscribeToChatRoom(chatRoomId, memberId);
+                    eventPublisher.publishEvent(new ChatRoomConnectedEvent(memberId, chatRoomId));
+                }
+            }
         }
 
+        // SEND 요청 시
         if (StompCommand.SEND.equals(headerAccessor.getCommand())) {
-            log.info("STOMP SEND 요청 수신");
             String accessToken = validateAndExtractToken(headerAccessor);
 
             try {
@@ -76,11 +89,59 @@ public class StompHandler implements ChannelInterceptor {
             }
 
             String destination = headerAccessor.getDestination();
-            if ("/pub/chat/send".equals(destination)) {
-                String memberId = jwtProvider.getSubject(accessToken);
-                headerAccessor.setNativeHeader("memberId", memberId);
-                return MessageBuilder
-                        .createMessage(message.getPayload(), headerAccessor.getMessageHeaders());
+            String sessionId = headerAccessor.getSessionId();
+
+            // 동적으로 chatRoomId를 추출
+            if (destination != null && destination.startsWith("/pub/chat/send/")) {
+
+                // "/pub/chat/send/{chatRoomId}"에서 chatRoomId 추출
+                String[] parts = destination.split("/");
+                if (parts.length >= 5) { // /pub/chat/send/{chatRoomId} 구조 확인
+                    String chatRoomId = parts[4];
+
+                    String memberId = jwtProvider.getSubject(accessToken);
+                    log.debug("SEND Command - Extracted memberId: {}", memberId); // 로그 추가
+
+                    headerAccessor.setNativeHeader("memberId", memberId);
+                    headerAccessor.setNativeHeader("sessionId", sessionId);
+                    headerAccessor.setNativeHeader("chatRoomId", chatRoomId); // chatRoomId 추가
+
+                    return MessageBuilder.createMessage(
+                            message.getPayload(), headerAccessor.getMessageHeaders());
+                } else {
+                    throw new IllegalArgumentException("잘못된 destination 형식입니다.");
+                }
+            }
+
+            // 채팅방 입장 입력
+            if (destination != null && destination.startsWith("/pub/chat/read")) {
+                // "/pub/chat/send/{chatRoomId}"에서 chatRoomId 추출
+                String[] parts = destination.split("/");
+                if (parts.length >= 5) { // /pub/chat/read/{chatRoomId} 구조 확인
+                    String chatRoomId = parts[4];
+                    String memberId = jwtProvider.getSubject(accessToken);
+
+                    headerAccessor.setNativeHeader("memberId", memberId);
+                    headerAccessor.setNativeHeader("chatRoomId", chatRoomId); // chatRoomId 추가
+
+                    return MessageBuilder.createMessage(
+                            message.getPayload(), headerAccessor.getMessageHeaders());
+                } else {
+                    throw new IllegalArgumentException("잘못된 destination 형식입니다.");
+                }
+            }
+        }
+
+        if (StompCommand.UNSUBSCRIBE.equals(headerAccessor.getCommand())) {
+            String sessionId = headerAccessor.getSessionId();
+            Long memberId = sessionRegistry.getMemberIdBySession(sessionId);
+            String destination = headerAccessor.getDestination();
+
+            if (destination != null) {
+                if (destination.startsWith("/user/sub/chat/")) {
+                    Long chatRoomId = extractChatRoomId(destination);
+                    sessionRegistry.unsubscribeFromChatRoom(chatRoomId, memberId);
+                }
             }
         }
 
@@ -112,8 +173,12 @@ public class StompHandler implements ChannelInterceptor {
         if (memberId != null) {
             eventPublisher.publishEvent(new UserConnectedEvent(memberId, sessionId));
         }
+    }
 
-        log.info("세션 시작 처리: sessionId={}, memberId={}", sessionId, memberId);
+    @EventListener
+    public void handleSessionConnected(SessionConnectedEvent event) {
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        Principal userPrincipal = headerAccessor.getUser();
     }
 
     @EventListener
@@ -125,7 +190,25 @@ public class StompHandler implements ChannelInterceptor {
         Long memberId = sessionRegistry.removeSession(sessionId);
         if (memberId != null) {
             eventPublisher.publishEvent(new UserDisconnectedEvent(memberId, sessionId));
-            log.info("세션 종료 처리: sessionId={}, memberId={}", sessionId, memberId);
         }
     }
+
+    private Long extractChatRoomId(String destination) {
+        String[] parts = destination.split("/");
+        return Long.valueOf(parts[parts.length - 1]);
+    }
+
+    private String extractEmailId(String destination) {
+        String[] parts = destination.split("/");
+        return parts[parts.length - 1];
+    }
+
+    // private void sendInitialChatMessages(Long memberId, Long chatRoomId) {
+    // // 채팅방의 최근 메시지들을 조회하여 전송
+    // messagingTemplate.convertAndSendToUser(
+    // memberId.toString(),
+    // "/sub/chat/" + chatRoomId,
+    // chatService.getChatMessages(chatRoomId, memberId, /* pageable 객체 필요 */)
+    // );
+    // }
 }

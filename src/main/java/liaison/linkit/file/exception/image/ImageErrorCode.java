@@ -6,6 +6,7 @@ import static liaison.linkit.common.consts.LinkitStatic.NOT_FOUND;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
+
 import liaison.linkit.common.annotation.ExplainError;
 import liaison.linkit.common.exception.BaseErrorCode;
 import liaison.linkit.common.exception.ErrorReason;
@@ -15,7 +16,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ImageErrorCode implements BaseErrorCode {
-
     EMPTY_IMAGE_REQUEST(BAD_REQUEST, "IMAGE_400_1", "요청한 이미지가 없습니다."),
     INVALID_IMAGE_REQUEST(BAD_REQUEST, "IMAGE_400_2", "유효하지 않은 이미지입니다."),
     INVALID_IMAGE_PATH(NOT_FOUND, "IMAGE_404_1", "유효하지 않은 이미지 경로입니다."),
@@ -27,7 +27,11 @@ public enum ImageErrorCode implements BaseErrorCode {
 
     @Override
     public ErrorReason getErrorReason() {
-        return liaison.linkit.common.exception.ErrorReason.builder().reason(reason).code(code).status(status).build();
+        return liaison.linkit.common.exception.ErrorReason.builder()
+                .reason(reason)
+                .code(code)
+                .status(status)
+                .build();
     }
 
     @Override

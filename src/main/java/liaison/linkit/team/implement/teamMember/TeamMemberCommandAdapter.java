@@ -1,8 +1,8 @@
 package liaison.linkit.team.implement.teamMember;
 
 import liaison.linkit.common.annotation.Adapter;
-import liaison.linkit.team.domain.teamMember.TeamMember;
 import liaison.linkit.team.domain.repository.teamMember.TeamMemberRepository;
+import liaison.linkit.team.domain.teamMember.TeamMember;
 import liaison.linkit.team.domain.teamMember.type.TeamMemberManagingTeamState;
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +19,18 @@ public class TeamMemberCommandAdapter {
         teamMemberRepository.removeTeamMemberInTeam(teamMember);
     }
 
-    public void updateTeamMemberManagingTeamState(final TeamMember teamMember, final TeamMemberManagingTeamState teamMemberManagingTeamState) {
-        teamMemberRepository.updateTeamMemberManagingTeamState(teamMember, teamMemberManagingTeamState);
+    public void updateTeamMemberManagingTeamState(
+            final TeamMember teamMember,
+            final TeamMemberManagingTeamState teamMemberManagingTeamState) {
+        teamMemberRepository.updateTeamMemberManagingTeamState(
+                teamMember, teamMemberManagingTeamState);
+    }
+
+    public void deleteAllTeamMemberByMember(final Long memberId) {
+        teamMemberRepository.deleteAllTeamMemberByMember(memberId);
+    }
+
+    public void deleteAllTeamMemberByTeam(final Long teamId) {
+        teamMemberRepository.deleteAllTeamMemberByTeam(teamId);
     }
 }

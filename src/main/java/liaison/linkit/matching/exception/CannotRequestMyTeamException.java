@@ -8,5 +8,4 @@ public class CannotRequestMyTeamException extends BaseCodeException {
     private CannotRequestMyTeamException() {
         super(MatchingErrorCode.CANNOT_REQUEST_MY_TEAM);
     }
-
 }

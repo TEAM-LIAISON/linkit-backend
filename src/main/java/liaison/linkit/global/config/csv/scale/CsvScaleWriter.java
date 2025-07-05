@@ -23,10 +23,11 @@ public class CsvScaleWriter implements ItemWriter<ScaleCsvData> {
 
         Chunk<Scale> scales = new Chunk<>();
 
-        chunk.forEach(scaleCsvData -> {
-            Scale scale = Scale.builder().scaleName(scaleCsvData.getScaleName()).build();
-            scales.add(scale);
-        });
+        chunk.forEach(
+                scaleCsvData -> {
+                    Scale scale = Scale.builder().scaleName(scaleCsvData.getScaleName()).build();
+                    scales.add(scale);
+                });
 
         scaleRepository.saveAll(scales);
     }

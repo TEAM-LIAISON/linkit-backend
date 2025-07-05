@@ -8,5 +8,4 @@ public class CannotRequestMyAnnouncementException extends BaseCodeException {
     private CannotRequestMyAnnouncementException() {
         super(MatchingErrorCode.CANNOT_REQUEST_MY_ANNOUNCEMENT);
     }
-
 }

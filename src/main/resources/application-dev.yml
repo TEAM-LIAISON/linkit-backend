@@ -53,8 +53,13 @@ spring:
         format_sql: false
         show_sql: false
         default_batch_fetch_size: 100
+        generate_statistics: false   # 성능 모니터링 설정
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
 
   mvc:
     path match:
@@ -62,21 +67,71 @@ spring:
 
   batch:
     job:
-      enabled: true
+      enabled: false
     jdbc:
-      initialize-schema: always
+      initialize-schema: never
 
-    #  flyway:
-    #    enabled: true
-    #    baseline-on-migrate: true
-    #    baseline-version: 0
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
   sql:
     init:
-      mode: always
+      mode: never
 
   servlet:
     multipart:
       enabled: true # 멀티파트 업로드 지원 여부
       file-size-threshold: 0B # 파일을 디스크에 저장하지 않고 메모리에 저장하는 최소 크기 (default: 0B)
-      max-file-size: 10MB # 한 개 파일의 최대 사이즈
-      max-request-size: 10MB # 한 개 요청의 최대 사이즈
+      max-file-size: 60MB # 한 개 파일의 최대 사이즈
+      max-request-size: 60MB # 한 개 요청의 최대 사이즈
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: false
+      multiline: false
+      logging: slf4j
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web.servlet: INFO
+    org.springframework.web.socket: INFO
+    org.hibernate.SQL: INFO  # Hibernate SQL 로그 출력 비활성화
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO  # SQL 파라미터 바인딩 로그 출력 비활성화
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [request_id=%X{request_id}] [client_ip=%X{client_ip}] [user_id=%X{user_id}] [env=${server.env}] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [request_id=%X{request_id}] [client_ip=%X{client_ip}] [user_id=%X{user_id}] [env=${server.env}] %-5level %logger{36} - %msg%n"
+  file:
+    name: /app/logs/application-${server.env}.log  # 환경 변수 활용
+  logback:
+    rollingpolicy:
+      max-file-size: 100MB
+      max-history: 30
+      total-size-cap: 1GB
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+    doc-expansion: none
+    disable-swagger-default-url: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  paths-to-match:
+    - /api/**
+  packages-to-scan:
+    - liaison.linkit
+
+app:
+  backend-url: https://dev.liaison-dev.site
+
+server:
+  compression:
+    enabled: true
+    min-response-size: 1024
+    mime-types: application/json,application/xml,text/html,text/plain,text/css,application/javascript

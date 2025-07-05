@@ -1,32 +1,23 @@
 package liaison.linkit.search.business.service;
 
 import java.util.List;
-import liaison.linkit.common.business.RegionMapper;
-import liaison.linkit.common.implement.RegionQueryAdapter;
-import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
-import liaison.linkit.global.util.DateUtils;
-import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
-import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
-import liaison.linkit.team.business.mapper.announcement.AnnouncementSkillMapper;
-import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
-import liaison.linkit.team.domain.team.Team;
-import liaison.linkit.team.domain.region.TeamRegion;
-import liaison.linkit.team.domain.announcement.AnnouncementPosition;
-import liaison.linkit.team.domain.announcement.AnnouncementSkill;
-import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
-import liaison.linkit.team.domain.scale.TeamScale;
-import liaison.linkit.team.implement.announcement.AnnouncementPositionQueryAdapter;
-import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
-import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
-import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+import jakarta.validation.constraints.NotNull;
+
+import liaison.linkit.scrap.domain.repository.announcementScrap.AnnouncementScrapRepository;
+import liaison.linkit.search.business.model.AnnouncementSearchCondition;
+import liaison.linkit.search.presentation.dto.announcement.AnnouncementListResponseDTO;
+import liaison.linkit.search.presentation.dto.announcement.FlatAnnouncementDTO;
+import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.team.business.assembler.announcement.AnnouncementInformMenuAssembler;
+import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
-import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,155 +27,125 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class AnnouncementSearchService {
 
-    private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
-    private final AnnouncementPositionQueryAdapter announcementPositionQueryAdapter;
-    private final TeamMemberAnnouncementMapper teamMemberAnnouncementMapper;
-    private final AnnouncementSkillQueryAdapter announcementSkillQueryAdapter;
-    private final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter;
-    private final AnnouncementSkillMapper announcementSkillMapper;
-    private final TeamScaleQueryAdapter teamScaleQueryAdapter;
-    private final TeamScaleMapper teamScaleMapper;
-    private final RegionQueryAdapter regionQueryAdapter;
-    private final RegionMapper regionMapper;
+    private static final List<Long> DEFAULT_EXCLUDE_ANNOUNCEMENT_IDS =
+            List.of(102L, 101L, 100L, 90L, 98L, 84L);
 
-    // 로그인 상태에서 조회
-    public Page<AnnouncementInformMenu> searchAnnouncementsInLoginState(
-            final Long memberId,
-            List<String> majorPosition,
-            List<String> skillName,
-            List<String> cityName,
-            List<String> scaleName,
-            Pageable pageable
-    ) {
-        Page<TeamMemberAnnouncement> announcements = teamMemberAnnouncementQueryAdapter.findAll(majorPosition, skillName, cityName, scaleName, pageable);
+    private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
+    private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
+    private final AnnouncementScrapRepository announcementScrapRepository;
 
-        log.info(announcements.toString());
-
-        return announcements.map(
-                teamMemberAnnouncement -> toSearchAnnouncementInformInLoginState(memberId, teamMemberAnnouncement)
-        );
+    public AnnouncementListResponseDTO getFeaturedAnnouncements(
+            final Optional<Long> optionalMemberId) {
+        List<AnnouncementInformMenu> topAnnouncementDTOs =
+                getTopHotAnnouncements(6, optionalMemberId);
+        return AnnouncementListResponseDTO.of(topAnnouncementDTOs);
     }
 
-    // 로그아웃 상태에서 조회
-    public Page<AnnouncementInformMenu> searchAnnouncementsInLogoutState(
-            List<String> majorPosition,
-            List<String> skillName,
-            List<String> cityName,
-            List<String> scaleName,
-            Pageable pageable
-    ) {
-        Page<TeamMemberAnnouncement> announcements = teamMemberAnnouncementQueryAdapter.findAll(majorPosition, skillName, cityName, scaleName, pageable);
-        return announcements.map(this::toSearchAnnouncementInformInLogoutState);
+    public CursorResponse<AnnouncementInformMenu> searchAnnouncementsWithCursor(
+            final Optional<Long> optionalMemberId,
+            AnnouncementSearchCondition condition,
+            CursorRequest cursorRequest) {
+        if (condition.isDefault()) {
+            // /api/v1/announcement/search?size=20
+            if (!cursorRequest.hasNext()) {
+                log.info("Default condition");
+                List<AnnouncementInformMenu> results =
+                        getFirstPageDefaultAnnouncements(cursorRequest.size(), optionalMemberId);
+                Long nextCursor =
+                        results.isEmpty()
+                                ? null
+                                : results.get(results.size() - 1).getTeamMemberAnnouncementId();
+                return CursorResponse.of(
+                        results, nextCursor != null ? nextCursor.toString() : null);
+            }
+            // /api/v1/profile/search?cursor={teamMemberAnnouncementId}&size=20
+            log.info("Cursor condition");
+            List<AnnouncementInformMenu> results =
+                    getAllAnnouncementsWithoutFilter(
+                            cursorRequest.size(), optionalMemberId, cursorRequest);
+            Long nextCursor =
+                    results.isEmpty()
+                            ? null
+                            : results.get(results.size() - 1).getTeamMemberAnnouncementId();
+            return CursorResponse.of(results, nextCursor != null ? nextCursor.toString() : null);
+        }
+
+        // 필터가 포함된 경우
+        log.info("Filtered condition");
+        List<AnnouncementInformMenu> results =
+                getAllAnnouncementsWithFilter(
+                        cursorRequest.size(), optionalMemberId, condition, cursorRequest);
+        Long nextCursor =
+                results.isEmpty()
+                        ? null
+                        : results.get(results.size() - 1).getTeamMemberAnnouncementId();
+        return CursorResponse.of(results, nextCursor != null ? nextCursor.toString() : null);
     }
 
-    private AnnouncementInformMenu toSearchAnnouncementInformInLogoutState(
-            final TeamMemberAnnouncement teamMemberAnnouncement
-    ) {
-        final Team team = teamMemberAnnouncement.getTeam();
-        log.info("error 1");
-        // 팀 규모 조회
-        TeamScaleItem teamScaleItem = null;
-        if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
-            final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
-            teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
-        }
-        log.info("error 2");
-        // 팀 지역 조회
-        RegionDetail regionDetail = new RegionDetail();
-        if (regionQueryAdapter.existsTeamRegionByTeamId((team.getId()))) {
-            final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
-            regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
-        }
-        log.info("error 3");
-        // 포지션 조회
-        log.info("error 3.1.1.");
-        AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
-        log.info("error 3.1.2.");
-        if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
-            log.info("error 3.1");
-            AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
-            log.info("error 3.2");
-            announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
-        }
-        log.info("error 4");
-        // 스킬 조회
-        List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
-        List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
-
-        log.info("error 5");
-        final int announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
-        final int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
-
-        log.info("error 6");
-        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
-                team.getTeamLogoImagePath(),
-                team.getTeamName(),
-                team.getTeamCode(),
-                teamScaleItem,
-                regionDetail,
-                teamMemberAnnouncement,
-                announcementDDay,
-                false,
-                announcementScrapCount,
-                announcementPositionItem,
-                announcementSkillNames
-        );
+    private List<AnnouncementInformMenu> getTopHotAnnouncements(
+            int limit, Optional<Long> optionalMemberId) {
+        List<FlatAnnouncementDTO> raw =
+                teamMemberAnnouncementRepository.findTopHotAnnouncements(limit);
+        return getAnnouncementInformMenus(limit, optionalMemberId, raw);
     }
 
-
-    private AnnouncementInformMenu toSearchAnnouncementInformInLoginState(
-            final Long memberId,
-            final TeamMemberAnnouncement teamMemberAnnouncement
-    ) {
-        final Team team = teamMemberAnnouncement.getTeam();
-
-        log.info("error 1");
-
-        // 팀 규모 조회
-        TeamScaleItem teamScaleItem = null;
-        if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
-            final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
-            teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
-        }
-
-        log.info("error 2");
-
-        // 팀 지역 조회
-        RegionDetail regionDetail = new RegionDetail();
-        if (regionQueryAdapter.existsTeamRegionByTeamId((team.getId()))) {
-            final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
-            regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
-        }
-
-        log.info("error 3");
-
-        // 포지션 조회
-        AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
-        if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
-            AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
-            announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
-        }
-
-        // 스킬 조회
-        List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
-        List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
-        final int announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
-        final boolean isAnnouncementScrap = announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncement.getId());
-        final int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
-
-        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
-                team.getTeamLogoImagePath(),
-                team.getTeamName(),
-                team.getTeamCode(),
-                teamScaleItem,
-                regionDetail,
-                teamMemberAnnouncement,
-                announcementDDay,
-                isAnnouncementScrap,
-                announcementScrapCount,
-                announcementPositionItem,
-                announcementSkillNames
-        );
+    private List<AnnouncementInformMenu> getAllAnnouncementsWithoutFilter(
+            int size, Optional<Long> optionalMemberId, CursorRequest cursorRequest) {
+        List<FlatAnnouncementDTO> raw =
+                teamMemberAnnouncementRepository.findAllAnnouncementsWithoutFilter(
+                        DEFAULT_EXCLUDE_ANNOUNCEMENT_IDS, cursorRequest);
+        return getAnnouncementInformMenus(size, optionalMemberId, raw);
     }
 
+    private List<AnnouncementInformMenu> getFirstPageDefaultAnnouncements(
+            int limit, Optional<Long> memberId) {
+        List<FlatAnnouncementDTO> raw =
+                teamMemberAnnouncementRepository.findFlatAnnouncementsWithoutCursor(
+                        DEFAULT_EXCLUDE_ANNOUNCEMENT_IDS, limit);
+        return getAnnouncementInformMenus(limit, memberId, raw);
+    }
+
+    private List<AnnouncementInformMenu> getAllAnnouncementsWithFilter(
+            int size,
+            Optional<Long> optionalMemberId,
+            AnnouncementSearchCondition condition,
+            CursorRequest cursorRequest) {
+        List<FlatAnnouncementDTO> raw =
+                teamMemberAnnouncementRepository.findFilteredFlatAnnouncementsWithCursor(
+                        condition.subPosition(),
+                        condition.cityName(),
+                        condition.projectType(),
+                        condition.workType(),
+                        condition.sortBy(),
+                        cursorRequest);
+        return getAnnouncementInformMenus(size, optionalMemberId, raw);
+    }
+
+    @NotNull
+    private List<AnnouncementInformMenu> getAnnouncementInformMenus(
+            int limit, Optional<Long> optionalMemberId, List<FlatAnnouncementDTO> raw) {
+
+        List<Long> announcementIds =
+                raw.stream()
+                        .map(FlatAnnouncementDTO::getTeamMemberAnnouncementId)
+                        .distinct()
+                        .toList();
+        Set<Long> scraps =
+                optionalMemberId
+                        .map(
+                                memberId ->
+                                        announcementScrapRepository
+                                                .findScrappedAnnouncementIdsByMember(
+                                                        memberId, announcementIds))
+                        .orElse(Set.of());
+
+        Map<Long, Integer> scrapCounts =
+                announcementScrapRepository.countScrapsGroupedByAnnouncement(announcementIds);
+
+        List<AnnouncementInformMenu> menus =
+                announcementInformMenuAssembler.assembleAnnouncementInformMenus(
+                        raw, scraps, scrapCounts);
+
+        return menus.size() > limit ? menus.subList(0, limit) : menus;
+    }
 }

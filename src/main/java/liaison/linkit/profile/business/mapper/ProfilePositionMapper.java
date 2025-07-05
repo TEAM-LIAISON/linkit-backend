@@ -8,10 +8,8 @@ import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
 public class ProfilePositionMapper {
 
     public ProfileResponseDTO.ProfilePositionDetail toProfilePositionDetail(
-            final ProfilePosition profilePosition
-    ) {
-        return ProfileResponseDTO.ProfilePositionDetail
-                .builder()
+            final ProfilePosition profilePosition) {
+        return ProfileResponseDTO.ProfilePositionDetail.builder()
                 .majorPosition(profilePosition.getPosition().getMajorPosition())
                 .subPosition(profilePosition.getPosition().getSubPosition())
                 .build();

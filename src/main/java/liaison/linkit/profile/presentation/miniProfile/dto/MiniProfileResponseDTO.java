@@ -3,6 +3,7 @@ package liaison.linkit.profile.presentation.miniProfile.dto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +30,6 @@ public class MiniProfileResponseDTO {
         private ProfileCurrentStateItems profileCurrentStateItems;
 
         private Boolean isProfilePublic;
-
     }
 
     @Builder
@@ -40,7 +40,6 @@ public class MiniProfileResponseDTO {
         private String majorPosition;
         private String subPosition;
     }
-
 
     @Builder
     @Getter

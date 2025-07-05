@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
@@ -29,10 +30,10 @@ public class AnnouncementScrap extends BaseDateTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "team_member_announcement_id")
+    @JoinColumn(name = "team_member_announcement_id", nullable = false)
     private TeamMemberAnnouncement teamMemberAnnouncement;
 }

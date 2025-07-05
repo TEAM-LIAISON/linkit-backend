@@ -1,12 +1,13 @@
 package liaison.linkit.file.infrastructure;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import liaison.linkit.file.domain.CertificationFile;
 import liaison.linkit.file.domain.ImageFile;
 import liaison.linkit.file.exception.file.InvalidFileException;
@@ -36,7 +37,8 @@ public class S3Uploader {
     private static final String IMAGE_PROFILE_MAIN_FOLDER = "image/profile/main/";
     private static final String IMAGE_PROFILE_LOG_FOLDER = "image/profile/log/";
 
-    private static final String IMAGE_PROFILE_PORTFOLIO_MAIN_FOLDER = "image/profile/portfolio/main/";
+    private static final String IMAGE_PROFILE_PORTFOLIO_MAIN_FOLDER =
+            "image/profile/portfolio/main/";
     private static final String IMAGE_PROFILE_PORTFOLIO_SUB_FOLDER = "image/profile/portfolio/sub/";
 
     private static final String FILE_PROFILE_ACTIVITY_FOLDER = "image/profile/activity/";
@@ -49,15 +51,12 @@ public class S3Uploader {
     private static final String IMAGE_TEAM_PRODUCT_MAIN_FOLDER = "image/team/product/main/";
     private static final String IMAGE_TEAM_PRODUCT_SUB_FOLDER = "image/team/product/sub/";
 
-    /**
-     * 이미지 삭제
-     */
+    /** 이미지 삭제 */
     public void deleteS3Image(final String imageUrl) {
         try {
             URL url = new URL(imageUrl);
             String path = url.getPath().substring(1); // 맨 앞 "/" 제거
             s3Client.deleteObject(new DeleteObjectRequest(bucket, path));
-            log.info("이미지 삭제 완료 : {}", path);
         } catch (AmazonServiceException e) {
             log.error("잘못된 이미지 경로 : {}", imageUrl, e);
             throw InvalidImagePathException.EXCEPTION;
@@ -67,15 +66,12 @@ public class S3Uploader {
         }
     }
 
-    /**
-     * 증명서 삭제
-     */
+    /** 증명서 삭제 */
     public void deleteS3File(final String fileUrl) {
         try {
             URL url = new URL(fileUrl);
             String path = url.getPath().substring(1);
             s3Client.deleteObject(new DeleteObjectRequest(bucket, path));
-            log.info("인증서 삭제 완료 : {}", path);
         } catch (AmazonServiceException e) {
             log.error("잘못된 인증서 경로 : {}", fileUrl, e);
             throw InvalidFilePathException.EXCEPTION;
@@ -85,95 +81,67 @@ public class S3Uploader {
         }
     }
 
-    /**
-     * 프로필 일반 이미지 업로드
-     */
+    /** 프로필 일반 이미지 업로드 */
     public String uploadProfileMainImage(final ImageFile imageFile) {
         return uploadImage(imageFile, IMAGE_PROFILE_MAIN_FOLDER);
     }
 
-    /**
-     * 프로필 로그 이미지 업로드
-     */
+    /** 프로필 로그 이미지 업로드 */
     public String uploadProfileLogBodyImage(final ImageFile imageFile) {
         return uploadImage(imageFile, IMAGE_PROFILE_LOG_FOLDER);
     }
 
-    /**
-     * 프로필 프로젝트 대표 이미지 업로드
-     */
+    /** 프로필 프로젝트 대표 이미지 업로드 */
     public String uploadProfileProjectRepresentImage(final ImageFile imageFile) {
         return uploadImage(imageFile, IMAGE_PROFILE_PORTFOLIO_MAIN_FOLDER);
     }
 
-    /**
-     * 프로필 프로젝트 서브 이미지 업로드
-     */
+    /** 프로필 프로젝트 서브 이미지 업로드 */
     public String uploadProfileProjectSubImage(final ImageFile imageFile) {
         return uploadImage(imageFile, IMAGE_PROFILE_PORTFOLIO_SUB_FOLDER);
     }
 
-    /**
-     * 팀 로고 이미지 업로드
-     */
+    /** 팀 로고 이미지 업로드 */
     public String uploadTeamLogoImage(final ImageFile imageFile) {
         return uploadImage(imageFile, IMAGE_TEAM_MAIN_FOLDER);
     }
 
-
-    /**
-     * 팀 로그 이미지 업로드
-     */
+    /** 팀 로그 이미지 업로드 */
     public String uploadTeamLogBodyImage(final ImageFile imageFile) {
         return uploadImage(imageFile, IMAGE_TEAM_LOG_FOLDER);
     }
 
-    /**
-     * 팀 프로덕트 대표 이미지 업로드
-     */
+    /** 팀 프로덕트 대표 이미지 업로드 */
     public String uploadTeamProductRepresentImage(final ImageFile imageFile) {
         return uploadImage(imageFile, IMAGE_TEAM_PRODUCT_MAIN_FOLDER);
     }
 
-    /**
-     * 팀 프로덕트 서브 이미지 업로드
-     */
+    /** 팀 프로덕트 서브 이미지 업로드 */
     public String uploadTeamProductSubImage(final ImageFile imageFile) {
         return uploadImage(imageFile, IMAGE_TEAM_PRODUCT_SUB_FOLDER);
     }
 
-
-    /**
-     * 프로필 이력 증명 파일 업로드 [01]
-     */
+    /** 프로필 이력 증명 파일 업로드 [01] */
     public String uploadProfileActivityFile(final CertificationFile file) {
         return uploadFile(file, FILE_PROFILE_ACTIVITY_FOLDER);
     }
 
-    /**
-     * 프로필 학력 증명 파일 업로드 [02]
-     */
+    /** 프로필 학력 증명 파일 업로드 [02] */
     public String uploadProfileEducationFile(final CertificationFile file) {
         return uploadFile(file, FILE_PROFILE_EDUCATION_FOLDER);
     }
 
-    /**
-     * 프로필 수상 증명 파일 업로드 [03]
-     */
+    /** 프로필 수상 증명 파일 업로드 [03] */
     public String uploadProfileAwardsFile(final CertificationFile file) {
         return uploadFile(file, FILE_PROFILE_AWARDS_FOLDER);
     }
 
-    /**
-     * 프로필 자격증 증명 파일 업로드 [04]
-     */
+    /** 프로필 자격증 증명 파일 업로드 [04] */
     public String uploadProfileLicenseFile(final CertificationFile file) {
         return uploadFile(file, FILE_PROFILE_LICENSE_FOLDER);
     }
 
-    /**
-     * 이미지 업로드 공통 로직
-     */
+    /** 이미지 업로드 공통 로직 */
     private String uploadImage(final ImageFile imageFile, final String folderPath) {
         final String s3Key = folderPath + imageFile.getHashedName();
         final ObjectMetadata metadata = new ObjectMetadata();
@@ -183,7 +151,6 @@ public class S3Uploader {
 
         try (final InputStream inputStream = imageFile.getInputStream()) {
             s3Client.putObject(bucket, s3Key, inputStream, metadata);
-            log.info("이미지 업로드 완료 : {}", s3Key);
             return "https://" + cloudFrontImageDomain + "/" + s3Key;
         } catch (AmazonServiceException e) {
             log.error("이미지 업로드 실패 : {}", s3Key, e);
@@ -194,9 +161,7 @@ public class S3Uploader {
         }
     }
 
-    /**
-     * 파일 업로드 공통 로직
-     */
+    /** 파일 업로드 공통 로직 */
     private String uploadFile(final CertificationFile file, final String folderPath) {
         final String s3Key = folderPath + file.getHashedName();
         final ObjectMetadata metadata = new ObjectMetadata();
@@ -206,7 +171,6 @@ public class S3Uploader {
 
         try (final InputStream inputStream = file.getInputStream()) {
             s3Client.putObject(bucket, s3Key, inputStream, metadata);
-            log.info("파일 업로드 완료 : {}", s3Key);
             return "https://" + cloudFrontImageDomain + "/" + s3Key;
         } catch (AmazonServiceException e) {
             log.error("파일 업로드 실패 : {}", s3Key, e);

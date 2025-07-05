@@ -1,10 +1,10 @@
 package liaison.linkit.team.implement.teamMember;
 
-
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
-import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.repository.teamMember.TeamMemberInvitationRepository;
+import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.TeamMemberInvitation;
 import lombok.RequiredArgsConstructor;
 
@@ -26,15 +26,18 @@ public class TeamMemberInvitationQueryAdapter {
         return teamMemberInvitationRepository.existsByEmailAndTeam(email, team);
     }
 
-    public List<TeamMemberInvitation> getTeamMemberInvitations(final Long teamId) {
-        return teamMemberInvitationRepository.getTeamMemberInvitations(teamId);
+    public List<TeamMemberInvitation> getTeamMemberInvitationsInPending(final Long teamId) {
+        return teamMemberInvitationRepository.getTeamMemberInvitationsInPending(teamId);
     }
 
-    public TeamMemberInvitation getTeamMemberInvitationInPendingState(final String email, final Team team) {
+    public TeamMemberInvitation getTeamMemberInvitationInPendingState(
+            final String email, final Team team) {
         return teamMemberInvitationRepository.getTeamMemberInvitationInPendingState(email, team);
     }
 
-    public TeamMemberInvitation getTeamMemberInvitationByTeamCodeAndEmail(final String teamCode, final String email) {
-        return teamMemberInvitationRepository.getTeamMemberInvitationByTeamCodeAndEmail(teamCode, email);
+    public TeamMemberInvitation getTeamMemberInvitationByTeamCodeAndEmail(
+            final String teamCode, final String email) {
+        return teamMemberInvitationRepository.getTeamMemberInvitationByTeamCodeAndEmail(
+                teamCode, email);
     }
 }

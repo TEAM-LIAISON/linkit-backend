@@ -8,6 +8,4 @@ public class ProfileRegionNotFoundException extends BaseCodeException {
     private ProfileRegionNotFoundException() {
         super(ProfileRegionErrorCode.PROFILE_REGION_NOT_FOUND);
     }
-
 }
-

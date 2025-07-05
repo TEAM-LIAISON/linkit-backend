@@ -1,6 +1,7 @@
 package liaison.linkit.profile.implement.portfolio;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.profile.domain.portfolio.ProjectSubImage;
 import liaison.linkit.profile.domain.repository.portfolio.ProjectSubImageRepository;
@@ -17,5 +18,9 @@ public class ProjectSubImageCommandAdapter {
 
     public void deleteAll(final List<ProjectSubImage> projectSubImages) {
         projectSubImageRepository.deleteAll(projectSubImages);
+    }
+
+    public void delete(final ProjectSubImage projectSubImage) {
+        projectSubImageRepository.delete(projectSubImage);
     }
 }

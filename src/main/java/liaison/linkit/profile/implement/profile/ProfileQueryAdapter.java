@@ -1,55 +1,40 @@
 package liaison.linkit.profile.implement.profile;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.profile.domain.profile.Profile;
-import liaison.linkit.profile.domain.repository.currentState.ProfileCurrentStateRepository;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
-import liaison.linkit.profile.domain.state.ProfileCurrentState;
 import liaison.linkit.profile.exception.profile.ProfileNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 @Adapter
 @RequiredArgsConstructor
 @Slf4j
 public class ProfileQueryAdapter {
+
     private final ProfileRepository profileRepository;
-    private final ProfileCurrentStateRepository profileCurrentStateRepository;
 
     public Profile findById(final Long profileId) {
-        return profileRepository.findById(profileId)
+        return profileRepository
+                .findById(profileId)
                 .orElseThrow(() -> ProfileNotFoundException.EXCEPTION);
     }
 
     public Profile findByMemberId(final Long memberId) {
-        return profileRepository.findByMemberId(memberId)
+        return profileRepository
+                .findByMemberId(memberId)
                 .orElseThrow(() -> ProfileNotFoundException.EXCEPTION);
     }
 
     public Profile findByEmailId(final String emailId) {
-        return profileRepository.findByEmailId(emailId)
+        return profileRepository
+                .findByEmailId(emailId)
                 .orElseThrow(() -> ProfileNotFoundException.EXCEPTION);
     }
 
-    public List<ProfileCurrentState> findProfileCurrentStatesByProfileId(final Long profileId) {
-        return profileCurrentStateRepository.findProfileCurrentStatesByProfileId(profileId);
-    }
-
-    public Page<Profile> findAll(
-            final List<String> majorPosition,
-            final List<String> skillName,
-            final List<String> cityName,
-            final List<String> profileStateName,
-            final Pageable pageable
-    ) {
-        log.info("queryAdapter에서 실행됨");
-        return profileRepository.findAll(majorPosition, skillName, cityName, profileStateName, pageable);
-    }
-
-    public List<Profile> findTopProfiles(final int limit) {
-        return profileRepository.findTopProfiles(limit);
+    public List<Profile> findByMarketingConsentAndMajorPosition(final String majorPosition) {
+        return profileRepository.findByMarketingConsentAndMajorPosition(majorPosition);
     }
 }
